@@ -1,0 +1,26 @@
+[general]
+creator=R package 'raster'
+created=2017-06-28 15:04:59
+[georeference]
+nrows=200
+ncols=280
+xmin=112.9
+ymin=-35.5
+xmax=126.9
+ymax=-25.5
+projection=+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
+[data]
+datatype=FLT8S
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=-2.08488827827066
+maxvalue=532.056198604178
+nodatavalue=-1.7e+308
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=AUS_msk_alt
