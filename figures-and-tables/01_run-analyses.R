@@ -1,0 +1,7 @@
+source(here::here("analyses/01_setup.R"))
+source(here::here("analyses/02_import-region-polygons.R"))
+source(here::here("analyses/04_import-environmental-data.R"))
+source(here::here("analyses/06_import-floral-data.R"))
+source(here::here("analyses/07_analyse-roughness-across-scales.R"))
+source(here::here("analyses/08_analyse-species-turnover-w-distance.R"))
+source(here::here("analyses/09_analyse-species-turnover-and-richness.R"))
