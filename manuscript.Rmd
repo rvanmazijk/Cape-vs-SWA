@@ -1,0 +1,75 @@
+---
+output: pdf_document
+header-includes:
+  - \setlength{\parindent}{48pt}
+  - \renewcommand{\baselinestretch}{1.5}
+  - \usepackage{caption}
+  - \captionsetup{width=6.25in}
+#latex_engine: xelatex
+#mainfont: Helvetica
+#fontsize: 12pt
+#csl: # TODO
+#bibliography: # TODO
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    echo    = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    cache   = FALSE#,
+    #results = "hide"
+)
+```
+
+# Title
+
+**TODO**
+
+# Running title
+
+**TODO**
+
+# Authors
+
+Ruan van Mazijk, Michael D. Cramer, and G. Anthony Verboom
+
+\noindent Department of Biological Sciences, University of Cape Town, Rondebosch, Cape Town, 7701
+
+\noindent ORCID IDs:
+
+- **TODO**
+- **TODO**
+- **TODO**
+
+# Acknowledgements
+
+**TODO**
+
+<!--Main text-->
+
+```{r abstract_keywords, child = "manuscript/01_abstract-keywords.md"}
+```
+
+```{r introduction, child = "manuscript/02_introduction.md"}
+```
+
+```{r materials_and_methods, eval = FALSE, child = "manuscript/03_materials-and-methods.Rmd"}
+```
+
+```{r results, child = "manuscript/04_results.md"}
+```
+
+```{r discussion, child = "manuscript/05_discussion.md"}
+```
+
+<!--Tables & figures-->
+
+```{r discussion, child = "figures-and-tables/figures-and-tables.Rmd"}
+```
+
+# References
+
+# Biosketches
+
+# Appendices
