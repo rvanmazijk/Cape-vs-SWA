@@ -1,8 +1,8 @@
 # Setup
-# GCFR-SWAFR publication
+# Cape vs SWA  publication
 # Ruan van Mazijk
 
-# Pkg setup --------------------------------------------------------------------
+# Load and/or download necessary packages --------------------------------------
 
 if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
 library(pacman)
@@ -24,7 +24,12 @@ p_load(
     dismo, gbm
 )
 
-# GIS setup --------------------------------------------------------------------
+# Import functions in functions/ -----------------------------------------------
+
+my_functions <- list.files(here::here("functions"), full.names = TRUE)
+map(my_functions, source)
+
+# Global GIS variables ---------------------------------------------------------
 
 #giswd <- "/Users/ruanvanmazijk/Downloads"  # Needed for soils data (macOS)
 giswd <- "C:\\Users\\user\\Documents\\" # Needed for soils data (Windows)
