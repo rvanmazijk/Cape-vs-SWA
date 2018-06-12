@@ -4,21 +4,7 @@
 
 # Trim floral occurrences outside of regions -----------------------------------
 
-make_SpatialPointsDataFrame <- function(df,
-                                        lat_column = "decimallatitude",
-                                        lon_column = "decimallongitude",
-                                        feature_columns = c("family",
-                                                            "genus",
-                                                            "species"),
-                                        CRS = std_CRS) {
-    return(SpatialPointsDataFrame(
-        coords = df[, c(lon_column, lat_column)],
-        data = df[, c(feature_columns)],
-        proj4string = CRS(CRS)
-    ))
-}
-
-# GCFR -------------------------------------------------------------------------
+# .... GCFR --------------------------------------------------------------------
 
 # Make SpatialPointsDataFrames for species, genus, and family occurences
 GCFR_clean_flora_spdf_species <- make_SpatialPointsDataFrame(
@@ -59,7 +45,7 @@ trimmed_GCFR_clean_flora_spdf_genus <-
 trimmed_GCFR_clean_flora_spdf_family <-
     GCFR_clean_flora_spdf_family[!is.na(GCFR_point_query_family)[, 1], ]
 
-# SWAFR ------------------------------------------------------------------------
+# .... SWAFR -------------------------------------------------------------------
 
 # Make SpatialPointsDataFrames for species, genus, and family occurences
 SWAFR_clean_flora_spdf_species <- make_SpatialPointsDataFrame(
@@ -127,8 +113,24 @@ trimmed_SWAFR_clean_flora_spdf_family$cell_nos <- cellFromXY(
 )
 
 # Calculate all-pixel-pairwise Jaccard distances -------------------------------
+# And geographical distances,
+# for species, genus, and family turnover
 
-# GCFR: species ----------------------------------------------------------------
+# .... GCFR --------------------------------------------------------------------
+
+species_turnover_geodist_GCFR <- calc_all_pw_jaccard(
+    trimmed_GCFR_clean_flora_spdf_species,
+    GCFR_richness_QDS
+)
+genus_turnover_geodist_GCFR <- calc_all_pw_jaccard(
+    trimmed_GCFR_clean_flora_spdf_genus,
+    GCFR_richness_QDS
+)
+family_turnover_geodist_GCFR <- calc_all_pw_jaccard(
+    trimmed_GCFR_clean_flora_spdf_genus,
+    GCFR_richness_QDS
+)
+
 
 cell_nos <- levels(as.factor(trimmed_GCFR_clean_flora_spdf_species$cell_nos))
 
@@ -137,13 +139,9 @@ names(communities_by_cell_GCFR) <- paste0("cell_", cell_nos)
 for (i in seq_along(cell_nos)) {
     communities_by_cell_GCFR[[i]] <-
         trimmed_GCFR_clean_flora_spdf_species$species[trimmed_GCFR_clean_flora_spdf_species$cell_nos == cell_nos[[i]]]
-    #print(i)
+    print(i)
 }
 
-jaccard_distance <- function(a, b) {
-    (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
-    length(dplyr::union(a, b))
-}
 turnovers_betw_cells_GCFR <-
     matrix(nrow = length(cell_nos), ncol = length(cell_nos))
 rownames(turnovers_betw_cells_GCFR) <- paste0("cell_", cell_nos)
@@ -155,9 +153,9 @@ for (i in seq_along(cell_nos)) {
             communities_by_cell_GCFR[[j]]
         )
     }
-    #print(glue("
-    #    All distances against cell no. {cell_nos[[i]]} complete.
-    #"))
+    print(glue("
+        All distances against cell no. {cell_nos[[i]]} complete.
+    "))
 }
 
 geodists_betw_cells_GCFR <- pointDistance(
@@ -183,7 +181,7 @@ species_turnover_geodist_betw_cells_GCFR_df <- full_join(
     geodists_betw_cells_GCFR_df
 )
 
-# GCFR: genus ------------------------------------------------------------------
+# ........ Genus ---------------------------------------------------------------
 
 cell_nos <- levels(as.factor(trimmed_GCFR_clean_flora_spdf_genus$cell_nos))
 
@@ -192,13 +190,9 @@ names(communities_by_cell_GCFR) <- paste0("cell_", cell_nos)
 for (i in seq_along(cell_nos)) {
     communities_by_cell_GCFR[[i]] <-
         trimmed_GCFR_clean_flora_spdf_genus$genus[trimmed_GCFR_clean_flora_spdf_genus$cell_nos == cell_nos[[i]]]
-    #print(i)
+    print(i)
 }
 
-jaccard_distance <- function(a, b) {
-    (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
-    length(dplyr::union(a, b))
-}
 turnovers_betw_cells_GCFR <-
     matrix(nrow = length(cell_nos), ncol = length(cell_nos))
 rownames(turnovers_betw_cells_GCFR) <- paste0("cell_", cell_nos)
@@ -210,9 +204,9 @@ for (i in seq_along(cell_nos)) {
             communities_by_cell_GCFR[[j]]
         )
     }
-    #print(glue("
-    #    All distances against cell no. {cell_nos[[i]]} complete.
-    #"))
+    print(glue("
+        All distances against cell no. {cell_nos[[i]]} complete.
+    "))
 }
 
 geodists_betw_cells_GCFR <- pointDistance(
@@ -238,7 +232,7 @@ genus_turnover_geodist_betw_cells_GCFR_df <- full_join(
     geodists_betw_cells_GCFR_df
 )
 
-# GCFR: family -----------------------------------------------------------------
+# ........ Family --------------------------------------------------------------
 
 cell_nos <- levels(as.factor(trimmed_GCFR_clean_flora_spdf_family$cell_nos))
 
@@ -247,13 +241,9 @@ names(communities_by_cell_GCFR) <- paste0("cell_", cell_nos)
 for (i in seq_along(cell_nos)) {
     communities_by_cell_GCFR[[i]] <-
         trimmed_GCFR_clean_flora_spdf_family$family[trimmed_GCFR_clean_flora_spdf_family$cell_nos == cell_nos[[i]]]
-    #print(i)
+    print(i)
 }
 
-jaccard_distance <- function(a, b) {
-    (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
-    length(dplyr::union(a, b))
-}
 turnovers_betw_cells_GCFR <-
     matrix(nrow = length(cell_nos), ncol = length(cell_nos))
 rownames(turnovers_betw_cells_GCFR) <- paste0("cell_", cell_nos)
@@ -265,9 +255,9 @@ for (i in seq_along(cell_nos)) {
             communities_by_cell_GCFR[[j]]
         )
     }
-    #print(glue("
-    #    All distances against cell no. {cell_nos[[i]]} complete.
-    #"))
+    print(glue("
+        All distances against cell no. {cell_nos[[i]]} complete.
+    "))
 }
 
 geodists_betw_cells_GCFR <- pointDistance(
@@ -293,7 +283,9 @@ family_turnover_geodist_betw_cells_GCFR_df <- full_join(
     geodists_betw_cells_GCFR_df
 )
 
-# SWAFR: species ---------------------------------------------------------------
+# .... SWAFR -------------------------------------------------------------------
+
+# ........ Species -------------------------------------------------------------
 
 cell_nos <- levels(as.factor(trimmed_SWAFR_clean_flora_spdf_species$cell_nos))
 
@@ -302,13 +294,9 @@ names(communities_by_cell_SWAFR) <- paste0("cell_", cell_nos)
 for (i in seq_along(cell_nos)) {
     communities_by_cell_SWAFR[[i]] <-
         trimmed_SWAFR_clean_flora_spdf_species$species[trimmed_SWAFR_clean_flora_spdf_species$cell_nos == cell_nos[[i]]]
-    #print(i)
+    print(i)
 }
 
-jaccard_distance <- function(a, b) {
-    (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
-    length(dplyr::union(a, b))
-}
 turnovers_betw_cells_SWAFR <-
     matrix(nrow = length(cell_nos), ncol = length(cell_nos))
 rownames(turnovers_betw_cells_SWAFR) <- paste0("cell_", cell_nos)
@@ -320,9 +308,9 @@ for (i in seq_along(cell_nos)) {
             communities_by_cell_SWAFR[[j]]
         )
     }
-    #print(glue("
-    #    All distances against cell no. {cell_nos[[i]]} complete.
-    #"))
+    print(glue("
+        All distances against cell no. {cell_nos[[i]]} complete.
+    "))
 }
 
 geodists_betw_cells_SWAFR <- pointDistance(
@@ -348,7 +336,7 @@ species_turnover_geodist_betw_cells_SWAFR_df <- full_join(
     geodists_betw_cells_SWAFR_df
 )
 
-# SWAFR: genus -----------------------------------------------------------------
+# ........ Genus ---------------------------------------------------------------
 
 cell_nos <- levels(as.factor(trimmed_SWAFR_clean_flora_spdf_genus$cell_nos))
 
@@ -357,13 +345,9 @@ names(communities_by_cell_SWAFR) <- paste0("cell_", cell_nos)
 for (i in seq_along(cell_nos)) {
     communities_by_cell_SWAFR[[i]] <-
         trimmed_SWAFR_clean_flora_spdf_genus$genus[trimmed_SWAFR_clean_flora_spdf_genus$cell_nos == cell_nos[[i]]]
-    #print(i)
+    print(i)
 }
 
-jaccard_distance <- function(a, b) {
-    (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
-    length(dplyr::union(a, b))
-}
 turnovers_betw_cells_SWAFR <-
     matrix(nrow = length(cell_nos), ncol = length(cell_nos))
 rownames(turnovers_betw_cells_SWAFR) <- paste0("cell_", cell_nos)
@@ -375,9 +359,9 @@ for (i in seq_along(cell_nos)) {
             communities_by_cell_SWAFR[[j]]
         )
     }
-    #print(glue("
-    #    All distances against cell no. {cell_nos[[i]]} complete.
-    #"))
+    print(glue("
+        All distances against cell no. {cell_nos[[i]]} complete.
+    "))
 }
 
 geodists_betw_cells_SWAFR <- pointDistance(
@@ -403,7 +387,7 @@ genus_turnover_geodist_betw_cells_SWAFR_df <- full_join(
     geodists_betw_cells_SWAFR_df
 )
 
-# SWAFR: family ----------------------------------------------------------------
+# ........ Family --------------------------------------------------------------
 
 cell_nos <- levels(as.factor(trimmed_SWAFR_clean_flora_spdf_family$cell_nos))
 
@@ -412,13 +396,9 @@ names(communities_by_cell_SWAFR) <- paste0("cell_", cell_nos)
 for (i in seq_along(cell_nos)) {
     communities_by_cell_SWAFR[[i]] <-
  trimmed_SWAFR_clean_flora_spdf_family$family[trimmed_SWAFR_clean_flora_spdf_family$cell_nos == cell_nos[[i]]]
-    #print(i)
+    print(i)
 }
 
-jaccard_distance <- function(a, b) {
-    (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
-    length(dplyr::union(a, b))
-}
 turnovers_betw_cells_SWAFR <-
     matrix(nrow = length(cell_nos), ncol = length(cell_nos))
 rownames(turnovers_betw_cells_SWAFR) <- paste0("cell_", cell_nos)
@@ -430,9 +410,9 @@ for (i in seq_along(cell_nos)) {
             communities_by_cell_SWAFR[[j]]
         )
     }
-    #print(glue("
-    #    All distances against cell no. {cell_nos[[i]]} complete.
-    #"))
+    print(glue("
+        All distances against cell no. {cell_nos[[i]]} complete.
+    "))
 }
 
 geodists_betw_cells_SWAFR <- pointDistance(
@@ -458,7 +438,9 @@ family_turnover_geodist_betw_cells_SWAFR_df <- full_join(
     geodists_betw_cells_SWAFR_df
 )
 
-# Combine both regions dfs: species --------------------------------------------
+# Combine both regions data-frames ---------------------------------------------
+
+# .... Species -----------------------------------------------------------------
 
 species_turnover_geodist_betw_cells_df <- as_tibble(rbind(
     cbind(region = "GCFR", species_turnover_geodist_betw_cells_GCFR_df),
@@ -473,7 +455,7 @@ write_csv(
     here::here("analyses/05_outputs/species_turnover_geodist_betw_cells_df.csv")
 )
 
-# Combine both regions dfs: genus ----------------------------------------------
+# .... Genus -------------------------------------------------------------------
 
 genus_turnover_geodist_betw_cells_df <- as_tibble(rbind(
     cbind(region = "GCFR", genus_turnover_geodist_betw_cells_GCFR_df),
@@ -488,7 +470,7 @@ write_csv(
     here::here("analyses/05_outputs/genus_turnover_geodist_betw_cells_df.csv")
 )
 
-# Combine both regions dfs: family ---------------------------------------------
+# .... Family ------------------------------------------------------------------
 
 family_turnover_geodist_betw_cells_df <- as_tibble(rbind(
     cbind(region = "GCFR", family_turnover_geodist_betw_cells_GCFR_df),
@@ -503,7 +485,9 @@ write_csv(
     here::here("analyses/05_outputs/family_turnover_geodist_betw_cells_df.csv")
 )
 
-# Model: species ---------------------------------------------------------------
+# Model ------------------------------------------------------------------------
+
+# .... Species -----------------------------------------------------------------
 
 species_turnover_geodist_m <- species_turnover_geodist_betw_cells_df %>%
     filter(geodist > 0) %>%
@@ -515,7 +499,7 @@ write_rds(
     here::here("analyses/05_outputs/species_turnover_geodist_m.RDS")
 )
 
-# Model: genus -----------------------------------------------------------------
+# .... Genus -------------------------------------------------------------------
 
 genus_turnover_geodist_m <- genus_turnover_geodist_betw_cells_df %>%
     filter(geodist > 0) %>%
@@ -527,7 +511,7 @@ write_rds(
     here::here("analyses/05_outputs/genus_turnover_geodist_m.RDS")
 )
 
-# Model: family ----------------------------------------------------------------
+# .... Family ------------------------------------------------------------------
 
 family_turnover_geodist_m <- family_turnover_geodist_betw_cells_df %>%
     filter(geodist > 0) %>%
