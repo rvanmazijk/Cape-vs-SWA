@@ -7,23 +7,7 @@
 
 # TODO: where are the original MODIS rasters before mean below?
 
-# .... Import rasters ----------------------------------------------------------
-
-# TODO crop to box for publication purposes
-# For now: these "buffered" versions from long ago are good enough
-
-GCFR_MLST <- raster(here::here("data/derived-data/temperature/MODIS_annual_mean_GCFR_0.05_buffered.grd"))
-res(GCFR_MLST) == 0.05
-crs(GCFR_MLST) == std_CRS
-extent(GCFR_MLST)
-
-SWAFR_MLST <- raster(here::here("data/derived-data/temperature/MODIS_annual_mean_SWAFR_0.05_buffered.grd"))
-res(SWAFR_MLST) == 0.05
-proj4string(SWAFR_MLST) == std_CRS
-extent(SWAFR_MLST)
-
-
-# Make quarterly-derived bioclimatic variables ---------------------------------
+# Quarterly-derived bioclimatic variables --------------------------------------
 
 # .... Import monthly LST stacks -----------------------------------------------
 
