@@ -2,7 +2,6 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-source(here::here("analyses/compare_samples.R"))
 set.seed(1234)
 
 # Data setup -------------------------------------------------------------------
@@ -180,6 +179,8 @@ write_csv(
     IQ95R_data,
     here::here("analyses/07_outputs/IQ95R_data.csv")
 )
+
+# Junk -------------------------------------------------------------------------
 
 # Plot lm fits of 95%-interquantile range ~ scale * region
 #ggplot(IXR_data %>%
