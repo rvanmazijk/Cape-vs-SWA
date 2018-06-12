@@ -1,5 +1,5 @@
 # Setup
-# Cape vs SWA  publication
+# Cape vs SWA publication
 # Ruan van Mazijk
 
 # Load and/or download necessary packages --------------------------------------
