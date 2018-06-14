@@ -2,6 +2,10 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+source(here::here("setup.R"))
+source(here::here("analyses/01_import-region-polygons.R"))
+source(here::here("analyses/03_import-floral-data.R"))
+
 # Trim floral occurrences outside of regions -----------------------------------
 
 # .... GCFR --------------------------------------------------------------------
@@ -120,30 +124,36 @@ trimmed_SWAFR_clean_flora_spdf_family$cell_nos <- cellFromXY(
 
 species_turnover_geodist_GCFR <- calc_all_pw_jaccard(
     trimmed_GCFR_clean_flora_spdf_species,
-    GCFR_richness_QDS
+    GCFR_richness_QDS,
+    feature_column = "species"
 )
 genus_turnover_geodist_GCFR <- calc_all_pw_jaccard(
     trimmed_GCFR_clean_flora_spdf_genus,
-    GCFR_richness_QDS
+    GCFR_richness_QDS,
+    feature_column = "genus"
 )
 family_turnover_geodist_GCFR <- calc_all_pw_jaccard(
-    trimmed_GCFR_clean_flora_spdf_genus,
-    GCFR_richness_QDS
+    trimmed_GCFR_clean_flora_spdf_family,
+    GCFR_richness_QDS,
+    feature_column = "family"
 )
 
 # .... SWAFR -------------------------------------------------------------------
 
 species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
     trimmed_SWAFR_clean_flora_spdf_species,
-    SWAFR_richness_QDS
+    SWAFR_richness_QDS,
+    feature_column = "species"
 )
 genus_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
     trimmed_SWAFR_clean_flora_spdf_genus,
-    SWAFR_richness_QDS
+    SWAFR_richness_QDS,
+    feature_column = "genus"
 )
 family_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
-    trimmed_SWAFR_clean_flora_spdf_genus,
-    SWAFR_richness_QDS
+    trimmed_SWAFR_clean_flora_spdf_family,
+    SWAFR_richness_QDS,
+    feature_column = "family"
 )
 
 # Combine both regions data-frames ---------------------------------------------
