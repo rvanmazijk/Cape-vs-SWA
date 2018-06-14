@@ -4,7 +4,9 @@
 
 # Load and/or download necessary packages --------------------------------------
 
-if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
+if (!require(pacman)) {
+    install.packages("pacman", dependencies = TRUE)
+}
 library(pacman)
 p_load(
     # Data wrangling
@@ -19,19 +21,34 @@ p_load(
     # GIS
     raster, rasterVis, sp, rgdal, spatstat, simecol,
     # Taxonomy
-    taxize,
-    # BRTs
-    dismo, gbm
+    taxize
+)
+
+# Create bibliography of all loaded packages
+p_load(bibtex)
+my_pkgs <- loadedNamespaces()
+bibtex::write.bib(
+    entry = my_pkgs,
+    file = here::here("manuscript/pkgs.bib")
 )
 
 # Import functions in functions/ -----------------------------------------------
 
-my_functions <- list.files(here::here("functions"), full.names = TRUE)
+my_functions <- list.files(
+    here::here("functions"),
+    pattern = ".R",
+    full.names = TRUE
+)
 map(my_functions, source)
 
 # Global GIS variables ---------------------------------------------------------
 
-#giswd <- "/Users/ruanvanmazijk/Downloads"  # Needed for soils data (macOS)
-giswd <- "C:\\Users\\user\\Documents\\" # Needed for soils data (Windows)
+# GIS path
+if (.Platform$OS.type == "darwin") {
+    giswd <- "/Users/ruanvanmazijk/Downloads"  # Needed for soils data (macOS)
+} else if (.Platform$OS.type == "windows") {
+    giswd <- "C:\\Users\\user\\Documents\\" # Needed for soils data (Windows)
+}
 
+# Master coordinate reference system
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
