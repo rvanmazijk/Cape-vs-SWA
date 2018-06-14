@@ -105,7 +105,7 @@ test_results_summary <- test_results %>%
 # Save to disc
 write_csv(
     test_results_summary,
-    here::here("analyses/07_outputs/test_results_summary.csv")
+    here::here("analyses/04_outputs/test_results_summary.csv")
 )
 
 # CLES for those tests ---------------------------------------------------------
@@ -133,7 +133,7 @@ test_results_CLES_for_plot <- test_results_CLES %>%
 # Save to disc
 write_csv(
     test_results_CLES_for_plot,
-    here::here("analyses/07_outputs/test_results_CLES_for_plot.csv")
+    here::here("analyses/04_outputs/test_results_CLES_for_plot.csv")
 )
 
 # Prep data for violin plot ----------------------------------------------------
@@ -159,7 +159,7 @@ data_for_violin_plot$variable %<>% factor(levels = var_names)
 # Save to disc
 write_csv(
     data_for_violin_plot,
-    here::here("analyses/07_outputs/data_for_violin_plot.csv")
+    here::here("analyses/04_outputs/data_for_violin_plot.csv")
 )
 
 # Analyse IQ95R (and IQ99R) ~ scale --------------------------------------------
@@ -181,7 +181,7 @@ IQ95R_data <- data_for_violin_plot %>%
 # Save to disc
 write_csv(
     IQ95R_data,
-    here::here("analyses/07_outputs/IQ95R_data.csv")
+    here::here("analyses/04_outputs/IQ95R_data.csv")
 )
 
 # Junk -------------------------------------------------------------------------
