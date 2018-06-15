@@ -3,6 +3,10 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+source(here::here("setup.R"))
+source(here::here("analyses/01_import-region-polygons.R"))
+source(here::here("analyses/03_import-floral-data.R"))
+
 # Pseudo-code-plan -------------------------------------------------------------
 
 # >     GCFR_QDS_by_HDS <- foreach(HDS = GCFR_HDS_cell_nos) %do% {
@@ -22,54 +26,18 @@
 # >         ))
 # >     }
 
-# Get pixel IDs for QDS & HDS & DS ---------------------------------------------
-
-GCFR_3QDS_cell_nos <- unlist(cellFromPolygon(GCFR_richness_3QDS, GCFR_border))
-GCFR_HDS_cell_nos <- unlist(cellFromPolygon(GCFR_richness_HDS, GCFR_border))
-GCFR_QDS_cell_nos <- unlist(cellFromPolygon(GCFR_richness_QDS, GCFR_border))
-GCFR_QDS_cell_xys <- xyFromCell(GCFR_richness_QDS, GCFR_QDS_cell_nos)
-GCFR_3QDS_cell_nos_from_QDS_xys <- cellFromXY(GCFR_richness_3QDS, GCFR_QDS_cell_xys)
-GCFR_HDS_cell_nos_from_QDS_xys <- cellFromXY(GCFR_richness_HDS, GCFR_QDS_cell_xys)
-
-SWAFR_3QDS_cell_nos <- unlist(cellFromPolygon(SWAFR_richness_3QDS, SWAFR_border))
-SWAFR_HDS_cell_nos <- unlist(cellFromPolygon(SWAFR_richness_HDS, SWAFR_border))
-SWAFR_QDS_cell_nos <- unlist(cellFromPolygon(SWAFR_richness_QDS, SWAFR_border))
-SWAFR_QDS_cell_xys <- xyFromCell(SWAFR_richness_QDS, SWAFR_QDS_cell_nos)
-SWAFR_3QDS_cell_nos_from_QDS_xys <- cellFromXY(SWAFR_richness_3QDS, SWAFR_QDS_cell_xys)
-SWAFR_HDS_cell_nos_from_QDS_xys <- cellFromXY(SWAFR_richness_HDS, SWAFR_QDS_cell_xys)
-
-GCFR_3QDS_HDS_QDS_cells_df <- tibble(
-    region      = "GCFR",
-    QDS_cell_no = GCFR_QDS_cell_nos,
-    QDS_cell_x  = GCFR_QDS_cell_xys[, 1],
-    QDS_cell_y  = GCFR_QDS_cell_xys[, 2],
-    HDS_cell_no = GCFR_HDS_cell_nos_from_QDS_xys,
-    DS_cell_no  = GCFR_3QDS_cell_nos_from_QDS_xys
-)
-SWAFR_3QDS_HDS_QDS_cells_df <- tibble(
-    region      = "SWAFR",
-    QDS_cell_no = SWAFR_QDS_cell_nos,
-    QDS_cell_x  = SWAFR_QDS_cell_xys[, 1],
-    QDS_cell_y  = SWAFR_QDS_cell_xys[, 2],
-    HDS_cell_no = SWAFR_HDS_cell_nos_from_QDS_xys,
-    DS_cell_no  = SWAFR_3QDS_cell_nos_from_QDS_xys
-)
-threeQDS_HDS_QDS_cells_df <-
-    rbind(GCFR_3QDS_HDS_QDS_cells_df, SWAFR_3QDS_HDS_QDS_cells_df)
-
 # Implementation of above for HDS & QDS ----------------------------------------
 
-get_constituent_QDS_cells <- function(cells_df, query_HDS_cell_no) {
-    return(filter(
-        cells_df,
-        HDS_cell_no == query_HDS_cell_no
-    ))
-}
+communities_by_cell_SWAFR_QDS <- compile_communities_by_cell(
+    trimmed_SWAFR_clean_flora_spdf_species,
+    "species"
+)
+communities_by_cell_GCFR_QDS <- compile_communities_by_cell(
+    trimmed_GCFR_clean_flora_spdf_species,
+    "species"
+)
 
-communities_by_cell_SWAFR_QDS <- communities_by_cell_SWAFR
-communities_by_cell_GCFR_QDS <- communities_by_cell_GCFR
-
-cells_df_GCFR <- filter(threeQDS_HDS_QDS_cells_df, region == "GCFR")
+cells_df_GCFR <- filter(cells, region == "GCFR")
 HDS_cell_nos <- levels(as.factor(cells_df_GCFR$HDS_cell_no))
 GCFR_gamma_beta_alpha <- foreach(HDS_cell_no = HDS_cell_nos) %do% {
     QDS_cell_nos <- get_constituent_QDS_cells(cells_df_GCFR, HDS_cell_no)
@@ -96,7 +64,7 @@ GCFR_gamma_beta_alpha <- foreach(HDS_cell_no = HDS_cell_nos) %do% {
 names(GCFR_gamma_beta_alpha) <-
     paste0("cell_", levels(as.factor(cells_df_GCFR$HDS_cell_no)))
 
-cells_df_SWAFR <- filter(threeQDS_HDS_QDS_cells_df, region == "SWAFR")
+cells_df_SWAFR <- filter(cells, region == "SWAFR")
 HDS_cell_nos <- levels(as.factor(cells_df_SWAFR$HDS_cell_no))
 SWAFR_gamma_beta_alpha <- foreach(HDS_cell_no = HDS_cell_nos) %do% {
     QDS_cell_nos <- get_constituent_QDS_cells(cells_df_SWAFR, HDS_cell_no)
@@ -174,7 +142,7 @@ get_constituent_QDS_cells <- function(cells_df, query_3QDS_cell_no) {
 communities_by_cell_SWAFR_QDS <- communities_by_cell_SWAFR
 communities_by_cell_GCFR_QDS <- communities_by_cell_GCFR
 
-cells_df_GCFR <- filter(threeQDS_HDS_QDS_cells_df, region == "GCFR")
+cells_df_GCFR <- filter(cells, region == "GCFR")
 DS_cell_nos <- levels(as.factor(cells_df_GCFR$DS_cell_no))
 GCFR_gamma_beta_alpha_3QDS <- foreach(DS_cell_no = DS_cell_nos) %do% {
     QDS_cell_nos <- get_constituent_QDS_cells(cells_df_GCFR, DS_cell_no)
@@ -201,7 +169,7 @@ GCFR_gamma_beta_alpha_3QDS <- foreach(DS_cell_no = DS_cell_nos) %do% {
 names(GCFR_gamma_beta_alpha_3QDS) <-
     paste0("cell_", levels(as.factor(cells_df_GCFR$DS_cell_no)))
 
-cells_df_SWAFR <- filter(threeQDS_HDS_QDS_cells_df, region == "SWAFR")
+cells_df_SWAFR <- filter(cells, region == "SWAFR")
 DS_cell_nos <- levels(as.factor(cells_df_SWAFR$DS_cell_no))
 SWAFR_gamma_beta_alpha_3QDS <- foreach(DS_cell_no = DS_cell_nos) %do% {
     QDS_cell_nos <- get_constituent_QDS_cells(cells_df_SWAFR, DS_cell_no)
