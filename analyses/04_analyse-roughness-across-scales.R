@@ -4,7 +4,7 @@
 
 source(here::here("setup.R"))
 source(here::here("analyses/01_import-region-polygons.R"))
-source(here::here("analyses/02_import-environmental-data.R"))
+source(here::here("analyses/03_import-environmental-data.R"))
 
 set.seed(1234)
 
