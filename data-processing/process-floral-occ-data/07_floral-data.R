@@ -1494,3 +1494,143 @@ SWAFR <- function() {
         ))
     }
 }
+
+# Trim floral occurrences outside of regions -----------------------------------
+
+GCFR_clean_flora <- read_csv(here::here("data/derived-data/flora/GCFR_clean_flora_2017-09-14.csv"))
+SWAFR_clean_flora <- read_csv(here::here("data/derived-data/flora/SWAFR_clean_flora_2017-09-14.csv"))
+
+# .... GCFR --------------------------------------------------------------------
+
+# Make SpatialPointsDataFrames for species, genus, and family occurences
+GCFR_clean_flora_spdf_species <- make_SpatialPointsDataFrame(
+    GCFR_clean_flora,
+    feature_columns = "species"
+)
+GCFR_clean_flora_spdf_genus <- make_SpatialPointsDataFrame(
+    GCFR_clean_flora,
+    feature_columns = "genus"
+)
+GCFR_clean_flora_spdf_family <- make_SpatialPointsDataFrame(
+    GCFR_clean_flora,
+    feature_columns = "family"
+)
+
+# Query their presences in the GCFR border
+GCFR_point_query_species <-
+    GCFR_clean_flora_spdf_species %over% GCFR_border
+GCFR_point_query_genus <-
+    GCFR_clean_flora_spdf_genus %over% GCFR_border
+GCFR_point_query_family <-
+    GCFR_clean_flora_spdf_family %over% GCFR_border
+stopifnot(
+    length(GCFR_clean_flora_spdf_species) == length(!is.na(GCFR_point_query_species))
+)
+stopifnot(
+    length(GCFR_clean_flora_spdf_genus) == length(!is.na(GCFR_point_query_genus))
+)
+stopifnot(
+    length(GCFR_clean_flora_spdf_family) == length(!is.na(GCFR_point_query_family))
+)
+
+# Trim!
+trimmed_GCFR_clean_flora_spdf_species <-
+    GCFR_clean_flora_spdf_species[!is.na(GCFR_point_query_species)[, 1], ]
+trimmed_GCFR_clean_flora_spdf_genus <-
+    GCFR_clean_flora_spdf_genus[!is.na(GCFR_point_query_genus)[, 1], ]
+trimmed_GCFR_clean_flora_spdf_family <-
+    GCFR_clean_flora_spdf_family[!is.na(GCFR_point_query_family)[, 1], ]
+
+# .... SWAFR -------------------------------------------------------------------
+
+# Make SpatialPointsDataFrames for species, genus, and family occurences
+SWAFR_clean_flora_spdf_species <- make_SpatialPointsDataFrame(
+    SWAFR_clean_flora,
+    feature_columns = "species"
+)
+SWAFR_clean_flora_spdf_genus <- make_SpatialPointsDataFrame(
+    SWAFR_clean_flora,
+    feature_columns = "genus"
+)
+SWAFR_clean_flora_spdf_family <- make_SpatialPointsDataFrame(
+    SWAFR_clean_flora,
+    feature_columns = "family"
+)
+
+# Query their presences in the SWAFR border
+SWAFR_point_query_species <-
+    SWAFR_clean_flora_spdf_species %over% SWAFR_border
+SWAFR_point_query_genus <-
+    SWAFR_clean_flora_spdf_genus %over% SWAFR_border
+SWAFR_point_query_family <-
+    SWAFR_clean_flora_spdf_family %over% SWAFR_border
+stopifnot(
+    length(SWAFR_clean_flora_spdf_species) == length(!is.na(SWAFR_point_query_species))
+)
+stopifnot(
+    length(SWAFR_clean_flora_spdf_genus) == length(!is.na(SWAFR_point_query_genus))
+)
+stopifnot(
+    length(SWAFR_clean_flora_spdf_family) == length(!is.na(SWAFR_point_query_family))
+)
+trimmed_SWAFR_clean_flora_spdf_species <-
+    SWAFR_clean_flora_spdf_species[!is.na(SWAFR_point_query_species)[, 1], ]
+trimmed_SWAFR_clean_flora_spdf_genus <-
+    SWAFR_clean_flora_spdf_genus[!is.na(SWAFR_point_query_genus)[, 1], ]
+trimmed_SWAFR_clean_flora_spdf_family <-
+    SWAFR_clean_flora_spdf_family[!is.na(SWAFR_point_query_family)[, 1], ]
+
+# Get pixel IDs for points -----------------------------------------------------
+
+trimmed_GCFR_clean_flora_spdf_species$cell_nos <- cellFromXY(
+    GCFR_richness_QDS,
+    trimmed_GCFR_clean_flora_spdf_species
+)
+trimmed_GCFR_clean_flora_spdf_genus$cell_nos <- cellFromXY(
+    GCFR_richness_QDS,
+    trimmed_GCFR_clean_flora_spdf_genus
+)
+trimmed_GCFR_clean_flora_spdf_family$cell_nos <- cellFromXY(
+    GCFR_richness_QDS,
+    trimmed_GCFR_clean_flora_spdf_family
+)
+
+trimmed_SWAFR_clean_flora_spdf_species$cell_nos <- cellFromXY(
+    SWAFR_richness_QDS,
+    trimmed_SWAFR_clean_flora_spdf_species
+)
+trimmed_SWAFR_clean_flora_spdf_genus$cell_nos <- cellFromXY(
+    SWAFR_richness_QDS,
+    trimmed_SWAFR_clean_flora_spdf_genus
+)
+trimmed_SWAFR_clean_flora_spdf_family$cell_nos <- cellFromXY(
+    SWAFR_richness_QDS,
+    trimmed_SWAFR_clean_flora_spdf_family
+)
+
+# Save finals ------------------------------------------------------------------
+
+write_rds(
+    trimmed_GCFR_clean_flora_spdf_species,
+    here::here("data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_species")
+)
+write_rds(
+    trimmed_GCFR_clean_flora_spdf_genus,
+    here::here("data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_genus")
+)
+write_rds(
+    trimmed_GCFR_clean_flora_spdf_family,
+    here::here("data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_family")
+)
+write_rds(
+    trimmed_SWAFR_clean_flora_spdf_species,
+    here::here("data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_species")
+)
+write_rds(
+    trimmed_SWAFR_clean_flora_spdf_genus,
+    here::here("data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_genus")
+)
+write_rds(
+    trimmed_SWAFR_clean_flora_spdf_family,
+    here::here("data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_family")
+)
