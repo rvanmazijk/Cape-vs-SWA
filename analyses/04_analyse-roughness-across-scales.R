@@ -8,50 +8,6 @@ source(here::here("analyses/02_import-environmental-data.R"))
 
 set.seed(1234)
 
-# Data setup -------------------------------------------------------------------
-
-var_names <- c(
-    "Elevation",
-    "MAP",
-    "PDQ",
-    "Surface T",
-    "NDVI",
-    "CEC",
-    "Clay",
-    "Soil C",
-    "pH"
-)
-GCFR_variables <- list(
-    GCFR_elev,
-    GCFR_MAP,
-    GCFR_PDQ,
-    GCFR_MLST,
-    GCFR_NDVI,
-    GCFR_soils$GCFR_CECSOL_M_250m_std_CRS_0.05,
-    GCFR_soils$GCFR_CLYPPT_M_250m_std_CRS_0.05,
-    GCFR_soils$GCFR_OCDENS_M_250m_std_CRS_0.05,
-    GCFR_soils$GCFR_PHIKCL_M_250m_std_CRS_0.05
-)
-SWAFR_variables <- list(
-    SWAFR_elev,
-    SWAFR_MAP,
-    SWAFR_PDQ,
-    SWAFR_MLST,
-    SWAFR_NDVI,
-    SWAFR_soils$SWAFR_CECSOL_M_250m_std_CRS_0.05,
-    SWAFR_soils$SWAFR_CLYPPT_M_250m_std_CRS_0.05,
-    SWAFR_soils$SWAFR_OCDENS_M_250m_std_CRS_0.05,
-    SWAFR_soils$SWAFR_PHIKCL_M_250m_std_CRS_0.05
-)
-GCFR_variables %<>%
-    map(crop, GCFR_variables[[4]]) %>%
-    map(mask, GCFR_border)
-SWAFR_variables %<>%
-    map(crop, SWAFR_variables[[4]]) %>%
-    map(mask, SWAFR_border)
-names(GCFR_variables) <- var_names
-names(SWAFR_variables) <- var_names
-
 # Test 0.05deg, QDS, HDS, 3QDS comparisons -------------------------------------
 
 test_results <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
