@@ -71,14 +71,7 @@ stopifnot(
 
 # Soil -------------------------------------------------------------------------
 
-GCFR_soils <- stack_soils(
-    region = "GCFR",
-    regiondir = paste(sep = "\\",
-        giswd,
-        "SoilGrids250m",
-        "GCFR"
-    )
-)
+GCFR_soils <- stack_soils("GCFR")
 stopifnot(
     (proj4string(GCFR_soils) == std_CRS) ||
     (round(res(GCFR_soils), 2) == 0.05)
@@ -86,14 +79,7 @@ stopifnot(
 # Re-crop to box, because when read-in the extent pops back global
 GCFR_soils %<>% crop(GCFR_box)
 
-SWAFR_soils <- stack_soils(
-    region = "SWAFR",
-    regiondir = paste(sep = "\\",
-        giswd,
-        "SoilGrids250m",
-        "SWAFR"
-    )
-)
+SWAFR_soils <- stack_soils("SWAFR")
 stopifnot(
     (proj4string(SWAFR_soils) == std_CRS) ||
     (round(res(SWAFR_soils), 2) == 0.05)
@@ -119,10 +105,10 @@ GCFR_variables <- list(
     GCFR_PDQ,
     GCFR_MLST,
     GCFR_NDVI,
-    GCFR_soils$GCFR_CECSOL_M_250m_std_CRS_0.05,
-    GCFR_soils$GCFR_CLYPPT_M_250m_std_CRS_0.05,
-    GCFR_soils$GCFR_OCDENS_M_250m_std_CRS_0.05,
-    GCFR_soils$GCFR_PHIKCL_M_250m_std_CRS_0.05
+    GCFR_soils$GCFR_GCFR_CECSOL_M_250m_std_CRS_0.05_0.05,
+    GCFR_soils$GCFR_GCFR_CLYPPT_M_250m_std_CRS_0.05_0.05,
+    GCFR_soils$GCFR_GCFR_OCDENS_M_250m_std_CRS_0.05_0.05,
+    GCFR_soils$GCFR_GCFR_PHIKCL_M_250m_std_CRS_0.05_0.05
 )
 SWAFR_variables <- list(
     SWAFR_elev,
@@ -130,10 +116,10 @@ SWAFR_variables <- list(
     SWAFR_PDQ,
     SWAFR_MLST,
     SWAFR_NDVI,
-    SWAFR_soils$SWAFR_CECSOL_M_250m_std_CRS_0.05,
-    SWAFR_soils$SWAFR_CLYPPT_M_250m_std_CRS_0.05,
-    SWAFR_soils$SWAFR_OCDENS_M_250m_std_CRS_0.05,
-    SWAFR_soils$SWAFR_PHIKCL_M_250m_std_CRS_0.05
+    SWAFR_soils$SWAFR_SWAFR_CECSOL_M_250m_std_CRS_0.05_0.05,
+    SWAFR_soils$SWAFR_SWAFR_CLYPPT_M_250m_std_CRS_0.05_0.05,
+    SWAFR_soils$SWAFR_SWAFR_OCDENS_M_250m_std_CRS_0.05_0.05,
+    SWAFR_soils$SWAFR_SWAFR_PHIKCL_M_250m_std_CRS_0.05_0.05
 )
 GCFR_variables %<>%
     map(crop, GCFR_variables[[4]]) %>%

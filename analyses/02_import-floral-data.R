@@ -26,10 +26,18 @@ trimmed_SWAFR_clean_flora_spdf_family <-
 
 # Lists of communities by cell -------------------------------------------------
 
-communities_by_cell_GCFR_QDS <-
-    read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS"))
-communities_by_cell_SWAFR_QDS <-
-    read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS"))
+communities_by_cell_GCFR_QDS_species <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_species"))
+communities_by_cell_GCFR_QDS_genus <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_genus"))
+communities_by_cell_GCFR_QDS_family <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_family"))
+communities_by_cell_SWAFR_QDS_species <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_species"))
+communities_by_cell_SWAFR_QDS_genus <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_genus"))
+communities_by_cell_SWAFR_QDS_family <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_family"))
 
 # Richness rasters -------------------------------------------------------------
 
