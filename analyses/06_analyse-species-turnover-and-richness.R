@@ -32,6 +32,14 @@ communities_by_cell_SWAFR_QDS <- compile_communities_by_cell(
     trimmed_SWAFR_clean_flora_spdf_species,
     "species"
 )
+species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
+    communities_by_cell = communities_by_cell_SWAFR_QDS,
+    richness_QDS = SWAFR_richness_QDS,
+    feature_column = "species",
+    cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_species$cell_nos))
+)
+
+
 communities_by_cell_GCFR_QDS <- compile_communities_by_cell(
     trimmed_GCFR_clean_flora_spdf_species,
     "species"

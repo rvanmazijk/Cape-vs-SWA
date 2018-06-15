@@ -141,15 +141,19 @@ family_turnover_geodist_GCFR <- calc_all_pw_jaccard(
 # .... SWAFR -------------------------------------------------------------------
 
 species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
-    trimmed_SWAFR_clean_flora_spdf_species,
-    SWAFR_richness_QDS,
-    feature_column = "species"
+    communities_by_cell = communities_by_cell_SWAFR_QDS,
+    richness_QDS = SWAFR_richness_QDS,
+    feature_column = "species",
+    cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_species$cell_nos))
 )
-genus_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
-    trimmed_SWAFR_clean_flora_spdf_genus,
-    SWAFR_richness_QDS,
-    feature_column = "genus"
+
+species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
+    communities_by_cell = communities_by_cell_SWAFR_QDS,
+    richness_QDS = SWAFR_richness_QDS,
+    feature_column = "genus",
+    cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_species$cell_nos))
 )
+
 family_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
     trimmed_SWAFR_clean_flora_spdf_family,
     SWAFR_richness_QDS,

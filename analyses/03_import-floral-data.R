@@ -24,6 +24,13 @@ trimmed_SWAFR_clean_flora_spdf_genus <-
 trimmed_SWAFR_clean_flora_spdf_family <-
     read_rds(here::here("data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_family"))
 
+# Lists of communities by cell -------------------------------------------------
+
+communities_by_cell_GCFR_QDS <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS"))
+communities_by_cell_SWAFR_QDS <-
+    read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS"))
+
 # Richness rasters -------------------------------------------------------------
 
 GCFR_richness_QDS <-

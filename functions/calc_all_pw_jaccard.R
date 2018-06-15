@@ -1,17 +1,16 @@
-calc_all_pw_jaccard <- function(trimmed_points,
+calc_all_pw_jaccard <- function(trimmed_points = NULL,
+                                communities_by_cell = NULL,
                                 richness_QDS,
                                 feature_column = c("species", "genus", "family"),
+                                cell_nos = NULL,
                                 debug_length = NULL,
                                 quiet = FALSE) {
 
-    stopifnot(
-        class(trimmed_points) == "SpatialPointsDataFrame" &
-        class(richness_QDS) == "RasterLayer"
-    )
+    stopifnot(class(richness_QDS) == "RasterLayer")
 
     if (!is.null(debug_length)) {
         cell_nos <- debug_length
-    } else {
+    } else if (!is.null(trimmed_points)) {
         if (!quiet) {
             message(glue("DEBUG MODE"))
         }
@@ -21,37 +20,27 @@ calc_all_pw_jaccard <- function(trimmed_points,
                 All {length(cell_nos)} cell nos. extracted
             "))
         }
+    } else if (is.null(cell_nos)) {
+        stop("Please manually provide cell_nos")
     }
-
 
     # Compile list of species in each grid-cell --------------------------------
 
-    communities_by_cell <- compile_communities_by_cell(
-        trimmed_points,
-        feature_column,
-        cell_nos,
-        quiet = quiet
-    )
-
-    #communities_by_cell <- vector("list", length = length(cell_nos))
-    #names(communities_by_cell) <- paste0("cell_", cell_nos)
-    #for (i in seq_along(cell_nos)) {
-    #    communities_by_cell[[i]] <- trimmed_points[[feature_column]][
-    #        trimmed_points$cell_nos == cell_nos[[i]]
-    #    ]
-    #    if (!quiet) {
-    #        flush.console()
-    #        cat(
-    #            "Community described for cell no. ",
-    #            cell_nos[[i]], " (", i, "/", length(cell_nos), ") \r"
-    #        )
-    #    }
-    #}
-    #if (!quiet) {
-    #    message(glue("
-    #        Communities described for all {length(cell_nos)} cells
-    #    "))
-    #}
+    if (is.null(communities_by_cell) & !is.null(trimmed_points)) {
+        communities_by_cell <- compile_communities_by_cell(
+            trimmed_points,
+            feature_column,
+            cell_nos,
+            quiet = quiet
+        )
+    } else if (!is.null(communities_by_cell) & is.null(trimmed_points)) {
+        if (!quiet) {
+            message(glue("
+                Communities pre-described for all {length(cell_nos)} cells\n
+                Accepting input communities_by_cell
+            "))
+        }
+    }
 
     # Calculate species turnover between cells ---------------------------------
 

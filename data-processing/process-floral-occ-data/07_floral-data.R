@@ -1634,3 +1634,28 @@ write_rds(
     trimmed_SWAFR_clean_flora_spdf_family,
     here::here("data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_family")
 )
+
+# Compile communities by cell --------------------------------------------------
+
+communities_by_cell_GCFR_QDS <- compile_communities_by_cell(
+    trimmed_GCFR_clean_flora_spdf_species,
+    "species"
+)
+# TODO: genus
+# fam
+communities_by_cell_SWAFR_QDS <- compile_communities_by_cell(
+    trimmed_SWAFR_clean_flora_spdf_species,
+    "species"
+)
+#TODO:
+# GENUS
+# FAM
+
+write_rds(
+    communities_by_cell_GCFR_QDS,
+    here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS")
+)
+write_rds(
+    communities_by_cell_SWAFR_QDS,
+    here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS")
+)
