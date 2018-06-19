@@ -104,13 +104,8 @@ GCFR_3QDS_raster <-
     )
 writeRaster(
     GCFR_3QDS_raster,
-    here::here("data/derived-data/borders/GCFR_3QHDS_raster.tif")
+    here::here("data/derived-data/borders/GCFR_3QDS_raster.tif")
 )
-#plot(GCFR_3QDS_raster)
-#plot(GCFR_QDS, add = TRUE)
-#plot(extent(GCFR_3QDS_raster))
-#plot(extent(GCFR_QDS_raster), add = TRUE)
-
 
 # SWAFR
 SWAFR_QDS_raster <- QDSpolydf2raster(
@@ -138,5 +133,5 @@ SWAFR_3QDS_raster <- rasterize(
 )
 writeRaster(
     SWAFR_3QDS_raster,
-    here::here("data/derived-data/borders/SWAFR_3QHDS_raster.tif")
+    here::here("data/derived-data/borders/SWAFR_3QDS_raster.tif")
 )
