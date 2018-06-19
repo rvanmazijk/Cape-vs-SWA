@@ -31,6 +31,8 @@ bibtex::write.bib(
     entry = my_pkgs,
     file = here::here("manuscript/pkgs.bib")
 )
+# Tidy up
+rm(my_pkgs)
 
 # Import functions in functions/ -----------------------------------------------
 
@@ -40,6 +42,8 @@ my_functions <- list.files(
     full.names = TRUE
 )
 map(my_functions, source)
+# Tidy up
+rm(my_functions)
 
 # Global GIS variables ---------------------------------------------------------
 
