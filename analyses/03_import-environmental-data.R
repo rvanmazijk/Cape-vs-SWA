@@ -16,7 +16,6 @@ stopifnot(
     (round(res(SWAFR_elev), 2) == 0.05)
 )
 
-
 # Rainfall ---------------------------------------------------------------------
 
 GCFR_MAP <- raster(here::here("data/derived-data/rainfall/MAP_GCFR_box.tif"))
@@ -149,3 +148,31 @@ SWAFR_variables_HDS <- SWAFR_variables %>%
 SWAFR_variables_3QDS <- SWAFR_variables %>%
     map(resample, SWAFR_richness_3QDS, method = "bilinear") %>%
     map(mask, SWAFR_border)
+
+# Tidy up
+rm(
+    GCFR_elev,
+    GCFR_MAP,
+    GCFR_PDQ,
+    GCFR_PCV,
+    GCFR_PWQ,
+    GCFR_MLST,
+    GCFR_TCQ,
+    GCFR_TWQ,
+    GCFR_NDVI,
+    GCFR_soils,
+
+    SWAFR_elev,
+    SWAFR_MAP,
+    SWAFR_PDQ,
+    SWAFR_PCV,
+    SWAFR_PWQ,
+    SWAFR_MLST,
+    SWAFR_TCQ,
+    SWAFR_TWQ,
+    SWAFR_NDVI,
+    SWAFR_soils,
+
+    GCFR_variables,
+    SWAFR_variables
+)
