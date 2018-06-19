@@ -2,7 +2,7 @@
 
 <!--TODO: update paths, move captions to bookdown "text references"-->
 
-```{r setup_analyses}
+```{r setup-analyses}
 source(here::here("setup.R"))
 if (all(!folder_is_empty(here::here("analyses/04_outputs"),
                          here::here("analyses/05_outputs"),
