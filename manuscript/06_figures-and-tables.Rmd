@@ -67,11 +67,9 @@ Plant species occurrence | GBIF | \<ref\>
 
 Table: Data sources used in this study. Abbreviations are as follows: ... **TODO**
 
-```{r full_model_gamma_vs_alpha_beta, results="asis"}
+```{r full-model-table, results="asis"}
 
-turnover_richness_HDS_m_tidy <- broom::tidy(read_rds(here::here(
-    "analyses/06_outputs/turnover_richness_HDS_m.RDS"
-)))
+turnover_richness_HDS_m_tidy <- broom::tidy(turnover_richness_HDS_m)
 betterness_AIC <- HDS_AIC_table %$%
     AIC %>%
     subtract(min(HDS_AIC_table$AIC)) %>%
@@ -95,9 +93,11 @@ out$Term <- c(
     "$\\overline{J_{QDS}} \\times$ SWAFR"
 )
 
-knitr::kable(out, align = c("l", "r", "r"), caption = paste0("Estimated regression coefficients and significances (P-value) following multiple linear regression of HDS richness ($S_{HDS}$) against the mean QDS richness ($\\overline{S_{QDS}}$) and turnover ($\\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \\sim \\overline{S_{QDS}} + \\overline{J_{QDS}} + SWAFR + \\overline{S_{QDS}} \\times$ SWAFR $+ \\overline{J_{QDS}} \\times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\\Delta AIC =$ ", betterness_AIC, "). Note, this model does not represent those curves plot in Figure \\ref{gamma_vs_alpha_beta} (there, the curves are from simple linear regressions of the variables in each panel, separated by region)."))
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:full-model-table)")
 
 ```
+
+(ref:full-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS richness ($S_{HDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ ", betterness_AIC, "). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ## Figures {-}
 
@@ -279,13 +279,13 @@ ggplot(IQ95R_data,
           panel.grid = element_blank())
 ```
 
-```{r turnover_vs_geodist, fig.width=4, fig.height=3, fig.cap="\\label{turnover_vs_geodist}Scatter-plot species turnover (as Jaccards distance) between cells against the geographic distance (m) between them, from both regions (coloured as keyed). Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity. Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region. Following a single 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable, a significant interaction between distance and region was found ($P < 0.05$), such that the SWAFR negatively impacted the distance slope term."}
+```{r turnover_vs_geodist, fig.width=4, fig.height=3, eval=FALSE, fig.cap="\\label{turnover_vs_geodist}Scatter-plot species turnover (as Jaccards distance) between cells against the geographic distance (m) between them, from both regions (coloured as keyed). Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity. Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region. Following a single 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable, a significant interaction between distance and region was found ($P < 0.05$), such that the SWAFR negatively impacted the distance slope term."}
 
-turnover_geodist_betw_cells_df <- rbind(
-    cbind(rank = "species", species_turnover_geodist_betw_cells_df),
-    cbind(rank = "genus",   genus_turnover_geodist_betw_cells_df),
-    cbind(rank = "family",  family_turnover_geodist_betw_cells_df)
-)
+#turnover_geodist_betw_cells_df <- rbind(
+#    cbind(rank = "species", species_turnover_geodist_betw_cells_df),
+#    cbind(rank = "genus",   genus_turnover_geodist_betw_cells_df),
+#    cbind(rank = "family",  family_turnover_geodist_betw_cells_df)
+#)
 
 pink <- scales::hue_pal()(2)[[1]]
 dark_pink <- "#D8564D"
@@ -326,7 +326,7 @@ plot(rq_fits_added)
 
 ```
 
-```{r rq_turnover_vs_geodist, results = "asis"}
+```{r rq_turnover_vs_geodist, results = "asis",eval=FALSE}
 
 species_turnover_geodist_m_tidy <- 
     cbind(rank = "species", broom::tidy(species_turnover_geodist_m))
@@ -379,7 +379,7 @@ out
 
 ```
 
-```{r gamma_vs_alpha_beta, fig.width=8, fig.height=4, fig.cap="\\label{gamma_vs_alpha_beta}Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text]."}
+```{r gamma_vs_alpha_beta, fig.width=8, fig.height=4,eval=FALSE, fig.cap="\\label{gamma_vs_alpha_beta}Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text]."}
 
 gamma_vs_alpha_plot <- 
     ggplot(gamma_beta_alpha,

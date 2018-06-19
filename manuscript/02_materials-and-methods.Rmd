@@ -1,6 +1,6 @@
 # Methods
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
 source(here::here("manuscript/tables/richness-numbers-in-text.R"))
 ```
 

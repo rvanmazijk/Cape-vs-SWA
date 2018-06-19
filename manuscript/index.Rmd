@@ -1,7 +1,15 @@
+---
+mainfont: "Helvetica"
+includes:
+  in-header: styles.sty  # FIXME
+#csl: # TODO
+#bibliography: # TODO
+---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
     echo = FALSE,
-    eval = FALSE,
+    eval = TRUE,
     message = FALSE,
     warning = FALSE,
     cache   = FALSE
