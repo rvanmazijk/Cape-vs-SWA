@@ -3,9 +3,38 @@
 <!--TODO: update paths, move captions to bookdown "text references"-->
 
 ```{r setup_analyses}
-source(here::here("01_setup.R"))
-#source(here::here("figures-and-tables/01_run-analyses.R"))  # Already ran
-source(here::here("figures-and-tables/02_import-analyses-outputs.R"))
+source(here::here("setup.R"))
+if (all(!folder_is_empty(here::here("analyses/04_outputs"),
+                         here::here("analyses/05_outputs"),
+                         here::here("analyses/06_outputs"),
+                         here::here("analyses/07_outputs")))) {
+    # Import the analyses' results
+    import_all_objects_auto(here::here("analyses/04_outputs"))
+    import_all_objects_auto(here::here("analyses/05_outputs"))
+    import_all_objects_auto(here::here("analyses/06_outputs"))
+    import_all_objects_auto(here::here("analyses/07_outputs"))
+} else {
+    # Otherwise run the analyses needed first, then import
+    source(here::here("analyses/01_import-region-polygons.R"))
+    source(here::here("analyses/02_import-floral-data.R"))
+    source(here::here("analyses/03_import-environmental-data.R"))
+    if (folder_is_empty(here::here("analyses/04_outputs"))) {
+        source(here::here("analyses/04_analyse-roughness-across-scales.R"))
+    }
+    if (folder_is_empty(here::here("analyses/05_outputs"))) {
+        source(here::here("analyses/05_analyse-species-turnover-w-distance.R"))
+    }
+    if (folder_is_empty(here::here("analyses/06_outputs"))) {
+        source(here::here("analyses/06_analyse-species-turnover-and-richness.R"))
+    }
+    if (folder_is_empty(here::here("analyses/07_outputs"))) {
+        source(here::here("analyses/07_analyse-species-and-roughness.R"))
+    }
+    import_all_objects_auto(here::here("analyses/04_outputs"))
+    import_all_objects_auto(here::here("analyses/05_outputs"))
+    import_all_objects_auto(here::here("analyses/06_outputs"))
+    import_all_objects_auto(here::here("analyses/07_outputs"))
+}
 var_names <- c(
     "Elevation",
     "MAP",
