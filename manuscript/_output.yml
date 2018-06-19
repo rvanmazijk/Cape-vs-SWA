@@ -1,6 +1,1 @@
 bookdown::gitbook: default
-bookdown::pdf_book:
-  keep_tex: yes
-  latex_engine: xelatex
-  toc: false
-
