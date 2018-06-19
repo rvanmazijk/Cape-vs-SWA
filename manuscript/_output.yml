@@ -2,7 +2,7 @@
 bookdown::gitbook: default
 #bookdown::pdf_book:
 #  includes:
-#    in-header: styles.sty  # FIXME
+#    in-header: style.sty  # FIXME
 #  latex_engine: xelatex
 #  mainfont: "Helvetica"
 #csl: # TODO
