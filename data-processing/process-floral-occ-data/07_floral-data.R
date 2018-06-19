@@ -1608,8 +1608,7 @@ trimmed_SWAFR_clean_flora_spdf_family$cell_nos <- cellFromXY(
     trimmed_SWAFR_clean_flora_spdf_family
 )
 
-# Save finals ------------------------------------------------------------------
-
+# Save
 write_rds(
     trimmed_GCFR_clean_flora_spdf_species,
     here::here("data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_species")
@@ -1633,4 +1632,57 @@ write_rds(
 write_rds(
     trimmed_SWAFR_clean_flora_spdf_family,
     here::here("data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_family")
+)
+
+# Compile communities by cell --------------------------------------------------
+
+communities_by_cell_GCFR_QDS <- compile_communities_by_cell(
+    trimmed_GCFR_clean_flora_spdf_species,
+    "species"
+)
+communities_by_cell_GCFR_QDS_genus <- compile_communities_by_cell(
+    trimmed_GCFR_clean_flora_spdf_genus,
+    "genus"
+)
+communities_by_cell_GCFR_QDS_family <- compile_communities_by_cell(
+    trimmed_GCFR_clean_flora_spdf_family,
+    "family"
+)
+communities_by_cell_SWAFR_QDS <- compile_communities_by_cell(
+    trimmed_SWAFR_clean_flora_spdf_species,
+    "species"
+)
+communities_by_cell_SWAFR_QDS_genus <- compile_communities_by_cell(
+    trimmed_SWAFR_clean_flora_spdf_genus,
+    "genus"
+)
+communities_by_cell_SWAFR_QDS_family <- compile_communities_by_cell(
+    trimmed_SWAFR_clean_flora_spdf_family,
+    "family"
+)
+
+# Save
+write_rds(
+    communities_by_cell_GCFR_QDS_species,
+    here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_species")
+)
+write_rds(
+    communities_by_cell_GCFR_QDS_genus,
+    here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_genus")
+)
+write_rds(
+    communities_by_cell_GCFR_QDS_family,
+    here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_family")
+)
+write_rds(
+    communities_by_cell_SWAFR_QDS_species,
+    here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_species")
+)
+write_rds(
+    communities_by_cell_SWAFR_QDS_genus,
+    here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_genus")
+)
+write_rds(
+    communities_by_cell_SWAFR_QDS_family,
+    here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_family")
 )

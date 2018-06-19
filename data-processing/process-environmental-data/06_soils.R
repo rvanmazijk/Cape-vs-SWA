@@ -250,12 +250,10 @@ for (i in 1:9) {
     writeRaster(
         GCFR_soils[[i]],
         overwrite = TRUE,
-        glue("
-            {giswd}\\
-            SoilGrids250m/\\
-            GCFR/\\
-            GCFR_{names(GCFR_soils[[i]])}_std_CRS_0.05.tif
-        ")
+        here::here(
+            "data/derived-data/soils/",
+            glue("GCFR_{names(GCFR_soils[[i]])}_0.05.tif")
+        )
     )
 }
 res(GCFR_soils)
@@ -266,12 +264,10 @@ for (i in 1:9) {
     writeRaster(
         SWAFR_soils[[i]],
         overwrite = TRUE,
-        glue("
-            {giswd}\\
-            SoilGrids250m/\\
-            SWAFR/\\
-            SWAFR_{names(SWAFR_soils[[i]])}_std_CRS_0.05.tif
-        ")
+        here::here(
+            "data/derived-data/soils/",
+            glue("SWAFR_{names(SWAFR_soils[[i]])}_0.05.tif")
+        )
     )
 }
 res(SWAFR_soils)

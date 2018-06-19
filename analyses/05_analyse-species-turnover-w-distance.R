@@ -4,7 +4,7 @@
 
 source(here::here("setup.R"))
 source(here::here("analyses/01_import-region-polygons.R"))
-source(here::here("analyses/03_import-floral-data.R"))
+source(here::here("analyses/02_import-floral-data.R"))
 
 # Trim floral occurrences outside of regions -----------------------------------
 
@@ -123,37 +123,46 @@ trimmed_SWAFR_clean_flora_spdf_family$cell_nos <- cellFromXY(
 # .... GCFR --------------------------------------------------------------------
 
 species_turnover_geodist_GCFR <- calc_all_pw_jaccard(
-    trimmed_GCFR_clean_flora_spdf_species,
-    GCFR_richness_QDS,
-    feature_column = "species"
+    communities_by_cell = communities_by_cell_QDS$GCFR$species,
+    richness_QDS = GCFR_richness_QDS,
+    feature_column = "species",
+    cell_nos = levels(as.factor(trimmed_GCFR_clean_flora_spdf_species$cell_nos))
 )
 genus_turnover_geodist_GCFR <- calc_all_pw_jaccard(
-    trimmed_GCFR_clean_flora_spdf_genus,
-    GCFR_richness_QDS,
-    feature_column = "genus"
+    communities_by_cell = communities_by_cell_QDS$GCFR$genus,
+    richness_QDS = GCFR_richness_QDS,
+    feature_column = "genus",
+    cell_nos = levels(as.factor(trimmed_GCFR_clean_flora_spdf_genus$cell_nos))
 )
-family_turnover_geodist_GCFR <- calc_all_pw_jaccard(
-    trimmed_GCFR_clean_flora_spdf_family,
-    GCFR_richness_QDS,
-    feature_column = "family"
+
+family_species_turnover_geodist_GCFR <- calc_all_pw_jaccard(
+    communities_by_cell = communities_by_cell_QDS$GCFR$family,
+    richness_QDS = GCFR_richness_QDS,
+    feature_column = "family",
+    cell_nos = levels(as.factor(trimmed_GCFR_clean_flora_spdf_family$cell_nos))
 )
 
 # .... SWAFR -------------------------------------------------------------------
 
 species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
-    trimmed_SWAFR_clean_flora_spdf_species,
-    SWAFR_richness_QDS,
-    feature_column = "species"
+    communities_by_cell = communities_by_cell_QDS$SWAFR$species,
+    richness_QDS = SWAFR_richness_QDS,
+    feature_column = "species",
+    cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_species$cell_nos))
 )
+
 genus_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
-    trimmed_SWAFR_clean_flora_spdf_genus,
-    SWAFR_richness_QDS,
-    feature_column = "genus"
+    communities_by_cell = communities_by_cell_QDS$SWAFR$genus,
+    richness_QDS = SWAFR_richness_QDS,
+    feature_column = "genus",
+    cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_genus$cell_nos))
 )
-family_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
-    trimmed_SWAFR_clean_flora_spdf_family,
-    SWAFR_richness_QDS,
-    feature_column = "family"
+
+family_species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
+    communities_by_cell = communities_by_cell_QDS$SWAFR$family,
+    richness_QDS = SWAFR_richness_QDS,
+    feature_column = "family",
+    cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_family$cell_nos))
 )
 
 # Combine both regions data-frames ---------------------------------------------

@@ -1,5 +1,4 @@
-stack_soils <- function(regiondir,
-                        region,
+stack_soils <- function(region = c("GCFR", "SWAFR"),
                         variables = c("CECSOL",
                                       "BLDFIE",
                                       "CLYPPT",
@@ -11,10 +10,11 @@ stack_soils <- function(regiondir,
                                       "AWCh1")) {
     # Creates a stack of all the soil variables together
     soils <- raster::stack()
-    for (variable_code in variables) {
-        x <- raster::raster(glue::glue("
-            {regiondir}\\{region}_{variable_code}_M_250m_std_CRS_0.05.tif
-        "))
+    for (variable in variables) {
+        x <- raster::raster(here::here(
+            "data/derived-data/soils/",
+            glue("{region}_{region}_{variable}_M_250m_std_CRS_0.05_0.05.tif")
+        ))
         soils <- raster::stack(soils, x)
     }
     return(soils)

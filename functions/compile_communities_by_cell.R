@@ -7,9 +7,7 @@ compile_communities_by_cell <- function(trimmed_points,
     stopifnot(class(trimmed_points) == "SpatialPointsDataFrame")
 
     if (!is.null(debug_length)) {
-        cell_nos <- debug_length
-    } else if (is.null(cell_nos)) {
-        stop()
+        cell_nos <- cell_nos[1:debug_length]
     }
 
     communities_by_cell <- vector("list", length = length(cell_nos))
@@ -20,19 +18,28 @@ compile_communities_by_cell <- function(trimmed_points,
         ]
         if (!quiet) {
             flush.console()
-            cat(
+            cat(sep = "",
                 "Community described for cell no. ",
-                cell_nos[[i]], " (", i, "/", length(cell_nos), ") \r"
+                cell_nos[[i]], " (", i, "/", length(cell_nos), ")\r"
             )
         }
     }
     if (!quiet) {
-        message(glue("
-            Communities described for all {length(cell_nos)} cells
-        "))
+        cat(sep = "",
+            "Communities described for all ",
+            length(cell_nos), " cells\n"
+        )
     }
 
     return(communities_by_cell)
 
+}
 
+# Tests
+if (FALSE) {
+    compile_communities_by_cell(
+        trimmed_GCFR_clean_flora_spdf_family,
+        "species",
+        debug_length = 10
+    )
 }

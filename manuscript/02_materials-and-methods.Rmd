@@ -1,0 +1,64 @@
+# Methods
+
+```{r, message=FALSE, warning=FALSE}
+source(here::here("manuscript/tables/richness-numbers-in-text.R"))
+```
+
+## Overview
+
+<!--2018-04-26-->
+
+These analyses required definitions of the boundaries of the two regions, environmental data for the two regions, and geospatially-explicit vascular plant occurrence records. The definitions of the regions used were ... **FIND THESE**. The publically available data for these boundaries as shape files used were ... **FIND THESE TOO**. The geospatial and plant data were acquired from publicly available datasets, and processed as needed. The environmental variables chosen (Table 1) for this study were intended to cover a reasonable spread of climatic, edaphic, and ecologically relevant environmental axes, and are not intended to be exhaustive.
+
+We carried out this investigation using four principle spatial scales: 0.05 degree square (the finest common resolution among the environmental data sources used), quarter degree square (QDS), half-degree square (HDS) [@Larsen2009], and three-quarter degree square (3QDS). Note, at least for the Cape, most plant occurrence records are only accurate to QDS level. Thus, any analysis involving species data was necessary limited to scales above and including QDS. Analyses were performed in `R` v3.4.1 [@RCoreTeam2017]. Version-numbers of specific `R` packages used are presented in the bibliography, or in text where applicable.
+
+## Environmental data sources
+
+Geospatially-explicit raster layers were acquired for a selection of environmental variables (Table 1), for the regions of interest. Here, the Cape (= GCFR) was treated as the areas occupied by the Succulent Karoo and Fynbos biomes in the current delineation of South Africa's biome boundaries [@Mucina2006]. SWA (= SWAFR) was treated as the areas occupied by the Southwest Australia savanna, Swan Coastal Plain Scrub and Woodlands, Jarrah-Karri forest and shrublands, Southwest Australia woodlands, Esperance mallee, and Coolgardie woodlands in the World Wildlife Fund Terrestrial Ecoregions dataset [@Olson2001]<!--in order to closely match the currently delineated SWAFR (FIND THIS)-->.
+
+As I intended to describe scale-related patterns, geospatial data was acquired so to include area beyond the regions' boundaries, to combat edge-effects.<!--Is this true in my latest version of the analysis??-->
+
+Raster data were re-projected to a common coordinate reference: WGS84 [@WGS84], using the `rgdal` [@Bivand2017] package in `R` [@RCoreTeam2017]. All data were re-sampled to 0.05º resolution using the `resample` function in the `R` package `raster` [@Hijmans2016], with the "bilinear" method.
+
+An emphasis was made on using satellite-derived environmental data in this work, in order to minimise differences in data quality and methodologies between the Cape and SWA. Additionally, satellite-derived data have been shown to benefit regional-scale species distribution models [@Deblauwe2016], thus motivating their use in this regional-scale study. The environmental data used in this study were derived from NASA's SRTM digital elevation model [@Farr2007], NASA's MODIS/Terra spectroradiometric data for land surface temperature and NDVI, the Climate Hazards Group's CHIRPS rainfall dataset [@Funk2015], and the International Soil Reference and Information Centre's SoilGrids250m edaphic dataset [@Hengl2017] (Table 1). SRTM and MODIS are entirely derived from satellite measurements, whereas CHIRPS is interpolated from weather station data with satellite-derived radiometric measurements. SoilGrids250m is a machine-learning derived product, based on soil measurements as a function of many covariates, including MODIS and STRM sources [see @Hengl2017], using random-forests and other classification-tree-based methods, including gradient-boosting. For the soil data considered here (Table 1), we used depth-interval weighted average values as the value for a particular soil variable in a given place.
+
+Mean annual $X$, PDQ ... **TODO**
+
+## Plant occurrence data
+
+Geospatially-explicit records of vascular plant occurrences were downloaded from the Global Biodiversity Information Facility (GBIF). Queries were made for tracheophyte records from within the borders of the GCFR and SWAFR. Only records of species and intra-specific ranks were kept. Intra-specific occurrences were treated as simply being representative of their species. This resulted in `r #GBIF_in_text$pre_accepted_N$GCFR` unique species names in the GCFR, and `r #GBIF_in_text$pre_accepted_N$SWAFR` in the SWAFR. Following this, the `R` package `taxise` [@Chamberlain2016] was used to check that these species names had accepted-status among taxonomic databases. I queried two major taxonomic databases: the Global Name Resolver (GNR)<!--TODO: ref--><!--which includes the following independent databases within its queries: NCB, BoLD, ITIS, BHL, EoL, Redlist, GROMS, RAMSAR, BIRDLIFE or other conservation related indices, Scratchpad, LifeDesk indices, Tropicos, Exemplar online Flora and Fauna, and Fauna Europaea (<https://github.com/GlobalNamesArchitecture/gni/wiki/Sources>)-->, and the Taxonomic Name Resolution Service (TNRS)<!--TODO: ref--><!--. TNRS was built upon existing programmes from GNR, and includes a different (but not completely exclusive) set of databases (<http://tnrs.iplantcollaborative.org/sources.html>): Tropicos, The Global Compositae Checklist (GCC), USDA's Plants Database, NCBI, The International Legume Database and Information Service (ILDIS), The Plant List (Kew, Missouri Bot. G.) (TPL), But without Fabaceae and Asteraceae (see IDLIS, GCC)). The near-comprehensive coverage of the GNR and TNRS services combined motivated their use here. Each unique species name from the GBIF-derived list for each region was queried against GNR and TNRS. My implementation TODO: please choose a different word here to remove unaccepted names was forgiving TODO: reword-->. Should one of either service return at least one match for a given name, then that name was deemed accepted. Those names that "failed" against both services (i.e. for which no full binomial matches were found), were excluded from the final list of species. The number of species name excluded totalled at `r #GBIF_in_text$CRAP_names$GCFR` and `r #GBIF_in_text$CRAP_names$SWAFR` for the GCFR and SWAFR respectively. Especially for the SWAFR, these numbers may be deemed appreciably high. But, the occurrence records that would be dropped, as a consequence of these names' removals, seemed to be distributed randomly in geographic space in both regions<!--TODO: make this map? or at least quote a stat..?-->. As such, any effect of the loss of these records in this analysis is uniform within the two regions.
+
+After the unaccepted names were removed, it was important to ensure that a species was not listed under multiple synonyms. Such cases would skew the species richness data used in this study. In light of this, the remaining names were queried in the Tropicos and Integrated Taxonomic Information System (ITIS) databases for their known synonyms, using `taxise`. These were collated to produce a nomenclatural "thesaurus" for the GCFR and SWAFR species. This consisted of a list of the accepted species names in a region, each associated with a list of known synonyms. I amended species' names in the GBIF occurrence data, in order ensure species were listed under only one of these synonyms, as follows: For each entry in the thesaurus, for each synonym of that entry, if that synonym appeared in the GBIF species list, I replaced all appearances of that synonym in the species list with the original name from the thesaurus-entry that that synonym came from. Lastly, I removed any species from both regions that are invasive aliens or non-indigenous. Alien species lists for plants in South Africa and Australia were acquired from the IUCN's Global Invasive Species Database (<http://www.iucngisd.org/gisd/>). The final total plant species richness in each region was `r #GBIF_in_text$final_N$GCFR` and `r #GBIF_in_text$final_N$SWAFR` for the GCFR and SWAFR respectively. These final collections of species occurrence records were converted to raster-layers, wherein pixel-values represent the species richness of vascular plants within that pixel. These rasters were produced at QDS, HDS, and 3QDS resolutions.
+
+## Analyses
+
+### Quantifying environmental heterogeneity
+
+First, in order to assess predictions (i) and (ii), we needed to describe the environmental heterogeneity in both regions. Using the `R` package `raster` [@Hijmans2016], we used a modified version of the "roughness" index in the `terrain` function: for a three by three neighbourhood of cells, our index is the root of the average squared difference between each of the eight neighbour cells' values ($x_i$) relative to the central focal cell's value ($x'$) (Equation \ref{eqn1}).
+
+$$
+    \tag{1} \label{eqn1}
+    roughness = \sqrt{\frac{
+        \sum_{i = 1}^{8} (x' - x_i) ^ 2
+    }{
+        8
+    }}
+$$
+
+Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity. We compared the distributions of heterogeneity values in each variable in each region with non-parametric Mann-Whitney U tests, as almost all variables could not be normalised by log-transformation. We also compare the effect size of the Cape vs SWA using the "common language effect size" (CLES), using the `R` package `canprot`. The CLES is the proportion of all pairwise comparisons between two sample groups' observations where the one group's observation is greater than the other. In our case, of all pairwaise comparisons of a variable's heterogeneity values between the Cape and SWA, the CLES is the proportion of pais where the Cape heterogeneity value was greater than that of SWA. This allowed us to assess prediction (i).
+
+To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we ran these Mann-Whitney U tests again at 0.75 degrees resolution, as opposed to 0.05 as above. Moreover, the heterogeneity values at this scale were derived from the original environmental raster layers rescaled to 0.75 degrees resolution. We also compared inter-quantile ranges of heterogeneity values at different spatial scales (i.e. raster resolutions, namely 0.05, 0.25, 0.50, and 0.75 degrees respectively). Once again, this entailed recalculating the heterogeneity layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions. Using inter-quantile ranges allowed us to investigate the spread of heterogeneity values seen in each region, and how this spread differs at different scales.
+
+### Relating species richness and species turnove
+
+Regarding predictions (iii) and (iv), we wished to compare the degree and importance of species turnover in each region. We compared the degree of species turnover in each region by computing all pairwise Jaccards distances (**ref**) between quarter degree squares' species communities. We then regressed these turnover values for each pair of cells against the physical distane between the centres of those cellssssQuantile regression of all pairwise Jaccards. This is for (iii).
+
+HDS QDS beta analysis. This is for (iv).
+
+### Predicting species richness and turnover with environmental heterogeneity
+
+$formula2 ...$
+
+**TODO**
+
+**NB: finalise QDS vs 0.25 degree square vs 0.25° x 0.25°**

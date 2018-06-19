@@ -1,0 +1,65 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = FALSE,
+    eval = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    cache   = FALSE
+)
+```
+
+# Title {-}
+
+**TODO**
+
+# Running title {-}
+
+**TODO**
+
+# Authors {-}
+
+Ruan van Mazijk^1^, Michael D. Cramer^1^, and G. Anthony Verboom^1^
+
+^1^: Department of Biological Sciences, University of Cape Town, Rondebosch, Cape Town, 7701
+
+ORCID nos.: RVM: 0000-0003-2659-6909, MDC: **TODO**, GAV: **TODO**
+
+# Acknowledgements {-}
+
+**TODO**
+
+# Abstract {-}
+
+<!--New Abstract for JBiogeog (300 words)-->
+
+## Aim {-}
+
+<!--from ResearchGate project-->
+
+To quantify the explanatory power of heterogeneity in predicting plant species richness and turnover here in the Greater Cape Floristic Region and in the Southwest Australia Floristic Region. We compare the environmental heterogeneity in each region, how species richness and turnover interact in each region to produce the observed patterns of richness, and what different forms of environmental heterogeneity better predict richness in each region.
+
+We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in SW Australia.
+
+## Location {-}
+
+The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australian Floristic Region (SWAFR)
+
+## Taxon {-}
+
+Vascular plants
+
+## Methods {-}
+
+[Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics]
+
+## Results {-}
+
+*TODO*
+
+## Main conclusions {-}
+
+*TODO*
+
+# Keywords {-}
+
+*TODO*
