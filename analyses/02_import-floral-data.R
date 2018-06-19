@@ -18,14 +18,13 @@ trimmed_SWAFR_clean_flora_spdf_family <- read_rds(here::here("data/derived-data/
 
 # Lists of communities in QDS cells --------------------------------------------
 # At the species, genus, and family level
-# TODO: redesign so that it is one list with fam., gen. and sp. fields?
 
-communities_by_cell_GCFR_QDS_species <- read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_species"))
-communities_by_cell_GCFR_QDS_genus <- read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_genus"))
-communities_by_cell_GCFR_QDS_family <- read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_family"))
-communities_by_cell_SWAFR_QDS_species <- read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_species"))
-communities_by_cell_SWAFR_QDS_genus <- read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_genus"))
-communities_by_cell_SWAFR_QDS_family <- read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_family"))
+communities_by_cell_GCFR_QDS_species <- read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_species.RDS"))
+communities_by_cell_GCFR_QDS_genus <- read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_genus.RDS"))
+communities_by_cell_GCFR_QDS_family <- read_rds(here::here("data/derived-data/flora/communities_by_cell_GCFR_QDS_family.RDS"))
+communities_by_cell_SWAFR_QDS_species <- read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_species.RDS"))
+communities_by_cell_SWAFR_QDS_genus <- read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_genus.RDS"))
+communities_by_cell_SWAFR_QDS_family <- read_rds(here::here("data/derived-data/flora/communities_by_cell_SWAFR_QDS_family.RDS"))
 
 # Compile into 1 object (a list of lists of lists)
 communities_by_cell_QDS <- list(
