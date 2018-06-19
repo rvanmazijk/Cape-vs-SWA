@@ -9,12 +9,14 @@ if (all(!folder_is_empty(here::here("analyses/04_outputs"),
                          here::here("analyses/06_outputs"),
                          here::here("analyses/07_outputs")))) {
     # Import the analyses' results
-    import_all_objects_auto(here::here("analyses/04_outputs"))
-    import_all_objects_auto(here::here("analyses/05_outputs"))
-    import_all_objects_auto(here::here("analyses/06_outputs"))
-    import_all_objects_auto(here::here("analyses/07_outputs"))
+    for (output in c("04_outputs",
+                     "05_outputs",
+                     "06_outputs",
+                     "07_outputs")) {
+        import_all_objects_auto(here::here(glue("analyses/{output}")))
+    }
 } else {
-    # Otherwise run the analyses needed first, then import
+    # Otherwise run the analyses needed first ...
     source(here::here("analyses/01_import-region-polygons.R"))
     source(here::here("analyses/02_import-floral-data.R"))
     source(here::here("analyses/03_import-environmental-data.R"))
@@ -30,10 +32,13 @@ if (all(!folder_is_empty(here::here("analyses/04_outputs"),
     if (folder_is_empty(here::here("analyses/07_outputs"))) {
         source(here::here("analyses/07_analyse-species-and-roughness.R"))
     }
-    import_all_objects_auto(here::here("analyses/04_outputs"))
-    import_all_objects_auto(here::here("analyses/05_outputs"))
-    import_all_objects_auto(here::here("analyses/06_outputs"))
-    import_all_objects_auto(here::here("analyses/07_outputs"))
+    # ... Then import the analyses' results
+    for (output in c("04_outputs",
+                     "05_outputs",
+                     "06_outputs",
+                     "07_outputs")) {
+        import_all_objects_auto(here::here(glue("analyses/{output}")))
+    }
 }
 var_names <- c(
     "Elevation",
