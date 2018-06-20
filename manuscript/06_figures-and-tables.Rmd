@@ -339,9 +339,6 @@ ggplot(IQ95R_data,
     geom_path() +
     labs(x = "Resolution",
          y = "IQuR") +
-         #y = expression(paste(
-         #    "IQ"[0.95], "R   or   IQ"[0.99], "R"
-         #))) +
     facet_wrap(~ variable) +
     scale_color_discrete(name = "Region") +
     scale_alpha_continuous(name = "Quantile",
@@ -353,7 +350,7 @@ ggplot(IQ95R_data,
           panel.grid = element_blank())
 ```
 
-(ref:roughness-IQR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQ_{0.95}R$ and $IQ_{0.99}$ respectively, as keyed) of Z-scaled roughness values (Equation \ref{eqn1}) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
+(ref:roughness-IQR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQuR$) of Z-scaled roughness values (Equation \ref{eqn1}) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
 
 ### (Richness & turnover section) {-}
 
