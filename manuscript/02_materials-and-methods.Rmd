@@ -1,6 +1,7 @@
 # Methods
 
 ```{r, message=FALSE, warning=FALSE, eval=FALSE}
+# FIXME
 source(here::here("manuscript/tables/richness-numbers-in-text.R"))
 ```
 

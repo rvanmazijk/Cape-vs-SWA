@@ -199,7 +199,7 @@
 </tbody>
 </table>
 <table>
-<caption><span id="tab:full-model-table">Table 4.1: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS richness (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form <span class="math inline">\(S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times\)</span> SWAFR <span class="math inline">\(+ \overline{J_{QDS}} \times\)</span> SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> “, betterness_AIC,”). Note, this model does not represent those curves plot in Figure  (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
+<caption><span id="tab:species-model-table">Table 4.1: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS species richness (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS species richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form <span class="math inline">\(S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times\)</span> SWAFR <span class="math inline">\(+ \overline{J_{QDS}} \times\)</span> SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 90.56). Note, this model does not represent those curves plot in Figure  (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
 <thead>
 <tr class="header">
 <th align="left">Term</th>
@@ -210,33 +210,119 @@
 <tbody>
 <tr class="odd">
 <td align="left">Intercept</td>
-<td align="right">-3633.716</td>
+<td align="right">-3062.297</td>
 <td align="right">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
-<td align="right">398.348</td>
+<td align="right">595.574</td>
 <td align="right">&lt; 0.001</td>
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
-<td align="right">2345.398</td>
-<td align="right">&lt; 0.001</td>
+<td align="right">338.589</td>
+<td align="right">0.534</td>
 </tr>
 <tr class="even">
 <td align="left">SWAFR</td>
-<td align="right">872.580</td>
-<td align="right">&lt; 0.001</td>
+<td align="right">2905.604</td>
+<td align="right">0.001</td>
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
-<td align="right">-92.043</td>
+<td align="right">-333.908</td>
 <td align="right">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
-<td align="right">-489.583</td>
+<td align="right">-1246.109</td>
+<td align="right">0.073</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<caption><span id="tab:genus-model-table">Table 4.2: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS genus richness (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS genus richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form <span class="math inline">\(S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times\)</span> SWAFR <span class="math inline">\(+ \overline{J_{QDS}} \times\)</span> SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 57.81). Note, this model does not represent those curves plot in Figure  (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">P-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Intercept</td>
+<td align="right">-908.668</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
+<td align="right">154.676</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
+<td align="right">369.785</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">SWAFR</td>
+<td align="right">791.348</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
+<td align="right">-75.575</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
+<td align="right">-545.713</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<caption><span id="tab:family-model-table">Table 4.3: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS family richness (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS family richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form <span class="math inline">\(S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times\)</span> SWAFR <span class="math inline">\(+ \overline{J_{QDS}} \times\)</span> SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 22.11). Note, this model does not represent those curves plot in Figure  (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Estimate</th>
+<th align="right">P-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Intercept</td>
+<td align="right">-127.213</td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
+<td align="right">27.219</td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
+<td align="right">63.280</td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">SWAFR</td>
+<td align="right">77.765</td>
 <td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
+<td align="right">-8.812</td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
+<td align="right">-58.075</td>
+<td align="right">0.007</td>
 </tr>
 </tbody>
 </table>
@@ -244,18 +330,35 @@
 </div>
 <div id="figures" class="section level2 unnumbered">
 <h2>Figures</h2>
-<div class="figure">
-<img src="_main_files/figure-html/roughness_violins-1.png" alt="\label{roughness_violins}Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at $0.05 \textdegree$ and $0.75 \textdegree$ (= 3QDS) square cell scales. Roughness values were calculated following Equation \ref{eqn1}. Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' (\ref{Silverman1986}). Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests ($P &lt; 0.05$)." width="576" />
+<div class="figure"><span id="fig:roughness-violins"></span>
+<img src="_main_files/figure-html/roughness-violins-1.png" alt="Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation . Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman’s ‘rule of thumb’ [@Silverman1986]. Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests (\(P &lt; 0.05\))." width="576" />
 <p class="caption">
-(#fig:roughness_violins)Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at <span class="math inline">\(0.05 \textdegree\)</span> and <span class="math inline">\(0.75 \textdegree\)</span> (= 3QDS) square cell scales. Roughness values were calculated following Equation . Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman’s ‘rule of thumb’ (). Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests (<span class="math inline">\(P &lt; 0.05\)</span>).
+Figure 4.1: Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation . Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman’s ‘rule of thumb’ <span class="citation">[@Silverman1986]</span>. Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests (<span class="math inline">\(P &lt; 0.05\)</span>).
 </p>
 </div>
-<div class="figure">
-<img src="_main_files/figure-html/roughness_IQ95R-1.png" alt="\label{roughness_IQ95R}Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQ_{0.95}R$ and $IQ_{0.99}$ respectively, as keyed) of Z-scaled roughness values (Equation \ref{eqn1}) against spatial resolution (cells as $0.05 \textdegree$ to $0.75 \textdegree$ squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration." width="672" />
+
+<div class="figure"><span id="fig:roughness-IQR"></span>
+<img src="_main_files/figure-html/roughness-IQR-1.png" alt="Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges (\(IQ_{0.95}R\) and \(IQ_{0.99}\) respectively, as keyed) of Z-scaled roughness values (Equation ) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration." width="672" />
 <p class="caption">
-(#fig:roughness_IQ95R)Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges (<span class="math inline">\(IQ_{0.95}R\)</span> and <span class="math inline">\(IQ_{0.99}\)</span> respectively, as keyed) of Z-scaled roughness values (Equation ) against spatial resolution (cells as <span class="math inline">\(0.05 \textdegree\)</span> to <span class="math inline">\(0.75 \textdegree\)</span> squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
+Figure 4.2: Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges (<span class="math inline">\(IQ_{0.95}R\)</span> and <span class="math inline">\(IQ_{0.99}\)</span> respectively, as keyed) of Z-scaled roughness values (Equation ) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
 </p>
 </div>
+
+
+<div class="figure"><span id="fig:gamma-beta-alpha"></span>
+<img src="_main_files/figure-html/gamma-beta-alpha-1.png" alt="Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was \(log(x + 1)\)-transformed), separately for each region, for illustration of the two regions’ differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text]." width="768" />
+<p class="caption">
+Figure 4.3: Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was <span class="math inline">\(log(x + 1)\)</span>-transformed), separately for each region, for illustration of the two regions’ differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text].
+</p>
+</div>
+
+<div class="figure"><span id="fig:gamma-beta-alpha2"></span>
+<img src="_main_files/figure-html/gamma-beta-alpha2-1.png" alt="Same as , but for 3QDS, not HDS, as the focal scale." width="768" />
+<p class="caption">
+Figure 4.4: Same as , but for 3QDS, not HDS, as the focal scale.
+</p>
+</div>
+
 
 </div>
 </div>

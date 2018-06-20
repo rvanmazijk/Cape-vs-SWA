@@ -72,16 +72,16 @@ Plant species occurrence | GBIF | \<ref\>
 
 Table: Data sources used in this study. Abbreviations are as follows: ... **TODO**
 
-```{r full-model-table, results="asis"}
+```{r species-model-table, results="asis"}
 
-turnover_richness_HDS_m_tidy <- broom::tidy(turnover_richness_HDS_m)
-betterness_AIC <- HDS_AIC_table %$%
+species_turnover_richness_HDS_m_tidy <- broom::tidy(species_turnover_richness_HDS_m)
+betterness_AIC <- species_HDS_AIC_table %$%
     AIC %>%
-    subtract(min(HDS_AIC_table$AIC)) %>%
+    subtract(min(species_HDS_AIC_table$AIC)) %>%
     `[[`(2) %>%
     round(digits = 2)
 
-out <- transmute(turnover_richness_HDS_m_tidy,
+out <- transmute(species_turnover_richness_HDS_m_tidy,
     Term = term,
     Estimate = round(estimate, digits = 3),
     `P-value` = p.value %>%
@@ -98,11 +98,76 @@ out$Term <- c(
     "$\\overline{J_{QDS}} \\times$ SWAFR"
 )
 
-knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:full-model-table)")
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:species-model-table)")
 
 ```
 
-(ref:full-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS richness ($S_{HDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ ", betterness_AIC, "). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r genus-model-table, results="asis"}
+
+genus_turnover_richness_HDS_m_tidy <- broom::tidy(genus_turnover_richness_HDS_m)
+betterness_AIC <- genus_HDS_AIC_table %$%
+    AIC %>%
+    subtract(min(genus_HDS_AIC_table$AIC)) %>%
+    `[[`(2) %>%
+    round(digits = 2)
+
+out <- transmute(genus_turnover_richness_HDS_m_tidy,
+    Term = term,
+    Estimate = round(estimate, digits = 3),
+    `P-value` = p.value %>%
+        round(digits = 3) %>%
+        format(scientific = FALSE) %>%
+        ifelse(. == "0.000",
+               "< 0.001", 
+               .)
+)
+out$Term <- c(
+    "Intercept",
+    "$log(\\overline{S_{QDS}} + 1)$", "$\\overline{J_{QDS}}$", "SWAFR",
+    "$log(\\overline{S_{QDS}} + 1) \\times$ SWAFR",
+    "$\\overline{J_{QDS}} \\times$ SWAFR"
+)
+
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:genus-model-table)")
+
+```
+
+(ref:genus-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness ($S_{HDS}$) against the mean QDS genus richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r family-model-table, results="asis"}
+
+family_turnover_richness_HDS_m_tidy <- broom::tidy(family_turnover_richness_HDS_m)
+betterness_AIC <- family_HDS_AIC_table %$%
+    AIC %>%
+    subtract(min(family_HDS_AIC_table$AIC)) %>%
+    `[[`(2) %>%
+    round(digits = 2)
+
+out <- transmute(family_turnover_richness_HDS_m_tidy,
+    Term = term,
+    Estimate = round(estimate, digits = 3),
+    `P-value` = p.value %>%
+        round(digits = 3) %>%
+        format(scientific = FALSE) %>%
+        ifelse(. == "0.000",
+               "< 0.001", 
+               .)
+)
+out$Term <- c(
+    "Intercept",
+    "$log(\\overline{S_{QDS}} + 1)$", "$\\overline{J_{QDS}}$", "SWAFR",
+    "$log(\\overline{S_{QDS}} + 1) \\times$ SWAFR",
+    "$\\overline{J_{QDS}} \\times$ SWAFR"
+)
+
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:family-model-table)")
+
+```
+
+(ref:family-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS family richness ($S_{HDS}$) against the mean QDS family richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
 
 ## Figures {-}
 
@@ -254,7 +319,7 @@ cowplot::plot_grid(
 
 ```
 
-(ref: roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \ref{eqn1}. Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests ($P < 0.05$).
+(ref:roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \ref{eqn1}. Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests ($P < 0.05$).
 
 ```{r roughness-IQR, fig.cap="(ref:roughness-IQR)"}
 # Plot GCFR vs SWAFR 95%-interquantile ranges ~ scale
@@ -286,7 +351,7 @@ ggplot(IQ95R_data,
           panel.grid = element_blank())
 ```
 
-(ref: roughness-IQR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQ_{0.95}R$ and $IQ_{0.99}$ respectively, as keyed) of Z-scaled roughness values (Equation \ref{eqn1}) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
+(ref:roughness-IQR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQ_{0.95}R$ and $IQ_{0.99}$ respectively, as keyed) of Z-scaled roughness values (Equation \ref{eqn1}) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
 
 ```{r turnover-vs-geodist, fig.width=4, fig.height=3, eval=FALSE, fig.cap="(ref:turnover-vs-geodist)"}
 
@@ -411,7 +476,8 @@ gamma_vs_beta_HDS_plot <-
     geom_point() +
     facet_wrap(~ rank, scales = "free_y") +
     geom_smooth(formula = y ~ x, method = "lm") +
-    labs(x = "Mean QDS turnover") +
+    labs(x = "Mean QDS turnover",
+         y = "HDS richness") +
     theme_bw() +
     theme(panel.grid = element_blank(),
           legend.position = "none")
@@ -449,7 +515,7 @@ gamma_vs_alpha_3QDS_plot <-
     # Log t/form to normalise avg_QDS_richness scores
     geom_smooth(formula = y ~ log(x + 1), method = "lm") +
     labs(x = "Mean QDS richness",
-         y = "HDS richness") +
+         y = "3QDS richness") +
     scale_color_discrete(name = "Region") +
     theme_bw() +
     theme(panel.grid = element_blank(),
@@ -460,7 +526,8 @@ gamma_vs_beta_3QDS_plot <-
     geom_point() +
     facet_wrap(~ rank, scales = "free_y") +
     geom_smooth(formula = y ~ x, method = "lm") +
-    labs(x = "Mean QDS turnover") +
+    labs(x = "Mean QDS turnover",
+         y = "3QDS richness") +
     theme_bw() +
     theme(panel.grid = element_blank(),
           legend.position = "none")
@@ -473,10 +540,10 @@ cowplot::plot_grid(
 
 ```
 
-(ref:gamma-beta-alpha2) Same as \@ref(gamma-beta-alpha), but for 3QDS, not HDS, as the focal scale.
+(ref:gamma-beta-alpha2) Same as \ref{gamma-beta-alpha}, but for 3QDS, not HDS, as the focal scale.
 
 
-```{r}
+```{r, eval=FALSE}
 ggplot(taxa_enviro_roughness_HDS[, c("region", "richness", "rank", "roughness_Elevation")], aes(roughness_Elevation, richness, col = region)) +
     geom_point() +
     facet_wrap(~ rank)
