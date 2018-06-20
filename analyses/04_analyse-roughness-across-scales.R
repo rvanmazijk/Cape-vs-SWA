@@ -9,33 +9,7 @@ source(here::here("analyses/03_import-environmental-data.R"))
 set.seed(1234)
 
 # Test 0.05deg, QDS, HDS, 3QDS comparisons -------------------------------------
-
-test_results <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
-    test_results_at_a_res <-
-        map2_df(GCFR_variables,
-                SWAFR_variables,
-                compare_roughness,
-                resolution = resolution) %>%
-        cbind(variable = var_names, .) %>%
-        as_tibble()
-}
-names(test_results) <- c("0.05deg", "QDS", "HDS", "3QDS")
-
-test_results_summary <- test_results %>%
-    map(mutate, sig = p.value < 0.05) %>%
-    map(dplyr::select, variable, sig) %$%
-    tibble(variable = var_names,
-           `0.05`   = .$`0.05deg`$sig,
-           `0.25`   = .$QDS$sig,
-           `0.50`   = .$HDS$sig,
-           `0.75`   = .$`3QDS`$sig)
-
-transformation_results <- map2(
-    GCFR_variables, SWAFR_variables,
-    describe_roughness
-)
-# Because mostly had to Mann-Whitney U,
-# why not just Mann-Whitney U all to be parsimonious:
+# Using Mann-Whitney U tests to compare roughness values for GCFR vs SWAFR
 
 test_results <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
     test_results_at_a_res <-
