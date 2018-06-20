@@ -37,7 +37,7 @@ Here we attempt to assess six key predictions of this hypothesis, additionally i
 Dealing with the two regions' environments, we assess whether:
 
 - (i) the Cape environment is more heterogeneous than that of SWA;
-- (ii) the Cape environment has finer grain heterogeneity than that of SWA.
+- (ii) the Cape environment has more pronounced heterogeneity at finer scales than that of SWA.
 
 Dealing with the distribution of species in the two regions, we assess whether:
 
