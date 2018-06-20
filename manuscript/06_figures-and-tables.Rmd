@@ -58,7 +58,7 @@ var_names <- c(
 Variable | Source (Dataset code) | Citation
 ---------|-----------------------|---------
 Elevation | SRTM (\<code\>) | @Farr2007
-**Climate & vegetation variables** | | 
+**Climate & vegetation variables** | |
 NDVI | MODIS (\<product code\>) | \<ref\>
 Surface T | MODIS (\<product code\>) | \<ref\>
 MAP | CHIRPS (\<product code\>) | \<ref\>
@@ -88,7 +88,7 @@ out <- transmute(species_turnover_richness_HDS_m_tidy,
         round(digits = 3) %>%
         format(scientific = FALSE) %>%
         ifelse(. == "0.000",
-               "< 0.001", 
+               "< 0.001",
                .)
 )
 out$Term <- c(
@@ -120,7 +120,7 @@ out <- transmute(genus_turnover_richness_HDS_m_tidy,
         round(digits = 3) %>%
         format(scientific = FALSE) %>%
         ifelse(. == "0.000",
-               "< 0.001", 
+               "< 0.001",
                .)
 )
 out$Term <- c(
@@ -152,7 +152,7 @@ out <- transmute(family_turnover_richness_HDS_m_tidy,
         round(digits = 3) %>%
         format(scientific = FALSE) %>%
         ifelse(. == "0.000",
-               "< 0.001", 
+               "< 0.001",
                .)
 )
 out$Term <- c(
@@ -185,7 +185,7 @@ test_results_summary %<>%
                            "Cape",
                            "SWA"))
 test_results_summary <- data_for_violin_plot %>%
-    group_by(variable) %>% 
+    group_by(variable) %>%
     summarise(y = 0.7 * max(z_roughness)) %>%
     full_join(test_results_summary)
 test_results_summary$variable %<>% factor(levels = var_names)
@@ -201,7 +201,7 @@ test_results_CLES_for_plot %<>%
                                                     "0.75 x 0.75",
                                                     NA)))))
 test_results_CLES_for_plot <- data_for_violin_plot %>%
-    group_by(variable) %>% 
+    group_by(variable) %>%
     summarise(y = 0.9 * max(z_roughness)) %>%
     full_join(test_results_CLES_for_plot)
 test_results_CLES_for_plot %<>%
@@ -261,7 +261,7 @@ panel_a <- data_for_violin_plot %>%
           panel.grid = element_blank(),
           axis.title.x = element_blank(),
           axis.text.x = element_blank())
-    
+
 panel_b <- data_for_violin_plot %>%
     filter(resolution %in% c("0.05 x 0.05",
                              "0.75 x 0.75"),
@@ -296,30 +296,30 @@ panel_b <- data_for_violin_plot %>%
               x = 1.5,
               col = "grey25") +
     theme_bw() +
-    theme(legend.position = "none", 
+    theme(legend.position = "none",
           strip.background = element_blank(),
           panel.grid = element_blank(),
           axis.title.y = element_blank(),
           axis.title.x = element_blank(),
           axis.text.x = element_blank())
 
-region_legend <- 
+region_legend <-
     gridExtra::arrangeGrob(panel_a)[[1]][[1]]$grobs[[37]]
 panel_a <- panel_a + theme(legend.position = "none")
 
 panel_b <- cowplot::plot_grid(
-    panel_b, region_legend, 
+    panel_b, region_legend,
     nrow = 2, rel_heights = c(4, 0.9)
 )
 cowplot::plot_grid(
-    panel_a, panel_b, 
+    panel_a, panel_b,
     nrow = 1, rel_widths = c(1, 0.9),
     labels = c("A", "B")
 )
 
 ```
 
-(ref:roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \ref{eqn1}. Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be generally greater in the GCFR in all cases, unless marked as non-significant (NS), following Mann-Whitney U tests ($P < 0.05$).
+(ref:roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \ref{eqn1}. Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be significantly greater in the GCFR in all cases ($P \leg 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
 
 ```{r roughness-IQR, fig.cap="(ref:roughness-IQR)"}
 # Plot GCFR vs SWAFR 95%-interquantile ranges ~ scale
@@ -373,7 +373,7 @@ scatter_plot <- taxa_turnover_geodist %>%
     sample_n(5000) %>%
     ggplot() +
     geom_point(aes(geodist, turnover, col = region), alpha = 0.25) +
-    labs(x = "Distance between cells (m)", 
+    labs(x = "Distance between cells (m)",
          y = "Turnover (Jaccards distance)") +
     scale_colour_manual(name = "Region",
                         values = c(bluu, pink)) +
@@ -404,11 +404,11 @@ plot(rq_fits_added)
 
 ```{r turnover-vs-geodist-m, results="asis", eval=FALSE}
 
-species_turnover_geodist_m_tidy <- 
+species_turnover_geodist_m_tidy <-
     cbind(rank = "species", broom::tidy(species_turnover_geodist_m))
 genus_turnover_geodist_m_tidy <-
     cbind(rank = "genus",   broom::tidy(genus_turnover_geodist_m))
-family_turnover_geodist_m_tidy <- 
+family_turnover_geodist_m_tidy <-
     cbind(rank = "family",  broom::tidy(family_turnover_geodist_m))
 
 CI_to_P <- function(est, u, l, t = 1.96) {
@@ -457,7 +457,7 @@ out
 
 ```{r gamma-beta-alpha, fig.width=8, fig.height=8, fig.cap="(ref:gamma-beta-alpha)"}
 
-gamma_vs_alpha_HDS_plot <- 
+gamma_vs_alpha_HDS_plot <-
     ggplot(gamma_beta_alpha_HDS,
            aes(avg_QDS_richness, richness, col = region)) +
     geom_point() +
@@ -498,7 +498,7 @@ cowplot::plot_grid(
 #    legend <- tmp$grobs[[leg]]
 #    legend
 #}
-#region_legend <- 
+#region_legend <-
 #    gg_legend(gamma_vs_alpha_plot + theme(legend.position = "right"))
 
 ```
@@ -507,7 +507,7 @@ cowplot::plot_grid(
 
 ```{r gamma-beta-alpha2, fig.width=8, fig.height=8, fig.cap="(ref:gamma-beta-alpha2)"}
 
-gamma_vs_alpha_3QDS_plot <- 
+gamma_vs_alpha_3QDS_plot <-
     ggplot(gamma_beta_alpha_3QDS,
            aes(avg_QDS_richness, richness, col = region)) +
     geom_point() +
