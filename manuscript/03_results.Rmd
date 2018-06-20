@@ -14,6 +14,34 @@ Regarding spatial scale, we see that $CLES$ of Cape vs SWA grid-cells are genera
 
 ##### (Depends on variables concerned)
 
-Regarding the variables concerned, we see that $CLES$ of Cape vs SWA grid-cells are generally lower ($CLES \lt 0.80$) in edaphic variables (CEC, clay, soil C, and pH) and NDVI, compared to climatic variables (MAP, PDQ, surface T) and elevation. Notably, elevational roughness at 3QDS scales is exceptionally greater in the Cape than in SWA, and indeed still much greater than in SWA at 0.05º x 0.05º scales. This speaks to the relative mountainous-ness vs flatness of the two regions. It is interesting that there is some overlap in observed elevational roughness values at the 0.05º x 0.05º scale, yet none at the 3QDS scale. This shows how, although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA. Furthermore, regarding elevation, the Cape is shown here to be more rough than SWA. But, we move from at fine scales having some overlap in the roughness values, which have relatively great spread in both regions, to much less overlap at coarser scales (where the spread of values is lesser). This leads us to think about: overlap and spread (below).
+Regarding the variables concerned, we see that $CLES$ of Cape vs SWA grid-cells are generally lower ($CLES \lt 0.80$) in edaphic variables (CEC, clay, soil C, and pH) and NDVI, compared to climatic variables (MAP, PDQ, surface T) and elevation. Notably, elevational roughness at 3QDS scales is exceptionally greater in the Cape than in SWA, and indeed still much greater than in SWA at 0.05º x 0.05º scales. This speaks to the relative mountainous-ness vs flatness of the two regions. It is interesting that there is some overlap in observed elevational roughness values at the 0.05º x 0.05º scale, yet none at the 3QDS scale. This shows how, although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA. Furthermore, regarding elevation, the Cape is shown here to be more rough than SWA. But, we move from at fine scales having some overlap in the roughness values, which have relatively great spread in both regions, to much less overlap at coarser scales (where the spread of values is lesser). This leads us to think about: overlap and spread (below).<!--repetitious of below?-->
 
 #### (Differences in value overlap & spread)
+
+There is overlap in the range of roughness values observed in the Cape and SWA for each environmental variable especially at finer spatial scales. Also, the range of values observed is also itself greater at finer spatial scales.
+
+<!--TODO: insert description of overlap + spread from above-->
+
+##### (Depends on spatial scale)
+
+<!--... especially at finer spatial scales ...-->
+
+##### (Depends on variable concerned)
+
+<!--Talk about NDVI-->
+
+#### (Synthesis)
+
+<!--TODO-->
+
+### (Consulting \ref{roughness-IQR})
+
+This elaborates on the overlap and spread idea from earlier, where now we can see that generally the spread of observed roughness values is more similar in magnitude between the two regions at coarser scales, and more different at finer scales. Though this plot is illustrative only and derived from \ref{roughness-violins}, we can see it mirror how SWA has a greater range of roughness values in soil variables (and, Re: \ref{roughness-violins}, we know a general roughness at least as high as the Cape's in those too!).
+
+#### (Elevation, PDQ)
+
+Cape is rougher and has a greater range of roughnesses (\ref{roughness-violins, roughness-IQR} at all scales, especially at finer scales.
+
+#### (Clay, soil C, pH)
+
+Extreme values of roughness observed very high in SWA.
