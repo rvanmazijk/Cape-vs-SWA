@@ -45,3 +45,11 @@ Cape is rougher and has a greater range of roughnesses (\ref{roughness-violins, 
 #### (Clay, soil C, pH)
 
 Extreme values of roughness observed very high in SWA.
+
+### (Conclusions/synthesis)
+
+<!--TODO: Kind-of discussion-y for now-->
+
+The Cape is more generally environmentally heterogeneous than the SWA, as expected (see prediction (i)). Though, there are cases where the SWA is arguably at-least-as-heterogeneous as the Cape, and we can observe here extreme regions of high edaphic heterogeneity, at fine scales, in SWA. These surpass the edaphic heterogeneity of the Cape, supporting our seventh prediction/conjecture.
+
+We also have support for prediction (ii), as seen in \ref{roughness-IQR}.
