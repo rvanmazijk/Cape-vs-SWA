@@ -2,8 +2,8 @@
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    echo = FALSE,
-    eval = TRUE,
+    echo    = FALSE,
+    eval    = TRUE,
     message = FALSE,
     warning = FALSE,
     cache   = FALSE
@@ -12,11 +12,11 @@ knitr::opts_chunk$set(
 
 ## i Title {-}
 
-**TODO**
+<!--TODO-->
 
 ## ii Running title {-}
 
-**TODO**
+<!--TODO-->
 
 ## iii Authors {-}
 
@@ -24,11 +24,11 @@ Ruan van Mazijk^1^, Michael D. Cramer^1^, and G. Anthony Verboom^1^
 
 ^1^: Department of Biological Sciences, University of Cape Town, Rondebosch, Cape Town, 7701
 
-ORCID nos.: RVM: 0000-0003-2659-6909, MDC: **TODO**, GAV: **TODO**
+ORCID nos.: RVM: 0000-0003-2659-6909, MDC: <!--TODO-->, GAV: <!--TODO-->
 
 ## iv Acknowledgements {-}
 
-**TODO**
+This work was funded by the Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship, and by South African Association of Botanists (SAAB) Honours Scholarship.
 
 ## v Abstract {-}
 
@@ -56,23 +56,24 @@ Vascular plants
 
 ### v-v Results {-}
 
-*TODO*
+<!--TODO-->
 
 ### v-vi Main conclusions {-}
 
-*TODO*
+<!--TODO-->
 
 ## vi Keywords {-}
 
-*TODO*
+Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
 
-## vii Abbreviations
+## vii Abbreviations {-}
 
 - Greater Cape Floristic Region (GCFR) (= "Cape")
 - Southwest Australia Floristic Region (SWAFR)  (= "SWA")
 - quarter degree square (i.e. 0.25º x 0.25º) (QDS)
 - half degree square (i.e. 0.50º x 0.50º) (HDS)
 - three-quarter degree square (i.e. 0.75º x 0.75º) (3QDS)
+- + environmental variables' abbreviations in Table 1
 
 <!--TODO: fiver percent degree square (i.e. 0.05º x 0.05º) (FPDS)?-->
 <!--TODO: environmental heterogeneity (EH)?-->
