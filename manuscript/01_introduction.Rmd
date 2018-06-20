@@ -16,7 +16,7 @@ Both the Southwest Australia Floristic Region (SWAFR) and the Greater Cape Flori
 
 ### Aim
 
-This study investigates the role environmental heterogeneity plays in explaining vascular plant species richness in the Cape and SWA. We compare the relative importance of heterogeneity between the two regions, as heterogeneity has the evolutionary role of facilitating speciation, and the ecological role of supporting diverse species assemblages. Spatial scale of that heterogeneity is also considered, as the heterogeneity-richness relationship can vary with habitat grain-size <!--ref this above!-->.
+This study investigates the role environmental heterogeneity plays in explaining vascular plant species richness in the Cape and SWA. We compare the relative importance of heterogeneity between the two regions, as heterogeneity has the evolutionary role of facilitating speciation, and the ecological role of supporting diverse species assemblages. Spatial scale of that heterogeneity is also considered, as the heterogeneity-richness relationship can vary with habitat grain-size <!--TODO: ref this above!-->.
 
 ### Hypothesis
 
