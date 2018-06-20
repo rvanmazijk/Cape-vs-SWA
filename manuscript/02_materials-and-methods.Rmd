@@ -36,6 +36,8 @@ After the unaccepted names were removed, it was important to ensure that a speci
 
 First, in order to assess predictions (i) and (ii), we needed to describe the environmental heterogeneity in both regions. Using the `R` package `raster` [@Hijmans2016], we used a modified version of the "roughness" index in the `terrain` function: for a three by three neighbourhood of cells, our index is the root of the average squared difference between each of the eight neighbour cells' values ($x_i$) relative to the central focal cell's value ($x'$) (Equation \ref{eqn1}).
 
+<!--TODO: comply w/ bookdown equation guidelines-->
+
 $$
     \tag{1} \label{eqn1}
     roughness = \sqrt{\frac{
@@ -56,6 +58,8 @@ Regarding predictions (iii) and (iv), we wished to compare the degree and import
 HDS QDS beta analysis. This is for (iv).
 
 ### Predicting species richness and turnover with environmental heterogeneity
+
+<!--TODO: comply w/ bookdown equation guidelines-->
 
 $formula2 ...$
 
