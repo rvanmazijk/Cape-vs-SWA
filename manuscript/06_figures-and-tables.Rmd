@@ -20,7 +20,7 @@ if (all(!folder_is_empty(output_paths)) {
     map(
         output_paths,
         import_all_objects_auto
-   )
+    )
 } else {
     # Otherwise run the analyses needed first (the function imports also)
     source(here::here("analyses/01_import-region-polygons.R"))
