@@ -4,41 +4,33 @@
 
 ```{r setup-analyses}
 source(here::here("setup.R"))
-if (all(!folder_is_empty(here::here("analyses/04_outputs"),
-                         here::here("analyses/05_outputs"),
-                         here::here("analyses/06_outputs"),
-                         here::here("analyses/07_outputs")))) {
-    # Import the analyses' results
-    for (output in c("04_outputs",
-                     "05_outputs",
-                     "06_outputs",
-                     "07_outputs")) {
-        import_all_objects_auto(here::here(glue("analyses/{output}")))
-    }
+output_paths <- here::here("analyses", c(
+    "04_outputs",
+    "05_outputs",
+    "06_outputs",
+    "07_outputs"
+))
+analysis_paths <- here::here("analyses", c(
+    "04_analyse-roughness-across-scales.R",
+    "05_analyse-species-turnover-w-distance.R",
+    "06_analyse-species-turnover-and-richness.R",
+    "07_analyse-species-and-roughness.R"
+))
+if (all(!folder_is_empty(output_paths)) {
+    map(
+        output_paths,
+        import_all_objects_auto
+   )
 } else {
-    # Otherwise run the analyses needed first ...
+    # Otherwise run the analyses needed first (the function imports also)
     source(here::here("analyses/01_import-region-polygons.R"))
     source(here::here("analyses/02_import-floral-data.R"))
     source(here::here("analyses/03_import-environmental-data.R"))
-    if (folder_is_empty(here::here("analyses/04_outputs"))) {
-        source(here::here("analyses/04_analyse-roughness-across-scales.R"))
-    }
-    if (folder_is_empty(here::here("analyses/05_outputs"))) {
-        source(here::here("analyses/05_analyse-species-turnover-w-distance.R"))
-    }
-    if (folder_is_empty(here::here("analyses/06_outputs"))) {
-        source(here::here("analyses/06_analyse-species-turnover-and-richness.R"))
-    }
-    if (folder_is_empty(here::here("analyses/07_outputs"))) {
-        source(here::here("analyses/07_analyse-species-and-roughness.R"))
-    }
-    # ... Then import the analyses' results
-    for (output in c("04_outputs",
-                     "05_outputs",
-                     "06_outputs",
-                     "07_outputs")) {
-        import_all_objects_auto(here::here(glue("analyses/{output}")))
-    }
+    map2(
+        output_paths, analysis_paths,
+        source_if_needed,
+        import = TRUE
+    )
 }
 var_names <- c(
     "Elevation",
