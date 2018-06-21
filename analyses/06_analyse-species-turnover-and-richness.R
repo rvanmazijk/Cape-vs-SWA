@@ -412,39 +412,18 @@ write_csv(
     here::here("analyses/06_outputs/family_3QDS_AIC_table.csv")
 )
 
-# TODO: tidy up ls() w/ rm()
-
-# Linear Mixed Model attempt ---------------------------------------------------
-
-p_load(lme4)
-species_turnover_richness_HDS_LMM1 <- lmer(
-    richness ~
-        1 + (1|region),
-    na.exclude(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ])
-)
-species_turnover_richness_HDS_LMM2 <- lm(
-    richness ~
-        log(avg_QDS_richness + 1) + avg_QDS_turnover,
-    na.exclude(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ])
-)
-species_turnover_richness_HDS_LMM3 <- lmer(
-    richness ~
-        log(avg_QDS_richness + 1) + avg_QDS_turnover +
-        (1|region),
-    na.exclude(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ])
-)
-species_turnover_richness_HDS_LMM4 <- lmer(
-    richness ~
-        log(avg_QDS_richness + 1) + avg_QDS_turnover +
-        (log(avg_QDS_richness + 1)|region) +
-        (avg_QDS_turnover|region),
-    na.exclude(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ])
-)
-
-p_load(spaMM)
-anova(test = "Chisq",
-    species_turnover_richness_HDS_LMM1,
-    species_turnover_richness_HDS_LMM2,
-    species_turnover_richness_HDS_LMM3,
-    species_turnover_richness_HDS_LMM4
+# Tidy up
+rm(
+    species_turnover_richness_HDS_m,
+    genus_turnover_richness_HDS_m,
+    family_turnover_richness_HDS_m,
+    species_turnover_richness_3QDS_m,
+    genus_turnover_richness_3QDS_m,
+    family_turnover_richness_3QDS_m,
+    species_HDS_AIC_table,
+    genus_HDS_AIC_table,
+    family_HDS_AIC_table,
+    species_3QDS_AIC_table,
+    genus_3QDS_AIC_table,
+    family_3QDS_AIC_table
 )
