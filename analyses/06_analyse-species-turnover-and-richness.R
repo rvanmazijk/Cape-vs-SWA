@@ -267,7 +267,8 @@ rm(
 
 # Model gamma-beta-alpha -------------------------------------------------------
 
-# HDS
+# .... HDS ---------------------------------------------------------------------
+
 species_turnover_richness_HDS_m <- step(lm(
     richness ~
         log(avg_QDS_richness + 1) + avg_QDS_turnover +
@@ -289,7 +290,7 @@ family_turnover_richness_HDS_m <- step(lm(
         region * avg_QDS_turnover,
     data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "family", ]
 ))
-# Region term retained!
+# Region terms retained!
 # More evidence for value of region term:
 species_turnover_richness_HDS_m_no_region <- lm(
     richness ~
@@ -313,7 +314,8 @@ genus_HDS_AIC_table <-
 family_HDS_AIC_table <-
     AIC(family_turnover_richness_HDS_m, family_turnover_richness_HDS_m_no_region)
 
-# 3QDS
+# .... 3QDS --------------------------------------------------------------------
+
 species_turnover_richness_3QDS_m <- step(lm(
     richness ~
         log(avg_QDS_richness + 1) + avg_QDS_turnover +
@@ -335,7 +337,7 @@ family_turnover_richness_3QDS_m <- step(lm(
         region * avg_QDS_turnover,
     data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "family", ]
 ))
-# Region term retained!
+# Region terms retained!
 # More evidence for value of region term:
 species_turnover_richness_3QDS_m_no_region <- lm(
     richness ~
@@ -359,7 +361,8 @@ genus_3QDS_AIC_table <-
 family_3QDS_AIC_table <-
     AIC(family_turnover_richness_3QDS_m, family_turnover_richness_3QDS_m_no_region)
 
-# Save to disc
+# .... Save to disc ------------------------------------------------------------
+
 write_rds(
     species_turnover_richness_HDS_m,
     here::here("analyses/06_outputs/species_turnover_richness_HDS_m.RDS")
