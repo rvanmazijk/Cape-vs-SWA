@@ -16,7 +16,7 @@ analysis_paths <- here::here("analyses", c(
     "06_analyse-species-turnover-and-richness.R",
     "07_analyse-species-and-roughness.R"
 ))
-if (all(!folder_is_empty(output_paths)) {
+if (all(!folder_is_empty(output_paths))) {
     map(
         output_paths,
         import_all_objects_auto
