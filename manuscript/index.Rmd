@@ -10,15 +10,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-## i Title {-}
+## Title {-}
 
 <!--TODO-->
 
-## ii Running title {-}
+## Running title {-}
 
 <!--TODO-->
 
-## iii Authors {-}
+## Authors {-}
 
 Ruan van Mazijk^1^, Michael D. Cramer^1^, and G. Anthony Verboom^1^
 
@@ -26,15 +26,14 @@ Ruan van Mazijk^1^, Michael D. Cramer^1^, and G. Anthony Verboom^1^
 
 ORCID nos.: RVM: 0000-0003-2659-6909, MDC: <!--TODO-->, GAV: <!--TODO-->
 
-## iv Acknowledgements {-}
+## Acknowledgements {-}
 
-This work was funded by the Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship, and by South African Association of Botanists (SAAB) Honours Scholarship.
 
-## v Abstract {-}
+## Abstract {-}
 
 <!--New Abstract for JBiogeog (300 words)-->
 
-### v-i Aim {-}
+### Aim {-}
 
 <!--from ResearchGate project-->
 
@@ -42,15 +41,15 @@ To quantify the explanatory power of heterogeneity in predicting plant species r
 
 We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in SW Australia.
 
-### v-ii Location {-}
+### Location {-}
 
 The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australian Floristic Region (SWAFR)
 
-### v-iii Taxon {-}
+### Taxon {-}
 
 Vascular plants
 
-### v-iv Methods {-}
+### Methods {-}
 
 [Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics]
 
@@ -58,15 +57,15 @@ Vascular plants
 
 <!--TODO-->
 
-### v-vi Main conclusions {-}
+### Main conclusions {-}
 
 <!--TODO-->
 
-## vi Keywords {-}
+## Keywords {-}
 
 Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
 
-## vii Abbreviations {-}
+## Abbreviations {-}
 
 - Greater Cape Floristic Region (GCFR) (= "Cape")
 - Southwest Australia Floristic Region (SWAFR)  (= "SWA")

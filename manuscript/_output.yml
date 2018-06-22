@@ -1,5 +1,6 @@
 # Only GitBook output for now
-bookdown::gitbook: default
+bookdown::gitbook:
+  number_sections: false
 #bookdown::pdf_book:
 #  includes:
 #    in-header: style.sty  # FIXME
