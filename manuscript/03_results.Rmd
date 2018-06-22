@@ -2,54 +2,32 @@
 
 ## Describing environmental heterogeneity numerically across scales
 
-### (Consulting \ref{roughness-violins})
+Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cell EH (common-language effect size ($CLES$) $\gt 0.50$, Fig. \@ref(fig:roughness-violins)). The degree to which Cape grid-cells are more heterogeneous is dependent on both spatial scale and the environmental variable concerned. 
 
-#### (Cape > SWA generally)
+Regarding spatial scale, we see that $CLES$-values of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS) in size, compared to 0.05º x 0.05º---though there are exceptions. This means that, generally, the Cape has greater EH than SWA when comparing differences between smaller areas of land. Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney $U$ tests, $P \gt 0.05$, Fig. \@ref(fig:roughness-violins)).
 
-We see that---across all variables considered---the Cape is more environmentally heterogeneous (i.e. grid-cells are more different from each of their neighbouring cells) in the majority of pairwise comparisons ($CLES \gt 0.50$). The degree to which Cape grid-cells are more heterogeneous is dependent on both spatial scale and the environmental variable concerned.
+Regarding the variables concerned, when comparing the Cape to SWA, $CLES$-values are generally lower ($CLES \lt 0.80$) for edaphic variables (CEC, clay, soil C, and pH, Fig. \@ref(fig:roughness-violins)B) and NDVI, compared to climatic variables (MAP, PDQ, surface T) and elevation (Fig. \@ref(fig:roughness-violins)A). Therefore, we can differentiate the Cape and SWA environments based on which environmental axes are more heterogeneous is either region, as the differ somewhat in this regard. Notably, elevational heterogeneity at 3QDS scales is exceptionally greater in the Cape than in SWA, and indeed still much greater than in SWA at 0.05º x 0.05º scales (Fig. \@ref(fig:roughness-violins)A). There is some overlap in observed elevational heterogeneity values at the 0.05º x 0.05º scale between the Cape and SWA, and no overlap at the 3QDS scale (Fig. \@ref(fig:roughness-violins)A). This concurs with our expectations, as the Cape is mountainous and known to have steep elevational gradients<!--TODO: ref-->, while SWA is much more topographically uniform. Intuitively, then, elevation serves as a "benchmark test" for our comparisons of EH here, as it is well known and expected that the Cape should be more elevationally heterogeneous than SWA. Additonally, we can conclude that although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA. 
 
-##### (Depends on spatial scale)
+<!--
 
-Regarding spatial scale, we see that $CLES$ of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS), compared to 0.05º x 0.05º, though there are exceptions. Indeed, when comparing the overall ranking and medians<!--TODO: which is it?--> of Cape vs SWA roughness values for each variable with Mann-Whitney $U$ tests, we only find any non-significant (NS) differences at the coarser 3QDSW scale ($P \gt 0.05$).
+...
 
-##### (Depends on variables concerned)
+Furthermore, regarding elevation, the Cape is shown here to be more rough than SWA. But, we move from at fine scales having some overlap in the roughness values, which have relatively great spread in both regions, to much less overlap at coarser scales (where the spread of values is lesser). This leads us to think about: overlap and spread (below).
 
-Regarding the variables concerned, we see that $CLES$ of Cape vs SWA grid-cells are generally lower ($CLES \lt 0.80$) in edaphic variables (CEC, clay, soil C, and pH) and NDVI, compared to climatic variables (MAP, PDQ, surface T) and elevation. Notably, elevational roughness at 3QDS scales is exceptionally greater in the Cape than in SWA, and indeed still much greater than in SWA at 0.05º x 0.05º scales. This speaks to the relative mountainous-ness vs flatness of the two regions. It is interesting that there is some overlap in observed elevational roughness values at the 0.05º x 0.05º scale, yet none at the 3QDS scale. This shows how, although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA. Furthermore, regarding elevation, the Cape is shown here to be more rough than SWA. But, we move from at fine scales having some overlap in the roughness values, which have relatively great spread in both regions, to much less overlap at coarser scales (where the spread of values is lesser). This leads us to think about: overlap and spread (below).<!--repetitious of below?-->
-
-#### (Differences in value overlap & spread)
+...
 
 There is overlap in the range of roughness values observed in the Cape and SWA for each environmental variable especially at finer spatial scales. Also, the range of values observed is also itself greater at finer spatial scales.
 
-<!--TODO: insert description of overlap + spread from above-->
+...
 
-##### (Depends on spatial scale)
+-->
 
-<!--... especially at finer spatial scales ...-->
+Consulting Fig. \@ref(fig:roughness-IQR):This elaborates on the overlap and spread idea from earlier, where now we can see that generally the spread of observed roughness values is more similar in magnitude between the two regions at coarser scales, and more different at finer scales. Though this plot is illustrative only and derived from Fig. \@ref(fig:roughness-violins), we can see it mirror how SWA has a greater range of roughness values in soil variables (and, Re: Fig. \@ref(fig:roughness-violins), we know a general roughness at least as high as the Cape's in those too!).
 
-##### (Depends on variable concerned)
+Elevation, PDQ: Cape is rougher and has a greater range of roughnesses (Fig. \@ref(fig:roughness-violins), \@ref(fig:roughness-IQR)) at all scales, especially at finer scales.
 
-<!--Talk about NDVI-->
+Clay, soil C, pH: Extreme values of roughness observed very high in SWA.
 
-#### (Synthesis)
+Conclusion: The Cape is more generally environmentally heterogeneous than the SWA, as expected (see prediction (i)). Though, there are cases where the SWA is arguably at-least-as-heterogeneous as the Cape, and we can observe here extreme regions of high edaphic heterogeneity, at fine scales, in SWA. These surpass the edaphic heterogeneity of the Cape, supporting our seventh prediction/conjecture.
 
-<!--TODO-->
-
-### (Consulting \ref{roughness-IQR})
-
-This elaborates on the overlap and spread idea from earlier, where now we can see that generally the spread of observed roughness values is more similar in magnitude between the two regions at coarser scales, and more different at finer scales. Though this plot is illustrative only and derived from \ref{roughness-violins}, we can see it mirror how SWA has a greater range of roughness values in soil variables (and, Re: \ref{roughness-violins}, we know a general roughness at least as high as the Cape's in those too!).
-
-#### (Elevation, PDQ)
-
-Cape is rougher and has a greater range of roughnesses (\ref{roughness-violins, roughness-IQR} at all scales, especially at finer scales.
-
-#### (Clay, soil C, pH)
-
-Extreme values of roughness observed very high in SWA.
-
-### (Conclusions/synthesis)
-
-<!--TODO: Kind-of discussion-y for now-->
-
-The Cape is more generally environmentally heterogeneous than the SWA, as expected (see prediction (i)). Though, there are cases where the SWA is arguably at-least-as-heterogeneous as the Cape, and we can observe here extreme regions of high edaphic heterogeneity, at fine scales, in SWA. These surpass the edaphic heterogeneity of the Cape, supporting our seventh prediction/conjecture.
-
-We also have support for prediction (ii), as seen in \ref{roughness-IQR}.
+We also have support for prediction (ii), as seen in Fig. \@ref(fig:roughness-IQR).
