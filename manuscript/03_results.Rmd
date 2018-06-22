@@ -6,11 +6,11 @@
 
 #### (Cape > SWA generally)
 
-We see that---across all variables considered---Cape grid-cells are more environmentally heterogeneous (i.e. more different from each of their neighbouring cells) in the majority pairwise comparisons of grid-cells ($CLES \gt 0.50$). The degree to which Cape grid-cells are more rough is dependent on both spatial scale and the environmental variable concerned.
+We see that---across all variables considered---the Cape is more environmentally heterogeneous (i.e. grid-cells are more different from each of their neighbouring cells) in the majority of pairwise comparisons ($CLES \gt 0.50$). The degree to which Cape grid-cells are more heterogeneous is dependent on both spatial scale and the environmental variable concerned.
 
 ##### (Depends on spatial scale)
 
-Regarding spatial scale, we see that $CLES$ of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS), compared to 0.05º x 0.05º, though there are exceptions. Indeed, when comparing the overall ranking and medians<!--TODO: which is it?--> of Cape vs SWA roughness values for each variable with Mann-Whitney $U$ tests, we only find any non-significant (NS) differences at the coarser 3QDS scale ($P \gt 0.05$).
+Regarding spatial scale, we see that $CLES$ of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS), compared to 0.05º x 0.05º, though there are exceptions. Indeed, when comparing the overall ranking and medians<!--TODO: which is it?--> of Cape vs SWA roughness values for each variable with Mann-Whitney $U$ tests, we only find any non-significant (NS) differences at the coarser 3QDSW scale ($P \gt 0.05$).
 
 ##### (Depends on variables concerned)
 

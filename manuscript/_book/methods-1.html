@@ -155,16 +155,12 @@
 <h2><span class="header-section-number">2.4</span> Analyses</h2>
 <div id="quantifying-environmental-heterogeneity" class="section level3">
 <h3><span class="header-section-number">2.4.1</span> Quantifying environmental heterogeneity</h3>
-<p>First, in order to assess predictions (i) and (ii), we needed to describe the environmental heterogeneity in both regions. Using the <code>R</code> package <code>raster</code> <span class="citation">[@Hijmans2016]</span>, we used a modified version of the “roughness” index in the <code>terrain</code> function: for a three by three neighbourhood of cells, our index is the root of the average squared difference between each of the eight neighbour cells’ values (<span class="math inline">\(x_i\)</span>) relative to the central focal cell’s value (<span class="math inline">\(x&#39;\)</span>) (Equation ).</p>
+<p>First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions. Using the <code>R</code> package <code>raster</code> <span class="citation">[@Hijmans2016]</span>, we used a modified version of the “roughness” index in the <code>terrain</code> function: for a three by three neighbourhood of cells, our index is the root of the average squared difference between each of the eight neighbour cells’ values relative to the central focal cell’s value:</p>
 <!--TODO: comply w/ bookdown equation guidelines-->
-<p><span class="math display">\[
-    \tag{1} \label{eqn1}
-    roughness = \sqrt{\frac{
-        \sum_{i = 1}^{8} (x&#39; - x_i) ^ 2
-    }{
-        8
-    }}
-\]</span></p>
+<span class="math display" id="eq:roughness">\[\begin{equation}
+    roughness = \sqrt{\frac{\sum_{i = 1}^{8}(x_{focal} - x_i)^{2}}{8}}
+    \tag{2.1}
+\end{equation}\]</span>
 <p>Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable’s heterogeneity. We compared the distributions of heterogeneity values in each variable in each region with non-parametric Mann-Whitney U tests, as almost all variables could not be normalised by log-transformation. We also compare the effect size of the Cape vs SWA using the “common language effect size” (CLES), using the <code>R</code> package <code>canprot</code>. The CLES is the proportion of all pairwise comparisons between two sample groups’ observations where the one group’s observation is greater than the other. In our case, of all pairwaise comparisons of a variable’s heterogeneity values between the Cape and SWA, the CLES is the proportion of pais where the Cape heterogeneity value was greater than that of SWA. This allowed us to assess prediction (i).</p>
 <p>To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we ran these Mann-Whitney U tests again at 0.75 degrees resolution, as opposed to 0.05 as above. Moreover, the heterogeneity values at this scale were derived from the original environmental raster layers rescaled to 0.75 degrees resolution. We also compared inter-quantile ranges of heterogeneity values at different spatial scales (i.e. raster resolutions, namely 0.05, 0.25, 0.50, and 0.75 degrees respectively). Once again, this entailed recalculating the heterogeneity layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions. Using inter-quantile ranges allowed us to investigate the spread of heterogeneity values seen in each region, and how this spread differs at different scales.</p>
 </div>

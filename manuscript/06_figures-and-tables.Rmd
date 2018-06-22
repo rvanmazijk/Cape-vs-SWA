@@ -94,7 +94,7 @@ knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:species-model-table)
 
 ```
 
-(ref:species-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ```{r genus-model-table, results="asis"}
 
@@ -126,7 +126,7 @@ knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:genus-model-table)")
 
 ```
 
-(ref:genus-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness ($S_{HDS}$) against the mean QDS genus richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:genus-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness ($S_{HDS}$) against the mean QDS genus richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ```{r family-model-table, results="asis"}
 
@@ -158,8 +158,7 @@ knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:family-model-table)"
 
 ```
 
-(ref:family-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS family richness ($S_{HDS}$) against the mean QDS family richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figure \ref{full_model_table} (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
-
+(ref:family-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS family richness ($S_{HDS}$) against the mean QDS family richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ## Figures {-}
 
@@ -313,7 +312,7 @@ cowplot::plot_grid(
 
 ```
 
-(ref:roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \ref{eqn1}. Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be significantly greater in the GCFR in all cases ($P \lt 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
+(ref:roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \@ref(eq:roughness). Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be significantly greater in the GCFR in all cases ($P \lt 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
 
 ```{r roughness-IQR, fig.cap="(ref:roughness-IQR)"}
 # Plot GCFR vs SWAFR 95%-interquantile ranges ~ scale
@@ -342,7 +341,7 @@ ggplot(IQ95R_data,
           panel.grid = element_blank())
 ```
 
-(ref:roughness-IQR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQuR$) of Z-scaled roughness values (Equation \ref{eqn1}) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
+(ref:roughness-IQR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQuR$) of Z-scaled roughness values (Equation \@ref(eq:roughness)) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
 
 ### (Richness & turnover section) {-}
 
@@ -533,7 +532,7 @@ cowplot::plot_grid(
 
 ```
 
-(ref:gamma-beta-alpha2) Same as \ref{gamma-beta-alpha}, but for 3QDS, not HDS, as the focal scale.
+(ref:gamma-beta-alpha2) Same as \@ref(fig:gamma-beta-alpha), but for 3QDS, not HDS, as the focal scale.
 
 ### (Taxa & environment section) {-}
 
