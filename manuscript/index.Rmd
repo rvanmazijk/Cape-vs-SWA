@@ -1,7 +1,7 @@
 ---
 bibliography: ["refs.bib", "pkgs.bib"]
 #biblio-style: "apalike"
-#csl: harvard-uct-rvm.csl  # TODO?
+csl: harvard-university-of-cape-town-rvm_2017-08-15.csl
 ---
 
 # Front matter {-}

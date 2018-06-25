@@ -1,7 +1,7 @@
 # Materials and methods
 
 ```{r}
-richness <- read_rds(here::here("outputs/richness.RDS"))
+richness <- readr::read_rds(here::here("outputs/richness.RDS"))
 ```
 
 ## Overview
