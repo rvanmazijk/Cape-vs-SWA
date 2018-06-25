@@ -1,4 +1,3 @@
-# Only GitBook output for now
 bookdown::gitbook:
   number_sections: false
 #bookdown::pdf_book:
@@ -6,5 +5,3 @@ bookdown::gitbook:
 #    in-header: style.sty  # FIXME
 #  latex_engine: xelatex
 #  mainfont: "Helvetica"
-#csl: # TODO
-#bibliography: # TODO

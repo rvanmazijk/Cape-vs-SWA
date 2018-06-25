@@ -1,3 +1,9 @@
+---
+bibliography: ["refs.bib", "pkgs.bib"]
+#biblio-style: "apalike"
+#csl: harvard-uct-rvm.csl  # TODO?
+---
+
 # Front matter {-}
 
 ```{r setup, include=FALSE}
@@ -78,4 +84,3 @@ Macroecology, biodiversity, plant species richness, Greater Cape Floristic Regio
 - & environmental variables' abbreviations in Table 1
 
 For the sake of readability, we refer to the GCFR and SWAFR simply as the Cape and SWA throughout.
-
