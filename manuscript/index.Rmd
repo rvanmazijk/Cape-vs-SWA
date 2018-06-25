@@ -1,6 +1,5 @@
 ---
-bibliography: ["refs.bib", "pkgs.bib"]
-#biblio-style: "apalike"
+bibliography: refs.bib
 csl: harvard-university-of-cape-town-rvm_2017-08-15.csl
 ---
 
