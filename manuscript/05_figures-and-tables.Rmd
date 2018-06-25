@@ -37,8 +37,6 @@ knitr::kable(
 
 ## Figures {-}
 
-### (Environment section) {-}
-
 ```{r roughness-violins, fig.cap="(ref:roughness-violins)"}
 knitr::include_graphics(here::here("figures/roughness-violins.png"))
 ```
@@ -51,8 +49,6 @@ knitr::include_graphics(here::here("figures/roughness-IQuR.png"))
 ```
 
 (ref:roughness-IQuR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQuR$) of Z-scaled roughness values (Equation \@ref(eq:roughness)) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
-
-### (Richness & turnover section) {-}
 
 ```{r turnover-vs-geodist, fig.cap="(ref:turnover-vs-geodist)"}
 knitr::include_graphics(here::here("figures/turnover-vs-geodist.png"))
