@@ -98,13 +98,12 @@
 <li class="chapter" data-level="" data-path="results-1.html"><a href="results-1.html#describing-environmental-heterogeneity-numerically-across-scales"><i class="fa fa-check"></i>Describing environmental heterogeneity numerically across scales</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i>Discussion</a></li>
-<li class="chapter" data-level="" data-path="figures-and-tables.html"><a href="figures-and-tables.html"><i class="fa fa-check"></i>Figures and tables</a><ul>
-<li class="chapter" data-level="" data-path="figures-and-tables.html"><a href="figures-and-tables.html#tables"><i class="fa fa-check"></i>Tables</a></li>
-<li class="chapter" data-level="" data-path="figures-and-tables.html"><a href="figures-and-tables.html#figures"><i class="fa fa-check"></i>Figures</a></li>
-</ul></li>
+<li class="chapter" data-level="" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i>Tables</a></li>
+<li class="chapter" data-level="" data-path="figures.html"><a href="figures.html"><i class="fa fa-check"></i>Figures</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#tables-1"><i class="fa fa-check"></i>Tables</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#figures-1"><i class="fa fa-check"></i>Figures</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r-package-bibliography"><i class="fa fa-check"></i>R package bibliography</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="biosketches.html"><a href="biosketches.html"><i class="fa fa-check"></i>Biosketches</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -130,8 +129,8 @@
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <!--2018-04-26-->
-<p>These analyses required definitions of the boundaries of the two regions, environmental data for the two regions, and geospatially-explicit vascular plant occurrence records. The definitions of the regions used were … <!--TODO: find these definitions-->. The publically available data for these boundaries as shape files used were used<!--TODO: add these refs-->. The geospatial and plant data were acquired from publicly available datasets, and processed as needed. The environmental variables chosen (Table 1) for this study were intended to cover a reasonable spread of climatic, edaphic, and ecologically relevant environmental axes, and are not intended to be exhaustive.</p>
-<p>We carried out this investigation using four principle spatial scales: 0.05º x 0.05º squares (the finest common resolution among the environmental data sources used), quarter degree squares (QDS) <span class="citation">(Larsen et al. 2009)</span>, half degree squares (HDS) <span class="citation">(Larsen et al. 2009)</span> and three-quarter degree squares (3QDS). Note, at least for the Cape, most plant occurrence records are only accurate to QDS level. Thus, any analysis involving species data was necessary limited to scales above and including QDS. Analyses were performed in <code>R</code> v3.5.0 <span class="citation">(<span class="citeproc-not-found" data-reference-id="RCoreTeam2018"><strong>???</strong></span>)</span>. Version-numbers of specific <code>R</code> packages used are presented in the bibliography, or in text where applicable.</p>
+<p>These analyses required definitions of the boundaries of the two regions, environmental data for the two regions, and geospatially-explicit vascular plant occurrence records. The definitions of the regions used were … <!--TODO: find these definitions-->. The publically available data for these boundaries as shape files used were used<!--TODO: add these refs-->. The geospatial and plant data were acquired from publicly available datasets, and processed as needed. The environmental variables chosen (Table <a href="tables.html#tab:data-sources">1</a>) for this study were intended to cover a reasonable spread of climatic, edaphic, and ecologically relevant environmental axes, and are not intended to be exhaustive. We selected variables describing topography (elevation), productivity (NDVI), soil status, and climate and climatic seasonality.</p>
+<p>We carried out this investigation using four principle spatial scales: 0.05º x 0.05º squares (the finest common resolution among the environmental data sources used), quarter degree squares (QDS) <span class="citation">(Larsen et al. 2009)</span>, half degree squares (HDS) <span class="citation">(Larsen et al. 2009)</span> and three-quarter degree squares (3QDS). Note, at least for the Cape, most plant occurrence records are only accurate to QDS level. Thus, any analysis involving species data was necessary limited to scales above and including QDS. Analyses were performed in <code>R</code> v3.5.0 <span class="citation">(<span class="citeproc-not-found" data-reference-id="RCoreTeam2018"><strong>???</strong></span>)</span>. Version-numbers of specific <code>R</code> packages used are presented in the bibliography, or in text where applicable. Also see the appendix for a list of R packages used.</p>
 </div>
 <div id="environmental-data-sources" class="section level2">
 <h2>Environmental data sources</h2>

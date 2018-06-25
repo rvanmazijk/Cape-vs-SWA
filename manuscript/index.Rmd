@@ -36,7 +36,7 @@ This work was funded by the South African Department of Science and Technology (
 
 ## Abstract {-}
 
-<!--New Abstract for JBiogeog (300 words)-->
+<!--J. Biogeog.: 300 word abstract-->
 
 ### Aim {-}
 
@@ -48,7 +48,7 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 
 ### Location {-}
 
-The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australian Floristic Region (SWAFR)
+The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australia Floristic Region (SWAFR)
 
 ### Taxon {-}
 
@@ -79,6 +79,6 @@ Macroecology, biodiversity, plant species richness, Greater Cape Floristic Regio
 - half degree square (i.e. 0.50º x 0.50º) (HDS)
 - three-quarter degree square (i.e. 0.75º x 0.75º) (3QDS)
 - environmental heterogeneity (EH)
-- & environmental variables' abbreviations in Table 1
+- & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 
 For the sake of readability, we refer to the GCFR and SWAFR simply as the Cape and SWA throughout.
