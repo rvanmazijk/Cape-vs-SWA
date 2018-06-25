@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 ## Authors {-}
 
-Ruan van Mazijk^1^, Michael D. Cramer^1^, and G. Anthony Verboom^1^
+Ruan van Mazijk^1^, Michael D. Cramer^1^ and G. Anthony Verboom^1^
 
 ^1^: Department of Biological Sciences, University of Cape Town, Rondebosch, Cape Town, 7701
 
@@ -60,7 +60,7 @@ Vascular plants
 
 [Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics]
 
-### v-v Results {-}
+### Results {-}
 
 <!--TODO-->
 
