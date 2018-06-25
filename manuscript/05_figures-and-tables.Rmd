@@ -1,4 +1,4 @@
-# Figures & tables {-}
+# Figures and tables {-}
 
 <!--TODO: update paths, move captions to bookdown "text references"-->
 

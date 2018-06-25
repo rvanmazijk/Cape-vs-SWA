@@ -1,4 +1,4 @@
-# Methods
+# Materials and methods
 
 ```{r, message=FALSE, warning=FALSE, eval=FALSE}
 # FIXME
