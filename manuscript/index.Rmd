@@ -8,11 +8,10 @@ bibliography: ["refs.bib", "pkgs.bib"]
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    echo    = FALSE,
     eval    = TRUE,
+    echo    = FALSE,
     message = FALSE,
-    warning = FALSE,
-    cache   = FALSE
+    warning = FALSE
 )
 ```
 
