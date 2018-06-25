@@ -222,11 +222,8 @@ ggsave(
 
 # .... Turnover vs geodist -----------------------------------------------------
 
-taxa_turnover_geodist <- rbind(
-    cbind(rank = "species", species_turnover_geodist),
-    cbind(rank = "genus", genus_turnover_geodist),
-    cbind(rank = "family", family_turnover_geodist)
-)
+taxa_turnover_geodist <- cbind(rank = "species", species_turnover_geodist)
+# TODO: Genus and family level analyses in appendix?
 
 pink <- scales::hue_pal()(2)[[1]]
 dark_pink <- "#D8564D"
@@ -237,7 +234,7 @@ taxa_turnover_geodist %<>% mutate(region = ifelse(region == "GCFR", "Cape", "SWA
 taxa_turnover_geodist$region %<>% factor(levels = c("SWA", "Cape"))
 
 scatter_plot <- taxa_turnover_geodist %>%
-    group_by(region, rank) %>%
+    group_by(region) %>%
     sample_n(5000) %>%
     ggplot() +
     geom_point(aes(geodist, turnover, col = region), alpha = 0.25) +
@@ -245,10 +242,9 @@ scatter_plot <- taxa_turnover_geodist %>%
          y = "Turnover (Jaccards distance)") +
     scale_colour_manual(name = "Region",
                         values = c(bluu, pink)) +
-    facet_grid(~ rank) +
     theme_bw() +
     theme(panel.grid = element_blank(),
-          legend.position = c(0.5, 0.25))
+          legend.position = c(0.75, 0.25))
 
 rq_fits_added <- scatter_plot +
     geom_quantile(data = taxa_turnover_geodist %>%
@@ -263,17 +259,105 @@ rq_fits_added <- scatter_plot +
                   col = dark_bluu, size = 1,
                   quantiles = 0.05,
                   formula = y ~ log(x))
-
 fig <- rq_fits_added
+
 # Save
 ggsave(
     here::here("figures/turnover-vs-geodist.png"),
     fig,
-    width = 8, height = 3,
+    width = 4, height = 3,
     dpi = 300
 )
 
-# .... Turnover vs geodist model -----------------------------------------------
+# .... Gamma-beta-alpha @HDS ---------------------------------------------------
+
+gamma_vs_alpha_HDS_plot <-
+    ggplot(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ],
+           aes(avg_QDS_richness, richness, col = region)) +
+    geom_point() +
+    # Log t/form to normalise avg_QDS_richness scores
+    geom_smooth(formula = y ~ log(x + 1), method = "lm") +
+    labs(x = "Mean QDS richness",
+         y = "HDS richness") +
+    scale_color_discrete(name = "Region") +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          legend.position = c(0.75, 0.25))
+gamma_vs_beta_HDS_plot <-
+    ggplot(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ],
+           aes(avg_QDS_turnover, richness, col = region)) +
+    geom_point() +
+    geom_smooth(formula = y ~ x, method = "lm") +
+    labs(x = "Mean QDS turnover",
+         y = "HDS richness") +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          axis.text.y = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = "none")
+# TODO: Genus and family level analysis in appendix?
+
+# Plot 2 panels + legend
+fig <- cowplot::plot_grid(
+    gamma_vs_alpha_HDS_plot, gamma_vs_beta_HDS_plot,
+    nrow = 1, rel_widths = c(1, 0.9)
+)
+
+# Save
+ggsave(
+    here::here("figures/gamma-beta-alpha-HDS.png"),
+    fig,
+    width = 8, height = 4,
+    dpi = 300
+)
+
+
+# .... Gamma-beta-alpha @3QDS --------------------------------------------------
+
+gamma_vs_alpha_3QDS_plot <-
+    ggplot(gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "species", ],
+           aes(avg_QDS_richness, richness, col = region)) +
+    geom_point() +
+    # Log t/form to normalise avg_QDS_richness scores
+    geom_smooth(formula = y ~ log(x + 1), method = "lm") +
+    labs(x = "Mean QDS richness",
+         y = "3QDS richness") +
+    scale_color_discrete(name = "Region") +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          legend.position = c(0.75, 0.25))
+gamma_vs_beta_3QDS_plot <-
+    ggplot(gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "species", ],
+           aes(avg_QDS_turnover, richness, col = region)) +
+    geom_point() +
+    geom_smooth(formula = y ~ x, method = "lm") +
+    labs(x = "Mean QDS turnover",
+         y = "3QDS richness") +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          axis.text.y = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = "none")
+# TODO: Genus and family level analysis in appendix?
+
+# Plot 2 panels + legend
+fig <- cowplot::plot_grid(
+    gamma_vs_alpha_3QDS_plot, gamma_vs_beta_3QDS_plot,
+    nrow = 1, rel_widths = c(1, 0.9)
+)
+
+# Save
+ggsave(
+    here::here("figures/gamma-beta-alpha-3QDS.png"),
+    fig,
+    width = 8, height = 4,
+    dpi = 300
+)
+
+if (FALSE) {
+# TODO
+
+    # .... Turnover vs geodist model -----------------------------------------------
 
 species_turnover_geodist_m_tidy <-
     cbind(rank = "species", broom::tidy(species_turnover_geodist_m))
@@ -324,78 +408,10 @@ out
 
 #knitr::kable(out, caption = "\\label{rq_turnover_vs_geodist}$T_{ij} \\sim log(D_{ij}) + Region$")
 
-# .... Gamma-beta-alpha @HDS ---------------------------------------------------
-
-gamma_vs_alpha_HDS_plot <-
-    ggplot(gamma_beta_alpha_HDS,
-           aes(avg_QDS_richness, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    # Log t/form to normalise avg_QDS_richness scores
-    geom_smooth(formula = y ~ log(x + 1), method = "lm") +
-    labs(x = "Mean QDS richness",
-         y = "HDS richness") +
-    scale_color_discrete(name = "Region") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = c(0.9, 0.25))
-gamma_vs_beta_HDS_plot <-
-    ggplot(gamma_beta_alpha_HDS,
-           aes(avg_QDS_turnover, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    geom_smooth(formula = y ~ x, method = "lm") +
-    labs(x = "Mean QDS turnover",
-         y = "HDS richness") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = "none")
-
-# Plot 2 panels + legend
-cowplot::plot_grid(
-    gamma_vs_alpha_HDS_plot, gamma_vs_beta_HDS_plot,
-    nrow = 2
-)
-
-# .... Gamma-beta-alpha @3QDS --------------------------------------------------
-
-gamma_vs_alpha_3QDS_plot <-
-    ggplot(gamma_beta_alpha_3QDS,
-           aes(avg_QDS_richness, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    # Log t/form to normalise avg_QDS_richness scores
-    geom_smooth(formula = y ~ log(x + 1), method = "lm") +
-    labs(x = "Mean QDS richness",
-         y = "3QDS richness") +
-    scale_color_discrete(name = "Region") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = c(0.9, 0.25))
-gamma_vs_beta_3QDS_plot <-
-    ggplot(gamma_beta_alpha_3QDS,
-           aes(avg_QDS_turnover, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    geom_smooth(formula = y ~ x, method = "lm") +
-    labs(x = "Mean QDS turnover",
-         y = "3QDS richness") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = "none")
-
-# Plot 2 panels + legend
-cowplot::plot_grid(
-    gamma_vs_alpha_3QDS_plot, gamma_vs_beta_3QDS_plot,
-    nrow = 2
-)
-
-```
-
 # .... Taxa & environment section ----------------------------------------------
 
-```{r, eval=FALSE}
 ggplot(taxa_enviro_roughness_HDS[, c("region", "richness", "rank", "roughness_Elevation")], aes(roughness_Elevation, richness, col = region)) +
     geom_point() +
     facet_wrap(~ rank)
-```
+
+}

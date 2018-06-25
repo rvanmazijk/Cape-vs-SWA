@@ -18,7 +18,7 @@ knitr::kable(
 )
 ```
 
-(ref:data-sources) Table: Data sources used in this study. Abbreviations are as follows: ... **TODO**
+(ref:data-sources) Table: Data sources used in this study. Abbreviations are as follows:<!--TODO-->.
 
 ```{r species-model-table, results="asis"}
 import_all_objects_auto(here::here("outputs/06_species-turnover-and-richness/"))
@@ -60,150 +60,8 @@ knitr::include_graphics(here::here("figures/turnover-vs-geodist.png"))
 
 (ref:turnover-vs-geodist) Scatter-plot species turnover (as Jaccards distance) between cells against the geographic distance (m) between them, from both regions (coloured as keyed). Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity. Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region. Following a single 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable, a significant interaction between distance and region was found ($P < 0.05$), such that the SWAFR negatively impacted the distance slope term.
 
-```{r turnover-vs-geodist-m, results="asis", eval=FALSE}
-
-species_turnover_geodist_m_tidy <-
-    cbind(rank = "species", broom::tidy(species_turnover_geodist_m))
-genus_turnover_geodist_m_tidy <-
-    cbind(rank = "genus",   broom::tidy(genus_turnover_geodist_m))
-family_turnover_geodist_m_tidy <-
-    cbind(rank = "family",  broom::tidy(family_turnover_geodist_m))
-
-CI_to_P <- function(est, u, l, t = 1.96) {
-    # Based on <http://www.bmj.com/content/343/bmj.d2304>
-    SE <- (u - l) / (2 * t)
-    Z <- est / SE
-    P <- exp(
-        (-0.717 * Z) +
-        (-0.416 * (Z ^ 2))
-    )
-    return(P)
-}
-
-species_out <- species_turnover_geodist_m_tidy %>%
-    mutate(term = term,
-           l    = conf.low,
-           est  = estimate,
-           u    = conf.high) %>%
-    mutate(P = CI_to_P(est, u, l)) %>%
-    dplyr::select(rank, term, est, P)
-
-genus_out <- genus_turnover_geodist_m_tidy %>%
-    mutate(term = term,
-           l    = conf.low,
-           est  = estimate,
-           u    = conf.high) %>%
-    mutate(P = CI_to_P(est, u, l)) %>%
-    dplyr::select(rank, term, est, P)
-
-family_out <- family_turnover_geodist_m_tidy %>%
-    mutate(term = term,
-           l    = conf.low,
-           est  = estimate,
-           u    = conf.high) %>%
-    mutate(P = CI_to_P(est, u, l)) %>%
-    dplyr::select(rank, term, est, P)
-
-out <- rbind(species_out, genus_out, family_out)
-out
-
-#out %<>% dplyr::select(term, est)
-
-#knitr::kable(out, caption = "\\label{rq_turnover_vs_geodist}$T_{ij} \\sim log(D_{ij}) + Region$")
-
+```{r gamma-beta-alpha-HDS, fig.cap="(ref:gamma-beta-alpha-HDS)"}
+knitr::include_graphics(here::here("figures/gamma-beta-alpha-HDS.png"))
 ```
 
-```{r gamma-beta-alpha-HDS, fig.width=8, fig.height=8, eval=FALSE, fig.cap="(ref:gamma-beta-alpha-HDS)"}
-
-gamma_vs_alpha_HDS_plot <-
-    ggplot(gamma_beta_alpha_HDS,
-           aes(avg_QDS_richness, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    # Log t/form to normalise avg_QDS_richness scores
-    geom_smooth(formula = y ~ log(x + 1), method = "lm") +
-    labs(x = "Mean QDS richness",
-         y = "HDS richness") +
-    scale_color_discrete(name = "Region") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = c(0.9, 0.25))
-gamma_vs_beta_HDS_plot <-
-    ggplot(gamma_beta_alpha_HDS,
-           aes(avg_QDS_turnover, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    geom_smooth(formula = y ~ x, method = "lm") +
-    labs(x = "Mean QDS turnover",
-         y = "HDS richness") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = "none")
-
-# Plot 2 panels + legend
-cowplot::plot_grid(
-    gamma_vs_alpha_HDS_plot, gamma_vs_beta_HDS_plot,
-    nrow = 2
-)
-
-# No longer need code below (because of legend inset now)
-
-# Get legend (modified from <https://stackoverflow.com/questions/12539348/ggplot-separate-legend-and-plot>)
-
-#gg_legend<-function(a_ggplot){
-#    tmp <- ggplot_gtable(ggplot_build(a_ggplot))
-#    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-#    legend <- tmp$grobs[[leg]]
-#    legend
-#}
-#region_legend <-
-#    gg_legend(gamma_vs_alpha_plot + theme(legend.position = "right"))
-
-```
-
-(ref:gamma-beta-alph-HDS) Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text].
-
-```{r gamma-beta-alpha-3QDS, fig.width=8, fig.height=8, eval=FALSE, fig.cap="(ref:gamma-beta-alph-3QDS)"}
-
-gamma_vs_alpha_3QDS_plot <-
-    ggplot(gamma_beta_alpha_3QDS,
-           aes(avg_QDS_richness, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    # Log t/form to normalise avg_QDS_richness scores
-    geom_smooth(formula = y ~ log(x + 1), method = "lm") +
-    labs(x = "Mean QDS richness",
-         y = "3QDS richness") +
-    scale_color_discrete(name = "Region") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = c(0.9, 0.25))
-gamma_vs_beta_3QDS_plot <-
-    ggplot(gamma_beta_alpha_3QDS,
-           aes(avg_QDS_turnover, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank, scales = "free_y") +
-    geom_smooth(formula = y ~ x, method = "lm") +
-    labs(x = "Mean QDS turnover",
-         y = "3QDS richness") +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = "none")
-
-# Plot 2 panels + legend
-cowplot::plot_grid(
-    gamma_vs_alpha_3QDS_plot, gamma_vs_beta_3QDS_plot,
-    nrow = 2
-)
-
-```
-
-(ref:gamma-beta-alpha2) Same as \@ref(fig:gamma-beta-alpha-HDS), but for 3QDS, not HDS, as the focal scale.
-
-### (Taxa & environment section) {-}
-
-```{r, eval=FALSE}
-ggplot(taxa_enviro_roughness_HDS[, c("region", "richness", "rank", "roughness_Elevation")], aes(roughness_Elevation, richness, col = region)) +
-    geom_point() +
-    facet_wrap(~ rank)
-```
+(ref:gamma-beta-alpha-HDS) Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text].
