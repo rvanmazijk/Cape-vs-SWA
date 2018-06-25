@@ -1,0 +1,17 @@
+---
+title: "R package bibliography"
+output: md_document
+bibliography: pkgs.bib
+csl: harvard-university-of-cape-town-rvm_2017-08-15.csl
+nocite: '@*'
+---
+
+```{r, include=FALSE}
+source(here::here("setup.R"))
+```
+
+<!--To generate the bibliography of packages use, render this .Rmd document in R using rmarkdown::render()-->
+
+Please also consult pkgs.bib if need be.
+
+# References
