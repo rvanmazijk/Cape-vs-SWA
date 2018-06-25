@@ -1,0 +1,13 @@
+"Variable","Source (Dataset code)","Citation"
+"Elevation","SRTM (\<code\>)","@Farr2007"
+"**Climate & vegetation variables**",,
+"NDVI","MODIS (\<product code\>)","\<ref\>"
+"Surface T","MODIS (\<product code\>)","\<ref\>"
+"MAP","CHIRPS (\<product code\>)","\<ref\>"
+"PDQ","CHIRPS (\<product code\>)","\<ref\>"
+"**Soil variables (all from SoilGrids250m)**",,
+"pH","\<code\>","@Hengl2017"
+"CEC","\<code\>",
+"Soil C","\<code\>",
+"Clay","\<code\>",
+"Plant species occurrence","GBIF","\<ref\>"
