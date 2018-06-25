@@ -9,6 +9,9 @@ if (!require(pacman)) {
 }
 library(pacman)
 p_load(
+
+    # .... Analyses ------------------------------------------------------------
+
     # Data wrangling
     tidyverse, magrittr, reshape2, readr, readxl, rlang,
     here, glue, stringr, lubridate,
@@ -16,12 +19,16 @@ p_load(
     quantreg, broom, lmodel2, canprot,
     # Visualisation
     ggplot2, grid, gridExtra, visreg, ggfortify, cowplot, scales,
+
+    # .... Data processing -----------------------------------------------------
+
     # Parallel processing, nicer loops
     parallel, foreach,
     # GIS
     raster, rasterVis, sp, rgdal, spatstat, simecol,
     # Taxonomy
     taxize
+
 )
 
 # Create bibliography of all loaded packages
