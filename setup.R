@@ -34,6 +34,12 @@ bibtex::write.bib(
 # Tidy up
 rm(my_pkgs)
 
+# Record session information ---------------------------------------------------
+
+sink("sessionInfo.txt")
+sessionInfo()
+sink(NULL)
+
 # Import functions in functions/ -----------------------------------------------
 
 my_functions <- list.files(
