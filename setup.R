@@ -36,14 +36,14 @@ rm(my_pkgs)
 
 # Record session information ---------------------------------------------------
 
-sink("sessionInfo.txt")
+sink(here::here("manuscript/sessionInfo.txt"))
 sessionInfo()
 sink(NULL)
 
 # Import functions in functions/ -----------------------------------------------
 
 my_functions <- list.files(
-    here::here("functions"),
+    here::here("functions/"),
     pattern = ".R",
     full.names = TRUE
 )
