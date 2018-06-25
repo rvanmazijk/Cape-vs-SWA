@@ -2,394 +2,60 @@
 
 <!--TODO: update paths, move captions to bookdown "text references"-->
 
-```{r setup-analyses}
+```{r setup-figures, include=FALSE}
 source(here::here("setup.R"))
-output_paths <- here::here("analyses", c(
-    "04_outputs",
-    "05_outputs",
-    "06_outputs",
-    "07_outputs"
-))
-analysis_paths <- here::here("analyses", c(
-    "04_analyse-roughness-across-scales.R",
-    "05_analyse-species-turnover-w-distance.R",
-    "06_analyse-species-turnover-and-richness.R",
-    "07_analyse-species-and-roughness.R"
-))
-if (all(!folder_is_empty(output_paths))) {
-    map(
-        output_paths,
-        import_all_objects_auto
-    )
-} else {
-    # Otherwise run the analyses needed first (the function imports also)
-    source(here::here("analyses/01_import-region-polygons.R"))
-    source(here::here("analyses/02_import-floral-data.R"))
-    source(here::here("analyses/03_import-environmental-data.R"))
-    map2(
-        output_paths, analysis_paths,
-        source_if_needed,
-        import = TRUE
-    )
+if (folder_is_empty(here::here("figures/"), ignore = ".R")) {
+    source(here::here("figures/make-figures.R"))
 }
-var_names <- c(
-    "Elevation",
-    "MAP",
-    "PDQ",
-    "Surface T",
-    "NDVI",
-    "CEC",
-    "Clay",
-    "Soil C",
-    "pH"
-)
 ```
 
 ## Tables {-}
 
-Variable | Source (Dataset code) | Citation
----------|-----------------------|---------
-Elevation | SRTM (\<code\>) | @Farr2007
-**Climate & vegetation variables** | |
-NDVI | MODIS (\<product code\>) | \<ref\>
-Surface T | MODIS (\<product code\>) | \<ref\>
-MAP | CHIRPS (\<product code\>) | \<ref\>
-PDQ | CHIRPS (\<product code\>) | \<ref\>
-**Soil variables (all from SoilGrids250m)** | |
-pH | \<code\> | @Hengl2017
-CEC | \<code\> |
-Soil C | \<code\> |
-Clay | \<code\> |
-Plant species occurrence | GBIF | \<ref\>
+```{r data-sources, results="asis"}
+knitr::kable(
+    read_csv(here::here("manuscript/data-sources.csv")), 
+    caption = "(ref:data-sources)"
+)
+```
 
-Table: Data sources used in this study. Abbreviations are as follows: ... **TODO**
+(ref:data-sources) Table: Data sources used in this study. Abbreviations are as follows: ... **TODO**
 
 ```{r species-model-table, results="asis"}
-
-species_turnover_richness_HDS_m_tidy <- broom::tidy(species_turnover_richness_HDS_m)
-betterness_AIC <- species_HDS_AIC_table %$%
-    AIC %>%
-    subtract(min(species_HDS_AIC_table$AIC)) %>%
-    `[[`(2) %>%
-    round(digits = 2)
-
-out <- transmute(species_turnover_richness_HDS_m_tidy,
-    Term = term,
-    Estimate = round(estimate, digits = 3),
-    `P-value` = p.value %>%
-        round(digits = 3) %>%
-        format(scientific = FALSE) %>%
-        ifelse(. == "0.000",
-               "< 0.001",
-               .)
+import_all_objects_auto(here::here("outputs/06_species-turnover-and-richness/"))
+out <- richness_turnover_model_table(
+    species_turnover_richness_HDS_m, 
+    species_HDS_AIC_table
 )
-out$Term <- c(
-    "Intercept",
-    "$log(\\overline{S_{QDS}} + 1)$", "$\\overline{J_{QDS}}$", "SWAFR",
-    "$log(\\overline{S_{QDS}} + 1) \\times$ SWAFR",
-    "$\\overline{J_{QDS}} \\times$ SWAFR"
+knitr::kable(
+    out$model_table, 
+    align = c("l", "r", "r"), 
+    caption = "(ref:species-model-table)"
 )
-
-knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:species-model-table)")
-
 ```
 
-(ref:species-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
-
-```{r genus-model-table, results="asis"}
-
-genus_turnover_richness_HDS_m_tidy <- broom::tidy(genus_turnover_richness_HDS_m)
-betterness_AIC <- genus_HDS_AIC_table %$%
-    AIC %>%
-    subtract(min(genus_HDS_AIC_table$AIC)) %>%
-    `[[`(2) %>%
-    round(digits = 2)
-
-out <- transmute(genus_turnover_richness_HDS_m_tidy,
-    Term = term,
-    Estimate = round(estimate, digits = 3),
-    `P-value` = p.value %>%
-        round(digits = 3) %>%
-        format(scientific = FALSE) %>%
-        ifelse(. == "0.000",
-               "< 0.001",
-               .)
-)
-out$Term <- c(
-    "Intercept",
-    "$log(\\overline{S_{QDS}} + 1)$", "$\\overline{J_{QDS}}$", "SWAFR",
-    "$log(\\overline{S_{QDS}} + 1) \\times$ SWAFR",
-    "$\\overline{J_{QDS}} \\times$ SWAFR"
-)
-
-knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:genus-model-table)")
-
-```
-
-(ref:genus-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness ($S_{HDS}$) against the mean QDS genus richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
-
-```{r family-model-table, results="asis"}
-
-family_turnover_richness_HDS_m_tidy <- broom::tidy(family_turnover_richness_HDS_m)
-betterness_AIC <- family_HDS_AIC_table %$%
-    AIC %>%
-    subtract(min(family_HDS_AIC_table$AIC)) %>%
-    `[[`(2) %>%
-    round(digits = 2)
-
-out <- transmute(family_turnover_richness_HDS_m_tidy,
-    Term = term,
-    Estimate = round(estimate, digits = 3),
-    `P-value` = p.value %>%
-        round(digits = 3) %>%
-        format(scientific = FALSE) %>%
-        ifelse(. == "0.000",
-               "< 0.001",
-               .)
-)
-out$Term <- c(
-    "Intercept",
-    "$log(\\overline{S_{QDS}} + 1)$", "$\\overline{J_{QDS}}$", "SWAFR",
-    "$log(\\overline{S_{QDS}} + 1) \\times$ SWAFR",
-    "$\\overline{J_{QDS}} \\times$ SWAFR"
-)
-
-knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:family-model-table)")
-
-```
-
-(ref:family-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS family richness ($S_{HDS}$) against the mean QDS family richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form $S_{HDS} \sim \overline{S_{QDS}} + \overline{J_{QDS}} + SWAFR + \overline{S_{QDS}} \times$ SWAFR $+ \overline{J_{QDS}} \times$ SWAFR. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r betterness_AIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence SWA represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ## Figures {-}
 
 ### (Environment section) {-}
 
-```{r roughness-violins, fig.width=6, fig.height=6, fig.cap="(ref:roughness-violins)"}
-
-test_results_summary %<>%
-    gather(resolution, sig, -variable) %>%
-    filter(resolution %in% c("0.05 x 0.05",
-                             "0.75 x 0.75")) %>%
-    mutate(sig = ifelse(sig,
-                        "",
-                        "NS"),
-           region = "GCFR") %>%
-    mutate(region = ifelse(region == "GCFR",
-                           "Cape",
-                           "SWA"))
-test_results_summary <- data_for_violin_plot %>%
-    group_by(variable) %>%
-    summarise(y = 0.7 * max(z_roughness)) %>%
-    full_join(test_results_summary)
-test_results_summary$variable %<>% factor(levels = var_names)
-
-test_results_CLES_for_plot %<>%
-    mutate(resolution = ifelse(resolution == 0.05,
-                               "0.05 x 0.05",
-                               ifelse(resolution == 0.25,
-                                      "0.25 x 0.25",
-                                      ifelse(resolution == 0.50,
-                                             "0.50 x 0.50",
-                                             ifelse(resolution == 0.75,
-                                                    "0.75 x 0.75",
-                                                    NA)))))
-test_results_CLES_for_plot <- data_for_violin_plot %>%
-    group_by(variable) %>%
-    summarise(y = 0.9 * max(z_roughness)) %>%
-    full_join(test_results_CLES_for_plot)
-test_results_CLES_for_plot %<>%
-    # Convert from CLES of SWAFR - GCFR > 0 to GCFR - SWAFR > 0
-    # (i.e. to now show what proprtion of pairs the Cape is greater for)
-    mutate(CLES = 1 - CLES) %>%
-    # Now round and format
-    mutate(CLES = round(CLES, digits = 2))
-test_results_CLES_for_plot$variable %<>% factor(levels = var_names)
-
-data_for_violin_plot %<>%
-    mutate(region = ifelse(region == "GCFR",
-                           "Cape",
-                           "SWA"))
-data_for_violin_plot$variable %<>% factor(levels = var_names)
-
-panel_a <- data_for_violin_plot %>%
-    filter(resolution %in% c("0.05 x 0.05",
-                             "0.75 x 0.75"),
-           variable %in% c("Elevation",
-                           "MAP",
-                           "PDQ",
-                           "Surface T",
-                           "NDVI")) %>%
-    ggplot(aes(region, z_roughness, col = region)) +
-    scale_color_discrete(name = "Region") +
-    geom_violin() +
-    ylab("Z(roughness)") +
-    stat_summary(geom = "point", fun.y = median) +
-    facet_grid(variable ~ resolution, scales = "free_y") +
-    # Label significances (Mann-Whitney U)
-    geom_text(data = test_results_summary %>%
-                  filter(resolution %in% c("0.05 x 0.05",
-                                           "0.75 x 0.75"),
-                         variable %in% c("Elevation",
-                                         "MAP",
-                                         "PDQ",
-                                         "Surface T",
-                                         "NDVI")),
-              aes(y = y, label = sig),
-              x = 1.5,
-              col = "grey25") +
-    # Label CLES
-    geom_text(data = test_results_CLES_for_plot %>%
-                  filter(resolution %in% c("0.05 x 0.05",
-                                           "0.75 x 0.75"),
-                         variable %in% c("Elevation",
-                                         "MAP",
-                                         "PDQ",
-                                         "Surface T",
-                                         "NDVI")),
-              aes(y = y, label = CLES),
-              x = 1.5,
-              col = "grey25") +
-    theme_bw() +
-    theme(strip.background = element_blank(),
-          panel.grid = element_blank(),
-          axis.title.x = element_blank(),
-          axis.text.x = element_blank())
-
-panel_b <- data_for_violin_plot %>%
-    filter(resolution %in% c("0.05 x 0.05",
-                             "0.75 x 0.75"),
-           variable %in% c("CEC",
-                           "Clay",
-                           "Soil C",
-                           "pH")) %>%
-    ggplot(aes(region, z_roughness, col = region)) +
-    geom_violin() +
-    stat_summary(geom = "point", fun.y = median) +
-    facet_grid(variable ~ resolution, scales = "free_y") +
-    # Label significances (Mann-Whitney U)
-    geom_text(data = test_results_summary %>%
-                  filter(resolution %in% c("0.05 x 0.05",
-                                           "0.75 x 0.75"),
-                         variable %in% c("CEC",
-                                         "Clay",
-                                         "Soil C",
-                                         "pH")),
-              aes(y = y, label = sig),
-              x = 1.5,
-              col = "grey25") +
-    # Label CLES
-    geom_text(data = test_results_CLES_for_plot %>%
-                  filter(resolution %in% c("0.05 x 0.05",
-                                           "0.75 x 0.75"),
-                         variable %in% c("CEC",
-                                         "Clay",
-                                         "Soil C",
-                                         "pH")),
-              aes(y = y, label = CLES),
-              x = 1.5,
-              col = "grey25") +
-    theme_bw() +
-    theme(legend.position = "none",
-          strip.background = element_blank(),
-          panel.grid = element_blank(),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          axis.text.x = element_blank())
-
-region_legend <-
-    gridExtra::arrangeGrob(panel_a)[[1]][[1]]$grobs[[37]]
-panel_a <- panel_a + theme(legend.position = "none")
-
-panel_b <- cowplot::plot_grid(
-    panel_b, region_legend,
-    nrow = 2, rel_heights = c(4, 0.9)
-)
-cowplot::plot_grid(
-    panel_a, panel_b,
-    nrow = 1, rel_widths = c(1, 0.9),
-    labels = c("A", "B")
-)
-
+```{r roughness-violins, fig.cap="(ref:roughness-violins)"}
+knitr::include_graphics(here::here("figures/roughness-violins.png"))
 ```
 
 (ref:roughness-violins) Violin-plots of the distribution of roughness values (Z-scaled) for nine environmental variables in the GCFR and SWAFR, presented at 0.05º and 0.75º (= 3QDS) square cell scales. Roughness values were calculated following Equation \@ref(eq:roughness). Points represent the median of each distribution. Violin-plots were constructed with Gaussian distributions on data, with bandwidth following Silverman's 'rule of thumb' [@Silverman1986]. Roughness values were found to be significantly greater in the GCFR in all cases ($P \lt 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
 
 ```{r roughness-IQuR, fig.cap="(ref:roughness-IQuR)"}
 # Plot GCFR vs SWAFR 95%-interquantile ranges ~ scale
-IQ95R_data$variable %<>% factor(levels = var_names)
-IQ95R_data %<>%
-    mutate(region = ifelse(region == "GCFR",
-                           "Cape",
-                           "SWA"))
-ggplot(IQ95R_data,
-       aes(resolution, IXR,
-           col = region,
-           alpha = quantile,
-           group = paste(variable, region, quantile))) +
-    geom_point() +
-    geom_path() +
-    labs(x = "Resolution",
-         y = "IQuR") +
-    facet_wrap(~ variable) +
-    scale_color_discrete(name = "Region") +
-    scale_alpha_continuous(name = "Quantile",
-                           range = c(1.00, 0.40),
-                           breaks = c(0.95, 0.99)) +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 60, hjust = 1),
-          strip.background = element_blank(),
-          panel.grid = element_blank())
+knitr::include_graphics(here::here("figures/roughness-IQuR.png"))
 ```
 
 (ref:roughness-IQuR) Scatter-plots of the size of the 95%-to-5% and 99%-to-1% interquantile ranges ($IQuR$) of Z-scaled roughness values (Equation \@ref(eq:roughness)) against spatial resolution (cells as 0.05º to 0.75º squares (=3QDS)), for the GCFR (red) and SWAFR (blue). Lines connect points for illustration.
 
 ### (Richness & turnover section) {-}
 
-```{r turnover-vs-geodist, fig.width=4, fig.height=3, eval=FALSE, fig.cap="(ref:turnover-vs-geodist)"}
-
-taxa_turnover_geodist <- rbind(
-    cbind(rank = "species", species_turnover_geodist),
-    cbind(rank = "genus", genus_turnover_geodist),
-    cbind(rank = "family", family_turnover_geodist)
-)
-
-pink <- scales::hue_pal()(2)[[1]]
-dark_pink <- "#D8564D"
-bluu <- scales::hue_pal()(2)[[2]]
-dark_bluu <- "#009FA4"
-
-taxa_turnover_geodist$region %<>% factor(levels = c("SWAFR", "GCFR"))
-
-scatter_plot <- taxa_turnover_geodist %>%
-    group_by(region, rank) %>%
-    sample_n(5000) %>%
-    ggplot() +
-    geom_point(aes(geodist, turnover, col = region), alpha = 0.25) +
-    labs(x = "Distance between cells (m)",
-         y = "Turnover (Jaccards distance)") +
-    scale_colour_manual(name = "Region",
-                        values = c(bluu, pink)) +
-    facet_grid(~ rank) +
-    theme_bw() +
-    theme(panel.grid = element_blank(),
-          legend.position = c(0.5, 0.25))
-
-rq_fits_added <- scatter_plot +
-    geom_quantile(data = taxa_turnover_geodist %>%
-                      filter(region == "GCFR"),
-                  aes(geodist, turnover),
-                  col = dark_pink, size = 1,
-                  quantiles = 0.05) +#,
-                  #formula = y ~ log(x)) +
-    geom_quantile(data = taxa_turnover_geodist %>%
-                      filter(region == "SWAFR"),
-                  aes(geodist, turnover),
-                  col = dark_bluu, size = 1,
-                  quantiles = 0.05)#,
-                  #formula = y ~ log(x))
-
-plot(rq_fits_added)
-
+```{r turnover-vs-geodist, fig.cap="(ref:turnover-vs-geodist)"}
+knitr::include_graphics(here::here("figures/turnover-vs-geodist.png"))
 ```
 
 (ref:turnover-vs-geodist) Scatter-plot species turnover (as Jaccards distance) between cells against the geographic distance (m) between them, from both regions (coloured as keyed). Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity. Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region. Following a single 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable, a significant interaction between distance and region was found ($P < 0.05$), such that the SWAFR negatively impacted the distance slope term.
@@ -447,7 +113,7 @@ out
 
 ```
 
-```{r gamma-beta-alpha, fig.width=8, fig.height=8, fig.cap="(ref:gamma-beta-alpha)"}
+```{r gamma-beta-alpha-HDS, fig.width=8, fig.height=8, eval=FALSE, fig.cap="(ref:gamma-beta-alpha-HDS)"}
 
 gamma_vs_alpha_HDS_plot <-
     ggplot(gamma_beta_alpha_HDS,
@@ -495,9 +161,9 @@ cowplot::plot_grid(
 
 ```
 
-(ref:gamma-beta-alpha) Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text].
+(ref:gamma-beta-alph-HDS) Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (left), and the average species turnover (Jaccards distance) between QDS in a given HDS (right). Curves represent simples linear regressions of HDS richness against the two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences. The dashed horizontal line indicates HDS richness of 1500 species [discussed in text].
 
-```{r gamma-beta-alpha2, fig.width=8, fig.height=8, fig.cap="(ref:gamma-beta-alpha2)"}
+```{r gamma-beta-alpha-3QDS, fig.width=8, fig.height=8, eval=FALSE, fig.cap="(ref:gamma-beta-alph-3QDS)"}
 
 gamma_vs_alpha_3QDS_plot <-
     ggplot(gamma_beta_alpha_3QDS,
@@ -532,7 +198,7 @@ cowplot::plot_grid(
 
 ```
 
-(ref:gamma-beta-alpha2) Same as \@ref(fig:gamma-beta-alpha), but for 3QDS, not HDS, as the focal scale.
+(ref:gamma-beta-alpha2) Same as \@ref(fig:gamma-beta-alpha-HDS), but for 3QDS, not HDS, as the focal scale.
 
 ### (Taxa & environment section) {-}
 

@@ -1,1 +1,41 @@
-# (APPENDIX) Appendices {-}
+# Appendix
+
+```{r genus-model-table-HDS, results="asis"}
+out <- richness_turnover_model_table(
+    genus_turnover_richness_HDS_m, 
+    genus_HDS_AIC_table
+)
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:genus-model-table-HDS)")
+```
+
+(ref:genus-model-table-HDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness ($S_{HDS}$) against the mean QDS genus richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r family-model-table-HDS, results="asis"}
+out <- richness_turnover_model_table(
+    family_turnover_richness_HDS_m, 
+    family_HDS_AIC_table
+)
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:family-model-table-HDS)")
+```
+
+(ref:family-model-table-HDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS family richness ($S_{HDS}$) against the mean QDS family richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC``). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r genus-model-table-3QDS, results="asis"}
+out <- richness_turnover_model_table(
+    genus_turnover_richness_3QDS_m, 
+    genus_3QDS_AIC_table
+)
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:genus-model-table-3QDS)")
+```
+
+(ref:genus-model-table-3QDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of 3QDS genus richness ($S_{3QDS}$) against the mean QDS genus richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r family-model-table-3QDS, results="asis"}
+out <- richness_turnover_model_table(
+    family_turnover_richness_HDS_m, 
+    family_HDS_AIC_table
+)
+knitr::kable(out, align = c("l", "r", "r"), caption = "(ref:family-model-table-3QDS)")
+```
+
+(ref:family-model-table-3QDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of 3QDS family richness ($S_{3QDS}$) against the mean QDS family richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC``). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha) and \@ref(fig:gamma-beta-alpha2) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
