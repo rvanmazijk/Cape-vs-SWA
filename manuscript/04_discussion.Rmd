@@ -1,5 +1,15 @@
 # Discussion
 
+<!--2018-06-25-->
+
+<!--Environment section-->
+
+Conclusion: The Cape is more generally environmentally heterogeneous than the SWA, as expected (see prediction (i)). Though, there are cases where the SWA is arguably at-least-as-heterogeneous as the Cape, and we can observe here extreme regions of high edaphic heterogeneity, at fine scales, in SWA. These surpass the edaphic heterogeneity of the Cape, supporting our seventh prediction/conjecture.
+
+We also have support for prediction (ii), as seen in Fig. \@ref(fig:roughness-IQuR).
+
+<!--Old below-->
+
 I have provided support for the hypothesis that the difference in plant species richness between the GCFR and SWAFR is accounted for by the fact that the GCFR is more abiotically heterogeneous than the SWAFR. As expected, the GCFR is shown to possess (i) a quantifiably more heterogeneous environment, and (ii) is heterogeneous at a finer spatial scale than the SWAFR. I have shown that vascular plant species richness (iii) can be explained in terms of environmental conditions, including environmental heterogeneity, in both the GCFR and SWAFR. Also, I have shown that (iv) the set of environmental axes that explain plant species richness, both absolute and as heterogeneity, differs between the GCFR and SWAFR. These findings contribute towards an understanding of the ecological conditions that facilitate species coexistence (and likely stimulate ecological speciation) in these two regions.
 
 These two regions present differentiable environmental spaces, each with heterogeneity varying across spatial scales. The clear separation of the regions' topographic features is as expected (Figures \ref{PC-boxplots}A, \ref{quant-sexy-plots-climate-et-al}). Indeed, topography seems to be the most striking distinction between the regions. The Cape region has been found previously to have the second highest median topographic heterogeneity of the five Mediterranean-climate regions [@Bradshaw2014]. The GCFR has a much wider range of scales exhibited in the heterogeneity across its environmental axes. Notably, each region has finer scale heterogeneity in some variables, and coarser scale in others---neither region is necessarily more fine or coarse than the other, as it depends on the variable concerned. BRT-models of species richness in both regions reveal species richness to depend on those environmental axes that differentiate the two regions (Figures \ref{richness_pred_obs}), \ref{BRT_contribs_summary}). The importance of variables is also shown to vary with spatial scale (Figure \ref{BRT_contribs_summary}), as previously suggested may be the case when modelling geographic patterns of biodiversity [@Baudena2015]. Indeed, as @Cowling1996 describes differing patterns of species richness across spatial scales, so do the predictors of those patterns vary with scale [@Hart2017].
