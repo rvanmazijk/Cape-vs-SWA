@@ -128,173 +128,145 @@
 <div id="appendix" class="section level1">
 <h1>Appendix</h1>
 <table>
-<caption><span id="tab:genus-model-table-HDS">Table 3: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS genus richness (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS genus richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form in Equation <a href="materials-and-methods.html#eq:gamma-beta-alpha">(2)</a>. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 57.81). Note, this model does not represent those curves plot in Figures <a href="#fig:gamma-beta-alpha"><strong>??</strong></a> and <a href="#fig:gamma-beta-alpha2"><strong>??</strong></a> (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
+<caption><span id="tab:genus-model-table-HDS">Table 3: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS genus richness (right) and family richness (left) (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form in Equation <a href="materials-and-methods.html#eq:gamma-beta-alpha">(2)</a>. The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models were better fitting than similar models without region categories (<span class="math inline">\(\Delta AIC =\)</span> 57.81 and 22.11 for the genus and family models respectively). Note, these models do not represent those curves plot in Figures <a href="figures-and-tables.html#fig:gamma-beta-alpha-HDS">4</a> and <a href="appendix.html#fig:gamma-beta-alpha-3QDS">5</a> (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
 <thead>
 <tr class="header">
 <th align="left">Term</th>
 <th align="right">Estimate</th>
+<th></th>
 <th align="right">P-value</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left"></td>
+<td align="right"><strong>Genus</strong></td>
+<td><strong>Family</strong></td>
+<td align="right"><strong>Genus</strong></td>
+<td><strong>Family</strong></td>
+</tr>
+<tr class="even">
 <td align="left">Intercept</td>
 <td align="right">-908.668</td>
+<td>-127.213</td>
 <td align="right">0</td>
+<td>&lt; 0.001</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
 <td align="right">154.676</td>
+<td>27.219</td>
 <td align="right">0</td>
+<td>&lt; 0.001</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
 <td align="right">369.785</td>
+<td>63.28</td>
 <td align="right">0</td>
+<td>&lt; 0.001</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SWAFR</td>
 <td align="right">791.348</td>
+<td>77.765</td>
 <td align="right">0</td>
+<td>0.001</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
 <td align="right">-75.575</td>
+<td>-8.812</td>
 <td align="right">0</td>
+<td>&lt; 0.001</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
 <td align="right">-545.713</td>
+<td>-58.075</td>
 <td align="right">0</td>
+<td>0.007</td>
 </tr>
 </tbody>
 </table>
 
 <table>
-<caption><span id="tab:family-model-table-HDS">Table 4: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of HDS family richness (<span class="math inline">\(S_{HDS}\)</span>) against the mean QDS family richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form in Equation <a href="materials-and-methods.html#eq:gamma-beta-alpha">(2)</a>. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 22.11`). Note, this model does not represent those curves plot in Figures <a href="#fig:gamma-beta-alpha"><strong>??</strong></a> and <a href="#fig:gamma-beta-alpha2"><strong>??</strong></a> (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
+<caption><span id="tab:species-genus-family-model-table-3QDS">Table 4: </span>(ref:species-genus-family-model-table-3QDS)</caption>
 <thead>
 <tr class="header">
 <th align="left">Term</th>
 <th align="right">Estimate</th>
+<th></th>
+<th></th>
 <th align="right">P-value</th>
+<th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left"></td>
+<td align="right"><strong>Species</strong></td>
+<td><strong>Genus</strong></td>
+<td><strong>Family</strong></td>
+<td align="right"><strong>Species</strong></td>
+<td><strong>Genus</strong></td>
+<td><strong>Family</strong></td>
+</tr>
+<tr class="even">
 <td align="left">Intercept</td>
-<td align="right">-127.213</td>
+<td align="right">-9989.933</td>
+<td>-1430.292</td>
+<td>-164.551</td>
 <td align="right">&lt; 0.001</td>
+<td>&lt; 0.001</td>
+<td>&lt; 0.001</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
-<td align="right">27.219</td>
+<td align="right">1045.247</td>
+<td>209.9</td>
+<td>32.795</td>
 <td align="right">&lt; 0.001</td>
+<td>&lt; 0.001</td>
+<td>&lt; 0.001</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
-<td align="right">63.280</td>
+<td align="right">5407.725</td>
+<td>708.407</td>
+<td>89.717</td>
 <td align="right">&lt; 0.001</td>
+<td>&lt; 0.001</td>
+<td>0.006</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SWAFR</td>
-<td align="right">77.765</td>
-<td align="right">0.001</td>
+<td align="right">8276.783</td>
+<td>1198.122</td>
+<td>107.025</td>
+<td align="right">&lt; 0.001</td>
+<td>&lt; 0.001</td>
+<td>0.014</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
-<td align="right">-8.812</td>
+<td align="right">-619.292</td>
+<td>-108.48</td>
+<td>-12.027</td>
 <td align="right">&lt; 0.001</td>
+<td>&lt; 0.001</td>
+<td>0.003</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
-<td align="right">-58.075</td>
-<td align="right">0.007</td>
-</tr>
-</tbody>
-</table>
-
-<table>
-<caption><span id="tab:genus-model-table-3QDS">Table 5: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of 3QDS genus richness (<span class="math inline">\(S_{3QDS}\)</span>) against the mean QDS genus richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form in Equation <a href="materials-and-methods.html#eq:gamma-beta-alpha">(2)</a>. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 32.24). Note, this model does not represent those curves plot in Figures <a href="#fig:gamma-beta-alpha"><strong>??</strong></a> and <a href="#fig:gamma-beta-alpha2"><strong>??</strong></a> (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
-<thead>
-<tr class="header">
-<th align="left">Term</th>
-<th align="right">Estimate</th>
-<th align="right">P-value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Intercept</td>
-<td align="right">-1430.292</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="even">
-<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
-<td align="right">209.900</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="odd">
-<td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
-<td align="right">708.407</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="even">
-<td align="left">SWAFR</td>
-<td align="right">1198.122</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="odd">
-<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
-<td align="right">-108.480</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="even">
-<td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
-<td align="right">-827.891</td>
-<td align="right">0.001</td>
-</tr>
-</tbody>
-</table>
-
-<table>
-<caption><span id="tab:family-model-table-3QDS">Table 6: </span>Estimated regression coefficients and significances (<span class="math inline">\(P\)</span>-value) following multiple linear regression of 3QDS family richness (<span class="math inline">\(S_{3QDS}\)</span>) against the mean QDS family richness (<span class="math inline">\(\overline{S_{QDS}}\)</span>) and turnover (<span class="math inline">\(\overline{J_{QDS}}\)</span>; Jaccards distance) within a given HDS, of the form in Equation <a href="materials-and-methods.html#eq:gamma-beta-alpha">(2)</a>. The GCFR was fit as the baseline, hence the SWAFR represents the categorical term here. This was model was better fitting than a similar model without a region category (<span class="math inline">\(\Delta AIC =\)</span> 22.11`). Note, this model does not represent those curves plot in Figures <a href="#fig:gamma-beta-alpha"><strong>??</strong></a> and <a href="#fig:gamma-beta-alpha2"><strong>??</strong></a> (there, the curves are from simple linear regressions of the variables in each panel, separated by region).</caption>
-<thead>
-<tr class="header">
-<th align="left">Term</th>
-<th align="right">Estimate</th>
-<th align="right">P-value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Intercept</td>
-<td align="right">-127.213</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="even">
-<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1)\)</span></td>
-<td align="right">27.219</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="odd">
-<td align="left"><span class="math inline">\(\overline{J_{QDS}}\)</span></td>
-<td align="right">63.280</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="even">
-<td align="left">SWAFR</td>
-<td align="right">77.765</td>
-<td align="right">0.001</td>
-</tr>
-<tr class="odd">
-<td align="left"><span class="math inline">\(log(\overline{S_{QDS}} + 1) \times\)</span> SWAFR</td>
-<td align="right">-8.812</td>
-<td align="right">&lt; 0.001</td>
-</tr>
-<tr class="even">
-<td align="left"><span class="math inline">\(\overline{J_{QDS}} \times\)</span> SWAFR</td>
-<td align="right">-58.075</td>
-<td align="right">0.007</td>
+<td align="right">-5315.702</td>
+<td>-827.891</td>
+<td>-81.455</td>
+<td align="right">0.002</td>
+<td>0.001</td>
+<td>0.038</td>
 </tr>
 </tbody>
 </table>
