@@ -43,9 +43,10 @@ rm(my_pkgs)
 
 # Record session information ---------------------------------------------------
 
-sink(here::here("manuscript/sessionInfo.txt"))
-sessionInfo()
-sink(NULL)
+capture.output(
+    sessionInfo(),
+    file = here::here("manuscript/sessionInfo.txt")
+)
 
 # Import functions in functions/ -----------------------------------------------
 
