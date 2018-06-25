@@ -54,6 +54,20 @@ Regarding predictions (iii) and (iv), we wished to compare the degree and import
 
 HDS QDS beta analysis. This is for (iv).
 
+\begin{align}
+    \widehat{S_{HDS}}_i = 
+        &\ \beta_0 + \\
+        &\ \beta_1 \overline{S_{QDS}}_i + 
+            \beta_2 \overline{J_{QDS}}_i + 
+            \beta_3 SWA_i + \\
+        &\ \beta_4 \overline{S_{QDS}}_i SWA_i  + 
+            \beta_5 \overline{J_{QDS}}_i SWA_i + 
+            \epsilon_i
+    (\#eq:gamma-beta-alpha)
+\end{align}
+
+where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$
+
 ### Predicting species richness and turnover with environmental heterogeneity
 
 <!--TODO: comply w/ bookdown equation guidelines-->
