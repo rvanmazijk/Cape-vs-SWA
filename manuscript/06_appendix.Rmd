@@ -15,7 +15,7 @@ out <- my_model_table(
 knitr::kable(out$model_table, caption = "(ref:turnover-vs-geodist-model-table)")
 ```
 
-(ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of species turnover (Jaccards distance) as a function of the geographic distance ($\Delta x$) ($log$-transformed) between two QDS cells, for all cells (as opposed to a random subset of 5000, as in Fig. \@ref(fig:turnover-vs-geodist)). SWA was the baseline here, hence Cape has its own coefficient. Note, in Fig. \@ref(fig:turnover-vs-geodist), the plotted curves are derived from separate quantile regressions for each region's data.
+(ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (Jaccards distance) as a function of the geographic distance (m, $\Delta x$) ($log$-transformed) between two QDS cells, for all cells (as opposed to a random subset of 5000, as in Fig. \@ref(fig:turnover-vs-geodist)). SWA was the baseline here, hence Cape has its own coefficient. Note, in Fig. \@ref(fig:turnover-vs-geodist), the plotted curves are derived from separate quantile regressions for each region's data.
 
 ```{r genus-model-table-HDS, results="asis"}
 genus_out <- my_model_table(
