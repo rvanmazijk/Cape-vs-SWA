@@ -179,7 +179,7 @@ species_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
     species_turnover_geodist,
-    here::here("analyses/05_outputs/species_turnover_geodist.csv")
+    here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist.csv")
 )
 
 # .... Genus -------------------------------------------------------------------
@@ -194,7 +194,7 @@ genus_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
     genus_turnover_geodist,
-    here::here("analyses/05_outputs/genus_turnover_geodist.csv")
+    here::here("outputs/05_species-turnover-w-distance/genus_turnover_geodist.csv")
 )
 
 # .... Family ------------------------------------------------------------------
@@ -209,7 +209,7 @@ family_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
     family_turnover_geodist,
-    here::here("analyses/05_outputs/family_turnover_geodist.csv")
+    here::here("outputs/05_species-turnover-w-distance/family_turnover_geodist.csv")
 )
 
 # Model ------------------------------------------------------------------------
@@ -223,7 +223,7 @@ species_turnover_geodist_m <- species_turnover_geodist %>%
 # Save to disc
 write_rds(
     species_turnover_geodist_m,
-    here::here("analyses/05_outputs/species_turnover_geodist_m.RDS")
+    here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m.RDS")
 )
 
 # .... Genus -------------------------------------------------------------------
@@ -235,7 +235,7 @@ genus_turnover_geodist_m <- genus_turnover_geodist %>%
 # Save to disc
 write_rds(
     genus_turnover_geodist_m,
-    here::here("analyses/05_outputs/genus_turnover_geodist_m.RDS")
+    here::here("outputs/05_species-turnover-w-distance/genus_turnover_geodist_m.RDS")
 )
 
 # .... Family ------------------------------------------------------------------
@@ -247,5 +247,5 @@ family_turnover_geodist_m <- family_turnover_geodist %>%
 # Save to disc
 write_rds(
     family_turnover_geodist_m,
-    here::here("analyses/05_outputs/family_turnover_geodist_m.RDS")
+    here::here("outputs/05_species-turnover-w-distance/family_turnover_geodist_m.RDS")
 )

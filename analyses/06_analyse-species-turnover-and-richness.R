@@ -119,7 +119,7 @@ gamma_beta_alpha_HDS <- rbind(
 # Save to disc
 write_csv(
     gamma_beta_alpha_HDS,
-    here::here("analyses/06_outputs/gamma_beta_alpha_HDS.csv")
+    here::here("outputs/06_species-turnover-and-richness/gamma_beta_alpha_HDS.csv")
 )
 
 # Tidy up
@@ -246,7 +246,7 @@ gamma_beta_alpha_3QDS <- rbind(
 # Save to disc
 write_csv(
     gamma_beta_alpha_3QDS,
-    here::here("analyses/06_outputs/gamma_beta_alpha_3QDS.csv")
+    here::here("outputs/06_species-turnover-and-richness/gamma_beta_alpha_3QDS.csv")
 )
 
 # Tidy up
@@ -361,51 +361,51 @@ family_3QDS_AIC_table <-
 # Save to disc
 write_rds(
     species_turnover_richness_HDS_m,
-    here::here("analyses/06_outputs/species_turnover_richness_HDS_m.RDS")
+    here::here("outputs/06_species-turnover-and-richness/species_turnover_richness_HDS_m.RDS")
 )
 write_rds(
     genus_turnover_richness_HDS_m,
-    here::here("analyses/06_outputs/genus_turnover_richness_HDS_m.RDS")
+    here::here("outputs/06_species-turnover-and-richness/genus_turnover_richness_HDS_m.RDS")
 )
 write_rds(
     family_turnover_richness_HDS_m,
-    here::here("analyses/06_outputs/family_turnover_richness_HDS_m.RDS")
+    here::here("outputs/06_species-turnover-and-richness/family_turnover_richness_HDS_m.RDS")
 )
 write_rds(
     species_turnover_richness_3QDS_m,
-    here::here("analyses/06_outputs/species_turnover_richness_3QDS_m.RDS")
+    here::here("outputs/06_species-turnover-and-richness/species_turnover_richness_3QDS_m.RDS")
 )
 write_rds(
     genus_turnover_richness_3QDS_m,
-    here::here("analyses/06_outputs/genus_turnover_richness_3QDS_m.RDS")
+    here::here("outputs/06_species-turnover-and-richness/genus_turnover_richness_3QDS_m.RDS")
 )
 write_rds(
     family_turnover_richness_3QDS_m,
-    here::here("analyses/06_outputs/family_turnover_richness_3QDS_m.RDS")
+    here::here("outputs/06_species-turnover-and-richness/family_turnover_richness_3QDS_m.RDS")
 )
 write_csv(
     species_HDS_AIC_table,
-    here::here("analyses/06_outputs/species_HDS_AIC_table.csv")
+    here::here("outputs/06_species-turnover-and-richness/species_HDS_AIC_table.csv")
 )
 write_csv(
     genus_HDS_AIC_table,
-    here::here("analyses/06_outputs/genus_HDS_AIC_table.csv")
+    here::here("outputs/06_species-turnover-and-richness/genus_HDS_AIC_table.csv")
 )
 write_csv(
     family_HDS_AIC_table,
-    here::here("analyses/06_outputs/family_HDS_AIC_table.csv")
+    here::here("outputs/06_species-turnover-and-richness/family_HDS_AIC_table.csv")
 )
 write_csv(
     species_3QDS_AIC_table,
-    here::here("analyses/06_outputs/species_3QDS_AIC_table.csv")
+    here::here("outputs/06_species-turnover-and-richness/species_3QDS_AIC_table.csv")
 )
 write_csv(
     genus_3QDS_AIC_table,
-    here::here("analyses/06_outputs/genus_3QDS_AIC_table.csv")
+    here::here("outputs/06_species-turnover-and-richness/genus_3QDS_AIC_table.csv")
 )
 write_csv(
     family_3QDS_AIC_table,
-    here::here("analyses/06_outputs/family_3QDS_AIC_table.csv")
+    here::here("outputs/06_species-turnover-and-richness/family_3QDS_AIC_table.csv")
 )
 
 # TODO: tidy up ls() w/ rm()
