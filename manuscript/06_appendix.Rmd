@@ -1,0 +1,74 @@
+# Appendix {-}
+
+## Tables {-}
+
+```{r genus-model-table-HDS, results="asis"}
+genus_out <- richness_turnover_model_table(
+    genus_turnover_richness_HDS_m, 
+    genus_HDS_AIC_table
+)
+family_out <- richness_turnover_model_table(
+    family_turnover_richness_HDS_m, 
+    family_HDS_AIC_table
+)
+out <- data.frame(
+    term       = c("",           genus_out$model_table$Term),
+    genus_est  = c("**Genus**",  genus_out$model_table$Estimate),
+    family_est = c("**Family**", family_out$model_table$Estimate),
+    genus_P    = c("**Genus**",  genus_out$model_table$`P-value`),
+    family_P   = c("**Family**", family_out$model_table$`P-value`)
+)
+knitr::kable(
+    out,
+    col.names = c("Term", "Estimate", "", "P-value", ""),
+    align = c("l", "r", "r", "r", "r"),
+    caption = "(ref:genus-family-model-table-HDS)"
+)
+```
+
+(ref:genus-family-model-table-HDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness (right) and family richness (left) ($S_{HDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models were better fitting than similar models without region categories ($\Delta AIC =$ `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the genus and family models respectively). Note, these models do not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r species-genus-family-model-table-3QDS, results="asis"}
+species_out <- richness_turnover_model_table(
+    species_turnover_richness_3QDS_m, 
+    species_3QDS_AIC_table
+)
+genus_out <- richness_turnover_model_table(
+    genus_turnover_richness_3QDS_m, 
+    genus_3QDS_AIC_table
+)
+family_out <- richness_turnover_model_table(
+    family_turnover_richness_3QDS_m, 
+    family_3QDS_AIC_table
+)
+out <- data.frame(
+    term         = c("",            genus_out$model_table$Term),
+    species_est  = c("**Species**", species_out$model_table$Estimate),
+    genus_est    = c("**Genus**",   genus_out$model_table$Estimate),
+    family_est   = c("**Family**",  family_out$model_table$Estimate),
+    species_P    = c("**Species**", species_out$model_table$`P-value`),
+    genus_P      = c("**Genus**",   genus_out$model_table$`P-value`),
+    family_P     = c("**Family**",  family_out$model_table$`P-value`)
+)
+knitr::kable(
+    out,
+    col.names = c("Term", "Estimate", "", "", "P-value", "", ""),
+    align = c("l", "r", "r", "r", "r", "r", "r"),
+    caption = "(ref:species-genus-family-model-table-3QDS)"
+)
+```
+
+(ref:species-genus-family-model-table-3QDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of 3QDS species, genus and family richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Capa was fit as the baseline, hence the SWA represents the categorical term here. These models wer better fitting than similar models without region categoris ($\Delta AIC =$ `r species_out$deltaAIC`, `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the species, genus and family models respectively). Note, these models does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+## Figures {-}
+
+```{r gamma-beta-alpha-3QDS, fig.cap="(ref:gamma-beta-alpha-3QDS)"}
+knitr::include_graphics(here::here("figures/gamma-beta-alpha-3QDS.png"))
+```
+
+(ref:gamma-beta-alpha-3QDS) Same as \@ref(fig:gamma-beta-alpha-HDS), but for 3QDS, not HDS, as the focal scale.
+
+## R package bibliography {-}
+
+```{r, child="pkg-bibliography/pkg-bibliography.md"}
+```
