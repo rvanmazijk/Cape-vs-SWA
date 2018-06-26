@@ -355,63 +355,13 @@ ggsave(
 )
 
 if (FALSE) {
-# TODO
-
-    # .... Turnover vs geodist model -----------------------------------------------
-
-species_turnover_geodist_m_tidy <-
-    cbind(rank = "species", broom::tidy(species_turnover_geodist_m))
-genus_turnover_geodist_m_tidy <-
-    cbind(rank = "genus",   broom::tidy(genus_turnover_geodist_m))
-family_turnover_geodist_m_tidy <-
-    cbind(rank = "family",  broom::tidy(family_turnover_geodist_m))
-
-CI_to_P <- function(est, u, l, t = 1.96) {
-    # Based on <http://www.bmj.com/content/343/bmj.d2304>
-    SE <- (u - l) / (2 * t)
-    Z <- est / SE
-    P <- exp(
-        (-0.717 * Z) +
-        (-0.416 * (Z ^ 2))
-    )
-    return(P)
-}
-
-species_out <- species_turnover_geodist_m_tidy %>%
-    mutate(term = term,
-           l    = conf.low,
-           est  = estimate,
-           u    = conf.high) %>%
-    mutate(P = CI_to_P(est, u, l)) %>%
-    dplyr::select(rank, term, est, P)
-
-genus_out <- genus_turnover_geodist_m_tidy %>%
-    mutate(term = term,
-           l    = conf.low,
-           est  = estimate,
-           u    = conf.high) %>%
-    mutate(P = CI_to_P(est, u, l)) %>%
-    dplyr::select(rank, term, est, P)
-
-family_out <- family_turnover_geodist_m_tidy %>%
-    mutate(term = term,
-           l    = conf.low,
-           est  = estimate,
-           u    = conf.high) %>%
-    mutate(P = CI_to_P(est, u, l)) %>%
-    dplyr::select(rank, term, est, P)
-
-out <- rbind(species_out, genus_out, family_out)
-out
-
-#out %<>% dplyr::select(term, est)
-
-#knitr::kable(out, caption = "\\label{rq_turnover_vs_geodist}$T_{ij} \\sim log(D_{ij}) + Region$")
-
-# .... Taxa & environment section ----------------------------------------------
-
-ggplot(taxa_enviro_roughness_HDS[, c("region", "richness", "rank", "roughness_Elevation")], aes(roughness_Elevation, richness, col = region)) +
+    # TODO: Taxa & environment section -----------------------------------------
+    ggplot(taxa_enviro_roughness_HDS[, c("region",
+                                         "richness",
+                                         "rank",
+                                         "roughness_Elevation")],
+           aes(roughness_Elevation, richness,
+               col = region)) +
     geom_point() +
     facet_wrap(~ rank)
-
 }

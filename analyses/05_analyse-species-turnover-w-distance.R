@@ -225,6 +225,17 @@ write_rds(
     species_turnover_geodist_m,
     here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m.RDS")
 )
+# Save summaries to disc
+species_turnover_geodist_m_tidy <- broom::tidy(species_turnover_geodist_m)
+write_csv(
+    species_turnover_geodist_m_tidy,
+    here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m_tidy.csv")
+)
+species_turnover_geodist_m_glance <- broom::glance(species_turnover_geodist_m)
+write_csv(
+    species_turnover_geodist_m_glance,
+    here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m_glance.csv")
+)
 
 # .... Genus -------------------------------------------------------------------
 
@@ -237,6 +248,7 @@ write_rds(
     genus_turnover_geodist_m,
     here::here("outputs/05_species-turnover-w-distance/genus_turnover_geodist_m.RDS")
 )
+# TODO: save summaries to disc
 
 # .... Family ------------------------------------------------------------------
 
@@ -249,3 +261,4 @@ write_rds(
     family_turnover_geodist_m,
     here::here("outputs/05_species-turnover-w-distance/family_turnover_geodist_m.RDS")
 )
+# TODO: save summaries to disc
