@@ -61,7 +61,7 @@ HDS QDS beta analysis. This is for (iv).
     (\#eq:gamma-beta-alpha)
 \end{align}
 
-where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$
+where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_{QDS}}$ is $log(x + 1)$-transformed.
 
 ### Predicting species richness and turnover with environmental heterogeneity
 

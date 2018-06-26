@@ -2,6 +2,21 @@
 
 ## Tables {-}
 
+```{r turnover-vs-geodist-model-table, results="asis"}
+out <- species_turnover_geodist_m_tidy
+tidy_terms <- term = c(
+    "Intercept", 
+    "$log(\\Delta x)$",
+    "Cape",
+    "$log \\Delta x \\times$ Cape"
+)
+out %<>% transmute(
+    term = tidy_terms,
+    estimate = 
+)
+
+```
+
 ```{r genus-model-table-HDS, results="asis"}
 genus_out <- richness_turnover_model_table(
     genus_turnover_richness_HDS_m, 
@@ -26,7 +41,7 @@ knitr::kable(
 )
 ```
 
-(ref:genus-family-model-table-HDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness (right) and family richness (left) ($S_{HDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models were better fitting than similar models without region categories ($\Delta AIC =$ `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the genus and family models respectively). Note, these models do not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:genus-family-model-table-HDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness (right) and family richness (left) ($S_{HDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models were better fitting than similar models without region categories ($\Delta AIC =$ `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the genus and family models respectively). Note, these models do not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ```{r species-genus-family-model-table-3QDS, results="asis"}
 species_out <- richness_turnover_model_table(
@@ -58,7 +73,7 @@ knitr::kable(
 )
 ```
 
-(ref:species-genus-family-model-table-3QDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of 3QDS species, genus and family richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Capa was fit as the baseline, hence the SWA represents the categorical term here. These models wer better fitting than similar models without region categoris ($\Delta AIC =$ `r species_out$deltaAIC`, `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the species, genus and family models respectively). Note, these models does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-genus-family-model-table-3QDS) Estimated regression coefficients and significances ($P$-value) following multiple linear regression of 3QDS species, genus and family richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models wer better fitting than similar models without region categories ($\Delta AIC =$ `r species_out$deltaAIC`, `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the species, genus and family models respectively). Note, these models does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ## Figures {-}
 
