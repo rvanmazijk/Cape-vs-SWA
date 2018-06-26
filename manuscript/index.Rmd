@@ -1,40 +1,44 @@
+---
+bibliography: refs.bib
+csl: harvard-university-of-cape-town-rvm_2017-08-15.csl
+---
+
 # Front matter {-}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    echo = FALSE,
-    eval = TRUE,
+    eval    = TRUE,
+    echo    = FALSE,
     message = FALSE,
-    warning = FALSE,
-    cache   = FALSE
+    warning = FALSE
 )
 ```
 
-## i Title {-}
+## Title {-}
 
-**TODO**
+<!--TODO-->
 
-## ii Running title {-}
+## Running title {-}
 
-**TODO**
+<!--TODO-->
 
-## iii Authors {-}
+## Authors {-}
 
-Ruan van Mazijk^1^, Michael D. Cramer^1^, and G. Anthony Verboom^1^
+Ruan van Mazijk^1^, Michael D. Cramer^1^ and G. Anthony Verboom^1^
 
 ^1^: Department of Biological Sciences, University of Cape Town, Rondebosch, Cape Town, 7701
 
-ORCID nos.: RVM: 0000-0003-2659-6909, MDC: **TODO**, GAV: **TODO**
+ORCID nos.: RVM: 0000-0003-2659-6909, MDC: <!--TODO-->, GAV: <!--TODO-->
 
-## iv Acknowledgements {-}
+## Acknowledgements {-}
 
-**TODO**
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship, and by the South African Association of Botanists (SAAB) Honours Scholarship, both scholarships awarded to RVM.
 
-## v Abstract {-}
+## Abstract {-}
 
-<!--New Abstract for JBiogeog (300 words)-->
+<!--J. Biogeog.: 300 word abstract-->
 
-### v-i Aim {-}
+### Aim {-}
 
 <!--from ResearchGate project-->
 
@@ -42,26 +46,38 @@ To quantify the explanatory power of heterogeneity in predicting plant species r
 
 We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in SW Australia.
 
-### v-ii Location {-}
+### Location {-}
 
-The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australian Floristic Region (SWAFR)
+The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australia Floristic Region (SWAFR)
 
-### v-iii Taxon {-}
+### Taxon {-}
 
 Vascular plants
 
-### v-iv Methods {-}
+### Methods {-}
 
 [Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics]
 
-### v-v Results {-}
+### Results {-}
 
-*TODO*
+<!--TODO-->
 
-### v-vi Main conclusions {-}
+### Main conclusions {-}
 
-*TODO*
+<!--TODO-->
 
-## vi Keywords {-}
+## Keywords {-}
 
-*TODO*
+Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
+
+<!--
+Abbreviations:
+- Greater Cape Floristic Region (GCFR) (= "Cape")
+- Southwest Australia Floristic Region (SWAFR)  (= "SWA")
+- TODO: fiver percent degree square (i.e. 0.05º x 0.05º) (FPDS)?
+- quarter degree square (i.e. 0.25º x 0.25º) (QDS)
+- half degree square (i.e. 0.50º x 0.50º) (HDS)
+- three-quarter degree square (i.e. 0.75º x 0.75º) (3QDS)
+- environmental heterogeneity (EH)
+- & environmental variables' abbreviations in Table \@ref(tab:data-sources).
+-->

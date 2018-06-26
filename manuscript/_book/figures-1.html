@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="materials-and-methods.html">
-<link rel="next" href="discussion.html">
+<link rel="prev" href="tables-1.html">
+<link rel="next" href="biosketches.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -98,13 +98,13 @@
 <li class="chapter" data-level="" data-path="results-1.html"><a href="results-1.html#describing-environmental-heterogeneity-numerically-across-scales"><i class="fa fa-check"></i>Describing environmental heterogeneity numerically across scales</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="discussion.html"><a href="discussion.html"><i class="fa fa-check"></i>Discussion</a></li>
-<li class="chapter" data-level="" data-path="tables.html"><a href="tables.html"><i class="fa fa-check"></i>Tables</a></li>
-<li class="chapter" data-level="" data-path="figures.html"><a href="figures.html"><i class="fa fa-check"></i>Figures</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#tables-1"><i class="fa fa-check"></i>Tables</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#figures-1"><i class="fa fa-check"></i>Figures</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r-package-bibliography"><i class="fa fa-check"></i>R package bibliography</a></li>
+<li class="chapter" data-level="" data-path="figures-and-tables.html"><a href="figures-and-tables.html"><i class="fa fa-check"></i>Figures and tables</a><ul>
+<li class="chapter" data-level="" data-path="figures-and-tables.html"><a href="figures-and-tables.html#tables"><i class="fa fa-check"></i>Tables</a></li>
+<li class="chapter" data-level="" data-path="figures-and-tables.html"><a href="figures-and-tables.html#figures"><i class="fa fa-check"></i>Figures</a></li>
 </ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="" data-path="tables-1.html"><a href="tables-1.html"><i class="fa fa-check"></i>Tables</a></li>
+<li class="chapter" data-level="" data-path="figures-1.html"><a href="figures-1.html"><i class="fa fa-check"></i>Figures</a></li>
 <li class="chapter" data-level="" data-path="biosketches.html"><a href="biosketches.html"><i class="fa fa-check"></i>Biosketches</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -124,43 +124,24 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="results-1" class="section level1">
-<h1>Results</h1>
-<div id="describing-environmental-heterogeneity-numerically-across-scales" class="section level2">
-<h2>Describing environmental heterogeneity numerically across scales</h2>
-<p>Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cells (common-language effect size (<span class="math inline">\(CLES\)</span>) <span class="math inline">\(\gt 0.50\)</span>, Fig. <a href="figures.html#fig:roughness-violins">1</a>). Additionally, we see that the Cape has greater extremes and a wider range of fine-scale climatic roughness values within its limits (Fig. <a href="figures.html#fig:roughness-IQuR">2</a>A), while SWA has the greater extremes and wider range of fine-scale edaphic roughness values (Fig. <a href="figures.html#fig:roughness-IQuR">2</a>B). Moreover, the degree to which Cape grid-cells are more heterogeneous is dependent on both spatial scale and the environmental variable concerned.</p>
-<p>Regarding spatial scale, we see that <span class="math inline">\(CLES\)</span>-values of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS) in size, compared to 0.05º x 0.05º—though there are exceptions. This means that, generally, the Cape has greater EH than SWA when comparing differences between smaller areas of land. Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney <span class="math inline">\(U\)</span> tests, <span class="math inline">\(P \gt 0.05\)</span>, Fig. <a href="figures.html#fig:roughness-violins">1</a>). Additionally, for some variables, there is much wider range of roughness values observed in the Cape than in SWA at finer scales (e.g. elevation, Fig. <a href="figures.html#fig:roughness-IQuR">2</a>). For edaphic variables, there is usually a greater range of roughness values observed in SWA (e.g. pH, Fig. <a href="figures.html#fig:roughness-IQuR">2</a>). In other words, the differences in roughness values between the two regions are most pronounced at finer scales.</p>
-<p>Regarding the variables concerned, when comparing the Cape to SWA, <span class="math inline">\(CLES\)</span>-values are generally lower (<span class="math inline">\(CLES \lt 0.80\)</span>) for edaphic variables (CEC, clay, soil C, and pH, Fig. <a href="figures.html#fig:roughness-violins">1</a>B) and NDVI (Fig. <a href="figures.html#fig:roughness-violins">1</a>A), compared to climatic variables (MAP, PDQ, surface T) and elevation (Fig. <a href="figures.html#fig:roughness-violins">1</a>A). Therefore, we can differentiate the Cape and SWA environments based on which environmental axes are more heterogeneous in either region, as they differ somewhat in this regard. Notably, elevational heterogeneity at 3QDS scales is exceptionally greater in the Cape than in SWA, and indeed still much greater than in SWA at 0.05º x 0.05º scales (Fig. <a href="figures.html#fig:roughness-violins">1</a>A). There is some overlap in observed elevational heterogeneity values at the 0.05º x 0.05º scale between the Cape and SWA, and no overlap at the 3QDS scale (Fig. <a href="figures.html#fig:roughness-violins">1</a>A). This concurs with our expectations, as the Cape is mountainous and known to have steep elevational gradients<!--TODO: ref-->, while SWA is much more topographically uniform. Intuitively, then, elevation serves as a “benchmark test” for our comparisons of EH here, as it is well known and expected that the Cape should be more elevationally heterogeneous than SWA. Additionally, we can conclude that although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA.</p>
-<!--TODO: interpret the similar spread of values + less-often-different-median roughness at coarser scales-->
-<!--
-
-...
-
-Furthermore, regarding elevation, the Cape is shown here to be more rough than SWA. But, we move from at fine scales having some overlap in the roughness values, which have relatively great spread in both regions, to much less overlap at coarser scales (where the spread of values is lesser). This leads us to think about: overlap and spread (below).
-
-...
-
-There is overlap in the range of roughness values observed in the Cape and SWA for each environmental variable especially at finer spatial scales. Also, the range of values observed is also itself greater at finer spatial scales.
-
-...
-
-Consulting Fig. \@ref(fig:roughness-IQuR):This elaborates on the overlap and spread idea from earlier, where now we can see that generally the spread of observed roughness values is more similar in magnitude between the two regions at coarser scales, and more different at finer scales. Though this plot is illustrative only and derived from Fig. \@ref(fig:roughness-violins), we can see it mirror how SWA has a greater range of roughness values in soil variables (and, Re: Fig. \@ref(fig:roughness-violins), we know a general roughness at least as high as the Cape's in those too!).
-
-Elevation, PDQ: Cape is rougher and has a greater range of roughnesses (Fig. \@ref(fig:roughness-violins), \@ref(fig:roughness-IQuR)) at all scales, especially at finer scales.
-
-Clay, soil C, pH: Extreme values of roughness observed very high in SWA.
-
--->
-
+<div id="figures-1" class="section level1 unnumbered">
+<h1>Figures</h1>
+<div class="figure"><span id="fig:gamma-beta-alpha-3QDS"></span>
+<img src="/Users/ruanvanmazijk/Cape-vs-SWA/figures/gamma-beta-alpha-3QDS.png" alt="Same as 4, but for 3QDS, not HDS, as the focal scale."  />
+<p class="caption">
+Figure 5: Same as <a href="figures-and-tables.html#fig:gamma-beta-alpha-HDS">4</a>, but for 3QDS, not HDS, as the focal scale.
+</p>
 </div>
+
+
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="materials-and-methods.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="discussion.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="tables-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="biosketches.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

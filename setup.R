@@ -9,6 +9,9 @@ if (!require(pacman)) {
 }
 library(pacman)
 p_load(
+
+    # .... Analyses ------------------------------------------------------------
+
     # Data wrangling
     tidyverse, magrittr, reshape2, readr, readxl, rlang,
     here, glue, stringr, lubridate,
@@ -16,28 +19,31 @@ p_load(
     quantreg, broom, lmodel2, canprot,
     # Visualisation
     ggplot2, grid, gridExtra, visreg, ggfortify, cowplot, scales,
+
+    # .... Data processing -----------------------------------------------------
+
     # Parallel processing, nicer loops
     parallel, foreach,
     # GIS
     raster, rasterVis, sp, rgdal, spatstat, simecol,
     # Taxonomy
     taxize
+
 )
 
+
+# Record session & pkg information ---------------------------------------------
+
+# Record R session details and loaded packages
+capture.output(sessionInfo(), file = here::here("pkg-docs/sessionInfo.txt"))
+
 # Create bibliography of all loaded packages
-p_load(bibtex)
-my_pkgs <- loadedNamespaces()
-bibtex::write.bib(
-    entry = my_pkgs,
-    file = here::here("manuscript/pkgs.bib")
-)
-# Tidy up
-rm(my_pkgs)
+knitr::write_bib(loadedNamespaces(), here::here("pkg-docs/pkgs.bib"))
 
 # Import functions in functions/ -----------------------------------------------
 
 my_functions <- list.files(
-    here::here("functions"),
+    here::here("functions/"),
     pattern = ".R",
     full.names = TRUE
 )

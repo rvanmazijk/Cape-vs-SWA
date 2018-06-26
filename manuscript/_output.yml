@@ -1,9 +1,7 @@
-# Only GitBook output for now
-bookdown::gitbook: default
+bookdown::gitbook:
+  number_sections: false
 #bookdown::pdf_book:
 #  includes:
 #    in-header: style.sty  # FIXME
 #  latex_engine: xelatex
 #  mainfont: "Helvetica"
-#csl: # TODO
-#bibliography: # TODO
