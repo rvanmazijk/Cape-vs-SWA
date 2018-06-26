@@ -12,6 +12,4 @@ source(here::here("setup.R"))
 
 <!--To generate this bibliography of packages used, render this .Rmd document in R using rmarkdown::render()-->
 
-Please also consult outputs/pkgs.bib if need be.
-
-# References
+<!--Please also consult outputs/pkgs.bib if need be.-->

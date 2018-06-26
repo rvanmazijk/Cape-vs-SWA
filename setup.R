@@ -35,10 +35,17 @@ p_load(
 # Record session & pkg information ---------------------------------------------
 
 # Record R session details and loaded packages
-capture.output(sessionInfo(), file = here::here("outputs/sessionInfo.txt"))
+capture.output(
+    sessionInfo(),
+    file = here::here("outputs/sessionInfo.txt")
+)
 
 # Create bibliography of all loaded packages
-knitr::write_bib(loadedNamespaces(), here::here("outputs/pkgs.bib"))
+knitr::write_bib(
+    loadedNamespaces(),
+    file = here::here("outputs/pkgs.bib"),
+    tweak = FALSE
+)
 
 # Import functions in functions/ -----------------------------------------------
 

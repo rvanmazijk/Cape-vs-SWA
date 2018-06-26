@@ -1,9 +1,5 @@
 <!--To generate this bibliography of packages used, render this .Rmd document in R using rmarkdown::render()-->
-Please also consult outputs/pkgs.bib if need be.
-
-References
-==========
-
+<!--Please also consult outputs/pkgs.bib if need be.-->
 Alan Genz, F. code by & Adelchi Azzalini, R. code by. 2016. *Mnormt: The
 multivariate normal and t distributions*. 2016. Available:
 <https://CRAN.R-project.org/package=mnormt>.
@@ -19,6 +15,12 @@ documents for r*. 2018. Available:
 
 Analytics, R. & Weston, S. 2017. *Iterators: Provides iterator construct
 for r*. 2017. Available: <https://CRAN.R-project.org/package=iterators>.
+
+Antoine Lucas, D.E. with contributions by, Tuszynski, J., Bengtsson, H.,
+Urbanek, S., Frasca, M., Lewis, B., Stokely, M., Muehleisen, H.,
+Murdoch, D., Hester, J., Wu, W., Kou, Q., Onkelinx, T., Lang, M., Simko,
+V. & Hornik., K. 2018. *Digest: Create compact hash digests of r
+objects*. 2018. Available: <https://CRAN.R-project.org/package=digest>.
 
 Auguie, B. 2017. *GridExtra: Miscellaneous functions for “grid”
 graphics*. 2017. Available:
@@ -97,8 +99,9 @@ Bryan, J. 2016. *Cellranger: Translate spreadsheet cell ranges to rows
 and columns*. 2016. Available:
 <https://CRAN.R-project.org/package=cellranger>.
 
-Carr, D., Lewin-Koh, N. & Maechler, M. 2018. *Hexbin: Hexagonal binning
-routines*. 2018. Available: <https://CRAN.R-project.org/package=hexbin>.
+Carr, D., Nicholas Lewin-Koh, Maechler, M. & Deepayan Sarkar. 2018.
+*Hexbin: Hexagonal binning routines*. 2018. Available:
+<https://CRAN.R-project.org/package=hexbin>.
 
 Chamberlain, S. 2017. *Bold: Interface to bold systems api*. 2017.
 Available: <https://CRAN.R-project.org/package=bold>.
@@ -135,9 +138,6 @@ expression*. 2018. Available:
 Dowle, M. & Srinivasan, A. 2018. *Data.table: Extension of
 ‘data.frame‘*. 2018. Available:
 <https://CRAN.R-project.org/package=data.table>.
-
-Eddelbuettel, D. 2018. *Digest: Create compact hash digests of r
-objects*. 2018. Available: <https://CRAN.R-project.org/package=digest>.
 
 Eddelbuettel, D., Francois, R., Allaire, J., Ushey, K., Kou, Q.,
 Russell, N., Bates, D. & Chambers, J. 2018. *Rcpp: Seamless r and c++
@@ -197,6 +197,10 @@ since r-3.0.0*. 2017. Available:
 Legendre, P. 2018. *Lmodel2: Model ii regression*. 2018. Available:
 <https://CRAN.R-project.org/package=lmodel2>.
 
+Microsoft & Weston, S. 2017. *Foreach: Provides foreach looping
+construct for r*. 2017. Available:
+<https://CRAN.R-project.org/package=foreach>.
+
 Müller, K. 2017. *Here: A simpler way to find your files*. 2017.
 Available: <https://CRAN.R-project.org/package=here>.
 
@@ -224,7 +228,7 @@ Available: <https://CRAN.R-project.org/package=RColorBrewer>.
 Ooms, J. 2018. *Curl: A modern and flexible web client for r*. 2018.
 Available: <https://CRAN.R-project.org/package=curl>.
 
-Ooms, J., Temple Lang, D. & Hilaiel, L. 2017. *Jsonlite: A robust, high
+Ooms, J., Lang, D.T. & Hilaiel, L. 2017. *Jsonlite: A robust, high
 performance json parser and generator for r*. 2017. Available:
 <https://CRAN.R-project.org/package=jsonlite>.
 
@@ -266,9 +270,6 @@ Computing. Available: <https://www.R-project.org/>.
 Revelle, W. 2018. *Psych: Procedures for psychological, psychometric,
 and personality research*. 2018. Available:
 <https://CRAN.R-project.org/package=psych>.
-
-Revolution Analytics & Weston, S. n.d. *Foreach: Provides foreach
-looping construct for r*. n.d.
 
 Rinker, T. & Kurkiewicz, D. 2017. *Pacman: Package management tool*.
 2017. Available: <https://CRAN.R-project.org/package=pacman>.
