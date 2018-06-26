@@ -25,7 +25,7 @@ compile_gamma_beta_alpha <- function(cells, communities_by_cell,
             }
         }
         return(list(
-            richness     = length(unique(unlist(QDS_cells))),
+            richness = length(unique(unlist(QDS_cells))),
             avg_QDS_richness = mean(unlist(map(QDS_cells, length)), na.rm = TRUE),
             avg_QDS_turnover = mean(as.dist(turnover_betw_QDS_cells), na.rm = TRUE)
         ))
