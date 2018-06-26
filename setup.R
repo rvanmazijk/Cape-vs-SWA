@@ -8,6 +8,7 @@ if (!require(pacman)) {
     install.packages("pacman", dependencies = TRUE)
 }
 library(pacman)
+
 p_load(
 
     # .... Analyses ------------------------------------------------------------
@@ -31,14 +32,13 @@ p_load(
 
 )
 
-
 # Record session & pkg information ---------------------------------------------
 
 # Record R session details and loaded packages
-capture.output(sessionInfo(), file = here::here("pkg-docs/sessionInfo.txt"))
+capture.output(sessionInfo(), file = here::here("outputs/sessionInfo.txt"))
 
 # Create bibliography of all loaded packages
-knitr::write_bib(loadedNamespaces(), here::here("pkg-docs/pkgs.bib"))
+knitr::write_bib(loadedNamespaces(), here::here("outputs/pkgs.bib"))
 
 # Import functions in functions/ -----------------------------------------------
 

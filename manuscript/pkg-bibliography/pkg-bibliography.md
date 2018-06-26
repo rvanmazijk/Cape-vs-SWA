@@ -1,5 +1,5 @@
-<!--To generate the bibliography of packages use, render this .Rmd document in R using rmarkdown::render()-->
-Please also consult pkgs.bib if need be.
+<!--To generate this bibliography of packages used, render this .Rmd document in R using rmarkdown::render()-->
+Please also consult outputs/pkgs.bib if need be.
 
 References
 ==========
