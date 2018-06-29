@@ -1,8 +1,7 @@
 # Compile & render manuscript with Bookdown
 
-if (!require(pacman)) {
-    install.packages("pacman", dependencies = TRUE)
-}
+if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
+library(pacman)
 p_load(here, bookdown)
 
 setwd(here::here("manuscript"))

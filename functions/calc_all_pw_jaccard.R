@@ -6,138 +6,137 @@ calc_all_pw_jaccard <- function(trimmed_points = NULL,
                                 debug_length = NULL,
                                 quiet = FALSE) {
 
-    stopifnot(class(richness_QDS) == "RasterLayer")
+  stopifnot(class(richness_QDS) == "RasterLayer")
 
-    if (!is.null(cell_nos)) {
-        cell_nos <- levels(as.factor(trimmed_points$cell_nos))
-        if (!quiet) {
-            cat(sep = "",
-                "All ", length(cell_nos), " cell nos. extracted\n"
-            )
-        }
-    } else if (!is.null(debug_length) & !is.null(trimmed_points)) {
-        if (!quiet) {
-            cat(sep = "",
-                "DEBUG MODE (running for only ",
-                debug_length,
-                " cells)\n"
-            )
-        }
-        cell_nos <- cell_nos[1:debug_length]
-        if (!quiet) {
-            cat(sep = "",
-                "All ", length(cell_nos), " cell nos. extracted\n"
-            )
-        }
-    } else {
-        stop("Please manually provide cell_nos\r")
+  if (!is.null(cell_nos)) {
+    cell_nos <- levels(as.factor(trimmed_points$cell_nos))
+    if (!quiet) {
+      cat(sep = "",
+        "All ", length(cell_nos), " cell nos. extracted\n"
+      )
     }
-
-    # Compile list of species in each grid-cell --------------------------------
-
-    if (is.null(communities_by_cell) & !is.null(trimmed_points)) {
-        communities_by_cell <- compile_communities_by_cell(
-            trimmed_points,
-            feature_column,
-            cell_nos = cell_nos,
-            debug_length = debug_length,
-            quiet = quiet
-        )
-    } else if (!is.null(communities_by_cell) & is.null(trimmed_points)) {
-        if (!quiet) {
-            cat(sep = "",
-                "Communities pre-described for all ",
-                length(cell_nos), "cells\n",
-                "Accepting input communities_by_cell\n"
-            )
-        }
+  } else if (!is.null(debug_length) & !is.null(trimmed_points)) {
+    if (!quiet) {
+      cat(sep = "",
+        "DEBUG MODE (running for only ",
+        debug_length,
+        " cells)\n"
+      )
     }
+    cell_nos <- cell_nos[1:debug_length]
+    if (!quiet) {
+      cat(sep = "",
+        "All ", length(cell_nos), " cell nos. extracted\n"
+      )
+    }
+  } else {
+    stop("Please manually provide cell_nos\r")
+  }
 
-    # Calculate species turnover between cells ---------------------------------
+  # Compile list of species in each grid-cell --------------------------------
 
-    turnovers_betw_cells <-
-        matrix(nrow = length(cell_nos), ncol = length(cell_nos))
-    rownames(turnovers_betw_cells) <- paste0("cell_", cell_nos)
-    colnames(turnovers_betw_cells) <- paste0("cell_", cell_nos)
-    for (i in seq_along(cell_nos)) {
-        for (j in seq_along(cell_nos)) {
-            turnovers_betw_cells[i, j] <-
-                if (names(communities_by_cell)[[i]] ==
-                    names(communities_by_cell)[[j]]) {
-                    0
-                } else {
-                    jaccard_distance(
-                        communities_by_cell[[i]],
-                        communities_by_cell[[j]]
-                    )
-                }
-        }
-        if (!quiet) {
-            flush.console()
-            cat(sep = "",
-                "Calculated Jaccard distances relative to cell no. ",
-                cell_nos[[i]], " (", i, "/", length(cell_nos), ")\r"
-            )
+  if (is.null(communities_by_cell) & !is.null(trimmed_points)) {
+    communities_by_cell <- compile_communities_by_cell(
+      trimmed_points,
+      feature_column,
+      cell_nos = cell_nos,
+      debug_length = debug_length,
+      quiet = quiet
+    )
+  } else if (!is.null(communities_by_cell) & is.null(trimmed_points)) {
+    if (!quiet) {
+      cat(sep = "",
+        "Communities pre-described for all ",
+        length(cell_nos), "cells\n",
+        "Accepting input communities_by_cell\n"
+      )
+    }
+  }
+
+  # Calculate species turnover between cells ---------------------------------
+
+  turnovers_betw_cells <-
+    matrix(nrow = length(cell_nos), ncol = length(cell_nos))
+  rownames(turnovers_betw_cells) <- paste0("cell_", cell_nos)
+  colnames(turnovers_betw_cells) <- paste0("cell_", cell_nos)
+  for (i in seq_along(cell_nos)) {
+    for (j in seq_along(cell_nos)) {
+      turnovers_betw_cells[i, j] <-
+        if (names(communities_by_cell)[[i]] ==
+          names(communities_by_cell)[[j]]) {
+          0
+        } else {
+          jaccard_distance(
+            communities_by_cell[[i]],
+            communities_by_cell[[j]]
+          )
         }
     }
     if (!quiet) {
-        cat(sep = "",
-            "Calculated all ",
-            length(cell_nos),
-            "pairwise Jaccard distances\n"
-        )
+      flush.console()
+      cat(sep = "",
+        "Calculated Jaccard distances relative to cell no. ",
+        cell_nos[[i]], " (", i, "/", length(cell_nos), ")\r"
+      )
     }
-
-    # Calculate geographical distances between all cell pairs ------------------
-
-    geodists_betw_cells <- pointDistance(
-        p1 = xyFromCell(richness_QDS, cell = as.numeric(cell_nos)),
-        p2 = xyFromCell(richness_QDS, cell = as.numeric(cell_nos)),
-        lonlat = TRUE,
-        allpairs = TRUE
+  }
+  if (!quiet) {
+    cat(sep = "",
+      "Calculated all ",
+      length(cell_nos),
+      "pairwise Jaccard distances\n"
     )
+  }
 
-    if (!quiet) {
-        cat(sep = "",
-            "Calculated all ",
-            length(geodists_betw_cells),
-            "pairwise geographic distances\n"
-        )
-    }
+  # Calculate geographical distances between all cell pairs ------------------
 
-    turnovers_betw_cells_df <- as_tibble(turnovers_betw_cells)
-    turnovers_betw_cells_df$cell_no_a <- colnames(turnovers_betw_cells)
-    turnovers_betw_cells_df %<>% gather(
-        cell_no_b, turnover,
-        -cell_no_a
+  geodists_betw_cells <- pointDistance(
+    p1 = xyFromCell(richness_QDS, cell = as.numeric(cell_nos)),
+    p2 = xyFromCell(richness_QDS, cell = as.numeric(cell_nos)),
+    lonlat = TRUE,
+    allpairs = TRUE
+  )
+
+  if (!quiet) {
+    cat(sep = "",
+      "Calculated all ",
+      length(geodists_betw_cells),
+      "pairwise geographic distances\n"
     )
+  }
 
-    geodists_betw_cells_df <- as_tibble(geodists_betw_cells)
-    colnames(geodists_betw_cells_df) <- colnames(turnovers_betw_cells)
-    geodists_betw_cells_df$cell_no_a <- colnames(turnovers_betw_cells)
-    geodists_betw_cells_df %<>% gather(
-        cell_no_b, geodist,
-        -cell_no_a
-    )
+  turnovers_betw_cells_df <- as_tibble(turnovers_betw_cells)
+  turnovers_betw_cells_df$cell_no_a <- colnames(turnovers_betw_cells)
+  turnovers_betw_cells_df %<>% gather(
+    cell_no_b, turnover,
+    -cell_no_a
+  )
 
-    turnover_and_geodist_betw_cells_df <- full_join(
-        turnovers_betw_cells_df,
-        geodists_betw_cells_df
-    )
-    if (!quiet) {
-        cat("Done")
-    }
+  geodists_betw_cells_df <- as_tibble(geodists_betw_cells)
+  colnames(geodists_betw_cells_df) <- colnames(turnovers_betw_cells)
+  geodists_betw_cells_df$cell_no_a <- colnames(turnovers_betw_cells)
+  geodists_betw_cells_df %<>% gather(
+    cell_no_b, geodist,
+    -cell_no_a
+  )
 
-    return(turnover_and_geodist_betw_cells_df)
+  turnover_and_geodist_betw_cells_df <- full_join(
+    turnovers_betw_cells_df,
+    geodists_betw_cells_df
+  )
+  if (!quiet) {
+    cat("Done")
+  }
+  turnover_and_geodist_betw_cells_df
 
 }
 
 # Tests
 if (FALSE) {
-    calc_all_pw_jaccard(
-        trimmed_GCFR_clean_flora_spdf_family,
-        richness_QDS = GCFR_richness_QDS,
-        feature_column = "species",
-        debug_length = 10
-    )
+  calc_all_pw_jaccard(
+    trimmed_GCFR_clean_flora_spdf_family,
+    richness_QDS = GCFR_richness_QDS,
+    feature_column = "species",
+    debug_length = 10
+  )
 }

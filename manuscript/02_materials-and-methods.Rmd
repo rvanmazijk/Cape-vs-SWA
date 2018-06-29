@@ -35,9 +35,9 @@ First, in order to assess predictions (i) and (ii), we needed to describe the EH
 <!--TODO: comply w/ bookdown equation guidelines-->
 
 \begin{equation}
-    roughness = \sqrt{\frac{\sum_{i = 1}^{8}(x_{focal} - x_i)^{2}}{8}}
-    (\#eq:roughness)
-\end{equation} 
+  roughness = \sqrt{\frac{\sum_{i = 1}^{8}(x_{focal} - x_i)^{2}}{8}}
+  (\#eq:roughness)
+\end{equation}
 
 Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity. We compared the distributions of heterogeneity values in each variable in each region with non-parametric Mann-Whitney U tests, as almost all variables could not be normalised by log-transformation. We also compare the effect size of the Cape vs SWA using the "common language effect size" (CLES), using the `R` package `canprot`. The CLES is the proportion of all pairwise comparisons between two sample groups' observations where the one group's observation is greater than the other. In our case, of all pairwaise comparisons of a variable's heterogeneity values between the Cape and SWA, the CLES is the proportion of pais where the Cape heterogeneity value was greater than that of SWA. This allowed us to assess prediction (i).
 
@@ -50,15 +50,15 @@ Regarding predictions (iii) and (iv), we wished to compare the degree and import
 HDS QDS beta analysis. This is for (iv).
 
 \begin{align}
-    \widehat{S_{HDS}}_i = 
-        &\ \beta_0 + \\
-        &\ \beta_1 \overline{S_{QDS}}_i + 
-            \beta_2 \overline{J_{QDS}}_i + 
-            \beta_3 SWA_i + \\
-        &\ \beta_4 \overline{S_{QDS}}_i SWA_i  + 
-            \beta_5 \overline{J_{QDS}}_i SWA_i + 
-            \epsilon_i
-    (\#eq:gamma-beta-alpha)
+  \widehat{S_{HDS}}_i =
+    &\ \beta_0 + \\
+    &\ \beta_1 \overline{S_{QDS}}_i +
+       \beta_2 \overline{J_{QDS}}_i +
+       \beta_3 SWA_i + \\
+    &\ \beta_4 \overline{S_{QDS}}_i SWA_i  +
+       \beta_5 \overline{J_{QDS}}_i SWA_i +
+       \epsilon_i
+  (\#eq:gamma-beta-alpha)
 \end{align}
 
 where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_{QDS}}$ is $log(x + 1)$-transformed.

@@ -91,40 +91,41 @@ modfile_query <- function(month = c("Jan", "Feb", "Mar",
                                     "Apr", "May", "Jun",
                                     "Jul", "Aug", "Sep",
                                     "Oct", "Nov", "Dec"),
-                          years        = 2000:2017,
-                          slave_dir    = modwd,
+                          years = 2000:2017,
+                          slave_dir = modwd,
                           slave_prefix = "MOD11C3.A",
                           slave_suffix = ".*.tif") {
 
-    list_of_files <- vector("list", length = length(month))
+  list_of_files <- vector("list", length = length(month))
 
-    for (i in 1:length(month)) {
-        list_of_files[[i]] <- modfile_query_slave( # passes all these to slave function below
-            month  = month[i],
-            years  = years,
-            dir    = slave_dir,
-            prefix = slave_prefix,
-            suffix = slave_suffix
-        )
-    }
+  for (i in seq_along(month)) {
+    list_of_files[[i]] <- modfile_query_slave(
+      # passes all these to slave function below
+      month  = month[i],
+      years  = years,
+      dir    = slave_dir,
+      prefix = slave_prefix,
+      suffix = slave_suffix
+    )
+  }
 
-    df_of_files        <- reshape2::melt(list_of_files)
-    names(df_of_files) <- c("file_name", "year", "month")
-    df_of_files$year   <- as.factor(df_of_files$year)
-    for (i in 1:length(df_of_files$month)) {
-        df_of_files$month[i] <- switch( # Only one month in fn input!
-            month,                      # So that the month label column makes sense!
-            Jan =  1, Feb =  2, Mar = 3,
-            Apr =  4, May =  5, Jun = 6,
-            Jul =  7, Aug =  8, Sep = 9,
-            Oct = 10, Nov = 11, Dec = 12
-        )
-    }
-    df_of_files$month  <- as.factor(df_of_files$month)
-    # So that the raster functions don't shit themselves:
-    df_of_files        <- na.exclude(df_of_files)
+  df_of_files <- reshape2::melt(list_of_files)
+  names(df_of_files) <- c("file_name", "year", "month")
+  df_of_files$year <- as.factor(df_of_files$year)
+  for (i in seq_along(df_of_files$month)) {
+    df_of_files$month[i] <- switch( # Only one month in fn input!
+      month,                      # So that the month label column makes sense!
+      Jan =  1, Feb =  2, Mar = 3,
+      Apr =  4, May =  5, Jun = 6,
+      Jul =  7, Aug =  8, Sep = 9,
+      Oct = 10, Nov = 11, Dec = 12
+    )
+  }
+  df_of_files$month <- as.factor(df_of_files$month)
+  # So that the raster functions don't shit themselves:
+  df_of_files <- na.exclude(df_of_files)
 
-    df_of_files
+  df_of_files
 
 }
 
@@ -142,52 +143,51 @@ modfile_query <- function(month = c("Jan", "Feb", "Mar",
 #' @return A lsit containing the directory addresses of the
 #'         (MODIS) files as queried for
 modfile_query_slave <- function(month, years,
-                                dir    = modwd,
+                                dir = modwd,
                                 prefix = "MOD11C3.A",
                                 suffix = ".*.tif") {
 
-    #if (month == "Jan") stop("Jan has already been done!")
-    # Just in case!!!!!!!! (mostly deprecated though) (for GCFR)
+  #if (month == "Jan") stop("Jan has already been done!")
+  # Just in case!!!!!!!! (mostly deprecated though) (for GCFR)
 
-    slave_list <- vector("list", length = length(years))
-    for (i in 1:length(years)) {
+  slave_list <- vector("list", length = length(years))
 
-        if (years[i] == 2000) { # To solve the Y2KJan problem....
+  for (i in seq_along(years)) {
 
-            month_file_index <- switch(
-                month,
-                Jan =  0, Feb =  1, Mar = 2,
-                Apr =  3, May =  4, Jun = 5,
-                Jul =  6, Aug =  7, Sep = 9,
-                Oct =  9, Nov = 10, Dec = 11
-            )
-            list_files <- list.files(
-                path   = dir,
-                pattern = paste0(prefix, years[i], suffix)
-            )
-            slave_list[[i]] <- list_files[month_file_index]
+    if (years[i] == 2000) { # To solve the Y2KJan problem....
 
-        } else {
+      month_file_index <- switch(month,
+        Jan =  0, Feb =  1, Mar = 2,
+        Apr =  3, May =  4, Jun = 5,
+        Jul =  6, Aug =  7, Sep = 9,
+        Oct =  9, Nov = 10, Dec = 11
+      )
+      list_files <- list.files(
+        path = dir,
+        pattern = paste0(prefix, years[i], suffix)
+      )
+      slave_list[[i]] <- list_files[month_file_index]
 
-            month_file_index <- switch(
-                month,
-                Jan =  1, Feb =  2, Mar = 3,
-                Apr =  4, May =  5, Jun = 6,
-                Jul =  7, Aug =  8, Sep = 9,
-                Oct = 10, Nov = 11, Dec = 12
-            )
-            list_files <- list.files(
-                path    = dir,
-                pattern = paste0(prefix, years[i], suffix)
-            )
-            slave_list[[i]] <- list_files[month_file_index]
+    } else {
 
-        }
+      month_file_index <- switch(month,
+        Jan =  1, Feb =  2, Mar = 3,
+        Apr =  4, May =  5, Jun = 6,
+        Jul =  7, Aug =  8, Sep = 9,
+        Oct = 10, Nov = 11, Dec = 12
+      )
+      list_files <- list.files(
+        path = dir,
+        pattern = paste0(prefix, years[i], suffix)
+      )
+      slave_list[[i]] <- list_files[month_file_index]
 
     }
 
-    names(slave_list) <- paste0("Year_", years)
-    slave_list
+  }
+
+  names(slave_list) <- paste0("Year_", years)
+  slave_list
 
 }
 
@@ -222,34 +222,34 @@ modfile_query_slave <- function(month, years,
 #' @return A list object, containing the reprojected, cropped, masked rasters
 #' @return Also write the rasters in that list to disc
 proj_crop_mask_mean_write <- function(df_of_files,
-                                      region_name  = c("GCFR", "SWAFR"),
-                                      slave_crs    = std_CRS,
+                                      region_name = c("GCFR", "SWAFR"),
+                                      slave_crs = std_CRS,
                                       slave_border = GCFR_border_buffered,
-                                      slave_dir    = modwd,
+                                      slave_dir = modwd,
                                       slave_prefix = "MOD11C3.A",
                                       slave_suffix = ".*.tif") {
 
-    list_of_rasters <- proj_crop_mask_mean( # passes all these to slave functions below
-        df_of_files  = df_of_files,
-        slave_crs    = slave_crs,
-        slave_border = slave_border,
-        slave_dir    = slave_dir,
-        slave_prefix = slave_prefix,
-        slave_suffix = slave_suffix
-    )
+  list_of_rasters <- proj_crop_mask_mean( # passes all these to slave functions below
+    df_of_files  = df_of_files,
+    slave_crs    = slave_crs,
+    slave_border = slave_border,
+    slave_dir    = slave_dir,
+    slave_prefix = slave_prefix,
+    slave_suffix = slave_suffix
+  )
 
-    for (i in 1:length(levels(df_of_files$month))) {
-        list_of_rasters[[i]] %>%
-            raster::writeRaster(
-                filename = paste0(
-                    reswd, "MODIS_",
-                    levels(df_of_files$month)[i], "_", region_name, "_0.05_buffered.grd"
-                ),
-                overwrite = T
-            )
-    }
+  for (i in seq_along(levels(df_of_files$month))) {
+    list_of_rasters[[i]] %>%
+      raster::writeRaster(
+        filename = paste0(
+          reswd, "MODIS_",
+          levels(df_of_files$month)[i], "_", region_name, "_0.05_buffered.grd"
+        ),
+        overwrite = TRUE
+      )
+  }
 
-    list_of_rasters
+  list_of_rasters
 
 }
 
@@ -284,27 +284,31 @@ proj_crop_mask_mean <- function(df_of_files,
                                 slave_crs, slave_border,
                                 slave_dir, slave_prefix, slave_suffix) {
 
-    pb_month <- txtProgressBar(min = 0, max = length(levels(df_of_files$month)), style = 3)
-    list_of_rasters <- vector("list", length = length(levels(df_of_files$month)))
+  pb_month <- txtProgressBar(
+    min = 0,
+    max = length(levels(df_of_files$month)),
+    style = 3
+  )
+  list_of_rasters <- vector("list", length = length(levels(df_of_files$month)))
 
-    for (i in 1:length(levels(df_of_files$month))) {
+  for (i in seq_along(levels(df_of_files$month))) {
 
-        list_of_rasters[[i]] <- proj_crop_mask_mean_slave( # passes to slave fns below
-            df_of_files = df_of_files,
-            slave_month = levels(df_of_files$month)[i],
-            crs         = slave_crs,
-            border      = slave_border,
-            dir         = slave_dir,
-            prefix      = slave_prefix,
-            suffix      = slave_suffix
-        )
+    list_of_rasters[[i]] <- proj_crop_mask_mean_slave( # passes to slave fns below
+      df_of_files = df_of_files,
+      slave_month = levels(df_of_files$month)[i],
+      crs         = slave_crs,
+      border      = slave_border,
+      dir         = slave_dir,
+      prefix      = slave_prefix,
+      suffix      = slave_suffix
+    )
 
-        setTxtProgressBar(pb_month, i)
+    setTxtProgressBar(pb_month, i)
 
-    }
+  }
 
-    names(list_of_rasters) <- levels(df_of_files$month)
-    list_of_rasters
+  names(list_of_rasters) <- levels(df_of_files$month)
+  list_of_rasters
 
 }
 
@@ -336,53 +340,53 @@ proj_crop_mask_mean_slave <- function(df_of_files, slave_month,
                                       crs, border,
                                       dir, prefix, suffix) {
 
-    pb_year <- txtProgressBar(min = 0, max = length(levels(df_of_files$year)), style = 3)
-    # Initialise an empty stack to fill w/ each yr's raster in the loop below:
-    raster_stack <- stack()
+  pb_year <- txtProgressBar(min = 0, max = length(levels(df_of_files$year)), style = 3)
+  # Initialise an empty stack to fill w/ each yr's raster in the loop below:
+  raster_stack <- stack()
 
-    for (i in 1:length(levels(df_of_files$year))) {
+  for (i in seq_along(levels(df_of_files$year))) {
 
-        x <- df_of_files %>%
-            filter(
-                (year  == levels(df_of_files$year)[i]) && # only use the current yr
-                    (month == slave_month)                    # & the month given by the slave-owner fns
-            ) %>%
-            dplyr::select(file_name) %>%
-            as_vector() %>%
-            as.character.factor()
+    x <- df_of_files %>%
+      filter((year  == levels(df_of_files$year)[i]) &&
+             # only use the current yr
+             (month == slave_month)) %>%
+             # & the month given by the slave-owner fns
+      dplyr::select(file_name) %>%
+      as_vector() %>%
+      as.character.factor()
 
-        x <- paste0(dir, x)
-        x <- raster(x) # read-in as raster
-        setTxtProgressBar(pb_year, i - 0.8)
-        cat("\n\r", levels(df_of_files$year)[i], ": Raster made")
+    x <- paste0(dir, x)
+    x <- raster(x) # read-in as raster
+    setTxtProgressBar(pb_year, i - 0.8)
+    cat("\n\r", levels(df_of_files$year)[i], ": Raster made")
 
-        x %<>% raster::projectRaster(crs = crs) # reproject to std_CRS
-        setTxtProgressBar(pb_year, i - 0.6)
-        flush.console()
-        cat("\n\r", levels(df_of_files$year)[i], ": Reprojected to", substitute(crs))
+    x %<>% raster::projectRaster(crs = crs) # reproject to std_CRS
+    setTxtProgressBar(pb_year, i - 0.6)
+    flush.console()
+    cat("\n\r", levels(df_of_files$year)[i], ": Reprojected to", substitute(crs))
 
-        x %<>% raster::mask(mask = border) # mask...
-        setTxtProgressBar(pb_year, i - 0.6)
-        flush.console()
-        cat("\n\r", levels(df_of_files$year)[i], ": Masked to", substitute(border))
+    x %<>% raster::mask(mask = border) # mask...
+    setTxtProgressBar(pb_year, i - 0.6)
+    flush.console()
+    cat("\n\r", levels(df_of_files$year)[i], ": Masked to", substitute(border))
 
-        x %<>% raster::crop(y = border) # ... & crop
-        setTxtProgressBar(pb_year, i - 0.4)
-        flush.console()
-        cat("\n\r", levels(df_of_files$year)[i], ": Cropped to extent of", substitute(border))
+    x %<>% raster::crop(y = border) # ... & crop
+    setTxtProgressBar(pb_year, i - 0.4)
+    flush.console()
+    cat("\n\r", levels(df_of_files$year)[i], ": Cropped to extent of", substitute(border))
 
-        raster_stack %<>% stack(x) # add it to the stack
-        setTxtProgressBar(pb_year, i - 0.2)
-        flush.console()
-        cat("\n\r", levels(df_of_files$year)[i], ": Added to raster stack")
+    raster_stack %<>% stack(x) # add it to the stack
+    setTxtProgressBar(pb_year, i - 0.2)
+    flush.console()
+    cat("\n\r", levels(df_of_files$year)[i], ": Added to raster stack")
 
-    }
+  }
 
-    # Smoosh that stack down into one mean raster
-    raster_out <- mean(raster_stack)
-    setTxtProgressBar(pb_year, i)
-    cat("\n\r", "Mean of stack calculated")
+  # Smoosh that stack down into one mean raster
+  raster_out <- mean(raster_stack)
+  setTxtProgressBar(pb_year, i)
+  cat("\n\r", "Mean of stack calculated")
 
-    raster_out
+  raster_out
 
 }

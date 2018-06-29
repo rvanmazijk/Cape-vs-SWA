@@ -7,10 +7,10 @@ csl: harvard-university-of-cape-town-rvm_2017-08-15.csl
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    eval    = TRUE,
-    echo    = FALSE,
-    message = FALSE,
-    warning = FALSE
+  eval = TRUE,
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
 )
 ```
 

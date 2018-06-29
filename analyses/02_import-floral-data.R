@@ -28,25 +28,25 @@ communities_by_cell_SWAFR_QDS_family <- read_rds(here::here("data/derived-data/f
 
 # Compile into 1 object (a list of lists of lists)
 communities_by_cell_QDS <- list(
-    GCFR = list(
-        species = communities_by_cell_GCFR_QDS_species,
-        genus   = communities_by_cell_GCFR_QDS_genus,
-        family  = communities_by_cell_GCFR_QDS_family
-    ),
-    SWAFR = list(
-        species = communities_by_cell_SWAFR_QDS_species,
-        genus   = communities_by_cell_SWAFR_QDS_genus,
-        family  = communities_by_cell_SWAFR_QDS_family
-    )
+  GCFR = list(
+    species = communities_by_cell_GCFR_QDS_species,
+    genus   = communities_by_cell_GCFR_QDS_genus,
+    family  = communities_by_cell_GCFR_QDS_family
+  ),
+  SWAFR = list(
+    species = communities_by_cell_SWAFR_QDS_species,
+    genus   = communities_by_cell_SWAFR_QDS_genus,
+    family  = communities_by_cell_SWAFR_QDS_family
+  )
 )
 # Tidy up
 rm(
-    communities_by_cell_GCFR_QDS_species,
-    communities_by_cell_GCFR_QDS_genus,
-    communities_by_cell_GCFR_QDS_family,
-    communities_by_cell_SWAFR_QDS_species,
-    communities_by_cell_SWAFR_QDS_genus,
-    communities_by_cell_SWAFR_QDS_family
+  communities_by_cell_GCFR_QDS_species,
+  communities_by_cell_GCFR_QDS_genus,
+  communities_by_cell_GCFR_QDS_family,
+  communities_by_cell_SWAFR_QDS_species,
+  communities_by_cell_SWAFR_QDS_genus,
+  communities_by_cell_SWAFR_QDS_family
 )
 
 # Richness rasters -------------------------------------------------------------
@@ -78,44 +78,44 @@ SWAFR_3QDS_cell_nos_from_QDS_xys <- cellFromXY(SWAFR_richness_3QDS, SWAFR_QDS_ce
 SWAFR_HDS_cell_nos_from_QDS_xys <- cellFromXY(SWAFR_richness_HDS, SWAFR_QDS_cell_xys)
 
 GCFR_3QDS_HDS_QDS_cells_df <- tibble(
-    region           = "GCFR",
-    QDS_cell_x       = GCFR_QDS_cell_xys[, 1],
-    QDS_cell_y       = GCFR_QDS_cell_xys[, 2],
-    QDS_cell_no      = GCFR_QDS_cell_nos,
-    HDS_cell_no      = GCFR_HDS_cell_nos_from_QDS_xys,
-    threeQDS_cell_no = GCFR_3QDS_cell_nos_from_QDS_xys
+  region           = "GCFR",
+  QDS_cell_x       = GCFR_QDS_cell_xys[, 1],
+  QDS_cell_y       = GCFR_QDS_cell_xys[, 2],
+  QDS_cell_no      = GCFR_QDS_cell_nos,
+  HDS_cell_no      = GCFR_HDS_cell_nos_from_QDS_xys,
+  threeQDS_cell_no = GCFR_3QDS_cell_nos_from_QDS_xys
 )
 SWAFR_3QDS_HDS_QDS_cells_df <- tibble(
-    region           = "SWAFR",
-    QDS_cell_x       = SWAFR_QDS_cell_xys[, 1],
-    QDS_cell_y       = SWAFR_QDS_cell_xys[, 2],
-    QDS_cell_no      = SWAFR_QDS_cell_nos,
-    HDS_cell_no      = SWAFR_HDS_cell_nos_from_QDS_xys,
-    threeQDS_cell_no = SWAFR_3QDS_cell_nos_from_QDS_xys
+  region           = "SWAFR",
+  QDS_cell_x       = SWAFR_QDS_cell_xys[, 1],
+  QDS_cell_y       = SWAFR_QDS_cell_xys[, 2],
+  QDS_cell_no      = SWAFR_QDS_cell_nos,
+  HDS_cell_no      = SWAFR_HDS_cell_nos_from_QDS_xys,
+  threeQDS_cell_no = SWAFR_3QDS_cell_nos_from_QDS_xys
 )
 
 # Compile into 1 object
 cells <- rbind(
-    GCFR_3QDS_HDS_QDS_cells_df,
-    SWAFR_3QDS_HDS_QDS_cells_df
+  GCFR_3QDS_HDS_QDS_cells_df,
+  SWAFR_3QDS_HDS_QDS_cells_df
 )
 
 # Tidy up
 rm(
-    GCFR_3QDS_cell_nos,
-    GCFR_HDS_cell_nos,
-    GCFR_QDS_cell_nos,
-    GCFR_QDS_cell_xys,
-    GCFR_3QDS_cell_nos_from_QDS_xys,
-    GCFR_HDS_cell_nos_from_QDS_xys,
+  GCFR_3QDS_cell_nos,
+  GCFR_HDS_cell_nos,
+  GCFR_QDS_cell_nos,
+  GCFR_QDS_cell_xys,
+  GCFR_3QDS_cell_nos_from_QDS_xys,
+  GCFR_HDS_cell_nos_from_QDS_xys,
 
-    SWAFR_3QDS_cell_nos,
-    SWAFR_HDS_cell_nos,
-    SWAFR_QDS_cell_nos,
-    SWAFR_QDS_cell_xys,
-    SWAFR_3QDS_cell_nos_from_QDS_xys,
-    SWAFR_HDS_cell_nos_from_QDS_xys,
+  SWAFR_3QDS_cell_nos,
+  SWAFR_HDS_cell_nos,
+  SWAFR_QDS_cell_nos,
+  SWAFR_QDS_cell_xys,
+  SWAFR_3QDS_cell_nos_from_QDS_xys,
+  SWAFR_HDS_cell_nos_from_QDS_xys,
 
-    GCFR_3QDS_HDS_QDS_cells_df,
-    SWAFR_3QDS_HDS_QDS_cells_df
+  GCFR_3QDS_HDS_QDS_cells_df,
+  SWAFR_3QDS_HDS_QDS_cells_df
 )

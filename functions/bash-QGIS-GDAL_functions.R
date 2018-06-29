@@ -14,10 +14,10 @@
 bash_gdalinfo <- function(x,
                           x_dir = getwd(),
                           gdal_dir = "/Library/Frameworks/GDAL.framework/Versions/1.11/Programs/") {
-    system(paste0(
-        gdal_dir, "gdalinfo ",
-        "\"", x_dir, x, "\""
-    ))
+  system(paste0(
+    gdal_dir, "gdalinfo ",
+    "\"", x_dir, x, "\""
+  ))
 }
 
 #' bash_gdalinfo_one
@@ -33,10 +33,10 @@ bash_gdalinfo <- function(x,
 bash_gdalinfo_one <- function(x, prefix = "HDF4_EOS:EOS_GRID:", band,
                               x_dir = getwd(),
                               gdal_dir = "/Library/Frameworks/GDAL.framework/Versions/1.11/Programs/") {
-    system(paste0(
-        gdal_dir, "gdalinfo ",
-        prefix, "\"", x_dir, x, "\"", band
-    ))
+  system(paste0(
+    gdal_dir, "gdalinfo ",
+    prefix, "\"", x_dir, x, "\"", band
+  ))
 }
 
 #' bash_gdaltranslate_all
@@ -52,11 +52,11 @@ bash_gdalinfo_one <- function(x, prefix = "HDF4_EOS:EOS_GRID:", band,
 bash_gdaltranslate_all <- function(x, out,
                                    x_dir = getwd(), out_dir = getwd(),
                                    gdal_dir = "/Library/Frameworks/GDAL.framework/Versions/1.11/Programs/") {
-    system(paste0(
-        gdal_dir, "gdal_translate -sds ",
-        "\"", x_dir,   x,   "\"", " ",
-        "\"", out_dir, out, "\""
-    ))
+  system(paste0(
+    gdal_dir, "gdal_translate -sds ",
+    "\"", x_dir,   x,   "\"", " ",
+    "\"", out_dir, out, "\""
+  ))
 }
 
 #' bash_gdaltranslate_one
@@ -75,11 +75,11 @@ bash_gdaltranslate_all <- function(x, out,
 bash_gdaltranslate_one <- function(x, prefix = "HDF4_EOS:EOS_GRID:", band, out,
                                    x_dir = getwd(), out_dir = getwd(),
                                    gdal_dir = "/Library/Frameworks/GDAL.framework/Versions/1.11/Programs/") {
-    system(paste0(
-        gdal_dir, "gdal_translate ",
-        prefix, "\"", x_dir,   x,   "\"", band, " ",
-        "\"", out_dir, out, "\""
-    ))
+  system(paste0(
+    gdal_dir, "gdal_translate ",
+    prefix, "\"", x_dir,   x,   "\"", band, " ",
+    "\"", out_dir, out, "\""
+  ))
 }
 
 #' bash_gdaltranslate_loop
@@ -101,18 +101,18 @@ bash_gdaltranslate_loop <- function(x, prefix = "HDF4_EOS:EOS_GRID:", band,
                                     out_format = ".tif",
                                     x_dir = getwd(), out_dir = getwd(),
                                     gdal_dir = "/Library/Frameworks/GDAL.framework/Versions/1.11/Programs/") {
-    if (!is.atomic(x) | !is.character(x)) {
-        warning("x must be an atomic (i.e. 1-D) character vector!")
-        warning("e.g. `order$name` (NOT the data-frame `order`)")
-    }
-    for (i in 1:length(x)) {
-        bash_gdaltranslate_one(
-            x = x[i], band = band,
-            out = paste0(
-                x[i] %>% substr(0, nchar(.) - 4),
-                out_format
-            ),
-            x_dir = x_dir, out_dir = out_dir
-        )
-    }
+  if (!is.atomic(x) | !is.character(x)) {
+    warning("x must be an atomic (i.e. 1-D) character vector!")
+    warning("e.g. `order$name` (NOT the data-frame `order`)")
+  }
+  for (i in 1:length(x)) {
+    bash_gdaltranslate_one(
+      x = x[i], band = band,
+      out = paste0(
+        x[i] %>% substr(0, nchar(.) - 4),
+        out_format
+      ),
+      x_dir = x_dir, out_dir = out_dir
+    )
+  }
 }
