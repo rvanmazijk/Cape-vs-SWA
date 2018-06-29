@@ -357,11 +357,11 @@ ggsave(
 if (FALSE) {
   # TODO: Taxa & environment section -----------------------------------------
   ggplot(taxa_enviro_roughness_HDS[, c("region",
-                     "richness",
-                     "rank",
-                     "roughness_Elevation")],
-      aes(roughness_Elevation, richness,
-        col = region)) +
+                                       "richness",
+                                       "rank",
+                                       "roughness_Elevation")],
+         aes(roughness_Elevation, richness,
+         col = region)) +
   geom_point() +
   facet_wrap(~ rank)
 }
