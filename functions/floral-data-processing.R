@@ -1,3 +1,15 @@
+make_SpatialPointsDataFrame <- function(df,
+                                        lat_column = "decimallatitude",
+                                        lon_column = "decimallongitude",
+                                        feature_columns = c("family", "genus", "species"),
+                                        CRS = std_CRS) {
+  return(SpatialPointsDataFrame(
+    coords = df[, c(lon_column, lat_column)],
+    data = df[, c(feature_columns)],
+    proj4string = CRS(CRS)
+  ))
+}
+
 compile_communities_by_cell <- function(trimmed_points,
                                         feature_column = c("species", "genus", "family"),
                                         cell_nos = levels(as.factor(trimmed_points$cell_nos)),
