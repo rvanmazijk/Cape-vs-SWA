@@ -76,8 +76,8 @@
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#keywords"><i class="fa fa-check"></i>Keywords</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#aim-1"><i class="fa fa-check"></i>Aim</a></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#hypothesis"><i class="fa fa-check"></i>Hypothesis</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#hypothesis-v1"><i class="fa fa-check"></i>Hypothesis-v1</a></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#hypothesis-v2"><i class="fa fa-check"></i>Hypothesis-v2</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="materials-and-methods.html"><a href="materials-and-methods.html"><i class="fa fa-check"></i>Materials and methods</a><ul>
 <li class="chapter" data-level="" data-path="materials-and-methods.html"><a href="materials-and-methods.html#overview"><i class="fa fa-check"></i>Overview</a></li>
@@ -145,8 +145,8 @@
 <p>First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions. Using the <code>R</code> package <code>raster</code> <span class="citation">(<span class="citeproc-not-found" data-reference-id="Hijmans2016"><strong>???</strong></span>)</span>, we used a modified version of the “roughness” index in the <code>terrain</code> function: for a three by three neighbourhood of cells, our index is the root of the average squared difference between each of the eight neighbour cells’ values relative to the central focal cell’s value:</p>
 <!--TODO: comply w/ bookdown equation guidelines-->
 <span class="math display" id="eq:roughness">\[\begin{equation}
-    roughness = \sqrt{\frac{\sum_{i = 1}^{8}(x_{focal} - x_i)^{2}}{8}}
-    \tag{1}
+  roughness = \sqrt{\frac{\sum_{i = 1}^{8}(x_{focal} - x_i)^{2}}{8}}
+  \tag{1}
 \end{equation}\]</span>
 <p>Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable’s heterogeneity. We compared the distributions of heterogeneity values in each variable in each region with non-parametric Mann-Whitney U tests, as almost all variables could not be normalised by log-transformation. We also compare the effect size of the Cape vs SWA using the “common language effect size” (CLES), using the <code>R</code> package <code>canprot</code>. The CLES is the proportion of all pairwise comparisons between two sample groups’ observations where the one group’s observation is greater than the other. In our case, of all pairwaise comparisons of a variable’s heterogeneity values between the Cape and SWA, the CLES is the proportion of pais where the Cape heterogeneity value was greater than that of SWA. This allowed us to assess prediction (i).</p>
 <p>To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we ran these Mann-Whitney U tests again at 0.75 degrees resolution, as opposed to 0.05 as above. Moreover, the heterogeneity values at this scale were derived from the original environmental raster layers rescaled to 0.75 degrees resolution. We also compared inter-quantile ranges of heterogeneity values at different spatial scales (i.e. raster resolutions, namely 0.05, 0.25, 0.50, and 0.75 degrees respectively). Once again, this entailed recalculating the heterogeneity layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions. Using inter-quantile ranges allowed us to investigate the spread of heterogeneity values seen in each region, and how this spread differs at different scales.</p>
@@ -156,15 +156,15 @@
 <p>Regarding predictions (iii) and (iv), we wished to compare the degree and importance of species turnover in each region. We compared the degree of species turnover in each region by computing all pairwise Jaccards distances <!--TODO: ref--> between quarter degree squares’ species communities. We then regressed these turnover values for each pair of cells against the physical distane between the centres of those cellssssQuantile regression of all pairwise Jaccards. This is for (iii).</p>
 <p>HDS QDS beta analysis. This is for (iv).</p>
 <span class="math display" id="eq:gamma-beta-alpha">\[\begin{align}
-    \widehat{S_{HDS}}_i = 
-        &amp;\ \beta_0 + \\
-        &amp;\ \beta_1 \overline{S_{QDS}}_i + 
-            \beta_2 \overline{J_{QDS}}_i + 
-            \beta_3 SWA_i + \\
-        &amp;\ \beta_4 \overline{S_{QDS}}_i SWA_i  + 
-            \beta_5 \overline{J_{QDS}}_i SWA_i + 
-            \epsilon_i
-    \tag{2}
+  \widehat{S_{HDS}}_i =
+    &amp;\ \beta_0 + \\
+    &amp;\ \beta_1 \overline{S_{QDS}}_i +
+       \beta_2 \overline{J_{QDS}}_i +
+       \beta_3 SWA_i + \\
+    &amp;\ \beta_4 \overline{S_{QDS}}_i SWA_i  +
+       \beta_5 \overline{J_{QDS}}_i SWA_i +
+       \epsilon_i
+  \tag{2}
 \end{align}\]</span>
 <p>where <span class="math inline">\(\epsilon \sim N \left( \overline{x}, \sigma^2 \right)\)</span>, and <span class="math inline">\(\overline{S_{QDS}}\)</span> is <span class="math inline">\(log(x + 1)\)</span>-transformed.</p>
 </div>
