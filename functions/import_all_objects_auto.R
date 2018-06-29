@@ -1,4 +1,4 @@
-import_all_objects_auto <- function(path) {
+import_all_objects_auto <- function(path, ignore_RDS = FALSE) {
   files <- list.files(path, full.names = TRUE)
   if (length(files) == 0) {
     message("Empty folder")
@@ -12,11 +12,15 @@ import_all_objects_auto <- function(path) {
         envir = .GlobalEnv
       )
     } else if (str_detect(file, "\\.RDS")) {
-      assign(
-        x = str_remove(str_extract(file, "[^\\/]+\\.RDS"), "\\.RDS"),
-        value = read_rds(file),
-        envir = .GlobalEnv
-      )
+      if (!ignore_RDS) {
+        assign(
+          x = str_remove(str_extract(file, "[^\\/]+\\.RDS"), "\\.RDS"),
+          value = read_rds(file),
+          envir = .GlobalEnv
+        )
+      } else {
+        print(glue("{file} ignored"))
+      }
     } else {
       print(glue("{file} neither a CSV nor RDS!"))
     }

@@ -3,6 +3,10 @@
 ## Tables {-}
 
 ```{r turnover-vs-geodist-model-table, results="asis"}
+import_all_objects_auto(
+  here::here("outputs/05_species-turnover-w-distance/"),
+  ignore_RDS = TRUE
+)
 out <- my_model_table(
     model_tidy = species_turnover_geodist_m_tidy, 
     tidy_terms = c(
