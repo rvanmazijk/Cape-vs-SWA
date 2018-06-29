@@ -8,7 +8,7 @@ import_all_objects_auto <- function(path, ignore_RDS = FALSE) {
       ext <- tolower(xfun::file_ext(file))
       object <- switch(ext,
         "csv" = readr::read_csv(file),
-        "rds" = if (!read_RDS) readr::read_rds(file) else next
+        "rds" = if (!ignore_RDS) readr::read_rds(file) else next
       )
       assign(object_name, object, envir = .GlobalEnv)
     }
