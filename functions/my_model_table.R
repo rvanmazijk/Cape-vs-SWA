@@ -1,3 +1,16 @@
+#' Make my model tables in my manuscript *nice*
+#'
+#' @param model Model object, optional if \code{model_tidy} provided
+#' @param model_tidy Data-frame or tibble, optional, derived from \code{model}
+#'     (generated if NULL)
+#' @param tidy_terms Character, the list of nice terms in the final kable
+#'     (LaTeX encouraged)
+#' @param AIC_table Data-frame, optional, AIC table of other models that \code{model}
+#'     has been compared to
+#'
+#' @return A list containing the raw terms of the model for inspection,
+#'     the final nice table,
+#'     and the delta AIC of \code{model}
 my_model_table <- function(model = NULL, model_tidy = NULL,
                            tidy_terms = c("Intercept"),
                            AIC_table = NULL) {

@@ -66,9 +66,10 @@
 
 #' modfile_query
 #'
-#' A query fn that calls on `modfile_query_slave()` in a loop through the months given
-#' (but only provide one, please! (bad design, I know)), in order to query a directory
-#' for files of a certain pattern (used by default for MODIS `.tif`s here)
+#' @description  A query fn that calls on `modfile_query_slave()` in a loop
+#'     through the months given (but only provide one, please! (bad design, I know)),
+#'     in order to query a directory for files of a certain pattern
+#'     (used by default for MODIS `.tif`s here)
 #'
 #' @param month A string of the ONE month desired,
 #'              following the naming system in the default set provided
@@ -132,7 +133,8 @@ modfile_query <- function(month = c("Jan", "Feb", "Mar",
 
 #' modfile_query_slave
 #'
-#' A query fn that calls on `base::list.files()` in a loop through the years provided
+#' @descriptiom A query fn that calls on `base::list.files()` in a loop
+#'     through the years provided
 #'
 #' @param month A string, as in 'modfile_query()`
 #' @param years A number, as in 'modfile_query()`
@@ -194,11 +196,11 @@ modfile_query_slave <- function(month, years,
 
 #' proj_crop_mask_mean_write
 #'
-#' A command function that calls on `proj_crop_mask_mean()` (which calls in turn on
-#' `proj_crop_mask_mean_slave()`) in a loop through months provided in the output of
-#' `modfile_query()` (only one, please!), to reproject rasters to a different
-#' map projection, and crop and mask them to a border's confines,
-#' AND simultaneously writes those resulting rasters to disc
+#' @description A command function that calls on `proj_crop_mask_mean()`
+#'     (which calls in turn on `proj_crop_mask_mean_slave()`) in a loop
+#'     through months provided in the output of `modfile_query()` (only one, please!),
+#'     to reproject rasters to a different map projection, and crop and mask them to
+#'      a border's confines, AND simultaneously writes those resulting rasters to disc
 #'
 #' @param df_of_files A dataframe, produced by \code{modfile_query()},
 #'                    containing the file-names of the rasters you want to
@@ -256,9 +258,10 @@ proj_crop_mask_mean_write <- function(df_of_files,
 
 #' proj_crop_mask_mean
 #'
-#' A command function that calls on `proj_crop_mask_slave()` in a loop through months
-#' provided in the output of `modfile_query()` (only one, please) to reproject rasters
-#' to a different map projection, and crop and mask them to a border's confines.
+#' @description A command function that calls on `proj_crop_mask_slave()`
+#'     in a loop through months provided in the output of `modfile_query()`
+#'     (only one, please) to reproject rasters to a different map projection,
+#'     and crop and mask them to a border's confines.
 #'
 #' @param df_of_files A dataframe, produced by \code{modfile_query()},
 #'                    containing the file-names of the rasters you want to
@@ -315,9 +318,9 @@ proj_crop_mask_mean <- function(df_of_files,
 
 #' proj_crop_mask_mean_slave
 #'
-#' A command function that calls on a sequence of `raster()`, `projectRaster()`, `mask()`,
-#' & `crop()` in a loop through the years in the output of `modfile_query()`,
-#' for a given month
+#' @description A command function that calls on a sequence of `raster()`,
+#'     `projectRaster()`, `mask()`, & `crop()` in a loop through the years
+#'     in the output of `modfile_query()`, for a given month
 #'
 #' @param df_of_files A dataframe, produced by \code{modfile_query()},
 #'                    containing the file-names of the rasters you want to

@@ -1,8 +1,31 @@
+#' Title
+#'
+#' @param a
+#' @param b
+#'
+#' @return
+#' @export
+#'
+#' @examples
 jaccard_distance <- function(a, b) {
   (length(dplyr::union(a, b)) - length(dplyr::intersect(a, b))) /
   length(dplyr::union(a, b))
 }
 
+#' Title
+#'
+#' @param trimmed_points
+#' @param communities_by_cell
+#' @param richness_QDS
+#' @param feature_column
+#' @param cell_nos
+#' @param debug_length
+#' @param quiet
+#'
+#' @return
+#' @export
+#'
+#' @examples
 calc_all_pw_jaccard <- function(trimmed_points = NULL,
                                 communities_by_cell = NULL,
                                 richness_QDS,
@@ -146,11 +169,32 @@ if (FALSE) {
   )
 }
 
+#' Title
+#'
+#' @param cells_df
+#' @param query_focal_scale
+#' @param query_cell_no
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_constituent_QDS_cells <- function(cells_df,
                                       query_focal_scale, query_cell_no) {
     cells_df[cells_df[[query_focal_scale]] == as.numeric(query_cell_no), ]
 }
 
+#' Title
+#'
+#' @param cells
+#' @param communities_by_cell
+#' @param region
+#' @param focal_scale
+#'
+#' @return
+#' @export
+#'
+#' @examples
 compile_gamma_beta_alpha <- function(cells, communities_by_cell,
                                      region = c("GCFR", "SWAFR"),
                                      focal_scale = c("HDS", "threeQDS")) {

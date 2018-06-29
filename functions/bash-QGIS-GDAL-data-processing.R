@@ -4,8 +4,8 @@
 
 # This was necessary on my system (Macintosh), as explained in functions/README.md
 
-#' bash_gdalinfo
-#' Applies the `gdal_info` algorithm to a `.HDF` file, using `bash`
+#' Apply the `gdal_info` algorithm to a `.HDF` file, using `bash`
+#'
 #' @param x A string, specifying the the `.HDF` file name
 #' @param x_dir A string, the directory \code{x} is in
 #' @param gdal_dir A string, the directory the `gdal_info` is in
@@ -20,8 +20,8 @@ bash_gdalinfo <- function(x,
   ))
 }
 
-#' bash_gdalinfo_one
-#' Applies the `gdal_info` algorithm to a band in a `.HDF` file, using `bash`
+#' Appliy the `gdal_info` algorithm to a band in a `.HDF` file, using `bash`
+#'
 #' @param x A string, specifying the the `.HDF` file name
 #' @param prefix A string, e.g. "HDF4_EOS:EOS_GRID:", needed for the
 #'               `gdal-info` algorithm to parse properly
@@ -39,9 +39,10 @@ bash_gdalinfo_one <- function(x, prefix = "HDF4_EOS:EOS_GRID:", band,
   ))
 }
 
-#' bash_gdaltranslate_all
-#' Applies `gdal_translate` to all bands of some `.HDF` file in `bash`,
-#' using the gdal library executables that QGIS uses, in order to change the file format
+#' Applies `gdal_translate` to all bands of some `.HDF` file in `bash`
+#'
+#' @description Using the gdal library executables that QGIS uses,
+#'     in order to change the file format
 #' @param x A string, specifying the the `.HDF` file name
 #' @param out A string, specifying the desired output file---typically a `.tif`
 #' @param x_dir A string, the directory \code{x} is in
@@ -59,9 +60,10 @@ bash_gdaltranslate_all <- function(x, out,
   ))
 }
 
-#' bash_gdaltranslate_one
-#' Applies `gdal_translate` to one band of some `.HDF` file in `bash`,
-#' using the gdal library executables that QGIS uses, in order to change the file format
+#' Applies `gdal_translate` to one band of some `.HDF` file in `bash`
+#'
+#' @description Using the gdal library executables that QGIS uses,
+#'      in order to change the file format
 #' @param x A string, specifying the the `.HDF` file name
 #' @param prefix A string, e.g. "HDF4_EOS:EOS_GRID:", needed for the
 #'               `gdal-info` algorithm to parse properly
@@ -82,9 +84,10 @@ bash_gdaltranslate_one <- function(x, prefix = "HDF4_EOS:EOS_GRID:", band, out,
   ))
 }
 
-#' bash_gdaltranslate_loop
-#' Applies `gdal_translate` to one band of some each `.HDF` file in a list, in `bash`,
-#' by calling on `bash_gdaltranslate_one()` in a loop through that list,
+#' Applies `gdal_translate` to one band of some each `.HDF` file in a list
+#'
+#' @description In `bash`, by calling on `bash_gdaltranslate_one()` in a loop
+#'     through that list,
 #' using the gdal library executables that QGIS uses, in order to change the file format
 #' @param x A character vector, specifying the the `.HDF` file names
 #' @param prefix A string, e.g. "HDF4_EOS:EOS_GRID:", needed for the

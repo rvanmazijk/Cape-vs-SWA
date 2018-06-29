@@ -1,3 +1,9 @@
+#' Check if folders are empty
+#'
+#' @param ... Character, folder path names
+#' @param ignore Character, file extensions to ignore in the check
+#'
+#' @return A logical vector
 folder_is_empty <- function(..., ignore = ".R") {
   paths <- c(...)
   out <- vector(length = length(paths))
@@ -12,6 +18,14 @@ folder_is_empty <- function(..., ignore = ".R") {
   out
 }
 
+#' Import all CSV and RDS files into R
+#'
+#' @description Assigns objects into the global environment with
+#'     the name of the file but without the file extension
+#'
+#' @param path Character, path to folder with objects
+#' @param ignore_RDS Logical, whether or not RDS files are to be excluded.
+#'     Useful if RDS files in your path are known to be large
 import_all_objects_auto <- function(path, ignore_RDS = FALSE) {
   files <- list.files(path, full.names = TRUE)
   if (folder_is_empty(path, ignore = ".R")) {
@@ -29,15 +43,25 @@ import_all_objects_auto <- function(path, ignore_RDS = FALSE) {
   }
 }
 
+#' Source a given R script if it has yet to produce its outputs
+#'
+#' @param output_path Character, the folder path where the R script's
+#'     outputs should be
+#' @param source_path Character, path the to R script
+#' @param import Logical, whether or not to automatically also
+#'     import the outputs after sourcing
 source_if_needed <- function(output_path, source_path, import = TRUE) {
-  if (folder_is_empty(output_path)) {
-    source(source_path)
-  }
-  if (import) {
-    import_all_objects_auto(output_path)
-  }
+  if (folder_is_empty(output_path)) source(source_path)
+  if (import) import_all_objects_auto(output_path)
 }
 
+#' Create a RasterStack of all the soil variables together
+#'
+#' @param region Character, which region (GCFR or SWAFR) to search for
+#' @param variables Character, name of soil variable
+#'     (permissable values in function head) (defaults to all)
+#'
+#' @return A RasterStack of all your soil variables
 stack_soils <- function(region = c("GCFR", "SWAFR"),
                         variables = c("CECSOL",
                                       "BLDFIE",

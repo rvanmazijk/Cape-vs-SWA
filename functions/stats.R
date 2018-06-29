@@ -1,3 +1,14 @@
+#' Convert 95% confidence intervals to P-values
+#'
+#' @param est
+#' @param u
+#' @param l
+#' @param t
+#'
+#' @return
+#' @export
+#'
+#' @examples
 CI_to_P <- function(est, u, l, t = 1.96) {
   # Based on <http://www.bmj.com/content/343/bmj.d2304>
   SE <- (u - l) / (2 * t)
@@ -9,6 +20,18 @@ CI_to_P <- function(est, u, l, t = 1.96) {
   P
 }
 
+#' Title
+#'
+#' @param x
+#' @param y
+#' @param alternative
+#' @param alpha
+#' @param force_mann_whitney_u
+#'
+#' @return
+#' @export
+#'
+#' @examples
 compare_samples <- function(x, y,
                             alternative = c("two.sided", "greater", "less"),
                             alpha = 0.05,
@@ -85,6 +108,17 @@ compare_samples <- function(x, y,
 
 }
 
+#' Title
+#'
+#' @param mu1
+#' @param mu2
+#' @param sd
+#' @param n_sim
+#'
+#' @return
+#' @export
+#'
+#' @examples
 test_error_rate <- function(mu1 = 0, mu2 = mu2, sd = 1, n_sim = 100) {
   type_1_errors <- 0
   for (i in 1:n_sim) {
