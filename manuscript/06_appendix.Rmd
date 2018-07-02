@@ -91,8 +91,3 @@ knitr::include_graphics(here::here("figures/gamma-beta-alpha-3QDS.png"))
 ```
 
 (ref:gamma-beta-alpha-3QDS) Same as \@ref(fig:gamma-beta-alpha-HDS), but for 3QDS, not HDS, as the focal scale.
-
-## R package bibliography {-}
-
-```{r, child="pkg-bibliography/pkg-bibliography.md"}
-```
