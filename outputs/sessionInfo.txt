@@ -14,32 +14,33 @@ attached base packages:
 [9] base     
 
 other attached packages:
- [1] taxize_0.9.3        simecol_0.8-12      deSolve_1.21        spatstat_1.56-0    
- [5] rpart_4.1-13        nlme_3.1-137        spatstat.data_1.3-1 rgdal_1.3-3        
- [9] rasterVis_0.45      latticeExtra_0.6-28 RColorBrewer_1.1-2  lattice_0.20-35    
-[13] raster_2.6-7        sp_1.3-1            foreach_1.4.4       scales_0.5.0       
-[17] cowplot_0.9.2       ggfortify_0.4.5     visreg_2.5-0        gridExtra_2.3      
-[21] canprot_0.1.1       lmodel2_1.7-3       broom_0.4.4         quantreg_5.36      
-[25] SparseM_1.77        lubridate_1.7.4     glue_1.2.0          here_0.1           
-[29] rlang_0.2.1         readxl_1.1.0        reshape2_1.4.3      magrittr_1.5       
-[33] forcats_0.3.0       stringr_1.3.1       dplyr_0.7.5         purrr_0.2.5        
-[37] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2        ggplot2_2.2.1      
-[41] tidyverse_1.2.1     pacman_0.4.6       
+ [1] gridExtra_2.3       bindrcpp_0.2.2      taxize_0.9.3        simecol_0.8-12     
+ [5] deSolve_1.21        spatstat_1.56-0     rpart_4.1-13        nlme_3.1-137       
+ [9] spatstat.data_1.3-1 rgdal_1.3-3         rasterVis_0.45      latticeExtra_0.6-28
+[13] RColorBrewer_1.1-2  lattice_0.20-35     raster_2.6-7        sp_1.3-1           
+[17] foreach_1.4.4       scales_0.5.0        cowplot_0.9.2       ggfortify_0.4.5    
+[21] visreg_2.5-0        canprot_0.1.1       lmodel2_1.7-3       broom_0.4.4        
+[25] quantreg_5.36       SparseM_1.77        lubridate_1.7.4     glue_1.2.0         
+[29] here_0.1            rlang_0.2.1         readxl_1.1.0        reshape2_1.4.3     
+[33] magrittr_1.5        forcats_0.3.0       stringr_1.3.1       dplyr_0.7.5        
+[37] purrr_0.2.5         readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
+[41] ggplot2_2.2.1       tidyverse_1.2.1     pacman_0.4.6       
 
 loaded via a namespace (and not attached):
  [1] bold_0.5.0           httr_1.3.1           rprojroot_1.3-2      tools_3.5.0         
- [5] backports_1.1.2      R6_2.2.2             mgcv_1.8-23          lazyeval_0.2.1      
- [9] colorspace_1.3-2     tidyselect_0.2.4     mnormt_1.5-5         curl_3.2            
-[13] compiler_3.5.0       cli_1.0.0            rvest_0.3.2          xml2_1.2.0          
-[17] CHNOSZ_1.1.3         bookdown_0.7         hexbin_1.27.2        psych_1.8.4         
-[21] goftest_1.1-1        digest_0.6.15        minqa_1.2.4          foreign_0.8-70      
-[25] spatstat.utils_1.8-2 rmarkdown_1.9        pkgconfig_2.0.1      htmltools_0.3.6     
-[29] rstudioapi_0.7       bindr_0.1.1          zoo_1.8-2            jsonlite_1.5        
-[33] Matrix_1.2-14        Rcpp_0.12.17         munsell_0.4.3        ape_5.1             
-[37] abind_1.4-5          stringi_1.2.2        yaml_2.1.19          plyr_1.8.4          
-[41] crayon_1.3.4         deldir_0.1-15        haven_1.1.2          tensor_1.5          
-[45] hms_0.4.2            knitr_1.20           pillar_1.2.3         codetools_0.2-15    
-[49] crul_0.5.2           packrat_0.4.9-3      evaluate_0.10.1      data.table_1.11.4   
-[53] modelr_0.1.2         MatrixModels_0.4-1   cellranger_1.1.0     gtable_0.2.0        
-[57] polyclip_1.9-0       reshape_0.8.7        assertthat_0.2.0     xfun_0.2            
-[61] xtable_1.8-2         viridisLite_0.3.0    iterators_1.0.9      bindrcpp_0.2.2      
+ [5] backports_1.1.2      utf8_1.1.4           R6_2.2.2             mgcv_1.8-23         
+ [9] lazyeval_0.2.1       colorspace_1.3-2     tidyselect_0.2.4     mnormt_1.5-5        
+[13] curl_3.2             compiler_3.5.0       cli_1.0.0            rvest_0.3.2         
+[17] xml2_1.2.0           CHNOSZ_1.1.3         labeling_0.3         bookdown_0.7        
+[21] hexbin_1.27.2        psych_1.8.4          goftest_1.1-1        digest_0.6.15       
+[25] minqa_1.2.4          foreign_0.8-70       spatstat.utils_1.8-2 rmarkdown_1.9       
+[29] pkgconfig_2.0.1      htmltools_0.3.6      rstudioapi_0.7       bindr_0.1.1         
+[33] zoo_1.8-2            jsonlite_1.5         Matrix_1.2-14        Rcpp_0.12.17        
+[37] munsell_0.4.3        ape_5.1              abind_1.4-5          stringi_1.2.2       
+[41] yaml_2.1.19          plyr_1.8.4           crayon_1.3.4         deldir_0.1-15       
+[45] haven_1.1.2          tensor_1.5           hms_0.4.2            knitr_1.20          
+[49] pillar_1.2.3         codetools_0.2-15     crul_0.5.2           packrat_0.4.9-3     
+[53] evaluate_0.10.1      data.table_1.11.4    modelr_0.1.2         MatrixModels_0.4-1  
+[57] cellranger_1.1.0     gtable_0.2.0         polyclip_1.9-0       reshape_0.8.7       
+[61] assertthat_0.2.0     xfun_0.2             xtable_1.8-2         viridisLite_0.3.0   
+[65] iterators_1.0.9     
