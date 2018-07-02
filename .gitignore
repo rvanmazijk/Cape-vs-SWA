@@ -2,3 +2,5 @@
 *.DS_Store
 .Rproj.user
 *.Rhistory
+packrat/lib*/
+packrat/src/
