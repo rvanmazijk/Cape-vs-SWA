@@ -230,20 +230,25 @@ scatter_plot <- taxa_turnover_geodist %>%
              alpha = 0.25) +
   labs(x = "Distance between cells (km)",
        y = "Pairwise QDS turnover") +
-  scale_colour_manual(name = "Region", values = my_palette) +
+  scale_colour_manual(name = "Region",
+                      values = rev(my_palette)) +  # Because SWA is plotted first
   theme(legend.position = c(0.75, 0.25))
 
 rq_fits_added <- scatter_plot +
   geom_quantile(data = taxa_turnover_geodist %>%
                   filter(region == "Cape"),
                 aes(geodist, turnover),
-                col = my_palette$Cape_orange, size = 1,
+                col = rgb(t(col2rgb(my_palette[1]) * 0.5),  # Darker
+                          maxColorValue = 255),
+                size = 1,
                 quantiles = 0.05,
                 formula = y ~ log(x)) +
   geom_quantile(data = taxa_turnover_geodist %>%
                   filter(region == "SWA"),
                 aes(geodist, turnover),
-                col = my_palette$SWA_blue, size = 1,
+                col = rgb(t(col2rgb(my_palette[2]) * 0.5),  # Darker
+                          maxColorValue = 255),
+                size = 1,
                 quantiles = 0.05,
                 formula = y ~ log(x))
 fig_turnover_vs_geodist <- rq_fits_added
