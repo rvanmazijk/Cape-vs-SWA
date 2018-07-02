@@ -5,32 +5,25 @@
 # Load and/or download necessary packages --------------------------------------
 
 if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
-library(pacman)
-
-p_load(
-
-  # .... Analyses --------------------------------------------------------------
-
+pacman::p_load(
   # Data wrangling
-  tidyverse, magrittr, reshape2, readr, readxl, rlang,
-  here, glue, stringr, lubridate,
+  tidyverse, magrittr, reshape2, readr, readxl, rlang, here, glue, stringr, lubridate,
   # Stats
   quantreg, broom, lmodel2, canprot,
   # Visualisation
   ggplot2, grid, gridExtra, visreg, ggfortify, cowplot, scales,
-
-  # .... Data processing -------------------------------------------------------
-
   # Parallel processing, nicer loops
   parallel, foreach,
   # GIS
   raster, rasterVis, sp, rgdal, spatstat, simecol,
   # Taxonomy
   taxize
-
 )
 
 # Record session & pkg information ---------------------------------------------
+
+# Note, although packrat records projects' pkg dependencies,
+# here I record what is used per-session, just in case
 
 # Record R session details and loaded packages
 capture.output(
