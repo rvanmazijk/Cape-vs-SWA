@@ -1,4 +1,4 @@
-# Make figures and tables
+# Make figures
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -6,31 +6,28 @@
 
 source(here::here("setup.R"))
 
-output_paths <- here::here("outputs", c(
-  "04_roughness-across-scales/",
-  "05_species-turnover-w-distance/",
-  "06_species-turnover-and-richness/",
-  "07_species-and-roughness/"
-))
-analysis_paths <- here::here("analyses", c(
-  "04_analyse-roughness-across-scales.R",
-  "05_analyse-species-turnover-w-distance.R",
-  "06_analyse-species-turnover-and-richness.R",
-  "07_analyse-species-and-roughness.R"
-))
+pre_analysis_import_paths <- list.files(
+  here::here("analyses"),
+  pattern = "^\\d{2}_import-.*\\.R"
+)
+analysis_paths <- list.files(
+  here::here("analyses"),
+  pattern = "^\\d{2}_analyse-.*\\.R"
+)
+
+no_ext <- "^[^.]+$"
+output_paths <- list.files(
+  here::here("outputs"),
+  pattern = no_ext
+)
+
 if (all(!folder_is_empty(output_paths))) {
-  map(
-    output_paths,
-    import_all_objects_auto
-  )
+  map(output_paths, import_objects)
 } else {
-  source(here::here("analyses/01_import-region-polygons.R"))
-  source(here::here("analyses/02_import-floral-data.R"))
-  source(here::here("analyses/03_import-environmental-data.R"))
+  map(pre_analysis_import_paths, source)
   map2(
     output_paths, analysis_paths,
-    source_if_needed,
-    import = TRUE
+    source_if_needed, import = TRUE
   )
 }
 
