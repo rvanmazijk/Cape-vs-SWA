@@ -18,7 +18,28 @@ focal_sd <- function(x, ...) {
       diffs[6] <- (x[5] - x[7]) ^ 2
       diffs[7] <- (x[5] - x[8]) ^ 2
       diffs[8] <- (x[5] - x[9]) ^ 2
-      sqrt(mean(diffs))
+      sqrt(sum(diffs) / 8)
+    }
+  )
+}
+focal_sd2 <- function(x, ...) {
+  focal(
+    x = x,
+    w = matrix(1, nrow = 3, ncol = 3),
+    function(x, ...) {
+      diffs <- vector(length = length(x[!is.na(x)]))
+      for (i in seq_along(diffs)) {
+        diffs[[i]] <-
+          if (!is.na(x[[i]])) {
+            (x[[5]] - x[[i]]) ^ 2
+          } else {
+            NA
+          }
+      }
+      sqrt(
+        sum(diffs, na.rm = TRUE) /
+        (length(diffs[!is.na(diffs)]) - 1)
+      )
     }
   )
 }
