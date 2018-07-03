@@ -85,7 +85,7 @@ richness_vs_turnover_HDS_plot <-
         legend.position = "none")
 # TODO: Genus and family level analysis in appendix?
 
-# .... Combine those figures ---------------------------------------------------
+# Combine those figures --------------------------------------------------------
 
 fig_combined <- cowplot::plot_grid(
   plotlist = list(
@@ -149,4 +149,16 @@ ggsave(
   fig_richness_vs_turnover_3QDS,
   width = 8, height = 4,
   dpi = 300
+)
+
+# Tidy-up workspace ------------------------------------------------------------
+
+rm(
+  fig_combined,
+  fig_turnover_vs_geodist,
+  richness_vs_richness_HDS_plot,
+  richness_vs_turnover_HDS_plot,
+  fig_richness_vs_turnover_3QDS,
+  richness_vs_richness_3QDS_plot,
+  richness_vs_turnover_3QDS_plot
 )

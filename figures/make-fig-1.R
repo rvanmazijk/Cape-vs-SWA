@@ -178,7 +178,7 @@ ggsave(
   here::here("figures/roughness.png"),
   roughness_combined,
   width = 10, height = 5,
-  dpi = 500
+  dpi = 300
 )
 
 # Tidy-up workspace ------------------------------------------------------------
