@@ -25,10 +25,16 @@ folder_is_empty <- function(..., ignore = ".R") {
 #'
 #' @param path Character, path to folder with objects
 #' @param ignore_RDS Logical, whether or not RDS files are to be excluded.
-#'     Useful if RDS files in your path are known to be large
-import_all_objects_auto <- function(path, ignore_RDS = FALSE) {
-  files <- list.files(path, full.names = TRUE)
-  if (folder_is_empty(path, ignore = ".R")) {
+#'     Useful if RDS files in your path are known to be large.
+#' @param ... Other parametes to pass to \code{folder_is_empty}
+import_objects <- function(path, ignore_RDS = FALSE,
+                           ignore = ".R") {
+  files <- list.files(
+    path,
+    pattern = glue::glue("[^\\{ignore}]$"),
+    full.names = TRUE
+  )
+  if (folder_is_empty(path, ignore = ignore)) {
     message("No objects in folder")
   } else {
     for (file in files) {
@@ -49,10 +55,18 @@ import_all_objects_auto <- function(path, ignore_RDS = FALSE) {
 #'     outputs should be
 #' @param source_path Character, path the to R script
 #' @param import Logical, whether or not to automatically also
+#' @param ... Other parameters to pass to \code{folder_is_empty()} and
+#'     \code{import_objects()}
 #'     import the outputs after sourcing
-source_if_needed <- function(output_path, source_path, import = TRUE) {
-  if (folder_is_empty(output_path)) source(source_path)
-  if (import) import_all_objects_auto(output_path)
+source_if_needed <- function(output_path, source_path,
+                             import = TRUE,
+                             ignore = ".R", ignore_RDS = FALSE) {
+  if (folder_is_empty(output_path, ignore = ignore)) {
+    source(source_path)
+  }
+  if (import) {
+    import_objects(output_path, ignore_RDS = ignore_RDS)
+  }
 }
 
 #' Create a RasterStack of all the soil variables together

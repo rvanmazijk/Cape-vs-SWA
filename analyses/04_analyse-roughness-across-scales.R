@@ -21,16 +21,16 @@ test_results <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
     cbind(variable = var_names, .) %>%
     as_tibble()
 }
-names(test_results) <- c("0.05deg", "QDS", "HDS", "3QDS")
+names(test_results) <- c("0.05º", "QDS", "HDS", "3QDS")
 
 test_results_summary <- test_results %>%
   map(mutate, sig = p.value < 0.05) %>%
   map(dplyr::select, variable, sig) %$%
   tibble(variable = var_names,
-         `0.05 x 0.05` = .$`0.05deg`$sig,
-         `0.25 x 0.25` = .$QDS$sig,
-         `0.50 x 0.50` = .$HDS$sig,
-         `0.75 x 0.75` = .$`3QDS`$sig)
+         `0.05º` = .$`0.05deg`$sig,
+         QDS = .$QDS$sig,
+         HDS = .$HDS$sig,
+         `3QDS` = .$`3QDS`$sig)
 
 # Save to disc
 write_csv(
@@ -51,11 +51,11 @@ test_results_CLES <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
   names(out) <- var_names
   out
 }
-names(test_results_CLES) <- c("0.05", "0.25", "0.50", "0.75")
+names(test_results_CLES) <- c("0.05º", "QDS", "HDS", "3QDS")
 
 test_results_CLES_for_plot <- test_results_CLES %>%
   map(as_tibble) %$%
-  rbind(.$`0.05`, .$`0.25`, .$`0.50`, .$`0.75`) %>%
+  rbind(.$`0.05º`, .$QDS, .$HDS, .$`3QDS`) %>%
   cbind(resolution = names(test_results_CLES), .) %>%
   gather(variable, CLES, -resolution) %>%
   as_tibble()
@@ -75,16 +75,17 @@ data_for_violin_plot <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% 
   )
 }
 data_for_violin_plot <- data_for_violin_plot %$%
-  rbind(cbind(resolution = "0.05 x 0.05", .[[1]]),
-        cbind(resolution = "0.25 x 0.25", .[[2]]),
-        cbind(resolution = "0.50 x 0.50", .[[3]]),
-        cbind(resolution = "0.75 x 0.75", .[[4]])) %>%
+  rbind(cbind(resolution = "0.05º", .[[1]]),
+        cbind(resolution = "QDS",   .[[2]]),
+        cbind(resolution = "HDS",   .[[3]]),
+        cbind(resolution = "3QDS",  .[[4]])) %>%
   as_tibble() %>%
   gather(variable, roughness, -resolution, -region) %>%
   na.omit() %>%
   group_by(resolution, variable) %>%
   mutate(z_roughness = scale(roughness))  # Z-scale that shit!
 data_for_violin_plot$variable %<>% factor(levels = var_names)
+data_for_violin_plot %<>% mutate(region = ifelse(region == "GCFR", "Cape", "SWA"))
 
 # Save to disc
 write_csv(
@@ -107,6 +108,7 @@ IQ95R_data <- data_for_violin_plot %>%
                            ifelse(quantile == "IQ95R",
                                   0.95,
                                   NA)))
+IQ95R_data %<>% mutate(region = ifelse(region == "GCFR", "Cape", "SWA"))
 
 # Save to disc
 write_csv(

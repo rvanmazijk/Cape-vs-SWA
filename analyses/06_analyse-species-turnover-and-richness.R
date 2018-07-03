@@ -12,19 +12,19 @@ source(here::here("analyses/02_import-floral-data.R"))
 # .... Compile data ------------------------------------------------------------
 
 # GCFR
-GCFR_gamma_beta_alpha_HDS_species <- compile_gamma_beta_alpha(
+GCFR_richness_turnover_HDS_species <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$GCFR$species,
   region = "GCFR",
   focal_scale = "HDS"
 )
-GCFR_gamma_beta_alpha_HDS_genus <- compile_gamma_beta_alpha(
+GCFR_richness_turnover_HDS_genus <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$GCFR$genus,
   region = "GCFR",
   focal_scale = "HDS"
 )
-GCFR_gamma_beta_alpha_HDS_family <- compile_gamma_beta_alpha(
+GCFR_richness_turnover_HDS_family <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$GCFR$family,
   region = "GCFR",
@@ -32,19 +32,19 @@ GCFR_gamma_beta_alpha_HDS_family <- compile_gamma_beta_alpha(
 )
 
 # SWAFR
-SWAFR_gamma_beta_alpha_HDS_species <- compile_gamma_beta_alpha(
+SWAFR_richness_turnover_HDS_species <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$SWAFR$species,
   region = "SWAFR",
   focal_scale = "HDS"
 )
-SWAFR_gamma_beta_alpha_HDS_genus <- compile_gamma_beta_alpha(
+SWAFR_richness_turnover_HDS_genus <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$SWAFR$genus,
   region = "SWAFR",
   focal_scale = "HDS"
 )
-SWAFR_gamma_beta_alpha_HDS_family <- compile_gamma_beta_alpha(
+SWAFR_richness_turnover_HDS_family <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$SWAFR$family,
   region = "SWAFR",
@@ -53,14 +53,14 @@ SWAFR_gamma_beta_alpha_HDS_family <- compile_gamma_beta_alpha(
 
 # .... Merge both regions ------------------------------------------------------
 
-gamma_beta_alpha_HDS_species <- rbind(
+richness_turnover_HDS_species <- rbind(
   cbind(
     region = "GCFR",
     HDS_cell_no = paste0(
       "cell_",
       levels(as.factor(cells$HDS_cell_no[cells$region == "GCFR"]))
     ),
-    GCFR_gamma_beta_alpha_HDS_species
+    GCFR_richness_turnover_HDS_species
   ),
   cbind(
     region = "SWAFR",
@@ -68,17 +68,17 @@ gamma_beta_alpha_HDS_species <- rbind(
       "cell_",
       levels(as.factor(cells$HDS_cell_no[cells$region == "SWAFR"]))
     ),
-    SWAFR_gamma_beta_alpha_HDS_species
+    SWAFR_richness_turnover_HDS_species
   )
 )
-gamma_beta_alpha_HDS_genus <- rbind(
+richness_turnover_HDS_genus <- rbind(
   cbind(
     region = "GCFR",
     HDS_cell_no = paste0(
       "cell_",
       levels(as.factor(cells$HDS_cell_no[cells$region == "GCFR"]))
     ),
-    GCFR_gamma_beta_alpha_HDS_genus
+    GCFR_richness_turnover_HDS_genus
   ),
   cbind(
     region = "SWAFR",
@@ -86,17 +86,17 @@ gamma_beta_alpha_HDS_genus <- rbind(
       "cell_",
       levels(as.factor(cells$HDS_cell_no[cells$region == "SWAFR"]))
     ),
-    SWAFR_gamma_beta_alpha_HDS_genus
+    SWAFR_richness_turnover_HDS_genus
   )
 )
-gamma_beta_alpha_HDS_family <- rbind(
+richness_turnover_HDS_family <- rbind(
   cbind(
     region = "GCFR",
     HDS_cell_no = paste0(
       "cell_",
       levels(as.factor(cells$HDS_cell_no[cells$region == "GCFR"]))
     ),
-    GCFR_gamma_beta_alpha_HDS_family
+    GCFR_richness_turnover_HDS_family
   ),
   cbind(
     region = "SWAFR",
@@ -104,37 +104,37 @@ gamma_beta_alpha_HDS_family <- rbind(
       "cell_",
       levels(as.factor(cells$HDS_cell_no[cells$region == "SWAFR"]))
     ),
-    SWAFR_gamma_beta_alpha_HDS_family
+    SWAFR_richness_turnover_HDS_family
   )
 )
 
 # .... Merge across ranks, and save --------------------------------------------
 
-gamma_beta_alpha_HDS <- rbind(
-  cbind(gamma_beta_alpha_HDS_species, rank = "species"),
-  cbind(gamma_beta_alpha_HDS_genus,   rank = "genus"),
-  cbind(gamma_beta_alpha_HDS_family,  rank = "family")
+richness_turnover_HDS <- rbind(
+  cbind(richness_turnover_HDS_species, rank = "species"),
+  cbind(richness_turnover_HDS_genus,   rank = "genus"),
+  cbind(richness_turnover_HDS_family,  rank = "family")
 )
 
 # Save to disc
 write_csv(
-  gamma_beta_alpha_HDS,
-  here::here("outputs/06_species-turnover-and-richness/gamma_beta_alpha_HDS.csv")
+  richness_turnover_HDS,
+  here::here("outputs/06_species-turnover-and-richness/richness_turnover_HDS.csv")
 )
 
 # Tidy up
 rm(
-  GCFR_gamma_beta_alpha_HDS_species,
-  GCFR_gamma_beta_alpha_HDS_genus,
-  GCFR_gamma_beta_alpha_HDS_family,
+  GCFR_richness_turnover_HDS_species,
+  GCFR_richness_turnover_HDS_genus,
+  GCFR_richness_turnover_HDS_family,
 
-  SWAFR_gamma_beta_alpha_HDS_species,
-  SWAFR_gamma_beta_alpha_HDS_genus,
-  SWAFR_gamma_beta_alpha_HDS_family,
+  SWAFR_richness_turnover_HDS_species,
+  SWAFR_richness_turnover_HDS_genus,
+  SWAFR_richness_turnover_HDS_family,
 
-  gamma_beta_alpha_HDS_species,
-  gamma_beta_alpha_HDS_genus,
-  gamma_beta_alpha_HDS_family
+  richness_turnover_HDS_species,
+  richness_turnover_HDS_genus,
+  richness_turnover_HDS_family
 )
 
 # 3QDS richness ~ mean QDS richness * mean QDS turnover ------------------------
@@ -142,19 +142,19 @@ rm(
 # .... Compile data ------------------------------------------------------------
 
 # GCFR
-GCFR_gamma_beta_alpha_3QDS_species <- compile_gamma_beta_alpha(
+GCFR_richness_turnover_3QDS_species <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$GCFR$species,
   region = "GCFR",
   focal_scale = "threeQDS"
 )
-GCFR_gamma_beta_alpha_3QDS_genus <- compile_gamma_beta_alpha(
+GCFR_richness_turnover_3QDS_genus <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$GCFR$genus,
   region = "GCFR",
   focal_scale = "threeQDS"
 )
-GCFR_gamma_beta_alpha_3QDS_family <- compile_gamma_beta_alpha(
+GCFR_richness_turnover_3QDS_family <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$GCFR$family,
   region = "GCFR",
@@ -162,19 +162,19 @@ GCFR_gamma_beta_alpha_3QDS_family <- compile_gamma_beta_alpha(
 )
 
 # SWAFR
-SWAFR_gamma_beta_alpha_3QDS_species <- compile_gamma_beta_alpha(
+SWAFR_richness_turnover_3QDS_species <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$SWAFR$species,
   region = "SWAFR",
   focal_scale = "threeQDS"
 )
-SWAFR_gamma_beta_alpha_3QDS_genus <- compile_gamma_beta_alpha(
+SWAFR_richness_turnover_3QDS_genus <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$SWAFR$genus,
   region = "SWAFR",
   focal_scale = "threeQDS"
 )
-SWAFR_gamma_beta_alpha_3QDS_family <- compile_gamma_beta_alpha(
+SWAFR_richness_turnover_3QDS_family <- compile_gamma_beta_alpha(
   cells,
   communities_by_cell_QDS$SWAFR$family,
   region = "SWAFR",
@@ -182,14 +182,14 @@ SWAFR_gamma_beta_alpha_3QDS_family <- compile_gamma_beta_alpha(
 )
 
 # .... Merge both regions ------------------------------------------------------
-gamma_beta_alpha_3QDS_species <- rbind(
+richness_turnover_3QDS_species <- rbind(
   cbind(
     region = "GCFR",
     threeQDS_cell_no = paste0(
       "cell_",
       levels(as.factor(cells$threeQDS_cell_no[cells$region == "GCFR"]))
     ),
-    GCFR_gamma_beta_alpha_3QDS_species
+    GCFR_richness_turnover_3QDS_species
   ),
   cbind(
     region = "SWAFR",
@@ -197,17 +197,17 @@ gamma_beta_alpha_3QDS_species <- rbind(
       "cell_",
       levels(as.factor(cells$threeQDS_cell_no[cells$region == "SWAFR"]))
     ),
-    SWAFR_gamma_beta_alpha_3QDS_species
+    SWAFR_richness_turnover_3QDS_species
   )
 )
-gamma_beta_alpha_3QDS_genus <- rbind(
+richness_turnover_3QDS_genus <- rbind(
   cbind(
     region = "GCFR",
     threeQDS_cell_no = paste0(
       "cell_",
       levels(as.factor(cells$threeQDS_cell_no[cells$region == "GCFR"]))
     ),
-    GCFR_gamma_beta_alpha_3QDS_genus
+    GCFR_richness_turnover_3QDS_genus
   ),
   cbind(
     region = "SWAFR",
@@ -215,17 +215,17 @@ gamma_beta_alpha_3QDS_genus <- rbind(
       "cell_",
       levels(as.factor(cells$threeQDS_cell_no[cells$region == "SWAFR"]))
     ),
-    SWAFR_gamma_beta_alpha_3QDS_genus
+    SWAFR_richness_turnover_3QDS_genus
   )
 )
-gamma_beta_alpha_3QDS_family <- rbind(
+richness_turnover_3QDS_family <- rbind(
   cbind(
     region = "GCFR",
     threeQDS_cell_no = paste0(
       "cell_",
       levels(as.factor(cells$threeQDS_cell_no[cells$region == "GCFR"]))
     ),
-    GCFR_gamma_beta_alpha_3QDS_family
+    GCFR_richness_turnover_3QDS_family
   ),
   cbind(
     region = "SWAFR",
@@ -233,35 +233,35 @@ gamma_beta_alpha_3QDS_family <- rbind(
       "cell_",
       levels(as.factor(cells$threeQDS_cell_no[cells$region == "SWAFR"]))
     ),
-    SWAFR_gamma_beta_alpha_3QDS_family
+    SWAFR_richness_turnover_3QDS_family
   )
 )
 
-gamma_beta_alpha_3QDS <- rbind(
-  cbind(gamma_beta_alpha_3QDS_species, rank = "species"),
-  cbind(gamma_beta_alpha_3QDS_genus,   rank = "genus"),
-  cbind(gamma_beta_alpha_3QDS_family,  rank = "family")
+richness_turnover_3QDS <- rbind(
+  cbind(richness_turnover_3QDS_species, rank = "species"),
+  cbind(richness_turnover_3QDS_genus,   rank = "genus"),
+  cbind(richness_turnover_3QDS_family,  rank = "family")
 )
 
 # Save to disc
 write_csv(
-  gamma_beta_alpha_3QDS,
-  here::here("outputs/06_species-turnover-and-richness/gamma_beta_alpha_3QDS.csv")
+  richness_turnover_3QDS,
+  here::here("outputs/06_species-turnover-and-richness/richness_turnover_3QDS.csv")
 )
 
 # Tidy up
 rm(
-  GCFR_gamma_beta_alpha_3QDS_species,
-  GCFR_gamma_beta_alpha_3QDS_genus,
-  GCFR_gamma_beta_alpha_3QDS_family,
+  GCFR_richness_turnover_3QDS_species,
+  GCFR_richness_turnover_3QDS_genus,
+  GCFR_richness_turnover_3QDS_family,
 
-  SWAFR_gamma_beta_alpha_3QDS_species,
-  SWAFR_gamma_beta_alpha_3QDS_genus,
-  SWAFR_gamma_beta_alpha_3QDS_family,
+  SWAFR_richness_turnover_3QDS_species,
+  SWAFR_richness_turnover_3QDS_genus,
+  SWAFR_richness_turnover_3QDS_family,
 
-  gamma_beta_alpha_3QDS_species,
-  gamma_beta_alpha_3QDS_genus,
-  gamma_beta_alpha_3QDS_family
+  richness_turnover_3QDS_species,
+  richness_turnover_3QDS_genus,
+  richness_turnover_3QDS_family
 )
 
 # Model gamma-beta-alpha -------------------------------------------------------
@@ -272,38 +272,38 @@ species_turnover_richness_HDS_m <- step(lm(
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
     region * log(avg_QDS_richness + 1) +
     region * avg_QDS_turnover,
-  data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ]
+  data = richness_turnover_HDS[richness_turnover_HDS$rank == "species", ]
 ))
 genus_turnover_richness_HDS_m <- step(lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
     region * log(avg_QDS_richness + 1) +
     region * avg_QDS_turnover,
-  data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "genus", ]
+  data = richness_turnover_HDS[richness_turnover_HDS$rank == "genus", ]
 ))
 family_turnover_richness_HDS_m <- step(lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
     region * log(avg_QDS_richness + 1) +
     region * avg_QDS_turnover,
-  data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "family", ]
+  data = richness_turnover_HDS[richness_turnover_HDS$rank == "family", ]
 ))
 # Region term retained!
 # More evidence for value of region term:
 species_turnover_richness_HDS_m_no_region <- lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover,
-  data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ]
+  data = richness_turnover_HDS[richness_turnover_HDS$rank == "species", ]
 )
 genus_turnover_richness_HDS_m_no_region <- lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover,
-  data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "genus", ]
+  data = richness_turnover_HDS[richness_turnover_HDS$rank == "genus", ]
 )
 family_turnover_richness_HDS_m_no_region <- lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover,
-  data = gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "family", ]
+  data = richness_turnover_HDS[richness_turnover_HDS$rank == "family", ]
 )
 species_HDS_AIC_table <-
   AIC(species_turnover_richness_HDS_m, species_turnover_richness_HDS_m_no_region)
@@ -318,38 +318,38 @@ species_turnover_richness_3QDS_m <- step(lm(
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
     region * log(avg_QDS_richness + 1) +
     region * avg_QDS_turnover,
-  data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "species", ]
+  data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "species", ]
 ))
 genus_turnover_richness_3QDS_m <- step(lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
     region * log(avg_QDS_richness + 1) +
     region * avg_QDS_turnover,
-  data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "genus", ]
+  data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "genus", ]
 ))
 family_turnover_richness_3QDS_m <- step(lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
     region * log(avg_QDS_richness + 1) +
     region * avg_QDS_turnover,
-  data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "family", ]
+  data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "family", ]
 ))
 # Region term retained!
 # More evidence for value of region term:
 species_turnover_richness_3QDS_m_no_region <- lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover,
-  data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "species", ]
+  data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "species", ]
 )
 genus_turnover_richness_3QDS_m_no_region <- lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover,
-  data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "genus", ]
+  data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "genus", ]
 )
 family_turnover_richness_3QDS_m_no_region <- lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover,
-  data = gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "family", ]
+  data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "family", ]
 )
 species_3QDS_AIC_table <-
   AIC(species_turnover_richness_3QDS_m, species_turnover_richness_3QDS_m_no_region)
