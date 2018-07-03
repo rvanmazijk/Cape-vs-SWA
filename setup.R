@@ -6,16 +6,18 @@
 
 if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
 pacman::p_load(
-  # Data wrangling
-  tidyverse, magrittr, reshape2, readr, readxl, rlang, here, glue, stringr, lubridate,
+  # General programming
+  magrittr, here, glue, stringr, foreach, #? rlang,
+  # Data manipulation
+  tidyverse, reshape2, readr, #? lubridate,
   # Stats
-  quantreg, broom, lmodel2, canprot,
-  # Visualisation
-  ggplot2, grid, gridExtra, visreg, ggfortify, cowplot, scales,
-  # Parallel processing, nicer loops
-  parallel, foreach,
+  quantreg, broom, canprot, #? lmodel2,
+  # Visualisations
+  ggplot2, grid, gridExtra, cowplot, scales, #? ggfortify,
+  # Parallel processing
+  parallel,
   # GIS
-  raster, rasterVis, sp, rgdal, spatstat, simecol,
+  raster, sp, rgdal, #? spatstat, simecol,
   # Taxonomy
   taxize
 )
