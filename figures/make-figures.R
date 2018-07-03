@@ -8,17 +8,20 @@ source(here::here("setup.R"))
 
 pre_analysis_import_paths <- list.files(
   here::here("analyses"),
-  pattern = "^\\d{2}_import-.*\\.R"
+  pattern = "^\\d{2}_import-.*\\.R",
+  full.names = TRUE
 )
 analysis_paths <- list.files(
   here::here("analyses"),
-  pattern = "^\\d{2}_analyse-.*\\.R"
+  pattern = "^\\d{2}_analyse-.*\\.R",
+  full.names = TRUE
 )
 
 no_ext <- "^[^.]+$"
 output_paths <- list.files(
   here::here("outputs"),
-  pattern = no_ext
+  pattern = no_ext,
+  full.names = TRUE
 )
 
 if (all(!folder_is_empty(output_paths))) {
@@ -47,9 +50,10 @@ var_names <- c(
 
 # .... Roughness violins -------------------------------------------------------
 
+# Tidy-up significance labels
 test_results_summary %<>%
   gather(resolution, sig, -variable) %>%
-  filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75")) %>%
+  filter(resolution %in% c("0.05º", "3QDS")) %>%
   mutate(sig = ifelse(sig, "", "NS"),
          region = "GCFR") %>%
   mutate(region = ifelse(region == "GCFR", "Cape", "SWA"))
@@ -59,16 +63,7 @@ test_results_summary <- data_for_violin_plot %>%
   full_join(test_results_summary)
 test_results_summary$variable %<>% factor(levels = var_names)
 
-test_results_CLES_for_plot %<>%
-  mutate(resolution = ifelse(resolution == 0.05,
-                             "0.05 x 0.05",
-                             ifelse(resolution == 0.25,
-                                    "0.25 x 0.25",
-                                    ifelse(resolution == 0.50,
-                                           "0.50 x 0.50",
-                                           ifelse(resolution == 0.75,
-                                                  "0.75 x 0.75",
-                                                  NA)))))
+# Tidy-up CLES labels
 test_results_CLES_for_plot <- data_for_violin_plot %>%
   group_by(variable) %>%
   summarise(y = 0.9 * max(z_roughness)) %>%
@@ -81,130 +76,151 @@ test_results_CLES_for_plot %<>%
   mutate(CLES = round(CLES, digits = 2))
 test_results_CLES_for_plot$variable %<>% factor(levels = var_names)
 
-data_for_violin_plot %<>% mutate(region = ifelse(region == "GCFR", "Cape", "SWA"))
+# Tidy-up raw distribution dataframe
 data_for_violin_plot$variable %<>% factor(levels = var_names)
 
+# Make panel for non-soil variables
 panel_a <- data_for_violin_plot %>%
-  filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75"),
-         variable %in% c("Elevation",
-                         "MAP",
-                         "PDQ",
-                         "Surface T",
-                         "NDVI")) %>%
+  filter(resolution %in% c("0.05º", "3QDS"),
+         variable %in% var_names[1:5]) %>%
   ggplot(aes(region, z_roughness, col = region)) +
-  scale_color_manual(name = "Region", values = my_palette) +
   geom_violin() +
-  ylab("Z(roughness)") +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  labs(y = "Z(roughness)") +
   stat_summary(geom = "point", fun.y = median) +
-  facet_grid(variable ~ resolution, scales = "free_y") +
+  facet_grid(variable ~ resolution,
+             scales = "free_y",
+             switch = "x") +
   # Label significances (Mann-Whitney U)
   geom_text(data = test_results_summary %>%
-              filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75"),
-                     variable %in% c("Elevation",
-                                     "MAP",
-                                     "PDQ",
-                                     "Surface T",
-                                     "NDVI")),
+              filter(resolution %in% c("0.05º", "3QDS"),
+                     variable %in% var_names[1:5]),
             aes(y = y, label = sig),
             x = 1.5,
             col = "grey25") +
   # Label CLES
   geom_text(data = test_results_CLES_for_plot %>%
-              filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75"),
-                     variable %in% c("Elevation",
-                                     "MAP",
-                                     "PDQ",
-                                     "Surface T",
-                                     "NDVI")),
-            aes(y = y, label = CLES),
-            x = 1.5,
-            col = "grey25") +
-  theme(axis.title.x = element_blank(),
-        axis.text.x = element_blank())
-
-panel_b <- data_for_violin_plot %>%
-  filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75"),
-         variable %in% c("CEC",
-                         "Clay",
-                         "Soil C",
-                         "pH")) %>%
-  ggplot(aes(region, z_roughness, col = region)) +
-  geom_violin() +
-  stat_summary(geom = "point", fun.y = median) +
-  facet_grid(variable ~ resolution, scales = "free_y") +
-  # Label significances (Mann-Whitney U)
-  geom_text(data = test_results_summary %>%
-              filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75"),
-                     variable %in% c("CEC",
-                                     "Clay",
-                                     "Soil C",
-                                     "pH")),
-            aes(y = y, label = sig),
-            x = 1.5,
-            col = "grey25") +
-  # Label CLES
-  geom_text(data = test_results_CLES_for_plot %>%
-              filter(resolution %in% c("0.05 x 0.05", "0.75 x 0.75"),
-                     variable %in% c("CEC",
-                                     "Clay",
-                                     "Soil C",
-                                     "pH")),
+              filter(resolution %in% c("0.05º", "3QDS"),
+                     variable %in% var_names[1:5]),
             aes(y = y, label = CLES),
             x = 1.5,
             col = "grey25") +
   theme(legend.position = "none",
-        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
         axis.title.x = element_blank(),
-        axis.text.x = element_blank())
+        strip.text.y = element_blank())
 
-region_legend <- gridExtra::arrangeGrob(panel_a)[[1]][[1]]$grobs[[37]]
-panel_a <- panel_a + theme(legend.position = "none")
-
-panel_b <- cowplot::plot_grid(
-  panel_b, region_legend,
+# Make panel for soil variables
+panel_b <- data_for_violin_plot %>%
+  filter(resolution %in% c("0.05º", "3QDS"),
+         variable %in% var_names[6:9]) %>%
+  ggplot(aes(region, z_roughness, col = region)) +
+  geom_violin() +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  labs(y = "Z(roughness)") +
+  stat_summary(geom = "point", fun.y = median) +
+  facet_grid(variable ~ resolution,
+             scales = "free_y",
+             switch = "x") +
+  # Label significances (Mann-Whitney U)
+  geom_text(data = test_results_summary %>%
+              filter(resolution %in% c("0.05º", "3QDS"),
+                     variable %in% var_names[6:9]),
+            aes(y = y, label = sig),
+            x = 1.5,
+            col = "grey25") +
+  # Label CLES
+  geom_text(data = test_results_CLES_for_plot %>%
+              filter(resolution %in% c("0.05º", "3QDS"),
+                     variable %in% var_names[6:9]),
+            aes(y = y, label = CLES),
+            x = 1.5,
+            col = "grey25") +
+  theme(legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.y = element_blank())
+# Add extra whitespace below panel b, as it has 1 less sub-panel than panel a
+panel_b <- plot_grid(
+  panel_b, grid.rect(gp = gpar(col = "white")),
   nrow = 2, rel_heights = c(4, 0.9)
-)
-fig_roughness_violins <- cowplot::plot_grid(
-  panel_a, panel_b,
-  nrow = 1, rel_widths = c(1, 0.9),
-  labels = c("A)", "B)")
-)
-
-# Save
-ggsave(
-  here::here("figures/roughness-violins.png"),
-  fig_roughness_violins,
-  width = 6, height = 6,
-  dpi = 300
 )
 
 # .... Roughness IQuR ----------------------------------------------------------
-
 # Plot GCFR vs SWAFR 95%-interquantile ranges ~ scale
+
+# Tidy-up data, just in-case
 IQ95R_data$variable %<>% factor(levels = var_names)
-IQ95R_data %<>% mutate(region = ifelse(region == "GCFR", "Cape", "SWA"))
-fig_roughness_IQuR <-
-  ggplot(IQ95R_data,
-         aes(resolution, IXR,
+IQ95R_data$resolution %<>% factor(levels = c("0.05º", "QDS", "HDS", "3QDS"))
+
+# Make panel for non-soil variables
+panel_c <- IQ95R_data %>%
+  filter(variable %in% var_names[1:5]) %>%
+  ggplot(aes(resolution, IXR,
              col = region,
              alpha = quantile,
              group = paste(variable, region, quantile))) +
   geom_point() +
   geom_path() +
-  labs(x = "Resolution",
-       y = "IQuR") +
-  facet_wrap(~ variable) +
+  labs(y = "IQuR") +
+  facet_grid(variable ~ .) +
+  ylim(min(IQ95R_data$IXR), max(IQ95R_data$IXR)) +
   scale_color_manual(name = "Region", values = my_palette) +
   scale_alpha_continuous(name = "Quantile",
                          range = c(1.00, 0.40),
                          breaks = c(0.95, 0.99)) +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  theme(legend.position = "none",
+        axis.title.x = element_blank())
+
+# Make panel for soil variables
+panel_d <- IQ95R_data %>%
+  filter(variable %in% var_names[6:9]) %>%
+  ggplot(aes(resolution, IXR,
+             col = region,
+             alpha = quantile,
+             group = paste(variable, region, quantile))) +
+  geom_point() +
+  geom_path() +
+  labs(y = "IQuR") +
+  facet_grid(variable ~ .) +
+  ylim(min(IQ95R_data$IXR), max(IQ95R_data$IXR)) +
+  scale_color_manual(name = "Region", values = my_palette) +
+  scale_alpha_continuous(name = "Quantile",
+                         range = c(1.00, 0.40),
+                         breaks = c(0.95, 0.99)) +
+  theme(axis.title.x = element_blank())
+# Add extra whitespace below panel d, as it has 1 less sub-panel than panel c
+panel_d <- plot_grid(
+  panel_d, grid.rect(gp = gpar(col = "white")),
+  nrow = 2, rel_heights = c(4, 0.9)
+)
+
+# .... Combine those figures ---------------------------------------------------
+# With a tiny bit more padding on panels c,d to compensate for panels a,b
+# having thicker x-axis/x-facet-label spacing
+
+# Also note the order a,c,b,d is intentional
+# (thought of this layout during design process)
+
+roughness_combined <- plot_grid(
+  panel_a,
+  panel_c %>% plot_grid(grid.rect(gp = gpar(col = "white")),
+                        nrow = 2, rel_heights = c(5, 0.1)),
+  panel_b,
+  panel_d %>% plot_grid(grid.rect(gp = gpar(col = "white")),
+                         nrow = 2, rel_heights = c(4, 0.1)),
+  nrow = 1, rel_widths = c(3, 3, 3, 4.5),
+  labels = LETTERS[1:4]
+)
 
 # Save
 ggsave(
-  here::here("figures/roughness-IQuR.png"),
-  fig_roughness_IQuR,
-  dpi = 300
+  here::here("figures/roughness.png"),
+  roughness_combined,
+  width = 10, height = 5,
+  dpi = 500
 )
 
 # Richness & turnover section --------------------------------------------------
@@ -229,13 +245,14 @@ scatter_plot <- taxa_turnover_geodist %>%
        y = "Pairwise QDS turnover") +
   scale_colour_manual(name = "Region",
                       values = rev(my_palette)) +  # Because SWA is plotted first
+  guides(col = guide_legend(override.aes = list(alpha = 1.00))) +
   theme(legend.position = c(0.75, 0.25))
 
 rq_fits_added <- scatter_plot +
   geom_quantile(data = taxa_turnover_geodist %>%
                   filter(region == "Cape"),
                 aes(geodist, turnover),
-                col = rgb(t(col2rgb(my_palette[1]) * 0.5),  # Darker
+                col = rgb(t(col2rgb(my_palette[1]) * 0.75),  # Darker
                           maxColorValue = 255),
                 size = 1,
                 quantiles = 0.05,
@@ -243,7 +260,7 @@ rq_fits_added <- scatter_plot +
   geom_quantile(data = taxa_turnover_geodist %>%
                   filter(region == "SWA"),
                 aes(geodist, turnover),
-                col = rgb(t(col2rgb(my_palette[2]) * 0.5),  # Darker
+                col = rgb(t(col2rgb(my_palette[2]) * 0.75),  # Darker
                           maxColorValue = 255),
                 size = 1,
                 quantiles = 0.05,
@@ -267,65 +284,50 @@ richness_vs_richness_HDS_plot <-
   geom_point() +
   # Log t/form to normalise avg_QDS_richness scores
   geom_smooth(formula = y ~ log(x + 1), method = "lm") +
+  ylim(0, 3000) +
   labs(x = "Mean QDS richness",
        y = "HDS richness") +
   scale_color_manual(name = "Region", values = my_palette) +
-  theme(legend.position = c(0.75, 0.25))
+  theme(legend.position = "none")
 richness_vs_turnover_HDS_plot <-
   ggplot(gamma_beta_alpha_HDS[gamma_beta_alpha_HDS$rank == "species", ],
          aes(avg_QDS_turnover, richness,
              col = region)) +
   geom_point() +
   geom_smooth(formula = y ~ x, method = "lm") +
+  ylim(0, 3000) +
   labs(x = "Mean QDS turnover",
        y = "HDS richness") +
+  scale_color_manual(name = "Region", values = my_palette) +
   theme(axis.text.y = element_blank(),
         axis.title.y = element_blank(),
         legend.position = "none")
 # TODO: Genus and family level analysis in appendix?
 
-# Plot 2 panels + legend
-fig_richness_vs_turnover_HDS <- cowplot::plot_grid(
-  richness_vs_richness_HDS_plot, richness_vs_turnover_HDS_plot,
-  nrow = 1, rel_widths = c(1, 0.9)
-)
+# .... Combine those figures ---------------------------------------------------
 
-# Save
-ggsave(
-  here::here("figures/richness-vs-turnover-HDS.png"),
-  fig_richness_vs_turnover_HDS,
-  width = 8, height = 4,
-  dpi = 300
-)
-
-# Also save this fig + turnover-vs-geodist combined
-combined_plot_legend <- cowplot::get_legend(
-  richness_vs_richness_HDS_plot + theme(legend.position = "right")
-)
-fig_turnover_vs_geodist_and_legend <- cowplot::plot_grid(
-  plotlist = list(
-    fig_turnover_vs_geodist + theme(legend.position = "none"),
-    combined_plot_legend
-  ),
-  nrow = 2, rel_heights = c(1, 0.3)
-)
 fig_combined <- cowplot::plot_grid(
   plotlist = list(
-    richness_vs_richness_HDS_plot + theme(legend.position = "none"),
-    richness_vs_turnover_HDS_plot,
-    fig_turnover_vs_geodist_and_legend
+    fig_turnover_vs_geodist,
+    cowplot::plot_grid(
+      plotlist = list(
+        richness_vs_richness_HDS_plot,
+        richness_vs_turnover_HDS_plot
+      ),
+      rel_widths = c(1.0, 0.8)
+    )
   ),
-  nrow = 1,
-  rel_widths = c(1, 0.9, 0.8)
+  rel_widths = c(1.0, 1.9),
+  labels = c("A", "B")
 )
 ggsave(
   here::here("figures/richness-vs-turnover-vs-geodist.png"),
   fig_combined,
-  width = 10, height = 4,
+  width = 10, height = 3,
   dpi = 300
 )
 
-# .... Species richness vs richness vs turnover @3QDS --------------------------
+# .... Extra: Species richness vs richness vs turnover @3QDS -------------------
 
 richness_vs_richness_3QDS_plot <-
   ggplot(gamma_beta_alpha_3QDS[gamma_beta_alpha_3QDS$rank == "species", ],
@@ -334,6 +336,7 @@ richness_vs_richness_3QDS_plot <-
   geom_point() +
   # Log t/form to normalise avg_QDS_richness scores
   geom_smooth(formula = y ~ log(x + 1), method = "lm") +
+  ylim(0, 3000) +
   labs(x = "Mean QDS richness",
        y = "3QDS richness") +
   scale_color_manual(name = "Region", values = my_palette) +
@@ -344,8 +347,10 @@ richness_vs_turnover_3QDS_plot <-
              col = region)) +
   geom_point() +
   geom_smooth(formula = y ~ x, method = "lm") +
+  ylim(0, 3000) +
   labs(x = "Mean QDS turnover",
        y = "3QDS richness") +
+  scale_color_manual(name = "Region", values = my_palette) +
   theme(axis.text.y = element_blank(),
         axis.title.y = element_blank(),
         legend.position = "none")
