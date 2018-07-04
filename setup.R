@@ -63,3 +63,23 @@ my_palette <- c(
 # Cleaner theme
 theme_set(theme_bw() + theme(strip.background = element_blank(),
                              panel.grid = element_blank()))
+
+# Define analysis & output paths -----------------------------------------------
+
+pre_analysis_import_paths <- list.files(
+  here::here("analyses"),
+  pattern = "^\\d{2}_import-.*\\.R",
+  full.names = TRUE
+)
+analysis_paths <- list.files(
+  here::here("analyses"),
+  pattern = "^\\d{2}_analyse-.*\\.R",
+  full.names = TRUE
+)
+
+no_ext <- "^[^.]+$"
+output_paths <- list.files(
+  here::here("outputs"),
+  pattern = no_ext,
+  full.names = TRUE
+)
