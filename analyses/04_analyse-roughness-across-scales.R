@@ -114,37 +114,4 @@ write_csv(
   IQ95R_data,
   here::here("outputs/04_roughness-across-scales/IQ95R_data.csv")
 )
-
-# Junk -------------------------------------------------------------------------
-
-# Plot lm fits of 95%-interquantile range ~ scale * region
-#ggplot(IXR_data %>%
-#           filter(quantile == 0.95),
-#       aes(as.numeric(resolution), IXR, col = region)) +
-#    geom_point() +
-#    geom_smooth(method = "lm")
-
-# Plot difference in GCFR and SWAFR 95%-interquantile ranges ~ scale
-#IXR_data_diff <- IXR_data  %>%
-#    group_by(region, resolution, variable, quantile) %>%
-#    summarise(IXR) %>%
-#    spread(region, IXR) %>%
-#    mutate(diff = GCFR - SWAFR)
-#ggplot(IXR_data_diff %>%
-#           filter(quantile == 0.95),
-#       aes(resolution, diff,
-#           col = variable,
-#           #alpha = quantile,
-#           group = variable)) +
-#    geom_point() +
-#    geom_path() +
-#    facet_wrap(~ variable) +
-#    geom_hline(yintercept = 0, lty = "dashed") +
-#    ylab("GCFR - SWAFR")
-
-# Plot lm fit of diff in 95%-interquantile range ~ scale
-#ggplot(IXR_data_diff %>%
-#           filter(quantile == 0.95),
-#       aes(as.numeric(resolution), diff)) +
-#    geom_point() +
 #    geom_smooth(method = "lm")
