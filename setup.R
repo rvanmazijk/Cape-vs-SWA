@@ -1,4 +1,4 @@
-# Setup
+# Project setup
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -42,30 +42,24 @@ knitr::write_bib(
   tweak = FALSE
 )
 
-# Import functions in functions/ -----------------------------------------------
+# Custom settings and functions for this project -------------------------------
 
-my_functions <- list.files(
-  here::here("functions/"),
-  pattern = ".R",
-  full.names = TRUE
+# Import all functions in R-scripts in functions/
+map(
+  list.files(here::here("functions/"), pattern = ".R", full.names = TRUE),
+  source
 )
-map(my_functions, source)
-# Tidy up
-rm(my_functions)
 
-# Global GIS variables ---------------------------------------------------------
-
+# Global GIS variables
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
-# Global ggplot2 theme settings ------------------------------------------------
-
+# Global ggplot2 theme settings
 # Colourblind friendly palette, from
 # <http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette>
 my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
   "#56B4E9"   # SWA (SWAFR) blue
 )
-
 # Cleaner theme
 theme_set(theme_bw() + theme(strip.background = element_blank(),
                              panel.grid = element_blank()))
