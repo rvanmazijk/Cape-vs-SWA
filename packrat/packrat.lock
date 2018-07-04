@@ -8,6 +8,11 @@ Source: CRAN
 Version: 1.66.0-1
 Hash: 4cc8883584b955ed01f38f68bc03af6d
 
+Package: BiocInstaller
+Source: Bioconductor
+Version: 1.30.0
+Hash: b7e53989dbab5dc09626192456e7abc9
+
 Package: CHNOSZ
 Source: CRAN
 Version: 1.1.3
