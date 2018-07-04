@@ -106,8 +106,7 @@ IQ95R_data <- data_for_violin_plot_tidy %>%
                            ifelse(quantile == "IQ95R",
                                   0.95,
                                   NA))) %>%
-  ungroup() %>%
-  mutate(region = ifelse(region == "GCFR", "Cape", "SWA"))
+  ungroup()
 
 # Save to disc
 write_csv(
