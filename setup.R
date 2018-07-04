@@ -4,7 +4,9 @@
 
 # Load and/or download necessary packages --------------------------------------
 
-if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
+if (!"pacman" %in% installed.packages()) {
+  install.packages("pacman", dependencies = TRUE)
+}
 pacman::p_load(
   # General programming
   magrittr, here, glue, stringr, foreach, #? rlang,
@@ -57,12 +59,13 @@ std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
 # Global ggplot2 theme settings ------------------------------------------------
 
+# Colourblind friendly palette, from
+# <http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette>
 my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
   "#56B4E9"   # SWA (SWAFR) blue
 )
-# Colourblind friendly, from
-# <http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette>
 
+# Cleaner theme
 theme_set(theme_bw() + theme(strip.background = element_blank(),
                              panel.grid = element_blank()))
