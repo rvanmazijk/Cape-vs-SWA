@@ -171,8 +171,5 @@ rm(
   SWAFR_TCQ,
   SWAFR_TWQ,
   SWAFR_NDVI,
-  SWAFR_soils,
-
-  GCFR_variables,
-  SWAFR_variables
+  SWAFR_soils
 )
