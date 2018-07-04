@@ -4,29 +4,23 @@
 #' @param ...
 #'
 #' @return A RasterLayer
-focal_sd <- function(x, ...) {
-  focal(
-    x = x,
-    w = matrix(1, nrow = 3, ncol = 3),
-    function(x, ...) {
-      diffs <- vector(length = length(x[!is.na(x)]))
-      for (i in seq_along(diffs)) {
-        diffs[[i]] <-
-          if (!is.na(x[[i]])) {
-            (x[[5]] - x[[i]]) ^ 2
-          } else if (i == 5) {
-            NA
-          } else {
-            NA
-          }
+focal_sd <- function(x, ...) {focal(x = x,
+                                    w = matrix(1, nrow = 3, ncol = 3),
+                                    function(x, ...) {
+  focal_cell <- x[[5]]
+  if (is.na(focal_cell) | is.nan(focal_cell)) return(NA)
+  x <- x[!is.na(x) & !is.nan(x)]
+  diffs <- vector(length = length(x))
+  for (i in seq_along(diffs)) {
+    diffs[[i]] <-
+      if (!is.na(x[[i]]) & !is.nan(x[[i]])) {
+        (focal_cell - x[[i]]) ^ 2
+      } else if (x[[i]] == focal_cell) {
+        NA
       }
-      sqrt(
-        sum(diffs, na.rm = TRUE) /
-        (length(diffs[!is.na(diffs)]) - 1)
-      )
-    }
-  )
-}
+  }
+  mean(sqrt(diffs), na.rm = TRUE)
+})}
 
 #' Aggregate a layer to 0.05º, run \code{focal_sd()}
 #'
@@ -35,7 +29,7 @@ focal_sd <- function(x, ...) {
 #' @param x RasterLayer
 #' @param ...
 #'
-#' @return A RasterLayer
+#' @return A data-frame
 prep_layer <- function(x, ...) {
   x %<>%
     aggregate(fact = resolution / 0.05) %>%
