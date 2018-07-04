@@ -4,10 +4,8 @@
 
 # Setup ------------------------------------------------------------------------
 
-map(
-  c(here::here("figures/figure-setup.R"), pre_analysis_import_paths),
-  source
-)
+source(here::here("figures/figure-setup.R"))
+map(pre_analysis_import_paths, source)
 
 # Cape -------------------------------------------------------------------------
 
@@ -15,7 +13,7 @@ GCFR_environment_plots <- vector("list", length = length(var_names))
 for (i in seq_along(var_names)) {
   absolute_panel <- gplot(GCFR_variables_QDS[[i]]) +
     geom_tile(aes(fill = value)) +
-    ggspatial::geom_spatial(GCFR_border, fill = NA, col = "black") +
+    geom_spatial(GCFR_border, fill = NA, col = "black") +
     scale_fill_distiller(palette = "Spectral", na.value = "white") +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
@@ -25,7 +23,7 @@ for (i in seq_along(var_names)) {
           legend.title = element_blank())
   roughness_panel <- gplot(focal_sd(GCFR_variables_QDS[[i]])) +
     geom_tile(aes(fill = value)) +
-    ggspatial::geom_spatial(GCFR_border, fill = NA, col = "black") +
+    geom_spatial(GCFR_border, fill = NA, col = "black") +
     scale_fill_distiller(palette = "Spectral", na.value = "white") +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
@@ -57,7 +55,7 @@ SWAFR_environment_plots <- vector("list", length = length(var_names))
 for (i in seq_along(var_names)) {
   absolute_panel <- gplot(SWAFR_variables_QDS[[i]]) +
     geom_tile(aes(fill = value)) +
-    ggspatial::geom_spatial(GCFR_border, fill = NA, col = "black") +
+    geom_spatial(SWAFR_border, fill = NA, col = "black") +
     scale_fill_distiller(palette = "Spectral", na.value = "white") +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
@@ -67,7 +65,7 @@ for (i in seq_along(var_names)) {
           legend.title = element_blank())
   roughness_panel <- gplot(focal_sd(SWAFR_variables_QDS[[i]])) +
     geom_tile(aes(fill = value)) +
-    ggspatial::geom_spatial(GCFR_border, fill = NA, col = "black") +
+    geom_spatial(SWAFR_border, fill = NA, col = "black") +
     scale_fill_distiller(palette = "Spectral", na.value = "white") +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
