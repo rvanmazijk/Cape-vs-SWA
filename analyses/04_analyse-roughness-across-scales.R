@@ -8,8 +8,8 @@ map(pre_analysis_import_paths, source)
 set.seed(1234)
 
 # Test 0.05deg, QDS, HDS, 3QDS comparisons -------------------------------------
-# Using Mann-Whitney U tests to compare roughness values for GCFR vs SWAFR
 
+# Using Mann-Whitney U tests to compare roughness values for GCFR vs SWAFR
 test_results <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
   test_results_at_a_res <-
     map2_df(GCFR_variables,
@@ -26,7 +26,7 @@ test_results_summary <- test_results %>%
   map(mutate, sig = p.value < 0.05) %>%
   map(dplyr::select, variable, sig) %$%
   tibble(variable = var_names,
-         `0.05º` = .$`0.05deg`$sig,
+         `0.05º` = .$`0.05º`$sig,
          QDS = .$QDS$sig,
          HDS = .$HDS$sig,
          `3QDS` = .$`3QDS`$sig)
@@ -38,8 +38,8 @@ write_csv(
 )
 
 # CLES for those tests ---------------------------------------------------------
-# <https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test#Effect_sizes>
 
+# <https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test#Effect_sizes>
 test_results_CLES <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
   out <- foreach(GCFR = GCFR_variables, SWAFR = SWAFR_variables) %do% {
     canprot::CLES(
