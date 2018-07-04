@@ -3,8 +3,7 @@
 # Ruan van Mazijk
 
 source(here::here("setup.R"))
-source(here::here("analyses/01_import-region-polygons.R"))
-source(here::here("analyses/03_import-environmental-data.R"))
+map(pre_analysis_import_paths, source)
 
 set.seed(1234)
 
