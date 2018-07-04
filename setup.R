@@ -10,18 +10,18 @@ if (!"pacman" %in% installed.packages()) {
 pacman::p_load(
   # General programming
   magrittr, here, glue, stringr, foreach, #? rlang,
-  # Data manipulation
-  tidyverse, reshape2, readr, #? lubridate,
-  # Stats
-  quantreg, broom, canprot, #? lmodel2,
-  # Visualisations
-  ggplot2, grid, gridExtra, cowplot, scales, #? ggfortify,
   # Parallel processing
   parallel,
   # GIS
   raster, sp, rgdal, #? spatstat, simecol,
   # Taxonomy
-  taxize
+  taxize,
+  # Tabular data manipulation
+  tidyverse, reshape2, readr, #? lubridate,
+  # Statistics and modelling
+  quantreg, broom, canprot, #? lmodel2,
+  # Visualisations
+  ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial #? ggfortify,
 )
 
 # Record session & pkg information ---------------------------------------------
