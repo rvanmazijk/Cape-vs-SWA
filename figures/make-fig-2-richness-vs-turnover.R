@@ -102,7 +102,7 @@ fig_combined <- cowplot::plot_grid(
   labels = c("A", "B")
 )
 ggsave(
-  here::here("figures/richness-vs-turnover-vs-geodist.png"),
+  here::here("figures/richness-vs-turnover.png"),
   fig_combined,
   width = 10, height = 3,
   dpi = 300
