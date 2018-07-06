@@ -3,10 +3,18 @@
 # Ruan van Mazijk
 
 source(here::here("setup.R"))
-source(here::here("analyses/01_import-region-polygons.R"))
-source(here::here("analyses/02_import-floral-data.R"))
-source(here::here("analyses/03_import-environmental-data.R"))
-import_all_objects_auto(here::here("analyses/06_outputs"))
+map(pre_analysis_import_paths, source)
+
+tidy_var_names <- function(x) {
+  str_replace_all(tolower(x), " ", "_")
+}
+names(GCFR_variables_QDS) %<>% tidy_var_names()
+
+GCFR <-
+  c(richness = mask(GCFR_richness_QDS, GCFR_border_buffered),
+    GCFR_variables_QDS) %>%
+  map(~ .[]) %>%
+  as_tibble()
 
 compile_species_enviro_roughness <- function(variables_at_focal_scale,
                                              focal_scale = c("HDS", "threeQDS"),
