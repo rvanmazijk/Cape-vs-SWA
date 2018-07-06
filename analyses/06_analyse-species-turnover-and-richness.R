@@ -266,7 +266,8 @@ rm(
 
 # Model gamma-beta-alpha -------------------------------------------------------
 
-# HDS
+# .... HDS ---------------------------------------------------------------------
+
 species_turnover_richness_HDS_m <- step(lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
@@ -288,7 +289,7 @@ family_turnover_richness_HDS_m <- step(lm(
     region * avg_QDS_turnover,
   data = richness_turnover_HDS[richness_turnover_HDS$rank == "family", ]
 ))
-# Region term retained!
+# Region terms retained!
 # More evidence for value of region term:
 species_turnover_richness_HDS_m_no_region <- lm(
   richness ~
@@ -312,7 +313,8 @@ genus_HDS_AIC_table <-
 family_HDS_AIC_table <-
   AIC(family_turnover_richness_HDS_m, family_turnover_richness_HDS_m_no_region)
 
-# 3QDS
+# .... 3QDS --------------------------------------------------------------------
+
 species_turnover_richness_3QDS_m <- step(lm(
   richness ~
     log(avg_QDS_richness + 1) + avg_QDS_turnover +
@@ -334,7 +336,7 @@ family_turnover_richness_3QDS_m <- step(lm(
     region * avg_QDS_turnover,
   data = richness_turnover_3QDS[richness_turnover_3QDS$rank == "family", ]
 ))
-# Region term retained!
+# Region terms retained!
 # More evidence for value of region term:
 species_turnover_richness_3QDS_m_no_region <- lm(
   richness ~
@@ -358,7 +360,8 @@ genus_3QDS_AIC_table <-
 family_3QDS_AIC_table <-
   AIC(family_turnover_richness_3QDS_m, family_turnover_richness_3QDS_m_no_region)
 
-# Save to disc
+# .... Save to disc ------------------------------------------------------------
+
 write_rds(
   species_turnover_richness_HDS_m,
   here::here("outputs/06_species-turnover-and-richness/species_turnover_richness_HDS_m.RDS")
@@ -408,4 +411,18 @@ write_csv(
   here::here("outputs/06_species-turnover-and-richness/family_3QDS_AIC_table.csv")
 )
 
-# TODO: tidy up ls() w/ rm()
+# Tidy up
+rm(
+    species_turnover_richness_HDS_m,
+    genus_turnover_richness_HDS_m,
+    family_turnover_richness_HDS_m,
+    species_turnover_richness_3QDS_m,
+    genus_turnover_richness_3QDS_m,
+    family_turnover_richness_3QDS_m,
+    species_HDS_AIC_table,
+    genus_HDS_AIC_table,
+    family_HDS_AIC_table,
+    species_3QDS_AIC_table,
+    genus_3QDS_AIC_table,
+    family_3QDS_AIC_table
+)
