@@ -7,6 +7,12 @@
 source(here::here("figures/figure-setup.R"))
 map(pre_analysis_import_paths, source)
 
+# TODO:
+# - Fix legends overlapping with regions
+# - Make region borders thinner
+# - Make neat region borders with buffer(..., width = 0)
+# - Remove inter-panel redudundant axes
+
 # Cape -------------------------------------------------------------------------
 
 GCFR_environment_plots <- vector("list", length = length(var_names))
