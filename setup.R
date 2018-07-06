@@ -83,3 +83,4 @@ output_paths <- list.files(
   pattern = no_ext,
   full.names = TRUE
 )
+rm(no_ext)
