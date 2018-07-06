@@ -48,14 +48,6 @@ rq_fits_added <- scatter_plot +
                 formula = y ~ log(x))
 fig_turnover_vs_geodist <- rq_fits_added
 
-# Save
-ggsave(
-  here::here("figures/turnover-vs-geodist.png"),
-  fig_turnover_vs_geodist,
-  width = 4, height = 3,
-  dpi = 300
-)
-
 # Species richness vs richness vs turnover @HDS --------------------------------
 
 richness_vs_richness_HDS_plot <-
