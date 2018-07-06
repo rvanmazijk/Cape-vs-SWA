@@ -122,32 +122,32 @@ SWAFR_variables <- list(
 )
 GCFR_variables %<>%
   map(crop, GCFR_variables[[4]]) %>%
-  map(mask, GCFR_border)
+  map(mask, GCFR_border_buffered)
 SWAFR_variables %<>%
   map(crop, SWAFR_variables[[4]]) %>%
-  map(mask, SWAFR_border)
+  map(mask, SWAFR_border_buffered)
 names(GCFR_variables) <- var_names
 names(SWAFR_variables) <- var_names
 
 GCFR_variables_QDS <- GCFR_variables %>%
   map(resample, GCFR_richness_QDS, method = "bilinear") %>%
-  map(mask, GCFR_border)
+  map(mask, GCFR_border_buffered)
 GCFR_variables_HDS <- GCFR_variables %>%
   map(resample, GCFR_richness_HDS, method = "bilinear") %>%
-  map(mask, GCFR_border)
+  map(mask, GCFR_border_buffered)
 GCFR_variables_3QDS <- GCFR_variables %>%
   map(resample, GCFR_richness_3QDS, method = "bilinear") %>%
-  map(mask, GCFR_border)
+  map(mask, GCFR_border_buffered)
 
 SWAFR_variables_QDS <- SWAFR_variables %>%
   map(resample, SWAFR_richness_QDS, method = "bilinear") %>%
-  map(mask, SWAFR_border)
+  map(mask, SWAFR_border_buffered)
 SWAFR_variables_HDS <- SWAFR_variables %>%
   map(resample, SWAFR_richness_HDS, method = "bilinear") %>%
-  map(mask, SWAFR_border)
+  map(mask, SWAFR_border_buffered)
 SWAFR_variables_3QDS <- SWAFR_variables %>%
   map(resample, SWAFR_richness_3QDS, method = "bilinear") %>%
-  map(mask, SWAFR_border)
+  map(mask, SWAFR_border_buffered)
 
 # Tidy up
 rm(
