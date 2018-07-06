@@ -25,8 +25,8 @@ Hash: 6abedd7919c4457604c0aa44529a6683
 
 Package: MASS
 Source: CRAN
-Version: 7.3-49
-Hash: 01a2feb0d02f446a8337f5fa310fb498
+Version: 7.3-50
+Hash: e8001243da35880bd81391d80eb4eeae
 
 Package: MatrixModels
 Source: CRAN
@@ -122,8 +122,8 @@ Requires: htmltools, knitr, rmarkdown, tinytex, xfun, yaml
 
 Package: broom
 Source: CRAN
-Version: 0.4.4
-Hash: dc14fe971ee0fdd4e22b5b1d11611a37
+Version: 0.4.5
+Hash: 514abdac5bd99ae5a232784431e1c0f2
 Requires: dplyr, nlme, plyr, psych, reshape2, stringr, tidyr
 
 Package: callr
@@ -206,8 +206,8 @@ Hash: 8e0969b0a43c15318b8c877c3982aa3b
 
 Package: devtools
 Source: CRAN
-Version: 1.13.5
-Hash: 80061b2ad6853fd3665bf883123a1b1a
+Version: 1.13.6
+Hash: 9a137acbaeb61f440b1c1dedc1fbcaec
 Requires: digest, git2r, httr, jsonlite, memoise, rstudioapi, whisker,
     withr
 
@@ -223,8 +223,8 @@ Hash: 1f202ebd812ac7192be3739245746a13
 
 Package: dplyr
 Source: CRAN
-Version: 0.7.5
-Hash: cf9a7bcb0b305a27d6250d68cb1ddcdc
+Version: 0.7.6
+Hash: 8c1063395335450e2fdb82fd9c985b6c
 Requires: BH, R6, Rcpp, assertthat, bindrcpp, glue, magrittr,
     pkgconfig, plogr, rlang, tibble, tidyselect
 
@@ -259,10 +259,10 @@ Requires: dplyr, ggplot2, gridExtra, scales, stringr, tibble, tidyr
 
 Package: ggplot2
 Source: CRAN
-Version: 2.2.1
-Hash: 46e5cb78836848aa44655e577433f54b
-Requires: MASS, digest, gtable, lazyeval, plyr, reshape2, scales,
-    tibble
+Version: 3.0.0
+Hash: 8332448b76ff31472a1bf6dd31fcddb1
+Requires: MASS, digest, gtable, lazyeval, plyr, reshape2, rlang,
+    scales, tibble, viridisLite, withr
 
 Package: ggspatial
 Source: CRAN
@@ -317,8 +317,8 @@ Requires: lattice
 
 Package: highr
 Source: CRAN
-Version: 0.6
-Hash: aa3d5b7912b5fed4b546ed5cd2a1760b
+Version: 0.7
+Hash: 20757f5c393ed0ecf96c9e8e6d8d514c
 
 Package: hms
 Source: CRAN
@@ -454,8 +454,8 @@ Requires: broom, dplyr, magrittr, purrr, rlang, tibble, tidyr
 
 Package: munsell
 Source: CRAN
-Version: 0.4.3
-Hash: f96d896947fcaf9b6d0074002e9f4f9d
+Version: 0.5.0
+Hash: 247d1c1d72f3072563912ef860758624
 Requires: colorspace
 
 Package: natserv
@@ -643,10 +643,10 @@ Hash: 2b163b981be3d6daaac1ad505dd0bf30
 
 Package: rmarkdown
 Source: CRAN
-Version: 1.9
-Hash: ab7f84e6f41ed8d8e8b9a2031cf631f8
+Version: 1.10
+Hash: 02f1aac33000c63986c6b5585e36e7ae
 Requires: base64enc, evaluate, htmltools, jsonlite, knitr, mime,
-    rprojroot, stringr, yaml
+    rprojroot, stringr, tinytex, yaml
 
 Package: rncl
 Source: CRAN
@@ -740,8 +740,8 @@ Hash: a7f16aedd1e20f700d63c345143018e1
 
 Package: stringi
 Source: CRAN
-Version: 1.2.2
-Hash: 09671b4a90b75927272d2b2ba6c0d6ed
+Version: 1.2.3
+Hash: bccbb90bf5e1c53f659359c06c0dde79
 
 Package: stringr
 Source: CRAN
