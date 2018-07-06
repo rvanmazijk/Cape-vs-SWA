@@ -20,3 +20,44 @@ tidy_border <- function(border) {
   border@polygons[[1]]@Polygons %<>% remove_holes()
   simple_SpatialPolygonsDataFrame(border)
 }
+
+# FIDDLES
+#region <- GCFR_border
+#
+## <https://gis.stackexchange.com/questions/163445/getting-topologyexception-input#-geom-1-is-invalid-which-is-due-to-self-intersec>
+## ...
+## this is a well known R / GEOS hack (usually combined with the above) to
+## deal with "bad" polygons
+#region <- gBuffer(region, byid=TRUE, width=0)
+#
+## <https://philmikejones.wordpress.com/2015/09/03/dissolve-polygons-in-r/>
+## ...
+## Now the dissolve
+#region <- gUnaryUnion(region)
+#plot(region)
+#
+## <https://stackoverflow.com/questions/12663263/dissolve-holes-in-polygon-in-r>
+## ...
+## Remove the "holes" (holes have ringDir = -1)
+#region@polygons[[1]]@Polygons <-
+#  region@polygons[[1]]@Polygons[
+#    unlist(map(
+#      region@polygons[[1]]@Polygons,
+#      ~ .@ringDir == 1
+#    ))
+#  ]
+#plot(region)
+#
+## Remove overlapping polygons too
+#region <- maptools::unionSpatialPolygons(region)
+#
+#region@polygons[[1]]@Polygons <-
+#  region@polygons[[1]]@Polygons[
+#    max(
+#      unlist(map(
+#        region@polygons[[1]]@Polygons,
+#        ~ .@area
+#      ))
+#    )
+#  ]
+#plot(region)
