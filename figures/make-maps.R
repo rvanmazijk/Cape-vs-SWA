@@ -14,7 +14,7 @@ for (i in seq_along(var_names)) {
   absolute_panel <- gplot(GCFR_variables_QDS[[i]]) +
     geom_tile(aes(fill = value)) +
     geom_spatial(GCFR_border, fill = NA, col = "black") +
-    scale_fill_distiller(palette = "Spectral", na.value = "white") +
+    scale_fill_viridis_c(na.value = NA) +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
          title = var_names[[i]]) +
@@ -24,7 +24,7 @@ for (i in seq_along(var_names)) {
   roughness_panel <- gplot(focal_sd(GCFR_variables_QDS[[i]])) +
     geom_tile(aes(fill = value)) +
     geom_spatial(GCFR_border, fill = NA, col = "black") +
-    scale_fill_distiller(palette = "Spectral", na.value = "white") +
+    scale_fill_viridis_c(na.value = NA) +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
          title = glue("{var_names[[i]]} roughness")) +
@@ -56,7 +56,7 @@ for (i in seq_along(var_names)) {
   absolute_panel <- gplot(SWAFR_variables_QDS[[i]]) +
     geom_tile(aes(fill = value)) +
     geom_spatial(SWAFR_border, fill = NA, col = "black") +
-    scale_fill_distiller(palette = "Spectral", na.value = "white") +
+    scale_fill_viridis_c(na.value = NA) +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
          title = var_names[[i]]) +
@@ -66,7 +66,7 @@ for (i in seq_along(var_names)) {
   roughness_panel <- gplot(focal_sd(SWAFR_variables_QDS[[i]])) +
     geom_tile(aes(fill = value)) +
     geom_spatial(SWAFR_border, fill = NA, col = "black") +
-    scale_fill_distiller(palette = "Spectral", na.value = "white") +
+    scale_fill_viridis_c(na.value = NA) +
     labs(x = "Longitude (º)",
          y = "Latitude (º)",
          title = glue("{var_names[[i]]} roughness")) +
