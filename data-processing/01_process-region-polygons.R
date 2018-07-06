@@ -11,10 +11,18 @@ GCFR_border <-
           layer = "Current_biome") %>%
   subset(!is.na(LA_CURRENT)) %>%  # removes this one pesky NA
   subset(LA_CURRENT %in% c("Fynbos", "Succulent Karoo"))
+GCFR_border_buffered <- buffer_border(GCFR_border, "GCFR")
+# Save
 writeOGR(
   GCFR_border,
   here::here("data/derived-data/borders/GCFR_border/"),
   layer = "LA_CURRENT",
+  driver = "ESRI Shapefile"
+)
+writeOGR(
+  GCFR_border_buffered,
+  here::here("data/derived-data/borders/GCFR_border_buffered/"),
+  layer = "region",
   driver = "ESRI Shapefile"
 )
 
@@ -29,6 +37,7 @@ GCFR_box <-
   list() %>%
   SpatialPolygons(proj4string = crs(std_CRS)) %>%
   SpatialPolygonsDataFrame(data = data.frame(value = 1))
+# Save
 writeOGR(
   GCFR_box,
   here::here("data/derived-data/borders/GCFR_box/"),
@@ -42,6 +51,14 @@ writeOGR(
 # TODO: get exact details of how he cobbled this together
 
 SWAFR_border <- readOGR(here::here("data/derived-data/borders/SWBP_Mike-Cramer"))
+SWAFR_border_buffered <- buffer_border(SWAFR_border, "SWAFR")
+# Save
+writeOGR(
+  SWAFR_border_buffered,
+  here::here("data/derived-data/borders/SWAFR_border_buffered/"),
+  layer = "region",
+  driver = "ESRI Shapefile"
+)
 
 SWAFR_box <-
   matrix(nrow = 4, ncol = 2,
