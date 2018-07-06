@@ -55,6 +55,29 @@ ggsave(here::here("figures/Cape-enviro-maps.png"),
   dpi = 300
 )
 
+GCFR_richness_QDS_tidy <- GCFR_richness_QDS
+GCFR_richness_QDS_tidy[GCFR_richness_QDS_tidy == 0] <- NA
+GCFR_richness_QDS_tidy <- mask(GCFR_richness_QDS_tidy, GCFR_border_buffered)
+GCFR_richness_plot <- gplot(GCFR_richness_QDS_tidy) +
+  geom_tile(aes(fill = value)) +
+  geom_spatial(GCFR_border, fill = NA, col = "black") +
+  lims(x = c(16, 16 + 15),
+       y = c(-36, -36 + 11)) +
+  scale_fill_viridis_c(limits = c(0, cellStats(GCFR_richness_QDS_tidy, max)),
+                       na.value = NA) +
+  labs(x = "Longitude (º)",
+       y = "Latitude (º)",
+       title = "Species richness") +
+  theme(legend.position = c(0.99, 0.99),
+        legend.justification = c(1, 1),
+        legend.title = element_blank())
+ggsave(
+  here::here("figures/Cape-richness-map.png"),
+  GCFR_richness_plot,
+  width = 5, height = 5,
+  dpi = 300
+)
+
 # SWA --------------------------------------------------------------------------
 
 SWAFR_environment_plots <- vector("list", length = length(var_names))
@@ -97,6 +120,34 @@ ggsave(here::here("figures/SWA-enviro-maps.png"),
   dpi = 300
 )
 
+SWAFR_richness_QDS_tidy <- SWAFR_richness_QDS
+SWAFR_richness_QDS_tidy[SWAFR_richness_QDS_tidy == 0] <- NA
+SWAFR_richness_QDS_tidy <- mask(SWAFR_richness_QDS_tidy, SWAFR_border_buffered)
+SWAFR_richness_plot <- gplot(SWAFR_richness_QDS_tidy) +
+  geom_tile(aes(fill = value)) +
+  geom_spatial(SWAFR_border, fill = NA, col = "black") +
+  lims(x = c(112, 112 + 15),
+       y = c(-36, -36 + 11)) +
+  scale_fill_viridis_c(limits = c(0, cellStats(GCFR_richness_QDS_tidy, max)),
+                       na.value = NA) +
+  labs(x = "Longitude (º)",
+       y = "Latitude (º)",
+       title = "Species richness") +
+  theme(legend.position = c(0.99, 0.99),
+        legend.justification = c(1, 1),
+        legend.title = element_blank())
+ggsave(
+  here::here("figures/SWA-richness-map.png"),
+  SWAFR_richness_plot,
+  width = 5, height = 5,
+  dpi = 300
+)
+
 # Tidy-up workspace ------------------------------------------------------------
 
-rm(GCFR_environment_plots, SWAFR_environment_plots)
+rm(
+  GCFR_environment_plots,
+  GCFR_richness_plot,
+  SWAFR_environment_plots,
+  SWAFR_richness_plot
+)
