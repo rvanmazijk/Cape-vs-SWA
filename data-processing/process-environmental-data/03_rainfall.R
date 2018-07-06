@@ -4,8 +4,8 @@
 # Ruan van Mazijk
 
 # Import regions' boxes
-GCFR_box <- readRDS(here::here("data/derived-data/borders/GCFR_box.rds"))
-SWAFR_box <- readRDS(here::here("data/derived-data/borders/SWAFR_box.rds"))
+GCFR_box <- readOGR(here::here("data/derived-data/borders/GCFR_box/"))
+SWAFR_box <- readOGR(here::here("data/derived-data/borders/SWAFR_box/"))
 
 # MAP --------------------------------------------------------------------------
 

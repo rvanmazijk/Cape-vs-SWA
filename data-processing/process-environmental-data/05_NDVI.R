@@ -628,7 +628,7 @@ writeRaster(
 # TODO: Why did I do this again?
 # Ag, doesn't matter,,,
 
-GCFR_box <- readRDS(here::here("data/derived-data/borders/GCFR_box.rds"))
+GCFR_box <- readOGR(here::here("data/derived-data/borders/GCFR_box/"))
 GCFR_NDVI <- raster(glue("
   {giswd}\\
   MOD13C2_GeoTiffs/\\
@@ -643,7 +643,7 @@ writeRaster(
   here::here("data/derived-data/NDVI/GCFR_NDVI.tif")
 )
 
-SWAFR_box <- readRDS(here::here("data/derived-data/borders/SWAFR_box.rds"))
+SWAFR_box <- readOGR(here::here("data/derived-data/borders/SWAFR_box/"))
 SWAFR_NDVI <- raster(glue("
   {giswd}\\
   MOD13C2_GeoTiffs/\\

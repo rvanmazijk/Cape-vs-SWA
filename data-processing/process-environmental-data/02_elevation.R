@@ -17,7 +17,7 @@ SRTM_ZA %<>% projectRaster(crs = std_CRS)
 proj4string(SRTM_ZA)
 
 # Crop-mask to GCFR_box
-GCFR_box <- readRDS(here::here("data/derived-data/borders/GCFR_box.rds"))
+GCFR_box <- readOGR(here::here("data/derived-data/borders/GCFR_box/"))
 SRTM_ZA %<>%
   crop(GCFR_box) %>%
   mask(GCFR_box)
@@ -47,8 +47,10 @@ SRTM_AU %<>% projectRaster(crs = std_CRS)
 proj4string(SRTM_AU)
 
 # Crop-mask to SWAFR_box
-SWAFR_box <- readRDS(here::here("data/derived-data/borders/SWAFR_box.rds"))
-SRTM_AU %<>% crop(SWAFR_box) %>% mask(SWAFR_box)
+SWAFR_box <- readOGR(here::here("data/derived-data/borders/SWAFR_box/"))
+SRTM_AU %<>%
+  crop(SWAFR_box) %>%
+  mask(SWAFR_box)
 
 # Resample to 0.05deg resolution
 SRTM_AU_0.05 <- raster(res = 0.05, crs = std_CRS)
