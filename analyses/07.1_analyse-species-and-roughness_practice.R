@@ -9,12 +9,58 @@ tidy_var_names <- function(x) {
   str_replace_all(tolower(x), " ", "_")
 }
 names(GCFR_variables_QDS) %<>% tidy_var_names()
+names(SWAFR_variables_QDS) %<>% tidy_var_names()
+
+GCFR_roughness_QDS <- map(GCFR_variables_QDS, focal_sd)
+names(GCFR_roughness_QDS) %<>% paste0("_rough")
+
+SWAFR_roughness_QDS <- map(SWAFR_variables_QDS, focal_sd)
+names(SWAFR_roughness_QDS) %<>% paste0("_rough")
 
 GCFR <-
   c(richness = mask(GCFR_richness_QDS, GCFR_border_buffered),
-    GCFR_variables_QDS) %>%
+    GCFR_variables_QDS,
+    GCFR_roughness_QDS) %>%
   map(~ .[]) %>%
   as_tibble()
+SWAFR <-
+  c(richness = mask(SWAFR_richness_QDS, SWAFR_border_buffered),
+    SWAFR_variables_QDS,
+    SWAFR_roughness_QDS) %>%
+  map(~ .[]) %>%
+  as_tibble()
+data <- na.exclude(as_tibble(rbind(
+  cbind(region = "GCFR", GCFR),
+  cbind(region = "SWAFR", SWAFR)
+)))
+foo <- lm(
+  log(richness + 1) ~
+    elevation + ndvi +
+    map + pdq + surface_t +
+    cec + clay + soil_c + ph +
+    (elevation*region) + (ndvi*region) +
+    (map*region) + (pdq*region) + (surface_t*region) +
+    (cec*region) + (clay*region) + (soil_c*region) + (ph*region),
+  data
+)
+visreg::visreg(foo, xvar = "clay", by = "region", overlay = TRUE, trans = function(x) log(x + 1))
+
+data %>%
+  gather(key = variable, value = value,
+         -region, -richness) %>%
+  mutate(absolute_or_rough = ifelse(str_detect(variable, "_rough"),
+                                    "rough",
+                                    "absolute"),
+         variable = str_remove_all(variable, "_rough")) %>%
+  filter(variable == "cec") %>%
+  ggplot(aes(value, richness, col = region)) +
+  geom_density_2d() +
+  geom_smooth(method = "lm") +
+  facet_grid(variable ~ absolute_or_rough,
+             scales = "free_x") +
+  scale_color_manual(values = my_palette)
+
+# TODO: boxplots along sides of each panel
 
 compile_species_enviro_roughness <- function(variables_at_focal_scale,
                                              focal_scale = c("HDS", "threeQDS"),
