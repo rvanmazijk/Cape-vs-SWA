@@ -3,7 +3,7 @@
 ## Tables {-}
 
 ```{r turnover-vs-geodist-model-table, results="asis"}
-import_all_objects_auto(
+import_objects(
   here::here("outputs/05_species-turnover-w-distance/"),
   ignore_RDS = TRUE
 )
