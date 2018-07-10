@@ -38,10 +38,27 @@ data <-
          NDVI        = NDVI / 1e+07,
          NDVI_rough  = NDVI_rough / 1e+07,
          pH          = pH / 10,
-         pH_rough    = pH_rough / 10) %>%
+         pH_rough    = pH_rough / 10)
   # TODO: Check which other vars have been x10
   # TODO: Check units for NDVI
-  # Gather data into long-form
+
+# <https://stackoverflow.com/questions/4787332/how-to-remove-outliers-from-a-dataset>
+remove_outliers <- function(x, na.rm = TRUE, ...) {
+  if (!is.numeric(x)) {
+    return(x)
+  } else {
+    qnt <- quantile(x, probs = c(.25, .75), na.rm = na.rm, ...)
+    H <- 1.5 * IQR(x, na.rm = na.rm)
+    y <- x
+    y[x < (qnt[1] - H)] <- NA
+    y[x > (qnt[2] + H)] <- NA
+    return(y)
+  }
+}
+data2 <- map_df(data, remove_outliers)
+
+# Gather data into long-form
+data2 %<>%
   gather(key = variable, value = value,
          -region, -richness) %>%
   mutate(absolute_or_rough = ifelse(str_detect(variable, "_rough"),
@@ -49,40 +66,44 @@ data <-
                                     "Absolute"),
          variable = str_remove_all(variable, "_rough"))
 
+# Plots ------------------------------------------------------------------------
+
 # Create plots in a for-loop
 max_richness <- max(
   cellStats(GCFR_richness_QDS, max),
   cellStats(SWAFR_richness_QDS, max)
 )
 enviro_scatters <- foreach(var = var_names) %do% {
-  ggplot(filter(data, variable == var),
+  ggplot(filter(data2, variable == var),
          aes(value, richness, col = region)) +
     geom_density_2d() +
     geom_smooth(method = "lm") +
-    ylim(0, max_richness) +
-    labs(x = "", y = "", main = "") +
+    #ylim(0, max_richness) +
     facet_grid(variable ~ absolute_or_rough,
                scales = "free_x") +
     scale_color_manual(values = my_palette) +
     theme(strip.text.x = element_blank(),
+          axis.title = element_blank(),
           legend.position = "none")
 }
 names(enviro_scatters) <- var_names
 # Combine plots with special care for whitespace,
 enviro_scatters <- plot_grid(
   plotlist = enviro_scatters %$% list(
-    list(Elevation,
+    list(grid.rect(gp = gpar(col = "white")),
+         Elevation,
          MAP,
          PDQ,
          `Surface T`,
          NDVI) %>%
-      plot_grid(plotlist = ., ncol = 1),
-    list(CEC,
+      plot_grid(plotlist = ., ncol = 1, rel_heights = c(0.2, 1, 1, 1, 1, 1)),
+    list(grid.rect(gp = gpar(col = "white")),
+         CEC,
          Clay,
          `Soil C`,
          pH,
          grid.rect(gp = gpar(col = "white"))) %>%
-      plot_grid(plotlist = ., ncol = 1)
+      plot_grid(plotlist = ., ncol = 1, rel_heights = c(0.2, 1, 1, 1, 1, 1))
   ),
   ncol = 2,
   labels = c("A", "B")
