@@ -48,7 +48,7 @@ QGIS GDAL version:
 ```r
 gdalinfo <- "Library/foo/QGIS/GDAL/foo/foo/gdalinfo " # space NB!!!!
 system(paste0(
-    gdalinfo, "~/foo_folder/foo.hdf"
+  gdalinfo, "~/foo_folder/foo.hdf"
 ))
 ```
 
@@ -59,7 +59,7 @@ not `R`... so it's sort of markup-y here in `R`):
 ```r
 gdalinfo <- "Library/foo/QGIS/GDAL/foo/foo/gdalinfo "
 system(paste0(
-    gdalinfo, "\"", ~/foo_folder/foo.hdf", "\""
+  gdalinfo, "\"", ~/foo_folder/foo.hdf", "\""
 ))
 ```
 

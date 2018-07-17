@@ -1,15 +1,15 @@
 # Hengl's tutorial --------------------------------------------------------
 
 p_load(
-    RCurl,
-    rgdal,
-    GSIF,
-    raster,
-    plotKML,
-    XML,
-    lattice,
-    aqp,
-    soiltexture
+  RCurl,
+  rgdal,
+  GSIF,
+  raster,
+  plotKML,
+  XML,
+  lattice,
+  aqp,
+  soiltexture
 )
 
 wg_url <- url("http://gsif.isric.org/lib/exe/fetch.php?media=admin.af.rda")
@@ -34,8 +34,8 @@ xml_out <- "ORCDRC_M_sl1.xml"
 saveXML(l1, file = xml_out)
 
 system(glue("
-    /Library/Frameworks/GDAL.framework/Versions/1.11/Programs/\\
-    gdalinfo {xml_out}
+  /Library/Frameworks/GDAL.framework/Versions/1.11/Programs/\\
+  gdalinfo {xml_out}
 "))
 
 bb <- matrix(nrow = 2, c(-180, -62.00081, 179.9999, 87.37))
@@ -47,7 +47,7 @@ d.x <- round(172800 * (te[3] - te[1]) / (bb[1, 2] - bb[1, 1]))
 o.x; o.y; d.x; d.y
 
 system(glue("
-    /Library/Frameworks/GDAL.framework/Versions/1.11/Programs/\\
-    gdal_translate {xml_out} CECSOL_M_sl1_ZA.tif \\
-    -co \"COMPRESS=DEFLATE\" -srcwin {o.x} {o.y} {d.x} {d.y}
+  /Library/Frameworks/GDAL.framework/Versions/1.11/Programs/\\
+  gdal_translate {xml_out} CECSOL_M_sl1_ZA.tif \\
+  -co \"COMPRESS=DEFLATE\" -srcwin {o.x} {o.y} {d.x} {d.y}
 "))
