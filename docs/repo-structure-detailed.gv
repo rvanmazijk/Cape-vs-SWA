@@ -1,0 +1,119 @@
+digraph {
+
+  // Define nodes --------------------------------------------------------------
+  node [fontname="Helvetica"]
+
+  // "Setup nodes"
+  subgraph cluster_setup {
+    label="Setup"
+    node [shape=oval, color=purple]
+    setup [label="setup.R"]
+    node [shape=box, color=grey]
+    packrat   [label="packrat/"]
+    functions [label="functions/\n(.R)"]
+  }
+
+  // "Action" nodes
+  node [shape=oval, color=blue]
+  data_processing [label="data-processing/\n(.R)"]
+  subgraph cluster_analyses {
+    label="analyses/\n(.R)"
+    import_derived_data [label="Import derived-data\n(.R)"]
+    node [color=green]
+    analyse_rough [label="04_analyse-roughness-across-scales.R"]
+    analyse_tdist [label="05_analyse-species-turnover-w-distance.R"]
+    analyse_trich [label="06_analyse-species-turnover-and-richness.R"]
+    analyse_rrich [label="07_analyse-species-and-roughness.R"]
+  }
+  subgraph cluster_figures {
+    label="figures/\n(.R)"
+    figure_setup [label="figures/figure-setup.R"]
+    make_fig1    [label="figures/make-fig-1.R"]
+    make_fig2    [label="figures/make-fig-2.R"]
+    make_fig3    [label="figures/make-fig-3.R"]
+    //make_maps [label="figures/make-maps.R"]
+  }
+  render [label="manuscript/render.R"]
+
+  // "Data" nodes
+  node [shape=box, color=grey]
+  raw_data     [label="data/raw-data/\n(.csv, .tiff)"]
+  derived_data [label="data/derived-data/\n(.csv, .tiff)"]
+  figures      [label="figures/\n(.png)"]
+  subgraph cluster_outputs {
+    label="outputs/\n(.csv)"
+    out_rough [label="04_roughness-across-scales/"]
+    out_tdist [label="05_species-turnover-w-distance/"]
+    out_trich [label="06_species-turnover-and-richness/"]
+    out_rrich [label="07_species-and-roughness/"]
+    out_extra [label="extra outputs"]
+  }
+  subgraph cluster_manuscript {
+    label="manuscript/"
+    metafiles [label="manuscript/\n(.yml, .bib, .csl)"]
+    index     [label="index.Rmd"]
+    subgraph cluster_body {
+      label="Body"
+      intro              [label="01_introduction.Rmd"]
+      methods            [label="02_materials-and-methods.Rmd"]
+      results            [label="03_results.Rmd"]
+      discussion         [label="04_discussion.Rmd"]
+      figures_and_tables [label="05_figures-and-tables.Rmd"]
+      appendix           [label="06_appendix.Rmd"]
+      bios               [label="07_biosketches.Rmd"]
+      refs               [label="08_references.Rmd"]
+    }
+  }
+
+  // Final manuscript node
+  node [shape=box, color=black]
+  final [label="manuscript.pdf"]
+
+  // Define edges --------------------------------------------------------------
+
+  packrat -> setup
+  setup -> packrat
+  setup -> functions
+
+  raw_data ->
+    data_processing ->
+    derived_data ->
+    import_derived_data ->
+    {analyse_rough, analyse_tdist, analyse_trich, analyse_rrich}
+
+  analyse_rough -> out_rough
+  analyse_tdist -> out_tdist
+  analyse_trich -> out_trich
+  analyse_rrich -> out_rrich
+
+  {out_rough, out_tdist, out_trich, out_rrich} -> figure_setup
+  //import_derived_data -> make_maps
+
+  figure_setup ->
+    {make_fig1, make_fig2, make_fig3} ->
+    figures
+
+  out_extra -> {results, figures_and_tables}
+  figures -> figures_and_tables
+
+  {metafiles,
+   intro, methods, results, discussion,
+   figures_and_tables, appendix, bios, refs} -> index
+
+  index ->
+    render ->
+    final
+
+  // Arrange nodes -------------------------------------------------------------
+
+  rankdir=LR
+  {
+    rank=same
+    raw_data, data_processing, derived_data
+  }
+  {
+    rank=same
+    render, final
+  }
+
+}
