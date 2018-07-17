@@ -46,13 +46,15 @@ The final total plant species richness in each region was `r richness$n_final$GC
 
 ### Quantifying environmental heterogeneity
 
-First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions. Using the R package "raster" [@Hijmans2016], we used a modified version of the "roughness" index in the "terrain" function: for a three by three neighbourhood of cells, our index is the square-root of the average squared difference between each of the eight neighbour cells' values relative to the central focal cell's value:
+First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions. Using the R package "raster" [@Hijmans2016], we used a modified version of the "roughness" index in the "terrain" function: for a three by three neighbourhood of cells, our index $roughness$ is the average square-root of the squared difference between each of the between one and eight $n$ neighbour cells' values $x_i$ relative to the central focal cell's value $x_{focal}$:
 
 \begin{equation}
-  roughness = \sqrt{
-    \frac{1}{8}
-    \sum_{i = 1}^{8} \left( x_{focal} - x_{i} \right)^{2}}
-  }
+  roughness = 
+    \frac{1}{n} 
+    \sqrt{
+      \sum_{i = 1}^{n} 
+      \left( x_{focal} - x_{i} \right)^{2}
+    }
   (\#eq:roughness)
 \end{equation}
 
