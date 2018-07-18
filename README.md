@@ -5,7 +5,7 @@
 - [1]: Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - [§]: Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 
-![](logos/UCT-logo.png){ width=100 } ![](logos/BIO-logo.png){ width=100 }
+![](logos/UCT-logo.png) ![](logos/BIO-logo.png)
 
 ## Preamble
 
@@ -19,7 +19,11 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 
 This work is funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
 
-![](logos/DST-logo.png){ width=180 } ![](logos/NRF-logo.png){ width=100 } ![](logos/SAAB-logo.png){ width=100 }
+<p>
+  <img src="logos/DST-logo.png" width=180>
+  <img src="logos/NRF-logo.png" width=100>
+  <img src="logos/SAAB-logo.png" width=100>
+</p>
 
 ## Technical details
 
