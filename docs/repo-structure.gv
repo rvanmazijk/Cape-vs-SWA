@@ -3,16 +3,21 @@ digraph {
   // Define nodes --------------------------------------------------------------
   node [fontname="Helvetica"]
 
+  // Setup node
+  node [shape=oval, color=purple]
+  setup [label="setup.R"]
+
   // "Action" nodes
   node [shape=oval, color=blue]
   data_processing [label="data-processing/\n(.R)"]
   analyses        [label="analyses/\n(.R)"]
-  functions       [label="functions/\n(.R)"]
   make_figures    [label="figures/make*\n(.R)"]
   render          [label="bookdown::render_book()", fontname="Consolas"]
 
   // "Data" nodes
   node [shape=box, color=grey]
+  packrat      [label="packrat/"]
+  functions    [label="functions/\n(.R)"]
   raw_data     [label="data/raw-data/\n(.csv, .tiff)"]
   derived_data [label="data/derived-data/\n(.csv, .tiff)"]
   figures      [label="figures/\n(.png)"]
@@ -25,33 +30,31 @@ digraph {
 
   // Define edges --------------------------------------------------------------
 
-  raw_data ->
-    data_processing ->
-    derived_data ->
-    analyses ->
-    outputs ->
-    make_figures ->
-    figures
+  setup -> packrat -> setup -> functions
+
+  raw_data -> data_processing -> derived_data ->
+    analyses -> outputs ->
+    make_figures -> figures ->
+    manuscript
+
   derived_data -> make_figures
 
-  {{outputs, figures} -> manuscript} -> render -> final
-
-  functions -> {data_processing, analyses} [constraint=false]
+  {figures, manuscript, outputs} -> render -> final
 
   // Arrange nodes -------------------------------------------------------------
-
   rankdir=LR
+
+  {
+    rank=same
+    setup, packrat, functions
+  }
   {
     rank=same
     raw_data, data_processing, derived_data
   }
   {
     rank=same
-    functions, analyses
-  }
-  {
-    rank=same
-    make_figures, outputs, figures, manuscript
+    analyses, outputs, make_figures, figures, manuscript
   }
   {
     rank=same

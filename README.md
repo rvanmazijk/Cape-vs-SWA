@@ -23,4 +23,5 @@ This manuscript was written using [`bookdown`](https://bookdown.org/), an open-s
 
 All analyses were carried out in R. The workflow used to write this paper was roughly as follows, outlining the roles of the various sub-directories of this repository:
 
-![](docs/repo-structure.png)
+![Raw-data is processed and analysed. Data-processing, analyses and figure production use R packages and bespoke code, loaded by `setup.R`. Derived data and analyses' outputs are used to produce figures. Analyses' outputs, figures and manuscript components are compiled using `bookdown`.](docs/repo-structure.png)
+A more detailed layout of the relationships between this repositories components can be found [here](docs/repo-structure-detailed.html).

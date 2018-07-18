@@ -11,6 +11,10 @@ digraph {
     node [shape=box, color=grey]
     packrat   [label="packrat/"]
     functions [label="functions/\n(.R)"]
+    {
+      rank=same
+      setup, packrat, functions
+    }
   }
 
   // "Action" nodes
@@ -71,14 +75,9 @@ digraph {
 
   // Define edges --------------------------------------------------------------
 
-  packrat -> setup
-  setup -> packrat
-  setup -> functions
+  setup -> packrat -> setup -> functions
 
-  raw_data ->
-    data_processing ->
-    derived_data ->
-    import_derived_data ->
+  raw_data -> data_processing -> derived_data -> import_derived_data ->
     {analyse_rough, analyse_tdist, analyse_trich, analyse_rrich}
 
   analyse_rough -> out_rough
@@ -89,9 +88,7 @@ digraph {
   {out_rough, out_tdist, out_trich, out_rrich} -> figure_setup
   //import_derived_data -> make_maps
 
-  figure_setup ->
-    {make_fig1, make_fig2, make_fig3} ->
-    figures
+  figure_setup -> {make_fig1, make_fig2, make_fig3} -> figures
 
   out_extra -> {results, figures_and_tables}
   figures -> figures_and_tables
@@ -100,13 +97,11 @@ digraph {
    intro, methods, results, discussion,
    figures_and_tables, appendix, bios, refs} -> index
 
-  index ->
-    render ->
-    final
+  index -> render -> final
 
   // Arrange nodes -------------------------------------------------------------
-
   rankdir=LR
+
   {
     rank=same
     raw_data, data_processing, derived_data
