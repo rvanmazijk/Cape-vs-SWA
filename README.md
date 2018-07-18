@@ -5,6 +5,8 @@
 - [1]: Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - [§]: Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 
+![](logos/UCT-logo.png){ width=100 } ![](logos/BIO-logo.png){ width=100 }
+
 ## Preamble
 
 This is an open access repository for data-sets, reproducible analyses and the manuscript for a publication in prep. Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
@@ -16,6 +18,8 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 ## Acknowledgments
 
 This work is funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
+
+![](logos/DST-logo.png){ width=180 } ![](logos/NRF-logo.png){ width=100 } ![](logos/SAAB-logo.png){ width=100 }
 
 ## Technical details
 
