@@ -27,4 +27,4 @@ All analyses were carried out in R. The workflow used to write this paper was ro
 
 Raw-data is processed and analysed. Data-processing, analyses and figure production use R packages and bespoke code, loaded by `setup.R`. Derived data and analyses' outputs are used to produce figures. Analyses' outputs, figures and manuscript components are compiled using `bookdown`.
 
-A more detailed layout of the relationships between this repositories components can be found [here](rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.html).
+A more detailed layout of the relationships between this repositories components can be found [here](https://rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.html).
