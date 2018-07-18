@@ -5,7 +5,10 @@
 - [1]: Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - [§]: Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 
-![](logos/UCT-logo.png) ![](logos/BIO-logo.png)
+<p>
+  <img src="logos/UCT-logo.png" width=100>
+  <img src="logos/BIO-logo.png" width=100>
+</p>
 
 ## Preamble
 
