@@ -21,10 +21,10 @@ This work is funded by the South African Department of Science and Technology (D
 
 This manuscript was written using [`bookdown`](https://bookdown.org/), an open-source package for technical writing using R, R Markdown and pandoc.
 
-All analyses were carried out in R. The workflow used to write this paper was roughly as follows, outlining the roles of the various sub-directories of this repository:
+All analyses were carried out in R. The workflow used to write this paper was roughly as follows (illustrated using [GraphViz](https://www.graphviz.org/)), outlining the roles of the various sub-directories of this repository:
 
 ![](docs/repo-structure.png)
 
 Raw-data is processed and analysed. Data-processing, analyses and figure production use R packages and bespoke code, loaded by `setup.R`. Derived data and analyses' outputs are used to produce figures. Analyses' outputs, figures and manuscript components are compiled using `bookdown`.
 
-A more detailed layout of the relationships between this repositories components can be found [here](https://rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.html).
+A more detailed layout of the relationships between this repository's components is described [here](docs/repo-structure-detailed.svg), also using [GraphViz](https://www.graphviz.org/).
