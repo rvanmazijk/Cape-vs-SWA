@@ -1,5 +1,0 @@
-if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
-pacman::p_load(DiagrammeR, DiagrammeRsvg, here)
-graph <- grViz(here::here("docs/repo-structure-detailed.gv"))
-graph <- export_svg(graph)
-write(graph, here::here("docs/repo-structure-detailed.svg"))
