@@ -40,7 +40,7 @@ knitr::kable(
 )
 ```
 
-(ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence SWA represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula). The Cape was fit as the baseline, hence SWA represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover) and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 # Figures {-}
 
