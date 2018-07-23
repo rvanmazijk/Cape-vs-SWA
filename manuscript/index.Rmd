@@ -36,8 +36,8 @@ knitr::opts_chunk$set(
 
 This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
 
-## Abbreviations {-}
-
+<!--
+Abbreviations {-}
 - Greater Cape Floristic Region (GCFR) (= "Cape")
 - Southwest Australia Floristic Region (SWAFR)  (= "SWA")
 - TODO: fiver percent degree square (i.e. 0.05º x 0.05º) (FPDS)?
