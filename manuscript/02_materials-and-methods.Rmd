@@ -163,7 +163,9 @@ Thus, we regress coarse scale richness as follows:
   (\#eq:S-HDS-formula)
 \end{align}
 
-where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_{QDS}}$ is $log(x + 1)$-transformed. This model
+where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_{QDS}}$ is $log(x + 1)$-transformed.
+This model allows us to compare the spatial-scaling drivers<!--FIXME: reword--> of species richness in either region: whether coarse scale increases in species richness are determined more by (a) being composed of richer---but more similar---communities or by (b) being composed of many different communities.
+These represent the two logical extremes.
 
 ### Predicting species richness and turnover with environmental heterogeneity
 
