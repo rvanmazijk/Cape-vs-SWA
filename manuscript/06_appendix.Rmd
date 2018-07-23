@@ -42,4 +42,4 @@ knitr::kable(
 knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png.png"))
 ```
 
-(ref:richness-vs-turnover-3QDS) Same as \@ref(fig:richness-vs-turnover), but for 3QDS, not HDS, as the focal scale.
+(ref:richness-vs-turnover-3QDS) [Same as \@ref(fig:richness-vs-turnover)B,C, but for 3QDS, not HDS, as the focal scale.]
