@@ -1,7 +1,7 @@
 ```{r setup-figures, include=FALSE}
 source(here::here("setup.R"))
 source_if_needed(
-  output_path = here::here("figures/"), 
+  output_path = here::here("figures/"),
   source_path = here::here("figures/make-figures.R"),
   import = FALSE
 )
@@ -11,7 +11,7 @@ source_if_needed(
 
 ```{r data-sources, results="asis"}
 knitr::kable(
-  read_csv(here::here("manuscript/data-sources.csv")), 
+  read_csv(here::here("manuscript/data-sources.csv")),
   caption = "(ref:data-sources)"
 )
 ```
@@ -29,18 +29,21 @@ tidy_terms <- c(
   "$\\overline{J_{QDS}} \\times SWA$"
 )
 out <- my_model_table(
-  model = species_turnover_richness_HDS_m, 
+  model = species_turnover_richness_HDS_m,
   tidy_terms = tidy_terms,
   AIC_table = species_HDS_AIC_table
 )
 knitr::kable(
-  out$model_table, 
-  align = c("l", "r", "r"), 
+  out$model_table,
+  align = c("l", "r", "r"),
   caption = "(ref:species-model-table)"
 )
 ```
 
-(ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula). The Cape was fit as the baseline, hence SWA represents the categorical term here. This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover) and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
+The Cape was fit as the baseline, hence SWA represents the categorical term here.
+This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`).
+Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover) and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 # Figures {-}
 
@@ -48,14 +51,28 @@ knitr::kable(
 knitr::include_graphics(here::here("figures/roughness.png"))
 ```
 
-(ref:roughness) Comparisons of distributions of calculated environmental roughness values in the Cape and SWA, for elevation, NDVI and climatic variables (**A,B**) and edaphic variables (**C,D**). Each row of panels within **A,C** and **B,D** illustrate the distributions for a different variable.
-Violin-plots (**A,C**) of the distributions of roughness values (Z-scaled to be comparable across panels) are presented at 0.05º and 3QDS scales. Roughness values were calculated following Equation \@ref(eq:roughness). Areas beneath curves sum to one for each violin, and points within represent the median of each distribution. Violin-plots were constructed with Gaussian distributions with bandwidth following Silverman's "rule of thumb" [@Silverman1986].  The degree to which Cape roughness values exceed SWA values is described by the $CLES$ (see Materials and methods). Roughness values were found to be significantly greater in the Cape in all cases ($P \lt 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
-The magnitude of the ranges of Z-scaled roughness values (**B,D**) vary with spatial resolution, described here by the 95%-to-5% and 99%-to-1% interquantile ranges. Lines connect points for illustration, and are paler for the wider quantile.<!--TODO: change IQuR in y-axes simply to "Range"-->
+(ref:roughness) Comparisons of distributions of calculated environmental roughness values in the Cape and SWA, for elevation, NDVI and climatic variables (**A,B**) and edaphic variables (**C,D**).
+Each row of panels within **A,C** and **B,D** illustrate the distributions for a different variable.
+Violin-plots (**A,C**) of the distributions of roughness values (Z-scaled to be comparable across panels) are presented at 0.05º and 3QDS scales.
+Roughness values were calculated following Equation \@ref(eq:roughness).
+Areas beneath curves sum to one for each violin, and points within represent the median of each distribution.
+Violin-plots were constructed with Gaussian distributions with bandwidth following Silverman's "rule of thumb" [@Silverman1986].
+The degree to which Cape roughness values exceed SWA values is described by the $CLES$ (see Materials and methods).
+Roughness values were found to be significantly greater in the Cape in all cases ($P \lt 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
+The magnitude of the ranges of Z-scaled roughness values (**B,D**) vary with spatial resolution, described here by the 95%-to-5% and 99%-to-1% interquantile ranges.
+Lines connect points for illustration, and are paler for the wider quantile.
+<!--TODO: change IQuR in y-axes simply to "Range"-->
 
 ```{r richness-vs-turnover, fig.cap="(ref:richness-vs-turnover)"}
 knitr::include_graphics(here::here("figures/richness-vs-turnover.png"))
 ```
 
-(ref:richness-vs-turnover) Regressions involving plant species richness and turnover. 
-Species turnover (as Jaccards distance) between QDS-pairs increases as pairs are more geographically separated (**A**). Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity. Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region separately. Following a 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable (Table \@ref(tab:turnover-vs-geodist-model-table)), a significant interaction between distance and region was found ($P < 0.001$), such that the Cape positively effects the distance slope term.
-Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (**B**) and the average species turnover between QDS in a given HDS (**C**). Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences.<!--TODO: add panel label C-->
+(ref:richness-vs-turnover) Regressions involving plant species richness and turnover.
+
+Species turnover (as Jaccards distance) between QDS-pairs increases as pairs are more geographically separated (**A**).
+Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity.
+Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region separately.
+Following a 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable (Table \@ref(tab:turnover-vs-geodist-model-table)), a significant interaction between distance and region was found ($P < 0.001$), such that the Cape positively effects the distance slope term.
+Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (**B**) and the average species turnover between QDS in a given HDS (**C**).
+Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences.
+<!--TODO: add panel label C-->
