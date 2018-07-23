@@ -14,7 +14,7 @@ abstract: |
   | **Results** TODO
   | **Main conclusions** TODO
   |
-  | *Keywords*
+  | _Keywords_
   | Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
 # FIXME:
 #`r readr::read_file(here::here("manuscript/abstract.Rmd"))`
