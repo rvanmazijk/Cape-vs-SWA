@@ -170,3 +170,5 @@ These represent the two logical extremes.
 ### Predicting species richness and turnover with environmental heterogeneity
 
 <!--TODO-->
+
+<!--NOTE: Multiple linear regression modelling vs mixed effect modelling vs BRT modelling-->
