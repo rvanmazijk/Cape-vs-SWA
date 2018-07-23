@@ -111,7 +111,6 @@ The CLES is the proportion of all pairwise comparisons between two sample groups
 In our case, of all pairwise comparisons of a variable's heterogeneity values between the Cape and SWA, we calculated the CLES as the proportion of pairs where Cape heterogeneity values were greater than that of SWA.
 This allowed us to assess prediction [(i)][Hypothesis-v2].
 
-
 To compare the spatial scales of heterogeneity (prediction [(ii)][[Hypothesis-v2]) between each region, we used Mann-Whitney U tests at both 0.05º x 0.05º and 3QDS resolutions.
 Moreover, the heterogeneity values at the coarser scale were derived from the original absolute environmental raster layers rescaled to 0.75 degrees resolution.
 We also compared inter-quantile ranges of heterogeneity values at different spatial scales (i.e.
@@ -122,9 +121,11 @@ Using inter-quantile ranges allowed us to investigate the spread of heterogeneit
 ### Relating species richness and species turnover
 
 Regarding predictions [(iii) and (iv)][Hypothesis-v2], we wished to compare the relative importance of species turnover in each region as a predictor of species richness.
-First, for [(iii)][Hypothesis-v2], we compared the degree of species turnover in general in each region by computing all pairwise Jaccard distances <!--TODO: ref--> between QDS-cells' species communities.
+First, for [(iii)][Hypothesis-v2], we compared the degree of species turnover in general in each region by computing all pairwise Jaccard distances [@ref] between QDS' communities.
 We then regressed these turnover values for each pair of cells against the physical distance between the centres of those cells.
-As the range of turnover values was found to be highest at small distances, we used quantile regressions of the 5% quantile of species turnover as a function of geographic distances (using "quantreg" [@R-quantreg] in R).
+The range of turnover values was found to be highest at small distances (Figure \@ref(fig:roughness)A), and indeed complete species turnover between cell pairs was observed at all distances.
+Thus we used quantile regressions of the 5% quantile of species turnover as a function of geographic distances (using "quantreg" [@R-quantreg] in R).
+This allowed us to compare the lower bounds of species turnover between the Cape and SWA.
 
 Regarding prediction [(iv)][Hypothesis-v2], to test how turnover between sites predicts richness across rites, we regressed richness in a coarse scale cells against the average richness of and average turnover between coarse scale cells' constituent fine scale cells.
 Moreover, average turnover between fine scale cells excluded turnover values between a cell $j$ and itself (necessarily 0), and only included turnover values between between cell $j$ and $k$ and not between $k$ and $j$ (as these are necessarily the same).
