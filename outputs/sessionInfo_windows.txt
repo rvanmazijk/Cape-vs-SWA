@@ -14,13 +14,13 @@ attached base packages:
 [9] base     
 
 other attached packages:
- [1] xfun_0.3            ggspatial_1.0.1     rasterVis_0.45      latticeExtra_0.6-28
- [5] RColorBrewer_1.1-2  lattice_0.20-35     scales_0.5.0        cowplot_0.9.3      
- [9] gridExtra_2.3       canprot_0.1.1       broom_0.5.0         quantreg_5.36      
-[13] SparseM_1.77        reshape2_1.4.3      forcats_0.3.0       dplyr_0.7.6        
-[17] purrr_0.2.5         readr_1.1.1         tidyr_0.8.1         tibble_1.4.2       
-[21] ggplot2_3.0.0       tidyverse_1.2.1     taxize_0.9.3        rgdal_1.3-3        
-[25] raster_2.6-7        sp_1.3-1            foreach_1.4.4       stringr_1.3.1      
+ [1] ggspatial_1.0.1     rasterVis_0.45      latticeExtra_0.6-28 RColorBrewer_1.1-2 
+ [5] lattice_0.20-35     scales_0.5.0        cowplot_0.9.3       gridExtra_2.3      
+ [9] canprot_0.1.1       broom_0.5.0         quantreg_5.36       SparseM_1.77       
+[13] reshape2_1.4.3      forcats_0.3.0       dplyr_0.7.6         purrr_0.2.5        
+[17] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
+[21] tidyverse_1.2.1     taxize_0.9.3        rgdal_1.3-3         raster_2.6-7       
+[25] sp_1.3-1            xfun_0.3            foreach_1.4.4       stringr_1.3.1      
 [29] glue_1.3.0          here_0.1            magrittr_1.5       
 
 loaded via a namespace (and not attached):
