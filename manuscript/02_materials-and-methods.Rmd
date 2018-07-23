@@ -24,7 +24,7 @@ Climatic and spectral data arise from satellites monitoring properties of the Ea
 
 <!--Download-->
 
-Geospatially-explicit records of vascular plant occurrences were downloaded from the Global Biodiversity Information Facility (GBIF, Table \@ref(tab:data-sources)). Queries were made for tracheophyte records from within the borders of the Cape and SWA as treated here [@GBIFCape, @GBIFSWA]. Only records with defined species and intra-specific ranks were kept. Intra-specific occurrences were treated as simply being representative of their species. This resulted in `r richness$n_before_checks$GCFR` unique species names in the Cape, and `r richness$n_before_checks$SWAFR` in the SWA. 
+Geospatially-explicit records of vascular plant occurrences were downloaded from the Global Biodiversity Information Facility (GBIF, Table \@ref(tab:data-sources)). Queries were made for tracheophyte records from within the borders of the Cape and SWA as treated here [@GBIFCape, @GBIFSWA]. Only records with defined species and intra-specific ranks were kept. Intra-specific occurrences were treated as simply being representative of their species. This resulted in `r richness$n_before_checks$GCFR` unique species names in the Cape, and `r richness$n_before_checks$SWAFR` in SWA.
 
 <!--Remove bad names-->
 
