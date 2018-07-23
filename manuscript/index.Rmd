@@ -16,8 +16,11 @@ abstract: |
   |
   | *Keywords*
   | Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
-bibliography: refs.bib
-#csl: harvard-university-of-cape-town-rvm.csl
+# FIXME:
+#`r readr::read_file(here::here("manuscript/abstract.Rmd"))`
+#`r readr::read_file(here::here("manuscript/keywords.Rmd"))`
+bibliography: Cape-vs-SWA.bib
+csl: journal-of-biogeography.csl
 ---
 
 ```{r setup, include=FALSE}
