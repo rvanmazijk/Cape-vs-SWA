@@ -127,7 +127,7 @@ The range of turnover values was found to be highest at small distances (Figure 
 Thus we used quantile regressions of the 5% quantile of species turnover as a function of geographic distances (using "quantreg" [@R-quantreg] in R).
 This allowed us to compare the lower bounds of species turnover between the Cape and SWA.
 
-Regarding prediction [(iv)][Hypothesis-v2], to test how turnover between sites predicts richness across rites, we regressed richness in a coarse scale cells against the average richness of and average turnover between coarse scale cells' constituent fine scale cells.
+Regarding prediction [(iv)][Hypothesis-v2], to test how turnover _between_ sites predicts richness _across_ rites, we regressed the species richness in coarse scale cells against the average richness of and average turnover between the constituent fine scale cells within a the coarse scale cell.
 Moreover, average turnover between fine scale cells excluded turnover values between a cell $j$ and itself (necessarily 0), and only included turnover values between between cell $j$ and $k$ and not between $k$ and $j$ (as these are necessarily the same).
 
 <!--TODO: include how we did this for sp., gen.
