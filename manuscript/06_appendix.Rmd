@@ -34,7 +34,7 @@ knitr::kable(
 )
 ```
 
-(ref:species-model-table-3QDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of 3QDS species richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models wer better fitting than similar models without region categories ($\Delta AIC =$ `r out$deltaAIC`). Note, these models does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover) and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table-3QDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of 3QDS species richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$, as Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula). The Cape was fit as the baseline, hence the SWA represents the categorical term here<!--TODO: use SWA as baseline? to be more consistent w/ tab:turnover-vs-geodist-model-table-->. These models were better fitting than similar models without region categories ($\Delta AIC =$ `r out$deltaAIC`). Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover)B,C and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ## Figures {-}
 
