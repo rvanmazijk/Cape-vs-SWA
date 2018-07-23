@@ -11,15 +11,15 @@ out <- my_model_table(
   model_tidy = species_turnover_geodist_m_tidy, 
   tidy_terms = c(
     "Intercept", 
-    "$log \\Delta x$",
-    "$Cape$",
-    "$log \\Delta x \\times Cape$"
+    "log Distance between cells",
+    "Cape",
+    "log Distance between cells $\\times$ Cape"
   )
 )
 knitr::kable(out$model_table, caption = "(ref:turnover-vs-geodist-model-table)")
 ```
 
-(ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (Jaccards distance) as a function of the geographic distance (m, $\Delta x$) ($log$-transformed) between two QDS cells, for all cells (as opposed to a random subset of 5000, as in Fig. \@ref(fig:turnover-vs-geodist)). SWA was the baseline here, hence Cape has its own coefficient. Note, in Fig. \@ref(fig:turnover-vs-geodist), the plotted curves are derived from separate quantile regressions for each region's data.
+(ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (as Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells. The Cape term represents the difference between Cape and SWA species turnover, for a given geographic distance.
 
 ```{r species-model-table-3QDS, results="asis"}
 out <- my_model_table(
