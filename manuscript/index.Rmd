@@ -46,3 +46,4 @@ Abbreviations {-}
 - three-quarter degree square (i.e. 0.75º x 0.75º) (3QDS)
 - environmental heterogeneity (EH)
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
+-->
