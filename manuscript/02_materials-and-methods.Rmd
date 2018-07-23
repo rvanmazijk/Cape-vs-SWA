@@ -130,12 +130,8 @@ This allowed us to compare the lower bounds of species turnover between the Cape
 Regarding prediction [(iv)][Hypothesis-v2], to test how turnover _between_ sites predicts richness _across_ rites, we regressed the species richness in coarse scale cells against the average richness of and average turnover between the constituent fine scale cells within a the coarse scale cell.
 Moreover, average turnover between fine scale cells excluded turnover values between a cell $j$ and itself (necessarily 0), and only included turnover values between between cell $j$ and $k$ and not between $k$ and $j$ (as these are necessarily the same).
 
-<!--TODO: include how we did this for sp., gen.
-and fam.
-richness-->
-
-To illustrate, take for example our main analysis, which focussed on this relationship with HDS as the coarse scale and QDS as the fine scale, as there are four QDS-cells constituting each HDS-cell.
-Average QDS richness for a given HDS-cell ($\overline{S_{QDS}}_i$), based on $j = 4$ QDS-cells, is treated here as
+We focussed on this relationship with HDS as the coarse scale and QDS as the fine scale---as there are four QDS within each HDS, and QDS was the highest precision to which our species data were recorded.
+Average QDS richness for a given HDS-cell ($\overline{S_{QDS}}_i$), then, is based on $j = 4$ QDS-cells, and is treated here as
 
 \begin{equation}
   \overline{S_{QDS}}_{i} = \frac{1}{j} \sum_{j = 1}^{4} S_{QDS_{j}}
