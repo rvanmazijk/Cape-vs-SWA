@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Acknowledgements {-}
+# Acknowledgements {-}
 
 This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
 
