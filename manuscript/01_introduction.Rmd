@@ -80,3 +80,18 @@ the importance of edaphic heterogeneity in SWA).
 ...
 
 We employ classical statistical methods to analyse publicly available geospatial and species occurrence datasets.
+
+<!--
+NOTE: (from A3 mindmapping)
+Generally, I wish to:
+1. Compare collinearity of:
+  1.1 Elevation (= topography) w/ other variables
+  1.2 Elevational roughness w/ other variables' roughnesses
+2. Compare models of richness/turnover as a function of:
+  2.1 Elevation + elevational roughness
+  2.2 Other variables + their roughnesses
+  2.3 Elevation + elevational roughness + Other variables + their roughnesses
+3. Do the models in 2. in a:
+  3.1 Linear regression framework
+  3.2 Geographically weighted regression framework (e.g. Di Vigiolo et al. 2018 J Arid Enviro)
+-->
