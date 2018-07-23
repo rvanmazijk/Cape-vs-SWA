@@ -163,10 +163,4 @@ where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_
 
 ### Predicting species richness and turnover with environmental heterogeneity
 
-<!--TODO: comply w/ bookdown equation guidelines-->
-
-<!--TODO: $formula2$-->
-
-<!--TODO: write this section-->
-
-<!--NB: finalise QDS vs 0.25 degree square vs 0.25° x 0.25°-->
+<!--TODO-->
