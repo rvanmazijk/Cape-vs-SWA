@@ -41,7 +41,7 @@ my_model_table <- function(model = NULL, model_tidy = NULL,
   model_table <- model_tidy %>%
     transmute(Term = tidy_terms,
               Estimate = round(estimate, digits = 3),
-              `P-value` = p.value %>%
+              `$P$-value` = p.value %>%
                  round(digits = 3) %>%
                  format(scientific = FALSE) %>%
                  ifelse(. == 0.000, "< 0.001", .))
