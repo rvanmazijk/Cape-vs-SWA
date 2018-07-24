@@ -41,6 +41,26 @@ prep_layer <- function(x, ...) {
   x
 }
 
+# Bootstrap sampler
+bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
+  if (!quietly) {
+    print(glue("Taking {n_samples} bootstrap samples of size {length(x)}"))
+    pb <- txtProgressBar(0, n)
+  }
+  samples <- matrix(nrow = n, ncol = size)
+  for (i in 1:n) {
+    samples[i, ] <- sample(x, size = length(x), replace = TRUE)
+    if (!quietly) {
+      setTxtProgressBar(pb, i)
+    }
+  }
+  if (!quietly) {
+    close(pb)
+    print(glue("Done"))
+  }
+  samples
+}
+
 #' Title
 #'
 #' @param x
@@ -66,6 +86,54 @@ compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
   } else {
     return(broom::tidy(test))
   }
+}
+
+# Alternate version for bootstrapped U and CLES
+compare_roughness_bootstrapped <- function(x, y,
+                                           resolution, n_samples,
+                                           force_mann_whitney_u,
+                                           quietly = FALSE, ...) {
+  if (!quietly) {
+    print(glue("Comparing x and y at resolution = {resolution}"))
+    print(glue("Prepping layers"))
+    pb <- txtProgressBar(0, n_samples + 2)
+  }
+  x %<>%
+    na.omit() %>%
+    prep_layer2(resolution = resolution) %>%
+    sample_layer(n_samples, quietly = TRUE)
+  if (!quietly) {
+    setTxtProgressBar(pb, 1)
+    print(glue("Prepped layer x"))
+  }
+  y %<>%
+    na.omit() %>%
+    prep_layer2(resolution = resolution) %>%
+    sample_layer(n_samples, quietly = TRUE)
+  if (!quietly) {
+    setTxtProgressBar(pb, 2)
+    print(glue("Prepped layer y"))
+    print(glue("{n_samples} bootstrap samples of both x and y taken"))
+    print(glue("Running Mann-Whitney U tests and CLES on samples"))
+  }
+  tests <- vector("list", length = n_samples)
+  for (i in 1:n_samples) {
+    test <- compare_samples(
+      x[i, ], y[i, ],
+      "two.sided",
+      force_mann_whitney_u = force_mann_whitney_u
+    )
+    test <- broom::tidy(test$test)
+    CLES <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
+    tests[[i]] <- cbind(test, CLES = CLES)
+    if (!quietly) {
+      setTxtProgressBar(pb, i + 2)
+    }
+  }
+  if (!quietly) {
+    print(glue("Done"))
+  }
+  tests
 }
 
 #' Title
