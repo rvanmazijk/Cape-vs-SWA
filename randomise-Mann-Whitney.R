@@ -33,14 +33,14 @@ compare_roughness_randomised <- function(x, y,
     sample_layer(n_samples = n_samples, size = size)
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
-    tests[[i]] <- cbind(
-      tidy(compare_samples(
-        x, y,
-        "two.sided",
-        force_mann_whitney_u = force_mann_whitney_u
-      )$test),
-      CLES = canprot::CLES(na.omit(x), na.omit(y))
+    test <- compare_samples(
+      x, y,
+      "two.sided",
+      force_mann_whitney_u = force_mann_whitney_u
     )
+    test <- broom::tidy(test$test)
+    CLES <- canprot::CLES(na.omit(x), na.omit(y))
+    tests[[i]] <- cbind(test, CLES = CLES)
   }
   tests
 }
