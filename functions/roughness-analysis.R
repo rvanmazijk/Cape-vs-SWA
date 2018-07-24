@@ -34,7 +34,7 @@ prep_layer <- function(x, ...) {
   x %<>%
     aggregate(fact = resolution / 0.05) %>%
     focal_sd() %>%
-    `[`()
+    getValues()
   if (resolution == 0.05) {
     x %<>% base::sample(size = 5000)  # maxi sample size Wilcox test accepts
   }
