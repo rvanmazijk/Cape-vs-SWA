@@ -54,8 +54,12 @@ prep_layer <- function(x, ...) {
 #'
 #' @examples
 compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
-  x %<>% na.omit() %>% prep_layer()
-  y %<>% na.omit() %>% prep_layer()
+  x %<>%
+    na.omit() %>%
+    prep_layer()
+  y %<>%
+    na.omit() %>%
+    prep_layer()
   test <- compare_samples(x, y, "two.sided", ...)$test
   if (raw) {
     return(test)
