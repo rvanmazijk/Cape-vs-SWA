@@ -34,6 +34,7 @@ sample_layer <- function(x, n_samples = 1000, size = length(x),
   }
   samples
 }
+
 # Redefine compare_roughness()
 compare_roughness_randomised <- function(x, y,
                                          resolution, n_samples,
@@ -62,8 +63,6 @@ compare_roughness_randomised <- function(x, y,
     print(glue("
       Running Mann-Whitney U test and CLES on {n_samples} bootstrap samples
     "))
-    print(x[1, 1:5])
-    print(y[1, 1:5])
   }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
@@ -103,9 +102,8 @@ if (FALSE) {
   foo2 <- compare_roughness_randomised(
     SWAFR_variables$Elevation,
     GCFR_variables$Elevation,
-    resolution = 0.05,
+    resolution = 0.25,
     n_samples = 1000,
-    size = 1000,
     force_mann_whitney_u = TRUE
   )
   sd(unlist(map(foo2, "CLES")))
