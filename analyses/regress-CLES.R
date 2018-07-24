@@ -64,10 +64,19 @@ data <- test_results_CLES_for_plot %>%
 ggplot(data, aes(resolution, CLES, col = variable_type)) +
   geom_point(aes(shape = variable), size = 2) +
   geom_line(aes(group = variable)) +
-  geom_text(aes(label = sig), size = 3, col = "black", nudge_x = 0.2) +
-  scale_colour_manual(values = var_colours) +
+  geom_text(aes(label = sig), size = 2, col = "black", nudge_x = 0.2) +
+  scale_colour_manual(values = var_colours, guide = FALSE) +
   scale_shape_manual(values = var_shapes) +
-  guides(
-    colour = guide_legend(title = "", nrow = 3, ncol = 2),
-    shape = guide_legend(ncol = 2)
-  )
+  xlab("Spatial resolution") +
+  ylab("CLES (Cape > SWA)") +
+  ylim(0.4, 1) +
+  guides(shape = guide_legend(
+    title = "Environmental variables",
+    nrow = 5, ncol = 2,
+    override.aes = list(col = c(
+      var_colours[1],
+      rep(var_colours[2], 3),
+      var_colours[3],
+      rep(var_colours[4], 4)
+    ))
+  ))
