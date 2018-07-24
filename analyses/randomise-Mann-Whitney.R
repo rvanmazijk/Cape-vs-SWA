@@ -13,16 +13,17 @@ prep_layer2 <- function(x, resolution) {
     focal_sd() %>%
     getValues()
 }
-# Create sampler
-sample_layer <- function(x, n_samples = 1000, size = 1000,
+
+# Create bootstrap sampler
+sample_layer <- function(x, n_samples = 1000, size = length(x),
                          quietly = FALSE, ...) {
   if (!quietly) {
-    print(glue("Taking {n_samples} samples of size {size}"))
+    print(glue("Taking {n_samples} bootstrap samples of size {size}"))
     pb <- txtProgressBar(0, n_samples)
   }
   samples <- matrix(nrow = n_samples, ncol = size)
   for (i in 1:n_samples) {
-    samples[i, ] <- sample(x[], size)
+    samples[i, ] <- sample(x[], size = size, replace = TRUE)
     if (!quietly) {
       setTxtProgressBar(pb, i)
     }
@@ -35,7 +36,7 @@ sample_layer <- function(x, n_samples = 1000, size = 1000,
 }
 # Redefine compare_roughness()
 compare_roughness_randomised <- function(x, y,
-                                         resolution, n_samples, size,
+                                         resolution, n_samples,
                                          force_mann_whitney_u,
                                          quietly = FALSE, ...) {
   if (!quietly) {
@@ -46,7 +47,7 @@ compare_roughness_randomised <- function(x, y,
   x %<>%
     na.omit() %>%
     prep_layer2(resolution = resolution) %>%
-    sample_layer(n_samples = n_samples, size = size, quietly = TRUE)
+    sample_layer(n_samples, quietly = TRUE)
   if (!quietly) {
     setTxtProgressBar(pb, 1)
     print(glue("Prepped layer x"))
@@ -54,12 +55,12 @@ compare_roughness_randomised <- function(x, y,
   y %<>%
     na.omit() %>%
     prep_layer2(resolution = resolution) %>%
-    sample_layer(n_samples = n_samples, size = size, quietly = TRUE)
+    sample_layer(n_samples, quietly = TRUE)
   if (!quietly) {
     setTxtProgressBar(pb, 2)
     print(glue("Prepped layer y"))
     print(glue("
-      Running Mann-Whitney U test and CLES on {n_samples} samples of size {size}
+      Running Mann-Whitney U test and CLES on {n_samples} bootstrap samples
     "))
     print(x[1, 1:5])
     print(y[1, 1:5])
