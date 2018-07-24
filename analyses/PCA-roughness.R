@@ -15,13 +15,13 @@ GCFR <-
   c(richness = mask(GCFR_richness_QDS, GCFR_border_buffered),
     GCFR_variables_QDS,
     GCFR_roughness_QDS) %>%
-  map(~ .[]) %>%
+  map(getValues) %>%
   as_tibble()
 SWAFR <-
   c(richness = mask(SWAFR_richness_QDS, SWAFR_border_buffered),
     SWAFR_variables_QDS,
     SWAFR_roughness_QDS) %>%
-  map(~ .[]) %>%
+  map(getValue~ .[]) %>%
   as_tibble()
 data <-
   rbind(cbind(region = "GCFR", GCFR),
