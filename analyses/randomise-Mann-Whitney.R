@@ -23,7 +23,7 @@ sample_layer <- function(x, n_samples = 1000, size = length(x),
   }
   samples <- matrix(nrow = n_samples, ncol = size)
   for (i in 1:n_samples) {
-    samples[i, ] <- sample(x[], size = size, replace = TRUE)
+    samples[i, ] <- sample(x, size = size, replace = TRUE)
     if (!quietly) {
       setTxtProgressBar(pb, i)
     }
@@ -60,9 +60,8 @@ compare_roughness_randomised <- function(x, y,
   if (!quietly) {
     setTxtProgressBar(pb, 2)
     print(glue("Prepped layer y"))
-    print(glue("
-      Running Mann-Whitney U test and CLES on {n_samples} bootstrap samples
-    "))
+    print(glue("{n_samples} bootstrap samples of both x and y taken"))
+    print(glue("Running Mann-Whitney U tests and CLES on samples"))
   }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
@@ -107,5 +106,4 @@ if (FALSE) {
     force_mann_whitney_u = TRUE
   )
   sd(unlist(map(foo2, "CLES")))
-
 }
