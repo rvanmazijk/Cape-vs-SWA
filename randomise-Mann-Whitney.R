@@ -12,10 +12,20 @@ prep_layer2 <- function(x, resolution) {
     getValues()
 }
 # Create sampler
-sample_layer <- function(x, n_samples = 1000, size = 1000, ...) {
+sample_layer <- function(x, n_samples = 1000, size = 1000,
+                         quietly = FALSE, ...) {
+  if (!quietly) {
+    pb <- txtProgressBar(0, n_samples)
+  }
   samples <- matrix(nrow = n_samples, ncol = size)
   for (i in 1:n_samples) {
     samples[i, ] <- sample(x, size)
+    if (!quietly) {
+      setTxtProgressBar(pb, i)
+    }
+  }
+  if (!quietly) {
+    close(pb)
   }
   samples
 }
