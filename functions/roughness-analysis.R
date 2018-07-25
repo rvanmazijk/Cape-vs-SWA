@@ -206,7 +206,7 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
     if (!quietly) {
       print(glue("Reading {variable} U-test and CLES CSVs back from disc"))
     }
-    for (i in seq_along(n_samples)) {
+    for (i in 1:n_samples) {
       sample_number <- str_pad(i, nchar(n_samples), pad = "0")
       tests[[i]] <- cbind(
         read_csv(here::here(glue(
