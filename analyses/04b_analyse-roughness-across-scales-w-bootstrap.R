@@ -1,4 +1,5 @@
 # Analyse environmental roughness varying across spatial scales
+# (Now with bootstrapping!)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -7,25 +8,68 @@ map(pre_analysis_import_paths, source)
 
 set.seed(1234)
 
-bootstrap_results <-
-  map_df(
-    list(0.05, 0.25, 0.50, 0.75),
-    ~ map2_df(GCFR_variables, SWAFR_variables,
-        compare_roughness, resolution = .x, force_mann_whitney_u = TRUE
-      ) %>%
-      cbind(variable = var_names, .) %>%
-    as_tibble()
+# Test
+if (FALSE) {
+  result <- map2(
+    SWAFR_variables, GCFR_variables,
+    compare_roughness_bootstrapped,
+    resolution = 0.25,
+    n_samples = 10,
+    force_mann_whitney_u = TRUE
   )
-names(test_results) <- c("0.05º", "QDS", "HDS", "3QDS")
+  result %>%
+    map(bind_rows) %>%
+    map(summarise_if, is.numeric, .funs = list(mean = mean, sd = sd)) %>%
+    bind_rows(.id = "variable")
+  # Works!
+}
+resolutions <- c(0.25, 0.50, 0.75)
+bootstrap_results <- vector("list", length = length(resolutions))
+for (i in seq_along(resolutions)) {
+  result <- map2(
+    SWAFR_variables, GCFR_variables,
+    compare_roughness_bootstrapped,
+    resolution = resolutions[[i]],
+    n_samples = 1000,
+    force_mann_whitney_u = TRUE
+  )
+  bootstrap_results[[i]] <- result %>%
+    map(bind_rows) %>%
+    map(summarise_if,
+        is.numeric,
+        .funs = list(mean = mean, sd = sd)) %>%
+    bind_rows(.id = "variable")
+}
+#names(bootstrap_results) <- c("0.05º", "QDS", "HDS", "3QDS")
+names(bootstrap_results) <- c("QDS", "HDS", "3QDS")
+bootstrap_results %<>% bind_rows(.id = "resolution")
 
-test_results_summary <- test_results %>%
-  map(mutate, sig = p.value < 0.05) %>%
-  map(dplyr::select, variable, sig) %$%
-  tibble(variable = var_names,
-         `0.05º` = .$`0.05º`$sig,
-         QDS = .$QDS$sig,
-         HDS = .$HDS$sig,
-         `3QDS` = .$`3QDS`$sig)
+pos <- position_dodge(0.15)
+ggplot(bootstrap_results,
+       aes(resolution, CLES_mean,
+           col = variable)) +
+  geom_point(position = pos) +
+  geom_linerange(aes(ymin = CLES_mean - CLES_sd,
+                     ymax = CLES_mean + CLES_sd),
+                 position = pos) +
+  geom_line(aes(group = variable), position = pos)
+
+# Do for 0.05 "manually", as is an onerous computation
+result_0.05 <- map2(
+  SWAFR_variables, GCFR_variables,
+  compare_roughness_bootstrapped,
+  resolution = 0.05,
+  n_samples = 1000,
+  force_mann_whitney_u = TRUE
+)
+bootstrap_results_0.05 <- result_0.05 %>%
+  map(bind_rows) %>%
+  map(summarise_if,
+      is.numeric,
+      .funs = list(mean = mean, sd = sd)) %>%
+  bind_rows(.id = "variable")
+
+#! Old script continues here ---------------------------------------------------
 
 # Save to disc
 write_csv(
