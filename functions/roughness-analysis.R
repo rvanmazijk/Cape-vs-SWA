@@ -154,6 +154,11 @@ compare_roughness_bootstrapped <- function(x, y,
   }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
+    # Mann-Whitney U tests -----------------------------------------------------
+    if (use_disc) {
+      x <- read_csv(x)
+      y <- read_csv(x)
+    }
     test <- compare_samples(
       x[i, ], y[i, ],
       "two.sided",
