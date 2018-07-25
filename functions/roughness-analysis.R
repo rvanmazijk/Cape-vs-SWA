@@ -206,6 +206,26 @@ compare_roughness_bootstrapped <- function(x, y,
       setTxtProgressBar(pb, i)
     }
   }
+  # .... Read tests back from disk if saved to disc ----------------------------
+  if (use_disc) {
+    if (!quietly) {
+      print(glue("Reading {var_name} U-test and CLES-test CSVs back from disc"))
+    }
+    for (i in seq_along(n_samples)) {
+      sample_number <- str_pad(i, nchar(n_samples), pad = "0")
+      tests[[i]] <- cbind(
+        read_csv(
+          here::here(glue("outputs/{var_name}_u-test_{sample_number}.csv"))
+        ),
+        read_csv(
+          here::here(glue("outputs/{var_name}_CLES-test_{sample_number}.csv"))
+        )
+      )
+      if (!quietly) {
+        setTxtProgressBar(pb, i)
+      }
+    }
+  }
   if (!quietly) {
     close(pb)
     print(glue("Done"))
