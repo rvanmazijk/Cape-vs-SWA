@@ -148,13 +148,16 @@ compare_roughness_bootstrapped <- function(x, y,
     print(glue("Running Mann-Whitney U tests and CLES on samples"))
     pb <- txtProgressBar(0, n_samples)
   }
+  if (use_disc) {
+    x <- read_csv(x)
+    y <- read_csv(x)
+    if (!quietly) {
+      print(glue("Read {name_of(x)} and {name_of(y)} back from disc"))
+    }
+  }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
     # Mann-Whitney U tests -----------------------------------------------------
-    if (use_disc) {
-      x <- read_csv(x)
-      y <- read_csv(x)
-    }
     u_test <- compare_samples(
       x[i, ], y[i, ],
       "two.sided",
