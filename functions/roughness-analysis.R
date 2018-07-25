@@ -168,7 +168,8 @@ compare_roughness_bootstrapped <- function(x, y,
   }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
-    # Mann-Whitney U tests -----------------------------------------------------
+    sample_number <- str_pad(i, nchar(n_samples), pad = "0")
+    # .... Mann-Whitney U tests ------------------------------------------------
     u_test <- compare_samples(
       x[i, ], y[i, ],
       "two.sided",
@@ -177,6 +178,16 @@ compare_roughness_bootstrapped <- function(x, y,
     u_test <- broom::tidy(u_test$test)
     CLES <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
     tests[[i]] <- cbind(test, CLES = CLES)
+    if (use_disc) {
+      write_csv(
+        u_test,
+        here::here(glue("outputs/{var_name}_u-test_{sample_number}.csv"))
+      )
+      if (!quietly) {
+        print(glue("Saved {var_name}_u-test_{sample_number}.csv to disc"))
+      }
+      rm(u_test, envir = parent.frame(1))
+    }
     if (!quietly) {
       setTxtProgressBar(pb, i)
     }
