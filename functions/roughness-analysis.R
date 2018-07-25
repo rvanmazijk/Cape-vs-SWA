@@ -131,17 +131,17 @@ compare_roughness_bootstrapped <- function(x, y,
       return(x)
     }
   }
-  x %<>%
-    na.omit() %>%
-    prep_layer2(resolution = resolution) %>%
-    bootstrap_sample(n_samples, quietly = TRUE)
+  # Bootstrap-sample x & y -----------------------------------------------------
   if (!quietly) {
-    print(glue("Prepped layer x"))
+    print(glue("
+      [Comparing {name_of(x)} and {name_of(y} at resolution = {resolution}]
+    "))
+    print(glue("
+      Bootstrap-sampling layers...
+    "))
   }
-  y %<>%
-    na.omit() %>%
-    prep_layer2(resolution = resolution) %>%
-    bootstrap_sample(n_samples, quietly = TRUE)
+  x %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
+  y %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
   if (!quietly) {
     print(glue("Prepped layer y"))
     print(glue("{n_samples} bootstrap samples of both x and y taken"))
