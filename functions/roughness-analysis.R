@@ -21,6 +21,7 @@ focal_sd <- function(x, ...) {focal(x = x,
   }
   mean(sqrt(diffs), na.rm = TRUE)
 })}
+# TODO: rename as "roughness()"
 
 #' Aggregate a layer to 0.05º, run \code{focal_sd()}
 #'
