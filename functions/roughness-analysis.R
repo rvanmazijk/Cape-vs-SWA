@@ -133,6 +133,10 @@ compare_roughness_bootstrapped <- function(x, y,
     ))
     print(glue("Bootstrap-sampling layers..."))
   }
+  if (use_disc) {
+    x_name <- name_of(x)
+    y_name <- name_of(y)
+  }
   x %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
   y %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
   # Run Mann-Whitney & CLES on bootstraps --------------------------------------
