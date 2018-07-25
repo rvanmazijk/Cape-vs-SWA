@@ -37,7 +37,7 @@ prep_layer <- function(x, ...) {
     focal_sd() %>%
     getValues()
   if (resolution == 0.05) {
-    x %<>% base::sample(size = 5000)  # maxi sample size Wilcox test accepts
+    x %<>% base::sample(size = 5000)  # max n Wilcox test accepts
   }
   x
 }
