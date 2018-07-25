@@ -97,7 +97,7 @@ compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
 
 # Alternate version for bootstrapped U and CLES
 compare_roughness_bootstrapped <- function(x, y,
-                                           resolution, n_samples,
+                                           resolution, n_samples = 1000,
                                            force_mann_whitney_u,
                                            quietly = FALSE, ...) {
   if (!quietly) {
