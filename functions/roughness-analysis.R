@@ -104,9 +104,17 @@ compare_roughness_bootstrapped <- function(x, y,
       samples
     }
     # Orchestrate prep_layer2() & bootstrap_sample() ---------------------------
-    x <- na.omit(x)
-    x <- prep_layer2(x, resolution = resolution)
-    x <- bootstrap_sample(x, n_samples, quietly = TRUE)
+    x_name <- name_of(x)
+    assign(x_name, x)
+    assign(x_name,
+      na.omit(x_name)
+    )
+    assign(x_name,
+      prep_layer2(run(x_name), resolution = resolution)
+    )
+    assign(x_name,
+      bootstrap_sample(run(x_name), n_samples, quietly = TRUE)
+    )
     if (!quietly) {
       print(glue("Bootstrap-sampled layer {name_of(x)}"))
     }
