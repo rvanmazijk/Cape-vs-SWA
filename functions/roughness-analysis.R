@@ -103,26 +103,24 @@ compare_roughness_bootstrapped <- function(x, y,
   if (!quietly) {
     print(glue("Comparing x and y at resolution = {resolution}"))
     print(glue("Prepping layers"))
-    pb <- txtProgressBar(0, n_samples + 2)
   }
   x %<>%
     na.omit() %>%
     prep_layer2(resolution = resolution) %>%
-    sample_layer(n_samples, quietly = TRUE)
+    bootstrap_sample(n_samples, quietly = TRUE)
   if (!quietly) {
-    setTxtProgressBar(pb, 1)
     print(glue("Prepped layer x"))
   }
   y %<>%
     na.omit() %>%
     prep_layer2(resolution = resolution) %>%
-    sample_layer(n_samples, quietly = TRUE)
+    bootstrap_sample(n_samples, quietly = TRUE)
   if (!quietly) {
-    setTxtProgressBar(pb, 2)
     print(glue("Prepped layer y"))
     print(glue("{n_samples} bootstrap samples of both x and y taken"))
     print(glue("Running Mann-Whitney U tests and CLES on samples"))
   }
+  pb <- txtProgressBar(0, n_samples)
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
     test <- compare_samples(
@@ -133,11 +131,10 @@ compare_roughness_bootstrapped <- function(x, y,
     test <- broom::tidy(test$test)
     CLES <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
     tests[[i]] <- cbind(test, CLES = CLES)
-    if (!quietly) {
-      setTxtProgressBar(pb, i + 2)
-    }
+    setTxtProgressBar(pb, i)
   }
   if (!quietly) {
+    close(pb)
     print(glue("Done"))
   }
   tests
