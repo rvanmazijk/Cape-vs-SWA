@@ -203,11 +203,13 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
     }
     setTxtProgressBar(pb, i)
   }
+  close(pb)
   # .... Read tests back from disk if saved to disc ----------------------------
   if (use_disc) {
     print(glue(
       "Reading {variable} U-test and CLES CSVs back from disc"
     ))
+    pb <- txtProgressBar(0, n_samples)
     for (i in 1:n_samples) {
       sample_number <- str_pad(i, nchar(n_samples), pad = "0")
       tests[[i]] <- cbind(
