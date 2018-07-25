@@ -41,32 +41,6 @@ prep_layer <- function(x, ...) {
   }
   x
 }
-prep_layer2 <- function(x, resolution) {
-  x %>%
-    aggregate(fact = resolution / 0.05) %>%
-    focal_sd() %>%
-    getValues()
-}
-
-# Bootstrap sampler
-bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
-  if (!quietly) {
-    print(glue("Taking {n_samples} bootstrap samples of size {length(x)}"))
-    pb <- txtProgressBar(0, n)
-  }
-  samples <- matrix(nrow = n, ncol = length(x))
-  for (i in 1:n) {
-    samples[i, ] <- sample(x, size = length(x), replace = TRUE)
-    if (!quietly) {
-      setTxtProgressBar(pb, i)
-    }
-  }
-  if (!quietly) {
-    close(pb)
-    print(glue("Done"))
-  }
-  samples
-}
 
 #' Title
 #'
@@ -103,6 +77,35 @@ compare_roughness_bootstrapped <- function(x, y,
   if (!quietly) {
     print(glue("Comparing x and y at resolution = {resolution}"))
     print(glue("Prepping layers"))
+  prep_and_bootstrap <- function(x, resolution, n_samples,
+                                 quietly = FALSE, use_disc = FALSE,
+                                 invisible = TRUE) {
+    prep_layer2 <- function(x, resolution) {
+      x %>%
+        aggregate(fact = resolution / 0.05) %>%
+        focal_sd() %>%
+        getValues()
+    }
+    bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
+      if (!quietly) {
+        print(glue("
+          Taking {n_samples} bootstrap samples of size {length(x)}
+        "))
+        pb <- txtProgressBar(0, n)
+      }
+      samples <- matrix(nrow = n, ncol = length(x))
+      for (i in 1:n) {
+        samples[i, ] <- sample(x, size = length(x), replace = TRUE)
+        if (!quietly) {
+          setTxtProgressBar(pb, i)
+        }
+      }
+      if (!quietly) {
+        close(pb)
+        print(glue("Done"))
+      }
+      samples
+    }
   }
   x %<>%
     na.omit() %>%
