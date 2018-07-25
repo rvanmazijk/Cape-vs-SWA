@@ -101,20 +101,11 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
       }
     }
     # Orchestrate prep_layer2() & bootstrap_sample() ---------------------------
-    x_name <- name_of(x)
-    assign(x_name, x)
-    assign(x_name,
-      na.omit(x_name)
-    )
-    assign(x_name,
-      prep_layer2(run(x_name), resolution = resolution)
-    )
-    assign(x_name,
-      bootstrap_sample(run(x_name), n_samples, quietly = TRUE)
-    )
-    if (!quietly) {
-      print(glue("Bootstrap-sampled layer {name_of(x)}"))
-    }
+    x %<>%
+      na.omit() %>%
+      prep_layer2(resolution = resolution) %>%
+      na.omit() %>%
+      bootstrap_sample(n_samples, quietly = TRUE)
     if (use_disc) {
       path <- here::here(glue(
         "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
