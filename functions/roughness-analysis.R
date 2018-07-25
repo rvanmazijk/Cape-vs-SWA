@@ -119,7 +119,7 @@ compare_roughness_bootstrapped <- function(x, y,
       }
     }
     if (use_disc && invisible) {
-      rm(x, envir = environment())
+      rm(x, envir = parent.frame(1))
       return(path)
     } else {
       return(x)
