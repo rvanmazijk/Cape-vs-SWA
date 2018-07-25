@@ -176,7 +176,6 @@ compare_roughness_bootstrapped <- function(x, y,
       force_mann_whitney_u = force_mann_whitney_u
     )
     u_test <- broom::tidy(u_test$test)
-    tests[[i]] <- cbind(test, CLES = CLES)
     if (use_disc) {
       write_csv(
         u_test,
@@ -198,6 +197,10 @@ compare_roughness_bootstrapped <- function(x, y,
         print(glue("Saved {var_name}_CLES-test_{sample_number}.csv to disc"))
       }
       rm(CLES_test, envir = parent.frame(1))
+    }
+    # .... Store in list if not saving to disc ---------------------------------
+    if (!use_disc) {
+      tests[[i]] <- cbind(test, CLES = CLES)
     }
     if (!quietly) {
       setTxtProgressBar(pb, i)
