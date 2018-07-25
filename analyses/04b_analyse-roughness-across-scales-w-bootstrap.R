@@ -10,12 +10,16 @@ set.seed(1234)
 
 # Test
 if (FALSE) {
-  result <- map2(
-    SWAFR_variables, GCFR_variables,
-    compare_roughness_bootstrapped,
-    resolution = 0.25,
-    n_samples = 10,
-    force_mann_whitney_u = TRUE
+  result <- pmap(
+    .l = list(SWAFR_variables[1], GCFR_variables[1], var_names[1]),
+    .f = ~ compare_roughness_bootstrapped(
+      x = ..1, y = ..2,
+      x_region_name = "SWAFR", y_region_name = "GCFR",
+      variable = ..3,
+      resolution = 0.05, n_samples = 10,
+      force_mann_whitney_u = TRUE,
+      use_disc = TRUE
+    )
   )
   result %>%
     map(bind_rows) %>%
