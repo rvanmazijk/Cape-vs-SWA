@@ -151,12 +151,12 @@ compare_roughness_bootstrapped <- function(x, y,
       x <- read_csv(x)
       y <- read_csv(x)
     }
-    test <- compare_samples(
+    u_test <- compare_samples(
       x[i, ], y[i, ],
       "two.sided",
       force_mann_whitney_u = force_mann_whitney_u
     )
-    test <- broom::tidy(test$test)
+    u_test <- broom::tidy(u_test$test)
     CLES <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
     tests[[i]] <- cbind(test, CLES = CLES)
     if (!quietly) {
