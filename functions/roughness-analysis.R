@@ -155,6 +155,17 @@ compare_roughness_bootstrapped <- function(x, y,
       print(glue("Read {name_of(x)} and {name_of(y)} back from disc"))
     }
   }
+  # Informatively name *_u-test.csv's
+  var_name <- c(x_name, y_name) %>%
+    str_extract("\\$.+$") %>%
+    str_remove("\\$") %>%
+    unique()
+  if (length(var_name) == 1) {
+    stop(glue(
+      "Comparing different environmental variables.
+      No single name for *_u-test.csv"
+    ))
+  }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
     # Mann-Whitney U tests -----------------------------------------------------
