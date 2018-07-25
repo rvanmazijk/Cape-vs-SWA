@@ -54,7 +54,7 @@ bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
     print(glue("Taking {n_samples} bootstrap samples of size {length(x)}"))
     pb <- txtProgressBar(0, n)
   }
-  samples <- matrix(nrow = n, ncol = size)
+  samples <- matrix(nrow = n, ncol = length(x))
   for (i in 1:n) {
     samples[i, ] <- sample(x, size = length(x), replace = TRUE)
     if (!quietly) {
