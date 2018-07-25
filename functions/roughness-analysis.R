@@ -92,18 +92,13 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
         print(glue("Taking {n_samples} bootstrap samples of size {length(x)}"))
         pb <- txtProgressBar(0, n)
       }
-      samples <- matrix(nrow = n, ncol = length(x))
-      for (i in 1:n) {
-        samples[i, ] <- sample(x, size = length(x), replace = TRUE)
-        if (!quietly) {
-          setTxtProgressBar(pb, i)
-        }
-      }
+      return(replicate(n = n, {
+        sample(x, size = length(x), replace = TRUE)
+      }))
       if (!quietly) {
         close(pb)
         print(glue("Done"))
       }
-      samples
     }
     # Orchestrate prep_layer2() & bootstrap_sample() ---------------------------
     x_name <- name_of(x)
