@@ -87,9 +87,7 @@ compare_roughness_bootstrapped <- function(x, y,
     }
     bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
       if (!quietly) {
-        print(glue("
-          Taking {n_samples} bootstrap samples of size {length(x)}
-        "))
+        print(glue("Taking {n_samples} bootstrap samples of size {length(x)}"))
         pb <- txtProgressBar(0, n)
       }
       samples <- matrix(nrow = n, ncol = length(x))
@@ -111,17 +109,13 @@ compare_roughness_bootstrapped <- function(x, y,
       prep_layer2(resolution = resolution) %>%
       bootstrap_sample(n_samples, quietly = TRUE)
     if (!quietly) {
-      print(glue("
-        Bootstrap sampled layer {name_of(x)}
-      "))
+      print(glue("Bootstrap-sampled layer {name_of(x)}"))
     }
     if (use_disc) {
       path <- here::here(glue("outputs/temp/{name_of(x)}_bootstraps.csv"))
       write_csv(x, path)
       if (!quietly) {
-        print(glue("
-          Saved {name_of(x)} bootstrap samples to disc
-        "))
+        print(glue("Saved {name_of(x)} bootstrap samples to disc"))
       }
     }
     if (use_disc && invisible) {
@@ -133,23 +127,21 @@ compare_roughness_bootstrapped <- function(x, y,
   }
   # Bootstrap-sample x & y -----------------------------------------------------
   if (!quietly) {
-    print(glue("
-      [Comparing {name_of(x)} and {name_of(y} at resolution = {resolution}]
-    "))
-    print(glue("
-      Bootstrap-sampling layers...
-    "))
+    print(glue(
+      "[Comparing {name_of(x)} and {name_of(y} \\
+      at resolution = {resolution}]"
+    ))
+    print(glue("Bootstrap-sampling layers..."))
   }
   x %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
   y %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
   # Run Mann-Whitney & CLES on bootstraps --------------------------------------
   if (!quietly) {
-    print(glue("
-      {n_samples} bootstrap-samples of both {name_of(x)} and {name_of(y)} taken
-    "))
-    print(glue("
-      Running Mann-Whitney U tests and CLES on samples
-    "))
+    print(glue(
+       "Taken {n_samples} bootstrap-samples of both \\
+       {name_of(x)} and {name_of(y)}"
+    ))
+    print(glue("Running Mann-Whitney U tests and CLES on samples"))
     pb <- txtProgressBar(0, n_samples)
   }
   tests <- vector("list", length = n_samples)
