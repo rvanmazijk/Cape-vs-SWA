@@ -17,3 +17,5 @@ stopifnot(proj4string(SWAFR_border) == std_CRS)
 SWAFR_border_buffered <- readOGR(here::here("data/derived-data/borders/SWAFR_border_buffered/"))
 SWAFR_box <- readOGR(here::here("data/derived-data/borders/SWAFR_box/"))
 SWAFR_QDS <- readOGR(here::here("data/derived-data/borders/SWAFR_QDS/"))
+
+# FIXME: Why are these shapefile imports throwing errors/warnings?
