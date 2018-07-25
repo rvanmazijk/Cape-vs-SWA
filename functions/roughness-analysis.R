@@ -144,11 +144,13 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
       here::here(glue(
         "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
       )),
+      col_types = cols()  # Suppress col_type messages
     ))
     y <- as.matrix(read_csv(
       here::here(glue(
         "outputs/compare-roughness-bootstrap/{y_name}_bootstraps.csv"
       )),
+      col_types = cols()
     ))
     print(glue(
       "Read bootstrap-samples back from disc"
@@ -214,12 +216,14 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
             "outputs/compare-roughness-bootstrap/\\
             {variable}_{resolution}_u-test_{sample_number}.csv"
           )),
+          col_types = cols()
         ),
         read_csv(
           here::here(glue(
             "outputs/compare-roughness-bootstrap/\\
             {variable}_{resolution}_CLES-test_{sample_number}.csv"
           )),
+          col_types = cols()
         )
       )
       setTxtProgressBar(pb, i)
