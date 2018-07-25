@@ -137,7 +137,7 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
        "Taken {n_samples} bootstrap-samples of both \\
        {x_region_name} and {y_region_name}"
     ))
-    print(glue("Running Mann-Whitney U tests and CLES on samples"))
+    print(glue("Running Mann-Whitney U tests and CLES on bootstrap-samples..."))
     pb <- txtProgressBar(0, n_samples)
   }
   if (use_disc) {
