@@ -115,10 +115,7 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
         print(glue("Saved {x_name} bootstrap samples to disc"))
       }
     }
-    if (use_disc && invisible) {
-      rm(x, envir = parent.frame(1))
-      return(path)
-    } else {
+    if (!use_disc) {
       return(x)
     }
   }
