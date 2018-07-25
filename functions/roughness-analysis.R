@@ -128,7 +128,7 @@ compare_roughness_bootstrapped <- function(x, y,
   # Bootstrap-sample x & y -----------------------------------------------------
   if (!quietly) {
     print(glue(
-      "[Comparing {name_of(x)} and {name_of(y} \\
+      "[Comparing {name_of(x)} and {name_of(y)} \\
       at resolution = {resolution}]"
     ))
     print(glue("Bootstrap-sampling layers..."))
