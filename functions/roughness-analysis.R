@@ -142,12 +142,16 @@ compare_roughness_bootstrapped <- function(x, y,
   }
   x %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
   y %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
+  # Run Mann-Whitney & CLES on bootstraps --------------------------------------
   if (!quietly) {
-    print(glue("Prepped layer y"))
-    print(glue("{n_samples} bootstrap samples of both x and y taken"))
-    print(glue("Running Mann-Whitney U tests and CLES on samples"))
+    print(glue("
+      {n_samples} bootstrap-samples of both {name_of(x)} and {name_of(y)} taken
+    "))
+    print(glue("
+      Running Mann-Whitney U tests and CLES on samples
+    "))
+    pb <- txtProgressBar(0, n_samples)
   }
-  pb <- txtProgressBar(0, n_samples)
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
     test <- compare_samples(
@@ -158,7 +162,9 @@ compare_roughness_bootstrapped <- function(x, y,
     test <- broom::tidy(test$test)
     CLES <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
     tests[[i]] <- cbind(test, CLES = CLES)
-    setTxtProgressBar(pb, i)
+    if (!quietly) {
+      setTxtProgressBar(pb, i)
+    }
   }
   if (!quietly) {
     close(pb)
