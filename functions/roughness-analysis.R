@@ -41,6 +41,12 @@ prep_layer <- function(x, ...) {
   }
   x
 }
+prep_layer2 <- function(x, resolution) {
+  x %>%
+    aggregate(fact = resolution / 0.05) %>%
+    focal_sd() %>%
+    getValues()
+}
 
 # Bootstrap sampler
 bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
