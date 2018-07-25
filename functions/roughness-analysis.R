@@ -154,27 +154,15 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
       print(glue("Read bootstrap-samples back from disc"))
     }
   }
-  # Informatively name *_u-test.csv's
-  var_name <- c(x_name, y_name) %>%
-    str_extract("\\$.+$") %>%
-    str_remove("\\$") %>%
-    unique()
-  if (length(var_name) == 1) {
-    stop(glue(
-      "Comparing different environmental variables.
-      No single name for *_u-test.csv"
-    ))
-  }
   tests <- vector("list", length = n_samples)
   for (i in 1:n_samples) {
     sample_number <- str_pad(i, nchar(n_samples), pad = "0")
     # .... Mann-Whitney U tests ------------------------------------------------
-    u_test <- compare_samples(
+    u_test <- wilcox.test(
       x[i, ], y[i, ],
-      "two.sided",
-      force_mann_whitney_u = force_mann_whitney_u
+      "two.sided"
     )
-    u_test <- broom::tidy(u_test$test)
+    u_test %<>% broom::tidy()
     if (use_disc) {
       write_csv(
         u_test,
@@ -189,7 +177,9 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
       rm(u_test, envir = parent.frame(1))
     }
     # .... CLES ----------------------------------------------------------------
-    CLES_test <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
+    CLES_test <- data.frame(CLES =
+        canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
+    )
     if (use_disc) {
       write_csv(
         CLES_test,
@@ -205,7 +195,7 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
     }
     # .... Store in list if not saving to disc ---------------------------------
     if (!use_disc) {
-      tests[[i]] <- cbind(test, CLES = CLES)
+      tests[[i]] <- cbind(u_test, CLES_test)
     }
     if (!quietly) {
       setTxtProgressBar(pb, i)
