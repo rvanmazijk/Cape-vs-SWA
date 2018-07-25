@@ -176,7 +176,6 @@ compare_roughness_bootstrapped <- function(x, y,
       force_mann_whitney_u = force_mann_whitney_u
     )
     u_test <- broom::tidy(u_test$test)
-    CLES <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
     tests[[i]] <- cbind(test, CLES = CLES)
     if (use_disc) {
       write_csv(
@@ -187,6 +186,18 @@ compare_roughness_bootstrapped <- function(x, y,
         print(glue("Saved {var_name}_u-test_{sample_number}.csv to disc"))
       }
       rm(u_test, envir = parent.frame(1))
+    }
+    # .... CLES ----------------------------------------------------------------
+    CLES_test <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
+    if (use_disc) {
+      write_csv(
+        data.frame(CLES = CLES_test),
+        here::here(glue("outputs/{var_name}_CLES-test_{sample_number}.csv"))
+      )
+      if (!quietly) {
+        print(glue("Saved {var_name}_CLES-test_{sample_number}.csv to disc"))
+      }
+      rm(CLES_test, envir = parent.frame(1))
     }
     if (!quietly) {
       setTxtProgressBar(pb, i)
