@@ -104,10 +104,9 @@ compare_roughness_bootstrapped <- function(x, y,
       samples
     }
     # Orchestrate prep_layer2() & bootstrap_sample() ---------------------------
-    x %<>%
-      na.omit() %>%
-      prep_layer2(resolution = resolution) %>%
-      bootstrap_sample(n_samples, quietly = TRUE)
+    x <- na.omit(x)
+    x <- prep_layer2(x, resolution = resolution)
+    x <- bootstrap_sample(x, n_samples, quietly = TRUE)
     if (!quietly) {
       print(glue("Bootstrap-sampled layer {name_of(x)}"))
     }
@@ -137,8 +136,8 @@ compare_roughness_bootstrapped <- function(x, y,
     x_name <- name_of(x)
     y_name <- name_of(y)
   }
-  x %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
-  y %<>% prep_and_bootstrap(resolution, n_samples, use_disc = use_disc)
+  x <- prep_and_bootstrap(x, resolution, n_samples, use_disc = use_disc)
+  y <- prep_and_bootstrap(y, resolution, n_samples, use_disc = use_disc)
   # Run Mann-Whitney & CLES on bootstraps --------------------------------------
   if (!quietly) {
     print(glue(
