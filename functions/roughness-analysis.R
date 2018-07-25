@@ -70,15 +70,17 @@ compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
 }
 
 # Alternate version for bootstrapped U and CLES
-compare_roughness_bootstrapped <- function(x, y,
-                                           resolution, n_samples = 1000,
+compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
+                                           variable,
+                                           resolution, n_samples,
                                            force_mann_whitney_u,
                                            quietly = FALSE,
                                            use_disc = FALSE, ...) {
   # Define inner functions -----------------------------------------------------
-  prep_and_bootstrap <- function(x, resolution, n_samples,
-                                 quietly = FALSE, use_disc = FALSE,
-                                 invisible = TRUE) {
+  prep_and_bootstrap <- function(x, x_name,
+                                 resolution, n_samples,
+                                 quietly = FALSE,
+                                 use_disc = FALSE) {
     prep_layer2 <- function(x, resolution) {
       x %>%
         aggregate(fact = resolution / 0.05) %>%
@@ -119,10 +121,12 @@ compare_roughness_bootstrapped <- function(x, y,
       print(glue("Bootstrap-sampled layer {name_of(x)}"))
     }
     if (use_disc) {
-      path <- here::here(glue("outputs/temp/{name_of(x)}_bootstraps.csv"))
-      write_csv(x, path)
+      path <- here::here(glue(
+        "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
+      ))
+      write_csv(as.data.frame(x), path)
       if (!quietly) {
-        print(glue("Saved {name_of(x)} bootstrap samples to disc"))
+        print(glue("Saved {x_name} bootstrap samples to disc"))
       }
     }
     if (use_disc && invisible) {
@@ -135,31 +139,36 @@ compare_roughness_bootstrapped <- function(x, y,
   # Bootstrap-sample x & y -----------------------------------------------------
   if (!quietly) {
     print(glue(
-      "[Comparing {name_of(x)} and {name_of(y)} \\
+      "[Comparing {x_region_name} and {y_region_name} {variable} \\
       at resolution = {resolution}]"
     ))
     print(glue("Bootstrap-sampling layers..."))
   }
-  if (use_disc) {
-    x_name <- name_of(x)
-    y_name <- name_of(y)
-  }
-  x <- prep_and_bootstrap(x, resolution, n_samples, use_disc = use_disc)
-  y <- prep_and_bootstrap(y, resolution, n_samples, use_disc = use_disc)
+  x_name <- glue("{x_region_name}_{variable}_{resolution}")
+  y_name <- glue("{y_region_name}_{variable}_{resolution}")
+  x <- prep_and_bootstrap(x, x_name, resolution, n_samples, use_disc = use_disc)
+  y <- prep_and_bootstrap(y, y_name, resolution, n_samples, use_disc = use_disc)
   # Run Mann-Whitney & CLES on bootstraps --------------------------------------
   if (!quietly) {
     print(glue(
        "Taken {n_samples} bootstrap-samples of both \\
-       {name_of(x)} and {name_of(y)}"
+       {x_region_name} and {y_region_name}"
     ))
     print(glue("Running Mann-Whitney U tests and CLES on samples"))
     pb <- txtProgressBar(0, n_samples)
   }
   if (use_disc) {
-    x <- read_csv(x)
-    y <- read_csv(x)
     if (!quietly) {
-      print(glue("Read {name_of(x)} and {name_of(y)} back from disc"))
+      print(glue("Reading bootstrap-samples back from disc at {x} and {y}..."))
+    }
+    x <- as.matrix(read_csv(here::here(glue(
+      "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
+    ))))
+    y <- as.matrix(read_csv(here::here(glue(
+      "outputs/compare-roughness-bootstrap/{y_name}_bootstraps.csv"
+    ))))
+    if (!quietly) {
+      print(glue("Read bootstrap-samples back from disc"))
     }
   }
   # Informatively name *_u-test.csv's
@@ -186,10 +195,13 @@ compare_roughness_bootstrapped <- function(x, y,
     if (use_disc) {
       write_csv(
         u_test,
-        here::here(glue("outputs/{var_name}_u-test_{sample_number}.csv"))
+        here::here(glue(
+          "outputs/compare-roughness-bootstrap/\\
+          {variable}_{resolution}_u-test_{sample_number}.csv"
+        ))
       )
       if (!quietly) {
-        print(glue("Saved {var_name}_u-test_{sample_number}.csv to disc"))
+        print(glue("Saved U-test to disc"))
       }
       rm(u_test, envir = parent.frame(1))
     }
@@ -197,11 +209,14 @@ compare_roughness_bootstrapped <- function(x, y,
     CLES_test <- canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
     if (use_disc) {
       write_csv(
-        data.frame(CLES = CLES_test),
-        here::here(glue("outputs/{var_name}_CLES-test_{sample_number}.csv"))
+        CLES_test,
+        here::here(glue(
+          "outputs/compare-roughness-bootstrap/\\
+          {variable}_{resolution}_CLES-test_{sample_number}.csv"
+        ))
       )
       if (!quietly) {
-        print(glue("Saved {var_name}_CLES-test_{sample_number}.csv to disc"))
+        print(glue("Saved CLES to disc"))
       }
       rm(CLES_test, envir = parent.frame(1))
     }
@@ -216,17 +231,19 @@ compare_roughness_bootstrapped <- function(x, y,
   # .... Read tests back from disk if saved to disc ----------------------------
   if (use_disc) {
     if (!quietly) {
-      print(glue("Reading {var_name} U-test and CLES-test CSVs back from disc"))
+      print(glue("Reading {variable} U-test and CLES CSVs back from disc"))
     }
     for (i in seq_along(n_samples)) {
       sample_number <- str_pad(i, nchar(n_samples), pad = "0")
       tests[[i]] <- cbind(
-        read_csv(
-          here::here(glue("outputs/{var_name}_u-test_{sample_number}.csv"))
-        ),
-        read_csv(
-          here::here(glue("outputs/{var_name}_CLES-test_{sample_number}.csv"))
-        )
+        read_csv(here::here(glue(
+          "outputs/compare-roughness-bootstrap/\\
+          {variable}_{resolution}_u-test_{sample_number}.csv"
+        ))),
+        read_csv(here::here(glue(
+          "outputs/compare-roughness-bootstrap/\\
+          {variable}_{resolution}_CLES-test_{sample_number}.csv"
+        )))
       )
       if (!quietly) {
         setTxtProgressBar(pb, i)
