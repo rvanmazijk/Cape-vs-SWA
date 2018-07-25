@@ -73,10 +73,9 @@ compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
 compare_roughness_bootstrapped <- function(x, y,
                                            resolution, n_samples = 1000,
                                            force_mann_whitney_u,
-                                           quietly = FALSE, ...) {
-  if (!quietly) {
-    print(glue("Comparing x and y at resolution = {resolution}"))
-    print(glue("Prepping layers"))
+                                           quietly = FALSE,
+                                           use_disc = FALSE, ...) {
+  # Define inner functions -----------------------------------------------------
   prep_and_bootstrap <- function(x, resolution, n_samples,
                                  quietly = FALSE, use_disc = FALSE,
                                  invisible = TRUE) {
@@ -105,6 +104,31 @@ compare_roughness_bootstrapped <- function(x, y,
         print(glue("Done"))
       }
       samples
+    }
+    # Orchestrate prep_layer2() & bootstrap_sample() ---------------------------
+    x %<>%
+      na.omit() %>%
+      prep_layer2(resolution = resolution) %>%
+      bootstrap_sample(n_samples, quietly = TRUE)
+    if (!quietly) {
+      print(glue("
+        Bootstrap sampled layer {name_of(x)}
+      "))
+    }
+    if (use_disc) {
+      path <- here::here(glue("outputs/temp/{name_of(x)}_bootstraps.csv"))
+      write_csv(x, path)
+      if (!quietly) {
+        print(glue("
+          Saved {name_of(x)} bootstrap samples to disc
+        "))
+      }
+    }
+    if (use_disc && invisible) {
+      rm(x, envir = environment())
+      return(path)
+    } else {
+      return(x)
     }
   }
   x %<>%
