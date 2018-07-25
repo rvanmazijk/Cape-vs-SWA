@@ -181,7 +181,6 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
           {variable}_{resolution}_u-test_{sample_number}.csv"
         ))
       )
-      rm(u_test, envir = parent.frame(1))
     }
     # .... CLES ----------------------------------------------------------------
     CLES_test <- data.frame(CLES =
@@ -195,7 +194,6 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
           {variable}_{resolution}_CLES-test_{sample_number}.csv"
         ))
       )
-      rm(CLES_test, envir = parent.frame(1))
     }
     # .... Store in list if not saving to disc ---------------------------------
     if (!use_disc) {
