@@ -17,7 +17,6 @@ if (FALSE) {
       x_region_name = "SWAFR", y_region_name = "GCFR",
       variable = ..3,
       resolution = 0.05, n_samples = 10,
-      force_mann_whitney_u = TRUE,
       use_disc = TRUE
     )
   )

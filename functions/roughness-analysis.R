@@ -73,7 +73,6 @@ compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
 compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
                                            variable,
                                            resolution, n_samples,
-                                           force_mann_whitney_u,
                                            use_disc = FALSE, ...) {
   # Define inner functions -----------------------------------------------------
   prep_and_bootstrap <- function(x, x_name,
