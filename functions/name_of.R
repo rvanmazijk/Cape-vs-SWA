@@ -15,3 +15,7 @@ name_of <- function(x, quietly = FALSE) {
   }
   x
 }
+run <- function(x) {
+  stopifnot(is.character(x))
+  eval(parse(text = x))
+}
