@@ -108,10 +108,10 @@ gwr_model <- function(formula = richness ~ ., data, columns = c(1:nlayers(data))
   ))
   if (!is.null(r)) {
     model_gwr$raster <- rasterize(model_gwr$SDF, r)
+    print(glue(
+      "Rasterised results"
+    ))
   }
-  print(glue(
-    "Rasterised results"
-  ))
   model_gwr
 }
 
