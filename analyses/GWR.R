@@ -2,17 +2,22 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
 pacman::p_load(spgwr)
 
+# Collate data -----------------------------------------------------------------
+
+# Prepare richness, environment roughness layers
 for (i in seq_along(GCFR_variables_QDS)) {
   names(GCFR_variables_QDS[[i]]) <- var_names[[i]]
 }
 names(GCFR_richness_QDS) <- "richness"
 GCFR_roughness_QDS <- map(GCFR_variables_QDS, focal_sd)
 names(GCFR_roughness_QDS) %<>% paste0("rough_", .)
-for (i in seq_along(GCFR_variables_QDS)) {
+for (i in seq_along(GCFR_roughness_QDS)) {
   names(GCFR_roughness_QDS[[i]]) <- paste0("rough_", var_names[[i]])
 }
 for (i in seq_along(SWAFR_variables_QDS)) {
@@ -21,10 +26,12 @@ for (i in seq_along(SWAFR_variables_QDS)) {
 names(SWAFR_richness_QDS) <- "richness"
 SWAFR_roughness_QDS <- map(SWAFR_variables_QDS, focal_sd)
 names(SWAFR_roughness_QDS) %<>% paste0("rough_", .)
-for (i in seq_along(SWAFR_variables_QDS)) {
+for (i in seq_along(SWAFR_roughness_QDS)) {
   names(SWAFR_roughness_QDS[[i]]) <- paste0("rough_", var_names[[i]])
 }
 
+# Combine richness, environment and roughness into SpatialPointsDataFrames
+# GCFR
 GCFR_all_QDS <- c(
   richness = GCFR_richness_QDS,
   map(GCFR_variables_QDS, na.omit),
@@ -42,8 +49,10 @@ names(GCFR_all_QDS_df) <- c(
 )
 GCFR_all_QDS_pts <- SpatialPointsDataFrame(
   data   = na.omit(GCFR_all_QDS_df)[, -c(1, 2)],
-  coords = na.omit(GCFR_all_QDS_df)[,  c(1, 2)]
+  coords = na.omit(GCFR_all_QDS_df)[,  c(1, 2)],
+  proj4string = CRS(std_CRS)
 )
+# SWAFR
 SWAFR_all_QDS <- c(
   richness = SWAFR_richness_QDS,
   map(SWAFR_variables_QDS, na.omit),
@@ -61,17 +70,31 @@ names(SWAFR_all_QDS_df) <- c(
 )
 SWAFR_all_QDS_pts <- SpatialPointsDataFrame(
   data   = na.omit(SWAFR_all_QDS_df)[, -c(1, 2)],
-  coords = na.omit(SWAFR_all_QDS_df)[,  c(1, 2)]
+  coords = na.omit(SWAFR_all_QDS_df)[,  c(1, 2)],
+  proj4string = CRS(std_CRS)
 )
+# Combined
+BOTH_all_QDS_pts <- SpatialPointsDataFrame(
+  data = rbind(
+    cbind(region = "GCFR",  na.omit(GCFR_all_QDS_df)[, -c(1, 2)]),
+    cbind(region = "SWAFR", na.omit(SWAFR_all_QDS_df)[, -c(1, 2)])
+  ),
+  coords = rbind(
+    na.omit(GCFR_all_QDS_df)[,  c(1, 2)],
+    na.omit(SWAFR_all_QDS_df)[,  c(1, 2)]
+  ),
+  proj4string = CRS(std_CRS)
+)
+# GWR helper function ----------------------------------------------------------
 
 gwr_model <- function(formula = richness ~ ., data, columns = c(1:nlayers(data)),
-                      r, null = FALSE) {
+                      r = NULL, null = FALSE) {
   if (null) {
     formula <- richness ~ 1
   }
   auto_bw <- gwr.sel(
     formula, data[columns],
-    gweight = gwr.Gauss, verbose = FALSE
+    gweight = gwr.Gauss, verbose = TRUE
   )
   print(glue(
     "Bandwidth automatically chosen"
@@ -83,12 +106,19 @@ gwr_model <- function(formula = richness ~ ., data, columns = c(1:nlayers(data))
   print(glue(
     "GWR model fit"
   ))
-  model_gwr$raster <- rasterize(model_gwr$SDF, r)
+  if (!is.null(r)) {
+    model_gwr$raster <- rasterize(model_gwr$SDF, r)
+  }
   print(glue(
     "Rasterised results"
   ))
   model_gwr
 }
+
+# Fit models -------------------------------------------------------------------
+
+# .... Separate regions' models ------------------------------------------------
+
 data <- GCFR_all_QDS_pts
 r <- GCFR_richness_QDS
 GCFR_models <- list(
@@ -132,7 +162,37 @@ map(GCFR_models, anova)  # TODO: interpretation of this?
 map(SWAFR_models, anova)
 
 ####
+spplot(
+  GCFR_models$elev$SDF["Elevation"], scales = list(draw = TRUE),
+  sp.layout = list(GCFR_border_buffered)
+)
+spplot(
+  SWAFR_models$elev$SDF["Elevation"], scales = list(draw = TRUE),
+  sp.layout = list(SWAFR_border_buffered)
+)
+####
 
-plot(models$elev$raster$X.Intercept.)
-plot(models$elev$raster$Elevation)
-plot(models$elev$raster$rough_Elevation)
+# .... Region-term models ------------------------------------------------------
+
+data <- BOTH_all_QDS_pts
+# Code two binary variables scoring region membership
+data$isGCFR <- ifelse(data$region == "GCFR", 1, 0)
+data$isSWAFR <- ifelse(data$region == "SWAFR", 1, 0)
+data$region <- NULL
+models2 <- list(
+  both_null      = gwr_model(data = data, null = TRUE),
+  both_region    = gwr_model(data = data, columns = c(1, 20, 21)),
+  both_no_region = gwr_model(data = data, columns = -c(20, 21)),
+  both_full      = gwr_model(data = data, null = FALSE)
+)
+delta_AICc(models2)
+
+both_region$SDF$region <- ifelse(both_region$SDF@coords[, 1] < 60, "GCFR", "SWAFR")
+
+str(GCFR_all_QDS_pts)
+str(both_region$SDF[1])
+spplot(both_region$SDF[both_region$SDF$region == "GCFR",  "Elevation"], scales = list(draw = TRUE))
+spplot(both_region$SDF[both_region$SDF$region == "SWAFR", "Elevation"], scales = list(draw = TRUE))
+spplot(both_region$SDF[both_region$SDF$region == "SWAFR",  "MAP"], scales = list(draw = TRUE))
+spplot(both_region$SDF[both_region$SDF$region == "SWAFR", "Elevation"], scales = list(draw = TRUE))
+spplot(both_region$SDF["MAP"], scales = list(draw = TRUE))
