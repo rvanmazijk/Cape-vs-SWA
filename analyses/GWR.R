@@ -6,7 +6,7 @@
 
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
-pacman::p_load(spgwr)
+pacman::p_load(spgwr, GWmodel)
 
 # Collate data -----------------------------------------------------------------
 
@@ -175,6 +175,17 @@ spplot(
 # .... Region-term models ------------------------------------------------------
 
 data <- BOTH_all_QDS_pts
+
+# Try w/ GWModel instead?
+auto_bw <- bw.gwr(
+  richness ~ region + Elevation, data = data,
+  fixed.vars = "Elevation", kernel = "gaussian"
+)
+model <- gwr.mixed(
+  richness ~ region + Elevation, data,
+  fixed.vars = "Elevation", kernel="gaussian"
+))
+
 # Code two binary variables scoring region membership
 data$isGCFR <- ifelse(data$region == "GCFR", 1, 0)
 data$isSWAFR <- ifelse(data$region == "SWAFR", 1, 0)
