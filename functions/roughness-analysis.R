@@ -21,6 +21,7 @@ focal_sd <- function(x, ...) {focal(x = x,
   }
   mean(sqrt(diffs), na.rm = TRUE)
 })}
+# TODO: rename as "roughness()"
 
 #' Aggregate a layer to 0.05º, run \code{focal_sd()}
 #'
@@ -34,9 +35,9 @@ prep_layer <- function(x, ...) {
   x %<>%
     aggregate(fact = resolution / 0.05) %>%
     focal_sd() %>%
-    `[`()
+    getValues()
   if (resolution == 0.05) {
-    x %<>% base::sample(size = 5000)  # maxi sample size Wilcox test accepts
+    x %<>% base::sample(size = 5000)  # max n Wilcox test accepts
   }
   x
 }
@@ -54,8 +55,12 @@ prep_layer <- function(x, ...) {
 #'
 #' @examples
 compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
-  x %<>% na.omit() %>% prep_layer()
-  y %<>% na.omit() %>% prep_layer()
+  x %<>%
+    na.omit() %>%
+    prep_layer()
+  y %<>%
+    na.omit() %>%
+    prep_layer()
   test <- compare_samples(x, y, "two.sided", ...)$test
   if (raw) {
     return(test)
@@ -83,3 +88,54 @@ describe_roughness <- function(x, y, resolution, ...) {
 
 IQ99R <- function(x) quantile(x, 0.99) - quantile(x, 0.01)
 IQ95R <- function(x) quantile(x, 0.95) - quantile(x, 0.05)
+
+
+
+# Jackknife-version of analysis
+prep_layer2 <- function(x, resolution) {
+  x %>%
+    aggregate(fact = resolution / 0.05) %>%
+    focal_sd() %>%
+    getValues()
+}
+jackknife_sample <- function(x, size, n) {
+  print(glue(
+    "Taking {n} jackknife-samples of size {size}"
+  ))
+  return(t(replicate(n, {
+    sample(x, size, replace = FALSE)
+  })))
+  print(glue(
+    "Done"
+  ))
+}
+CLES_jackknife <- function(x, y, n, size) {
+  pw <- matrix(nrow = length(rows), ncol = length(cols))
+  rownames(pw) <- x
+  colnames(pw) <- y
+  pw_comparisons <- pw
+  for (i in 1:nrow(pw)) {
+    for (j in 1:ncol(pw)) {
+      pw_comparisons[i, j] <- rownames(pw)[[i]] < colnames(pw)[[j]]
+    }
+  }
+  CLES_values <- vector(length = nrow(pw) * ncol(pw))
+  # Jackknife-sample the pairwise matrix
+  for (n in 1:1000) {
+    rows <- sample(1:nrow(pw), size, replace = FALSE)
+    cols <- sample(1:ncol(pw), size, replace = FALSE)
+    jackknifed_pw <- pw_comparisons[rows, cols]
+    jackknifed_pw %<>% as.vector()
+    x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
+    total <- length(jackknifed_pw)
+    CLES_values[[n]] <- x_gt_y / total
+  }
+  CLES_values
+}
+# E.g.:
+#  CLES_jackknife(
+#    SWA, Cape,
+#    n = 1000,
+#    size = length(SWA) * length(GCFR_3QDS)
+#  )
+#

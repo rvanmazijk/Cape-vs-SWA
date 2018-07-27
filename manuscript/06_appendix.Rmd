@@ -8,86 +8,43 @@ import_objects(
   ignore_RDS = TRUE
 )
 out <- my_model_table(
-    model_tidy = species_turnover_geodist_m_tidy, 
-    tidy_terms = c(
-        "Intercept", 
-        "$log \\Delta x$",
-        "$Cape$",
-        "$log \\Delta x \\times Cape$"
-    )
+  model_tidy = species_turnover_geodist_m_tidy,
+  tidy_terms = c(
+    "Intercept",
+    "log Distance between cells",
+    "Cape",
+    "log Distance between cells $\\times$ Cape"
+  )
 )
 knitr::kable(out$model_table, caption = "(ref:turnover-vs-geodist-model-table)")
 ```
 
-(ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (Jaccards distance) as a function of the geographic distance (m, $\Delta x$) ($log$-transformed) between two QDS cells, for all cells (as opposed to a random subset of 5000, as in Fig. \@ref(fig:turnover-vs-geodist)). SWA was the baseline here, hence Cape has its own coefficient. Note, in Fig. \@ref(fig:turnover-vs-geodist), the plotted curves are derived from separate quantile regressions for each region's data.
+(ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (as Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells.
+The Cape term represents the difference between Cape and SWA species turnover, for a given geographic distance.
 
-```{r genus-model-table-HDS, results="asis"}
-genus_out <- my_model_table(
-    model = genus_turnover_richness_HDS_m, 
-    tidy_terms = tidy_terms,
-    AIC_table = genus_HDS_AIC_table
-)
-family_out <- my_model_table(
-    model = family_turnover_richness_HDS_m,
-    tidy_terms = tidy_terms,
-    AIC_table = family_HDS_AIC_table
-)
-out <- data.frame(
-    term       = c("",           genus_out$model_table$Term),
-    genus_est  = c("**Genus**",  genus_out$model_table$Estimate),
-    family_est = c("**Family**", family_out$model_table$Estimate),
-    genus_P    = c("**Genus**",  genus_out$model_table$`P-value`),
-    family_P   = c("**Family**", family_out$model_table$`P-value`)
+```{r species-model-table-3QDS, results="asis"}
+out <- my_model_table(
+  model = species_turnover_richness_3QDS_m,
+  tidy_terms = tidy_terms,
+  AIC_table = species_3QDS_AIC_table
 )
 knitr::kable(
-    out,
-    col.names = c("Term", "Estimate", "", "P-value", ""),
-    align = c("l", "r", "r", "r", "r"),
-    caption = "(ref:genus-family-model-table-HDS)"
+  out$model_table,
+  align = c("l", "r", "r"),
+  caption = "(ref:species-model-table-3QDS)"
 )
 ```
 
-(ref:genus-family-model-table-HDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS genus richness (right) and family richness (left) ($S_{HDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models were better fitting than similar models without region categories ($\Delta AIC =$ `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the genus and family models respectively). Note, these models do not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
-
-```{r species-genus-family-model-table-3QDS, results="asis"}
-species_out <- my_model_table(
-    model = species_turnover_richness_3QDS_m, 
-    tidy_terms = tidy_terms,
-    AIC_table = species_3QDS_AIC_table
-)
-genus_out <- my_model_table(
-    model = genus_turnover_richness_3QDS_m, 
-    tidy_terms = tidy_terms,
-    AIC_table = genus_3QDS_AIC_table
-)
-family_out <- my_model_table(
-    model = family_turnover_richness_3QDS_m,
-    tidy_terms = tidy_terms,
-    AIC_table = family_3QDS_AIC_table
-)
-out <- data.frame(
-    term         = c("",            genus_out$model_table$Term),
-    species_est  = c("**Species**", species_out$model_table$Estimate),
-    genus_est    = c("**Genus**",   genus_out$model_table$Estimate),
-    family_est   = c("**Family**",  family_out$model_table$Estimate),
-    species_P    = c("**Species**", species_out$model_table$`P-value`),
-    genus_P      = c("**Genus**",   genus_out$model_table$`P-value`),
-    family_P     = c("**Family**",  family_out$model_table$`P-value`)
-)
-knitr::kable(
-    out,
-    col.names = c("Term", "Estimate", "", "", "P-value", "", ""),
-    align = c("l", "r", "r", "r", "r", "r", "r"),
-    caption = "(ref:species-genus-family-model-table-3QDS)"
-)
-```
-
-(ref:species-genus-family-model-table-3QDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of 3QDS species, genus and family richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:gamma-beta-alpha). The Cape was fit as the baseline, hence the SWA represents the categorical term here. These models wer better fitting than similar models without region categories ($\Delta AIC =$ `r species_out$deltaAIC`, `r genus_out$deltaAIC` and `r family_out$deltaAIC` for the species, genus and family models respectively). Note, these models does not represent those curves plot in Figures \@ref(fig:gamma-beta-alpha-HDS) and \@ref(fig:gamma-beta-alpha-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+(ref:species-model-table-3QDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of 3QDS species richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$, as Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
+The Cape was fit as the baseline, hence the SWA represents the categorical term here.
+<!--TODO: use SWA as baseline? to be more consistent w/ tab:turnover-vs-geodist-model-table-->
+These models were better fitting than similar models without region categories ($\Delta AIC =$ `r out$deltaAIC`).
+Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover)B,C and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
 
 ## Figures {-}
 
-```{r gamma-beta-alpha-3QDS, fig.cap="(ref:gamma-beta-alpha-3QDS)"}
-knitr::include_graphics(here::here("figures/gamma-beta-alpha-3QDS.png"))
+```{r richness-vs-turnover-3QDS, fig.cap="(ref:richness-vs-turnover-3QDS)"}
+knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png.png"))
 ```
 
-(ref:gamma-beta-alpha-3QDS) Same as \@ref(fig:gamma-beta-alpha-HDS), but for 3QDS, not HDS, as the focal scale.
+(ref:richness-vs-turnover-3QDS) [Same as \@ref(fig:richness-vs-turnover)B,C, but for 3QDS, not HDS, as the focal scale.]
