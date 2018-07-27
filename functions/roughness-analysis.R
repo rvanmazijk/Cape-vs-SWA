@@ -69,6 +69,172 @@ compare_roughness <- function(x, y, resolution, raw = FALSE, ...) {
   }
 }
 
+# Alternate version for bootstrapped U and CLES
+compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
+                                           variable,
+                                           resolution, n_samples,
+                                           use_disc = FALSE, ...) {
+  # Define inner functions -----------------------------------------------------
+  prep_and_bootstrap <- function(x, x_name,
+                                 resolution, n_samples,
+                                 use_disc = FALSE) {
+    prep_layer2 <- function(x, resolution) {
+      x %>%
+        aggregate(fact = resolution / 0.05) %>%
+        focal_sd() %>%
+        getValues()
+    }
+    bootstrap_sample <- function(x, n = 1000) {
+      print(glue(
+        "Taking {n} bootstrap samples of size {length(x)}"
+      ))
+      return(t(replicate(n = n, {
+        sample(x, size = length(x), replace = TRUE)
+      })))
+      print(glue(
+        "Done"
+      ))
+    }
+    # Orchestrate prep_layer2() & bootstrap_sample() ---------------------------
+    x %<>%
+      na.omit() %>%
+      prep_layer2(resolution = resolution) %>%
+      na.omit() %>%
+      bootstrap_sample(n_samples)
+    if (use_disc) {
+      path <- here::here(glue(
+        "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
+      ))
+      write_csv(as.data.frame(x), path)
+      print(glue(
+        "Saved {x_name} bootstrap samples to disc"
+      ))
+    }
+    if (!use_disc) {
+      return(x)
+    }
+  }
+  # Bootstrap-sample x & y -----------------------------------------------------
+  print(glue(
+    "[Comparing {x_region_name} and {y_region_name} {variable} \\
+    at resolution = {resolution}]"
+  ))
+  print(glue(
+    "Bootstrap-sampling layers..."
+  ))
+  x_name <- glue("{x_region_name}_{variable}_{resolution}")
+  y_name <- glue("{y_region_name}_{variable}_{resolution}")
+  x <- prep_and_bootstrap(x, x_name, resolution, n_samples, use_disc = use_disc)
+  y <- prep_and_bootstrap(y, y_name, resolution, n_samples, use_disc = use_disc)
+  # Run Mann-Whitney & CLES on bootstraps --------------------------------------
+  print(glue(
+     "Taken {n_samples} bootstrap-samples of both \\
+     {x_region_name} and {y_region_name}"
+  ))
+  print(glue(
+    "Running Mann-Whitney U tests and CLES on bootstrap-samples..."
+  ))
+  pb <- txtProgressBar(0, n_samples)
+  if (use_disc) {
+    print(glue(
+      "Reading bootstrap-samples back from disc at {x} and {y}..."
+    ))
+    x <- as.matrix(read_csv(
+      here::here(glue(
+        "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
+      )),
+      col_types = cols()  # Suppress col_type messages
+    ))
+    y <- as.matrix(read_csv(
+      here::here(glue(
+        "outputs/compare-roughness-bootstrap/{y_name}_bootstraps.csv"
+      )),
+      col_types = cols()
+    ))
+    print(glue(
+      "Read bootstrap-samples back from disc"
+    ))
+  }
+  print(glue(
+    "Running U-tests and CLES"
+  ))
+  if (use_disc) {
+    print(glue(
+       "(Saving to disc too)"
+    ))
+  }
+  tests <- vector("list", length = n_samples)
+  for (i in 1:n_samples) {
+    sample_number <- str_pad(i, nchar(n_samples), pad = "0")
+    # .... Mann-Whitney U tests ------------------------------------------------
+    u_test <- wilcox.test(
+      x[i, ], y[i, ],
+      "two.sided"
+    )
+    u_test %<>% broom::tidy()
+    if (use_disc) {
+      write_csv(
+        u_test,
+        here::here(glue(
+          "outputs/compare-roughness-bootstrap/\\
+          {variable}_{resolution}_u-test_{sample_number}.csv"
+        ))
+      )
+    }
+    # .... CLES ----------------------------------------------------------------
+    CLES_test <- data.frame(CLES =
+        canprot::CLES(na.omit(x[i, ]), na.omit(y[i, ]))
+    )
+    if (use_disc) {
+      write_csv(
+        CLES_test,
+        here::here(glue(
+          "outputs/compare-roughness-bootstrap/\\
+          {variable}_{resolution}_CLES-test_{sample_number}.csv"
+        ))
+      )
+    }
+    # .... Store in list if not saving to disc ---------------------------------
+    if (!use_disc) {
+      tests[[i]] <- cbind(u_test, CLES_test)
+    }
+    setTxtProgressBar(pb, i)
+  }
+  close(pb)
+  # .... Read tests back from disk if saved to disc ----------------------------
+  if (use_disc) {
+    print(glue(
+      "Reading {variable} U-test and CLES CSVs back from disc"
+    ))
+    pb <- txtProgressBar(0, n_samples)
+    for (i in 1:n_samples) {
+      sample_number <- str_pad(i, nchar(n_samples), pad = "0")
+      tests[[i]] <- cbind(
+        read_csv(
+          here::here(glue(
+            "outputs/compare-roughness-bootstrap/\\
+            {variable}_{resolution}_u-test_{sample_number}.csv"
+          )),
+          col_types = cols()
+        ),
+        read_csv(
+          here::here(glue(
+            "outputs/compare-roughness-bootstrap/\\
+            {variable}_{resolution}_CLES-test_{sample_number}.csv"
+          )),
+          col_types = cols()
+        )
+      )
+      setTxtProgressBar(pb, i)
+    }
+  }
+  close(pb)
+  print(glue(
+    "Done"
+  ))
+  tests
+}
+
 #' Title
 #'
 #' @param x
@@ -88,54 +254,3 @@ describe_roughness <- function(x, y, resolution, ...) {
 
 IQ99R <- function(x) quantile(x, 0.99) - quantile(x, 0.01)
 IQ95R <- function(x) quantile(x, 0.95) - quantile(x, 0.05)
-
-
-
-# Jackknife-version of analysis
-prep_layer2 <- function(x, resolution) {
-  x %>%
-    aggregate(fact = resolution / 0.05) %>%
-    focal_sd() %>%
-    getValues()
-}
-jackknife_sample <- function(x, size, n) {
-  print(glue(
-    "Taking {n} jackknife-samples of size {size}"
-  ))
-  return(t(replicate(n, {
-    sample(x, size, replace = FALSE)
-  })))
-  print(glue(
-    "Done"
-  ))
-}
-CLES_jackknife <- function(x, y, n, size) {
-  pw <- matrix(nrow = length(rows), ncol = length(cols))
-  rownames(pw) <- x
-  colnames(pw) <- y
-  pw_comparisons <- pw
-  for (i in 1:nrow(pw)) {
-    for (j in 1:ncol(pw)) {
-      pw_comparisons[i, j] <- rownames(pw)[[i]] < colnames(pw)[[j]]
-    }
-  }
-  CLES_values <- vector(length = nrow(pw) * ncol(pw))
-  # Jackknife-sample the pairwise matrix
-  for (n in 1:1000) {
-    rows <- sample(1:nrow(pw), size, replace = FALSE)
-    cols <- sample(1:ncol(pw), size, replace = FALSE)
-    jackknifed_pw <- pw_comparisons[rows, cols]
-    jackknifed_pw %<>% as.vector()
-    x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
-    total <- length(jackknifed_pw)
-    CLES_values[[n]] <- x_gt_y / total
-  }
-  CLES_values
-}
-# E.g.:
-#  CLES_jackknife(
-#    SWA, Cape,
-#    n = 1000,
-#    size = length(SWA) * length(GCFR_3QDS)
-#  )
-#
