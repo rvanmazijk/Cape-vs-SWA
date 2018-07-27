@@ -9,7 +9,7 @@ if (!"pacman" %in% installed.packages()) {
 }
 pacman::p_load(
   # General programming
-  magrittr, here, glue, stringr, foreach, #? rlang,
+  magrittr, here, glue, stringr, foreach, xfun, #? rlang,
   # Parallel processing
   parallel,
   # GIS
@@ -28,7 +28,12 @@ pacman::p_load(
 
 capture.output(
   sessionInfo(),
-  file = here::here("outputs/sessionInfo.txt")
+  file =
+    if (is_macos()) {
+      here::here("outputs/sessionInfo_macos.txt")
+    } else if (is_windows()) {
+      here::here("outputs/sessionInfo_windows.txt")
+    }
 )
 
 # Custom settings and functions for this project -------------------------------
