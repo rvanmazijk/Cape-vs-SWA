@@ -84,13 +84,13 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
         focal_sd() %>%
         getValues()
     }
-    bootstrap_sample <- function(x, n = 1000, quietly = FALSE, ...) {
+    bootstrap_sample <- function(x, n = 1000) {
       print(glue(
-        "Taking {n_samples} bootstrap samples of size {length(x)}"
+        "Taking {n} bootstrap samples of size {length(x)}"
       ))
-      return(replicate(n = n, {
+      return(t(replicate(n = n, {
         sample(x, size = length(x), replace = TRUE)
-      }))
+      })))
       print(glue(
         "Done"
       ))
@@ -100,7 +100,7 @@ compare_roughness_bootstrapped <- function(x, y, x_region_name, y_region_name,
       na.omit() %>%
       prep_layer2(resolution = resolution) %>%
       na.omit() %>%
-      bootstrap_sample(n_samples, quietly = TRUE)
+      bootstrap_sample(n_samples)
     if (use_disc) {
       path <- here::here(glue(
         "outputs/compare-roughness-bootstrap/{x_name}_bootstraps.csv"
