@@ -1,5 +1,5 @@
 # Analyse environmental roughness varying across spatial scales
-# (Now with bootstrapping!)
+# (Now with jackknife-sampling!)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
