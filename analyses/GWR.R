@@ -179,20 +179,11 @@ spplot(
 
 data <- BOTH_all_QDS_pts
 
-# Try w/ GWModel instead?
-auto_bw <- bw.gwr(
-  richness ~ region + Elevation, data = data,
-  fixed.vars = "Elevation", kernel = "gaussian"
-)
-model <- gwr.mixed(
-  richness ~ region + Elevation, data,
-  fixed.vars = "Elevation", kernel="gaussian"
-))
-
 # Code two binary variables scoring region membership
 data$isGCFR <- ifelse(data$region == "GCFR", 1, 0)
 data$isSWAFR <- ifelse(data$region == "SWAFR", 1, 0)
 data$region <- NULL
+
 models2 <- list(
   both_null      = gwr_model(data = data, null = TRUE),
   both_region    = gwr_model(data = data, columns = c(1, 20, 21)),
@@ -210,3 +201,14 @@ spplot(both_region$SDF[both_region$SDF$region == "SWAFR", "Elevation"], scales =
 spplot(both_region$SDF[both_region$SDF$region == "SWAFR",  "MAP"], scales = list(draw = TRUE))
 spplot(both_region$SDF[both_region$SDF$region == "SWAFR", "Elevation"], scales = list(draw = TRUE))
 spplot(both_region$SDF["MAP"], scales = list(draw = TRUE))
+
+# Not working right...
+# TODO: Try w/ GWModel instead?
+auto_bw <- bw.gwr(
+  richness ~ region + Elevation, data = data,
+  kernel = "gaussian"
+)
+model <- gwr.mixed(
+  richness ~ region + Elevation, data,
+  fixed.vars = "Elevation", kernel = "gaussian", bw = auto_bw
+)
