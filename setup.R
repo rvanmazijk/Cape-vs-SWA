@@ -9,7 +9,7 @@ if (!"pacman" %in% installed.packages()) {
 }
 pacman::p_load(
   # General programming
-  magrittr, here, glue, stringr, foreach, #? rlang,
+  magrittr, here, glue, stringr, foreach, xfun, #? rlang,
   # Parallel processing
   parallel,
   # GIS
@@ -24,15 +24,16 @@ pacman::p_load(
   ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial #? ggfortify,
 )
 
-# Record session & pkg information ---------------------------------------------
+# Record session information ---------------------------------------------------
 
-# Note, although packrat records projects' pkg dependencies,
-# here I record what is used per-session, just in case
-
-# Record R session details and loaded packages
 capture.output(
   sessionInfo(),
-  file = here::here("outputs/sessionInfo.txt")
+  file =
+    if (is_macos()) {
+      here::here("outputs/sessionInfo_macos.txt")
+    } else if (is_windows()) {
+      here::here("outputs/sessionInfo_windows.txt")
+    }
 )
 
 # Create bibliography of all loaded packages
