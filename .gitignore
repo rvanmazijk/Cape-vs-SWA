@@ -5,3 +5,4 @@ manuscript/_book/
 manuscript/lib*/
 packrat/lib*/
 *.html
+outputs/compare-roughness-bootstrap/
