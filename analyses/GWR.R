@@ -90,27 +90,50 @@ BOTH_all_QDS_pts <- SpatialPointsDataFrame(
 
 # GWR helper function ----------------------------------------------------------
 
-gwr_model <- function(formula = richness ~ ., data, columns = c(1:nlayers(data)),
-                      r = NULL, null = FALSE) {
-  if (null) {
+gwr_model <- function(pkg, null_model = TRUE, formula = richness ~ .,
+                      data, columns = NULL,
+                      rasterize_with = NULL) {
+  stopifnot(exprs = {
+    pkg %in% c("spgwr", "GWmodel")
+    class(data) == "SpatialPointsDataFrame"
+  })
+  if (null_model) {
     formula <- richness ~ 1
+  } else {
+    if (is.null(columns)) {
+      print(glue(
+        "Defaulting to full model"
+      ))
+      columns <- c(1:nlayers(data)
+    } else {
+      print(glue(
+        "Using columns {columns}"
+      ))
+    }
   }
-  auto_bw <- gwr.sel(
-    formula, data[columns],
-    gweight = gwr.Gauss, verbose = TRUE
+  switch(pkg,
+    "spgwr" = {
+      auto_bw <- spgwr::gwr.sel(
+        formula, data[columns],
+        gweight = gwr.Gauss, verbose = TRUE
+      )
+      print(glue(
+        "Bandwidth automatically chosen"
+      ))
+      model_gwr <- spgwr::gwr(
+        formula, data[columns],
+        gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
+      )
+      print(glue(
+        "GWR model fit"
+      ))
+    },
+    "GWmodel" = {
+      # TODO
+    }
   )
-  print(glue(
-    "Bandwidth automatically chosen"
-  ))
-  model_gwr <- gwr(
-    formula, data[columns],
-    gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
-  )
-  print(glue(
-    "GWR model fit"
-  ))
-  if (!is.null(r)) {
-    model_gwr$raster <- rasterize(model_gwr$SDF, r)
+  if (!is.null(rasterize_with)) {
+    model_gwr$raster <- rasterize(model_gwr$SDF, rasterize_with)
     print(glue(
       "Rasterised results"
     ))
@@ -122,17 +145,41 @@ gwr_model <- function(formula = richness ~ ., data, columns = c(1:nlayers(data))
 
 # .... Separate regions' models ------------------------------------------------
 
-data <- GCFR_all_QDS_pts
+d <- GCFR_all_QDS_pts
 r <- GCFR_richness_QDS
 GCFR_models <- list(
-  null     = gwr_model(data = data, r = r, null = TRUE),
-  abs      = gwr_model(data = data, r = r, columns = c(1, 2:10)),
-  rough    = gwr_model(data = data, r = r, columns = c(1, 11:19)),
-  elev     = gwr_model(data = data, r = r, columns = c(1, 2, 11)),
-  non_elev = gwr_model(data = data, r = r, columns = -c(2, 11)),
-  soil     = gwr_model(data = data, r = r, columns = c(1, 7:10, 16:19)),
-  non_soil = gwr_model(data = data, r = r, columns = -c(7:10, 16:19)),
-  full     = gwr_model(data = data, r = r, null = FALSE)
+  null = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    null_model = TRUE
+  ),
+  abs = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    columns = c(1, 2:10)
+  ),
+  rough = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    columns = c(1, 11:19)
+  ),
+  elev = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    columns = c(1, 2, 11)
+  ),
+  non_elev = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    columns = -c(2, 11)
+  ),
+  soil = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    columns = c(1, 7:10, 16:19)
+  ),
+  non_soil = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    columns = -c(7:10, 16:19)
+  ),
+  full = gwr_model(
+    pkg = "spgwr", data = d, rasterize_with = r,
+    null_model = FALSE
+  )
 )
 data <- SWAFR_all_QDS_pts
 r <- SWAFR_richness_QDS
