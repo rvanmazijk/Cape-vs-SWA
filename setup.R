@@ -9,7 +9,7 @@ if (!"pacman" %in% installed.packages()) {
 }
 pacman::p_load(
   # General programming
-  magrittr, here, glue, stringr, foreach, #? rlang,
+  magrittr, here, glue, stringr, foreach, xfun, #? rlang,
   # Parallel processing
   parallel,
   # GIS
@@ -24,22 +24,16 @@ pacman::p_load(
   ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial #? ggfortify,
 )
 
-# Record session & pkg information ---------------------------------------------
-
-# Note, although packrat records projects' pkg dependencies,
-# here I record what is used per-session, just in case
-
-# Record R session details and loaded packages
+# Record session information ---------------------------------------------------
+# Ignore sessionInfo
 capture.output(
   sessionInfo(),
-  file = here::here("outputs/sessionInfo.txt")
-)
-
-# Create bibliography of all loaded packages
-knitr::write_bib(
-  loadedNamespaces(),
-  file = here::here("outputs/pkgs.bib"),
-  tweak = FALSE
+  file =
+    if (is_macos()) {
+      here::here("outputs/sessionInfo_macos.txt")
+    } else if (is_windows()) {
+      here::here("outputs/sessionInfo_windows.txt")
+    }
 )
 
 # Custom settings and functions for this project -------------------------------
@@ -71,6 +65,7 @@ pre_analysis_import_paths <- list.files(
   pattern = "^\\d{2}_import-.*\\.R",
   full.names = TRUE
 )
+
 analysis_paths <- list.files(
   here::here("analyses"),
   pattern = "^\\d{2}_analyse-.*\\.R",

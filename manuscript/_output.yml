@@ -4,4 +4,4 @@ bookdown::gitbook:
 #  includes:
 #    in-header: style.sty  # FIXME
 #  latex_engine: xelatex
-#  mainfont: "Helvetica"
+#  mainfont: Helvetica
