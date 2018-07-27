@@ -2,7 +2,6 @@
 *.DS_Store
 *.Rhistory
 packrat/lib*/
-packrat/src/
 manuscript/_book/
 manuscript/libs/
 *.html
