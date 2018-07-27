@@ -22,19 +22,30 @@ if (FALSE) {
   )
   result %>%
     map(bind_rows) %>%
-    map(summarise_if, is.numeric, .funs = list(mean = mean, sd = sd)) %>%
+    map(summarise_if,
+        is.numeric,
+        .funs = list(mean = mean, sd = sd)) %>%
     bind_rows(.id = "variable")
   # Works!
 }
-resolutions <- c(0.25, 0.50, 0.75)
+
+# Run on QDS, HDS, 3QDS
+resolutions <- c(0.05, 0.25, 0.50, 0.75)
 bootstrap_results <- vector("list", length = length(resolutions))
-for (i in seq_along(resolutions)) {
-  result <- map2(
-    SWAFR_variables, GCFR_variables,
-    compare_roughness_bootstrapped,
-    resolution = resolutions[[i]],
-    n_samples = 1000,
-    force_mann_whitney_u = TRUE
+for (i in 2:4) {  # Doing 0.05º separately, using disc, below
+  result <- pmap(
+    .l = list(
+      ..1 = SWAFR_variables,
+      ..2 = GCFR_variables,
+      ..3 = var_names
+    ),
+    .f = ~ compare_roughness_bootstrapped(
+      x = ..1, x_region_name = "SWAFR",
+      y = ..2, y_region_name = "GCFR",
+      variable = ..3, resolution = resolutions[[i]],
+      n_samples = 1000,
+      use_disc = TRUE  # These can all fit in memory, but using disc just in case
+    )
   )
   bootstrap_results[[i]] <- result %>%
     map(bind_rows) %>%
@@ -58,12 +69,21 @@ ggplot(bootstrap_results,
   geom_line(aes(group = variable), position = pos)
 
 # Do for 0.05 "manually", as is an onerous computation
-result_0.05 <- map2(
-  SWAFR_variables, GCFR_variables,
-  compare_roughness_bootstrapped,
-  resolution = 0.05,
-  n_samples = 1000,
-  force_mann_whitney_u = TRUE
+# TODO: Re-run this, as my first run was before I fixed the mistake
+#       where bootstrap_sample() returned the matrix sideways (stupid default)
+result_0.05 <- pmap(
+  .l = list(
+    ..1 = SWAFR_variables,
+    ..2 = GCFR_variables,
+    ..3 = var_names
+  ),
+  .f = ~ compare_roughness_bootstrapped(
+    x = ..1, x_region_name = "SWAFR",
+    y = ..2, y_region_name = "GCFR",
+    variable = ..3, resolution = resolutions[[1]],
+    n_samples = 1000,
+    use_disc = TRUE
+  )
 )
 bootstrap_results_0.05 <- result_0.05 %>%
   map(bind_rows) %>%
