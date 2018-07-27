@@ -1,7 +1,6 @@
 .Rproj.user
 *.DS_Store
 *.Rhistory
-packrat/src/
 packrat/lib*/
 manuscript/_book/
 manuscript/lib*/
