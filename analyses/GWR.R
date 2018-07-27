@@ -11,6 +11,7 @@ pacman::p_load(spgwr, GWmodel)
 # Collate data -----------------------------------------------------------------
 
 # Prepare richness, environment roughness layers
+# GCFR
 for (i in seq_along(GCFR_variables_QDS)) {
   names(GCFR_variables_QDS[[i]]) <- var_names[[i]]
 }
@@ -20,6 +21,7 @@ names(GCFR_roughness_QDS) %<>% paste0("rough_", .)
 for (i in seq_along(GCFR_roughness_QDS)) {
   names(GCFR_roughness_QDS[[i]]) <- paste0("rough_", var_names[[i]])
 }
+# SWAFR
 for (i in seq_along(SWAFR_variables_QDS)) {
   names(SWAFR_variables_QDS[[i]]) <- var_names[[i]]
 }
@@ -85,6 +87,7 @@ BOTH_all_QDS_pts <- SpatialPointsDataFrame(
   ),
   proj4string = CRS(std_CRS)
 )
+
 # GWR helper function ----------------------------------------------------------
 
 gwr_model <- function(formula = richness ~ ., data, columns = c(1:nlayers(data)),
