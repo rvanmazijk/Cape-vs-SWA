@@ -85,6 +85,12 @@ result_0.05 <- pmap(
     use_disc = TRUE
   )
 )
+bootstrap_results[[1]] <- result_0.05 %>%
+  map(bind_rows) %>%
+  map(summarise_if,
+      is.numeric,
+      .funs = list(mean = mean, sd = sd)) %>%
+  bind_rows(.id = "variable")
 bootstrap_results_0.05 <- result_0.05 %>%
   map(bind_rows) %>%
   map(summarise_if,
