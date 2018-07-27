@@ -135,3 +135,16 @@ test_error_rate <- function(mu1 = 0, mu2 = mu2, sd = 1, n_sim = 100) {
   type_1_error_rate <- type_1_errors / n_sim
   type_1_error_rate
 }
+
+delta_AICc <- function(x) {
+  AICcs <- t(map_df(x, ~ .$results$AICc))
+  delta_AICcs <- AICcs - min(AICcs)
+  akaike_weights <- exp(-0.5 * delta_AICcs) / sum(exp(-0.5 * delta_AICcs))
+  out <- data.frame(
+    model = rownames(delta_AICcs),
+    AICc = AICcs,
+    delta_AICc = delta_AICcs[, 1],
+    akaike_weights = akaike_weights
+  )
+  arrange(out, delta_AICc)
+}

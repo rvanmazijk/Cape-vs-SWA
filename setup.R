@@ -4,9 +4,7 @@
 
 # Load and/or download necessary packages --------------------------------------
 
-if (!"pacman" %in% installed.packages()) {
-  install.packages("pacman", dependencies = TRUE)
-}
+if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
 pacman::p_load(
   # General programming
   magrittr, here, glue, stringr, foreach, xfun, #? rlang,
@@ -25,7 +23,7 @@ pacman::p_load(
 )
 
 # Record session information ---------------------------------------------------
-# Ignore sessionInfo
+
 capture.output(
   sessionInfo(),
   file =

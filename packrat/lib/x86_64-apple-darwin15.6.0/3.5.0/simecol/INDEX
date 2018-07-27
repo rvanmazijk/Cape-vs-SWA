@@ -1,0 +1,48 @@
+$                       Show Results of Model Fits
+CA                      Stochastic Cellular Automaton
+addtoenv                Add Functions from a Non-nested List of Named
+                        Functions to a Common Environment
+approxTime              Linear Interpolation with Complete Matrices or
+                        Data Frames
+as.simObj               Coerce simObj Objects to Lists and Vice-Versa
+chemostat               Chemostat Model
+conway                  The Classical Coway's Game of Life
+diffusion               A Random Walk Particle Diffusion Model
+editParms               Edit 'parms', 'init' or 'times' Slot of
+                        'simecol' Objects
+eightneighbours         Count Number of Neighbours in a Rectangular
+                        Cellular Grid.
+fitOdeModel             Parameter Fitting for odeModel Objects
+fromtoby                Create Regular Sequence from 'from-to-by'
+                        Vector
+initialize-methods      Methods for Function 'initialize' in Package
+                        'simecol'
+iteration               Discrete Simulation
+listOrNULL-class        Helpful Union Classes
+lv                      Lotka-Volterra Predator-Prey Model
+lv3                     Lotka-Volterra-Type Model with Resource, Prey
+                        and Predator
+mixNamedVec             Mix Two Named Vectors, Resolving Name Conflicts
+modelFit-class          Class of Fitted Model Parameters
+neighbours              Count Number of Neighbours on a Rectangular
+                        Grid.
+observer                Get or Set an Observer Functions to an 'simObj'
+                        Object
+odeModel                Generating-functions (Constructors) to Create
+                        Objects of Classes 'odeModel', 'rwalkModel' and
+                        'gridModel'.
+p.constrain             Transform Data Between Unconstrained and
+                        Box-constrained Scale
+parms                   Accessor Functions for 'simObj' Objects
+pcuseries               Generate Plackett Bivariate Random Numbers
+peaks                   Find Peaks Within xy-Data
+plot-methods            Methods for Function plot in Package 'simecol'
+print-methods           Methods for Function 'print' in Package
+                        'simecol'
+sEdit                   Simple editing
+seedfill                Color Fill Algorithm
+sim-methods             Simulation of 'simObj' model objects
+simecol-package         Simulation of Ecological (and Other) Dynamic
+                        Systems
+ssqOdeModel             Sum of Squares Between odeModel and Data
+upca                    The Uniform Period Chaotic Amplitude Model
