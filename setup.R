@@ -25,7 +25,7 @@ pacman::p_load(
 )
 
 # Record session information ---------------------------------------------------
-
+# Ignore sessionInfo
 capture.output(
   sessionInfo(),
   file =
