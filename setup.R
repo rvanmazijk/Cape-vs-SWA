@@ -36,13 +36,6 @@ capture.output(
     }
 )
 
-# Create bibliography of all loaded packages
-knitr::write_bib(
-  loadedNamespaces(),
-  file = here::here("outputs/pkgs.bib"),
-  tweak = FALSE
-)
-
 # Custom settings and functions for this project -------------------------------
 
 # Import all functions in R-scripts in functions/
@@ -72,6 +65,7 @@ pre_analysis_import_paths <- list.files(
   pattern = "^\\d{2}_import-.*\\.R",
   full.names = TRUE
 )
+
 analysis_paths <- list.files(
   here::here("analyses"),
   pattern = "^\\d{2}_analyse-.*\\.R",
