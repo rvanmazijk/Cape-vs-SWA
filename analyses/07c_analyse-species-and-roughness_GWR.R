@@ -90,15 +90,10 @@ BOTH_all_QDS_pts <- SpatialPointsDataFrame(
 
 # GWR helper function ----------------------------------------------------------
 
-gwr_model <- function(pkg, data, columns = NULL, rasterize_with = NULL,
-                      mixed_model = FALSE,
-                      fixed_effects = NULL) {
+gwr_model <- function(data, columns = NULL, rasterize_with = NULL) {
 
   stopifnot(exprs = {
-    pkg %in% c("spgwr", "GWmodel")
     class(data) == "SpatialPointsDataFrame"
-    mixed_model && !is.null(fixed_effects) ||
-      !mixed_model && is.null(fixed_effects)
   })
 
   # Set explanatory variables
@@ -122,39 +117,20 @@ gwr_model <- function(pkg, data, columns = NULL, rasterize_with = NULL,
   }
 
   # Compute optimal bandwidth for kernels --------------------------------------
-  auto_bw <-
-    #if (pkg == "spgwr") {
-      spgwr::gwr.sel(
-        formula, data[, columns],
-        gweight = gwr.Gauss, verbose = TRUE
-      )
-    #} else if (pkg == "GWmodel") {
-    #  GWmodel::bw.gwr(
-    #    formula, data[, columns],
-    #    kernel = "gaussian"
-    #  )
-    #}
+
+  auto_bw <- spgwr::gwr.sel(
+    formula, data[, columns],
+    gweight = gwr.Gauss, verbose = TRUE
+  )
 
   # Fit model ------------------------------------------------------------------
-  model_gwr <-
-    if (pkg == "spgwr") {
-      spgwr::gwr(
-        formula, data[, columns],
-        gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
-      )
-    } else if (pkg == "GWmodel") {
-      if (mixed_model) {
-        GWmodel::gwr.basic(
-          formula, data[, columns],
-          kernel = "gaussian", bw = bw_auto
-        )
-      } else {
-        GWmodel::gwr.mixed(
-          formula, data[, columns], fixed.vars = fixed_effects,
-          kernel = "gaussian", bw = auto_bw
-        )
-      }
-    }
+
+  model_gwr <- spgwr::gwr(
+    formula, data[, columns],
+    gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
+  )
+
+  # Rasterise the SDF of coefficients ------------------------------------------
 
   if (!is.null(rasterize_with)) {
     model_gwr$raster <- rasterize(model_gwr$SDF, rasterize_with)
