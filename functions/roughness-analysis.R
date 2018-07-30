@@ -90,70 +90,71 @@ IQ99R <- function(x) quantile(x, 0.99) - quantile(x, 0.01)
 IQ95R <- function(x) quantile(x, 0.95) - quantile(x, 0.05)
 
 # Jackknife-version of analysis
-prep_layer2 <- function(x, resolution) {
-  x %>%
-    aggregate(fact = resolution / 0.05) %>%
-    focal_sd() %>%
-    getValues()
-}
-#jackknife_sample <- function(x, n, size) {
-#  print(glue(
-#    "Taking {n} jackknife-samples of size {size}"
-#  ))
-#  return(t(replicate(n, {
-#    sample(x, size, replace = FALSE)
-#  })))
-#  print(glue(
-#    "Done"
-#  ))
-#}
-CLES_jackknife <- function(x, y, n, size, resolution) {
-  x %<>% prep_layer2(resolution)
-  y %<>% prep_layer2(resolution)
+prep_layer2 <- function(x, resolution = NULL) {
   print(glue(
-    "Roughness layers aggregated"
+    "Creating roughness layers..."
   ))
+  x %>%
+    focal_sd() %>%
+    getValues() %>%
+    na.omit()
+}
+pairwise_matrix <- function(...) {
+  print(glue(
+    "Constructing pairwise matrix of values"
+  ))
+  input <- c(...)
+  if (!is.list(input)) {
+    input <- list(...)
+  }
+  x <- input[[1]]
+  y <- input[[2]]
   pw <- matrix(nrow = length(x), ncol = length(y))
   rownames(pw) <- x
   colnames(pw) <- y
+  pw
+}
+pairwise_compare <- function(pw, use_apply = TRUE) {
   print(glue(
-    "Pairwise matrix constructed"
+    "Comparing values in pw matrix..."
   ))
-  pw_comparisons <- pw
-  for (i in 1:nrow(pw)) {
-    for (j in 1:ncol(pw)) {
-      pw_comparisons[i, j] <- rownames(pw)[[i]] > colnames(pw)[[j]]
+  if (use_apply) {
+    pw <-
+      sapply(pw, function(x) {
+        sapply(pw, function(y) {
+          which(y == x)
+        })
+      })
+  } else {
+    pb <- txtProgressBar(0, nrow(pw) * ncol(pw))
+    k <- 0
+    for (i in seq_along(rownames(pw))) {
+      for (j in seq_along(colnames(pw))) {
+        pw[i, j] <- as.numeric(rownames(pw)[[i]]) > as.numeric(colnames(pw)[[j]])
+        k <- k + 1
+        setTxtProgressBar(pb, k)
+      }
     }
+    close(pb)
   }
+  pw
+}
+CLES_jackknife <- function(pw, n, size_x, size_y) {
   print(glue(
-    "Pairwise comparisons filled in matrix"
+    "Calculating CLES for each jackknife-sample of the pw matrix..."
   ))
-  # Jackknife-sample the pairwise matrix
   CLES_values <- vector(length = n)
-  print(glue(
-    "Calculating CLES for each jackknife of the pw matrix..."
-  ))
   pb <- txtProgressBar(0, n)
   for (i in 1:n) {
-    rows <- sample(1:nrow(pw), size, replace = FALSE)
-    cols <- sample(1:ncol(pw), size, replace = FALSE)
-    jackknifed_pw <- pw_comparisons[rows, cols]
+    rows <- sample(1:nrow(pw), size_x, replace = FALSE)
+    cols <- sample(1:ncol(pw), size_y, replace = FALSE)
+    jackknifed_pw <- pw[rows, cols]
     jackknifed_pw %<>% as.vector()
     x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
     total <- length(jackknifed_pw)
     CLES_values[[i]] <- x_gt_y / total
     setTxtProgressBar(pb, i)
   }
-  print(glue(
-    "Done"
-  ))
   close(pb)
   CLES_values
 }
-# E.g.:
-#  CLES_jackknife(
-#    SWA, Cape,
-#    n = 1000,
-#    size = length(SWA) * length(GCFR_3QDS)
-#  )
-#
