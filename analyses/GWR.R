@@ -228,43 +228,18 @@ spplot(
 
 # .... Region-term models ------------------------------------------------------
 
+# Use spgwr:: for bandwidth selectiom,
+# and GWmodel:: for mixed effects models (random effect = region)
+
 data <- BOTH_all_QDS_pts
-
-# Code two binary variables scoring region membership
-data$isGCFR <- ifelse(data$region == "GCFR", 1, 0)
-data$isSWAFR <- ifelse(data$region == "SWAFR", 1, 0)
-data$region <- NULL
-
-models2 <- list(
-  both_null      = gwr_model(data = data, null = TRUE),
-  both_region    = gwr_model(data = data, columns = c(1, 20, 21)),
-  both_no_region = gwr_model(data = data, columns = -c(20, 21)),
-  both_full      = gwr_model(data = data, null = FALSE)
-)
-delta_AICc(models2)
-
-both_region$SDF$region <- ifelse(both_region$SDF@coords[, 1] < 60, "GCFR", "SWAFR")
-
-str(GCFR_all_QDS_pts)
-str(both_region$SDF[1])
-spplot(both_region$SDF[both_region$SDF$region == "GCFR",  "Elevation"], scales = list(draw = TRUE))
-spplot(both_region$SDF[both_region$SDF$region == "SWAFR", "Elevation"], scales = list(draw = TRUE))
-spplot(both_region$SDF[both_region$SDF$region == "SWAFR",  "MAP"], scales = list(draw = TRUE))
-spplot(both_region$SDF[both_region$SDF$region == "SWAFR", "Elevation"], scales = list(draw = TRUE))
-spplot(both_region$SDF["MAP"], scales = list(draw = TRUE))
-
-# Not working right...
-# TODO: Try w/ GWModel instead?
-data <- BOTH_all_QDS_pts
-auto_bw <- bw.gwr(
-  richness ~ region + Elevation, data = data,
-  kernel = "gaussian"
-)
-auto_bw <- spgwr::ggwr.sel(
-  richness ~ region + Elevation, data = data,
-  gweight = gwr.Gauss, verbose = TRUE
-)
-model <- gwr.mixed(
-  richness ~ region + Elevation, data,
-  fixed.vars = "Elevation", kernel = "gaussian", bw = auto_bw
-)
+# Testing
+if (FALSE) {
+  auto_bw <- spgwr::ggwr.sel(
+    richness ~ region + Elevation, data = data,
+    gweight = gwr.Gauss, verbose = TRUE
+  )
+  model <- GWmodel::gwr.mixed(
+    richness ~ region + Elevation, data,
+    fixed.vars = "Elevation", kernel = "gaussian", bw = auto_bw
+  )
+}
