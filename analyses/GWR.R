@@ -100,6 +100,7 @@ gwr_model <- function(pkg, data, columns = NULL, rasterize_with = NULL) {
       "Defaulting to null model"
     ))
     formula <- richness ~ 1
+    columns <- c(1:nlayers(data))  # To prevent "unsupported index type NULL"
   } else if (columns == "all") {
     print(glue(
       "Defaulting to full model"
@@ -115,14 +116,14 @@ gwr_model <- function(pkg, data, columns = NULL, rasterize_with = NULL) {
   switch(pkg,
     "spgwr" = {
       auto_bw <- spgwr::gwr.sel(
-        formula, data[columns],
+        formula, data[, columns],
         gweight = gwr.Gauss, verbose = TRUE
       )
       print(glue(
         "Bandwidth automatically chosen"
       ))
       model_gwr <- spgwr::gwr(
-        formula, data[columns],
+        formula, data[, columns],
         gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
       )
       print(glue(
@@ -147,14 +148,14 @@ gwr_model <- function(pkg, data, columns = NULL, rasterize_with = NULL) {
 # .... Separate regions' models ------------------------------------------------
 
 model_specs <- list(
-  null     = NULL,
-  abs      = c(1, 2:10),
-  rough    = c(1, 11:19),
-  elev     = c(1, 2, 11),
+  null     =  c(NULL),
+  abs      =  c(1, 2:10),
+  rough    =  c(1, 11:19),
+  elev     =  c(1, 2, 11),
   non_elev = -c(2, 11),
-  soil     = c(1, 7:10, 16:19),
+  soil     =  c(1, 7:10, 16:19),
   non_soil = -c(7:10, 16:19),
-  full     = "all"
+  full     =  c("all")
 )
 GCFR_models <- map(.x = model_specs,
   ~ gwr_model(
