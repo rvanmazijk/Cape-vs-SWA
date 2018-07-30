@@ -114,29 +114,22 @@ pairwise_matrix <- function(...) {
   colnames(pw) <- y
   pw
 }
-pairwise_compare <- function(pw, use_apply = TRUE) {
+pairwise_compare <- function(pw) {
   print(glue(
     "Comparing values in pw matrix..."
   ))
-  if (use_apply) {
-    pw <-
-      sapply(pw, function(x) {
-        sapply(pw, function(y) {
-          which(y == x)
-        })
-      })
-  } else {
-    pb <- txtProgressBar(0, nrow(pw) * ncol(pw))
-    k <- 0
-    for (i in seq_along(rownames(pw))) {
-      for (j in seq_along(colnames(pw))) {
-        pw[i, j] <- as.numeric(rownames(pw)[[i]]) > as.numeric(colnames(pw)[[j]])
-        k <- k + 1
-        setTxtProgressBar(pb, k)
-      }
+  pb <- txtProgressBar(0, nrow(pw) * ncol(pw))
+  row_vals <- as.numeric(rownames(pw))
+  col_vals <- as.numeric(colnames(pw))
+  k <- 0
+  for (i in seq_along(rownames(pw))) {
+    for (j in seq_along(colnames(pw))) {
+      pw[i, j] <- row_vals[[i]] > col_vals[[j]]
+      k <- k + 1
+      setTxtProgressBar(pb, k)
     }
-    close(pb)
   }
+  close(pb)
   pw
 }
 CLES_jackknife <- function(pw, n, size_x, size_y) {
