@@ -255,9 +255,14 @@ spplot(both_region$SDF["MAP"], scales = list(draw = TRUE))
 
 # Not working right...
 # TODO: Try w/ GWModel instead?
+data <- BOTH_all_QDS_pts
 auto_bw <- bw.gwr(
   richness ~ region + Elevation, data = data,
   kernel = "gaussian"
+)
+auto_bw <- spgwr::ggwr.sel(
+  richness ~ region + Elevation, data = data,
+  gweight = gwr.Gauss, verbose = TRUE
 )
 model <- gwr.mixed(
   richness ~ region + Elevation, data,
