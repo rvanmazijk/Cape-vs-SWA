@@ -225,30 +225,3 @@ spplot(
   sp.layout = list(SWAFR_border_buffered)
 )
 ####
-
-# .... Region-term models ------------------------------------------------------
-
-# Use spgwr:: for bandwidth selectiom,
-# and GWmodel:: for mixed effects models (random effect = region)
-
-data <- BOTH_all_QDS_pts
-# Testing
-if (FALSE) {
-  auto_bw <- spgwr::ggwr.sel(
-    richness ~ region + Elevation, data = data,
-    gweight = gwr.Gauss, verbose = TRUE
-  )
-  model <- GWmodel::gwr.mixed(
-    richness ~ region + Elevation, data,
-    fixed.vars = "Elevation", kernel = "gaussian", bw = auto_bw
-  )
-  model_df <- cbind(
-    x = model$SDF@coords[, 1],
-    y = model$SDF@coords[, 2],
-    model$SDF@data
-  )
-  ggplot(model_df %>% filter(x > 60), aes(x, y)) +
-    geom_point(aes(col = regionSWAFR_L)) +
-    scale_color_continuous(low = "black", high = "white")
-  # Works... bu this isn't the right type of model...
-}
