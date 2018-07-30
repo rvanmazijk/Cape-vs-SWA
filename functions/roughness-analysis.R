@@ -109,9 +109,10 @@ pairwise_matrix <- function(...) {
   }
   x <- input[[1]]
   y <- input[[2]]
-  pw <- matrix(nrow = length(x), ncol = length(y))
-  rownames(pw) <- x
-  colnames(pw) <- y
+  pw <- matrix(
+    nrow = length(x), ncol = length(y),
+    dimnames = list(seq(x), seq(y))
+  )
   pw
 }
 pairwise_compare <- function(pw, method = "for") {
