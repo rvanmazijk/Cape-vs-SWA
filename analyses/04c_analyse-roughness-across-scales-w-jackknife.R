@@ -72,15 +72,17 @@ nrow_3QDS <- unique(map_int(pw_comparisons_3QDS, nrow))
 ncol_3QDS <- unique(map_int(pw_comparisons_3QDS, ncol))
 
 # QDS
-jackknifed_results_QDS <- map_df(pw_comparisons_QDS,
+jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
   CLES_jackknife,
+  pw_format = "matrix",
   n = n_jackknifes,
   size_x = nrow_3QDS,
   size_y = ncol_3QDS
 )
 # HDS
-jackknifed_results_HDS <- map_df(pw_comparisons_HDS,
+jackknifed_CLES_HDS <- map_df(pw_comparisons_HDS,
   CLES_jackknife,
+  pw_format = "matrix",
   n = n_jackknifes,
   size_x = nrow_3QDS,
   size_y = ncol_3QDS
@@ -88,7 +90,7 @@ jackknifed_results_HDS <- map_df(pw_comparisons_HDS,
 # 0.05º
 # TODO
 # NOTE: do NOT put before QDS, as set.seed affects commands in order
-#jackknifed_results_0.05 <- map_df(pw_comparisons_0.05,
+#jackknifed_CLES_0.05 <- map_df(pw_comparisons_0.05,
 #  CLES_jackknife,
 #  n = n_jackknifes,
 #  size_x = nrow_3QDS,
@@ -97,18 +99,48 @@ jackknifed_results_HDS <- map_df(pw_comparisons_HDS,
 
 # Summarise the jackknifed CLES values -----------------------------------------
 
-jackknifed_results_summary_QDS <- summarise_all(
-  jackknifed_results_QDS,
+jackknifed_CLES_summary_QDS <- summarise_all(
+  jackknifed_CLES_QDS,
   .funs = list(mean = mean, sd = sd)
 )
-jackknifed_results_summary_HDS <- summarise_all(
-  jackknifed_results_HDS,
+jackknifed_CLES_summary_HDS <- summarise_all(
+  jackknifed_CLES_HDS,
   .funs = list(mean = mean, sd = sd)
 )
 # 0.05º
 # TODO
 # NOTE: do NOT put before QDS, as set.seed affects commands in order
-#jackknifed_results_summary_0.05 <- summarise_all(
-#  jackknifed_results_0.05,
+#jackknifed_CLES_summary_0.05 <- summarise_all(
+#  jackknifed_CLES_0.05,
 #  .funs = list(mean = mean, sd = sd)
+#)
+
+# Save jackknifed samples + summaries ------------------------------------------
+
+write_csv(
+  jackknifed_CLES_QDS,
+  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_QDS.csv")
+)
+write_csv(
+  jackknifed_CLES_HDS,
+  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_HDS.csv")
+)
+# TODO
+#write_csv(
+#  jackknifed_CLES_0.05,
+#  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_0.05.csv")
+#)
+
+write_csv(
+  jackknifed_CLES_summary_QDS,
+  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_summary_QDS.csv")
+)
+write_csv(
+  jackknifed_CLES_summary_HDS,
+  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_summary_HDS.csv")
+)
+# TODO
+#write_csv(
+#  jackknifed_CLES_summary_0.05,
+#  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_0.05.csv")
 #)
