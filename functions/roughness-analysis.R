@@ -101,7 +101,7 @@ prep_layer2 <- function(x, resolution = NULL) {
 }
 pairwise_matrix <- function(...) {
   print(glue(
-    "Constructing pairwise matrix of values"
+    "Constructing pairwise matrix of values..."
   ))
   input <- c(...)
   if (!is.list(input)) {
@@ -118,18 +118,17 @@ pairwise_compare <- function(pw) {
   print(glue(
     "Comparing values in pw matrix..."
   ))
-  pb <- txtProgressBar(0, nrow(pw) * ncol(pw))
-  row_vals <- as.numeric(rownames(pw))
-  col_vals <- as.numeric(colnames(pw))
-  k <- 0
-  for (i in seq_along(rownames(pw))) {
-    for (j in seq_along(colnames(pw))) {
-      pw[i, j] <- row_vals[[i]] > col_vals[[j]]
-      k <- k + 1
-      setTxtProgressBar(pb, k)
-    }
+  x_vals <- as.numeric(rownames(pw))
+  y_vals <- as.numeric(colnames(pw))
+  pw <- expand.grid(x = x_vals, y = y_vals)
+  pb <- txtProgressBar(0, nrow(pw))
+  for (i in seq(nrow(pw))) {
+    pw$x_coord[i] <- which(pw$x[i] == x_vals)
+    pw$y_coord[i] <- which(pw$y[i] == y_vals)
+    setTxtProgressBar(pb, i)
   }
   close(pb)
+  pw$diffs <- pw$x > pw$y
   pw
 }
 CLES_jackknife <- function(pw, n, size_x, size_y) {
@@ -139,11 +138,13 @@ CLES_jackknife <- function(pw, n, size_x, size_y) {
   CLES_values <- vector(length = n)
   pb <- txtProgressBar(0, n)
   for (i in 1:n) {
-    rows <- sample(1:nrow(pw), size_x, replace = FALSE)
-    cols <- sample(1:ncol(pw), size_y, replace = FALSE)
-    jackknifed_pw <- pw[rows, cols]
-    jackknifed_pw %<>% as.vector()
-    x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
+    random_rows <- sample(seq(max(pw$x_coord)), size_x, replace = FALSE)
+    random_cols <- sample(seq(max(pw$y_coord)), size_y, replace = FALSE)
+    jackknifed_pw <- filter(pw,
+      x_coord %in% random_rows &
+      y_coord %in% random_cols
+    )
+    x_gt_y <- sum(jackknifed_pw$diffs, na.rm = TRUE)
     total <- length(jackknifed_pw)
     CLES_values[[i]] <- x_gt_y / total
     setTxtProgressBar(pb, i)
