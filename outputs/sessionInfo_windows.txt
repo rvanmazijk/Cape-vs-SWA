@@ -14,38 +14,28 @@ attached base packages:
 [9] base     
 
 other attached packages:
- [1] rgdal_1.3-3         sp_1.3-1            mapview_2.4.0       Matrix_1.2-14      
- [5] Rcpp_0.12.17        robustbase_0.93-2   spData_0.2.9.0      ggspatial_1.0.1    
- [9] rasterVis_0.45      latticeExtra_0.6-28 RColorBrewer_1.1-2  lattice_0.20-35    
-[13] scales_0.5.0        cowplot_0.9.3       gridExtra_2.3       canprot_0.1.1      
-[17] broom_0.5.0         quantreg_5.36       SparseM_1.77        reshape2_1.4.3     
-[21] forcats_0.3.0       dplyr_0.7.6         purrr_0.2.5         readr_1.1.1        
-[25] tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0       tidyverse_1.2.1    
-[29] taxize_0.9.4        raster_2.6-7        xfun_0.3            foreach_1.4.4      
-[33] stringr_1.3.1       glue_1.2.0          here_0.1            magrittr_1.5       
-[37] pacman_0.4.6       
+ [1] ggspatial_1.0.1     rasterVis_0.45      latticeExtra_0.6-28 RColorBrewer_1.1-2 
+ [5] lattice_0.20-35     scales_0.5.0        cowplot_0.9.3       gridExtra_2.3      
+ [9] canprot_0.1.1       broom_0.5.0         quantreg_5.36       SparseM_1.77       
+[13] reshape2_1.4.3      forcats_0.3.0       dplyr_0.7.6         purrr_0.2.5        
+[17] readr_1.1.1         tidyr_0.8.1         tibble_1.4.2        ggplot2_3.0.0      
+[21] tidyverse_1.2.1     taxize_0.9.4        rgdal_1.3-3         raster_2.6-7       
+[25] sp_1.3-1            xfun_0.3            foreach_1.4.4       stringr_1.3.1      
+[29] glue_1.2.0          here_0.1            magrittr_1.5        pacman_0.4.6       
 
 loaded via a namespace (and not attached):
- [1] GWmodel_2.0-5      colorspace_1.3-2   deldir_0.1-15      class_7.3-14      
- [5] gdalUtils_2.0.1.14 leaflet_2.0.1      rprojroot_1.3-2    satellite_1.0.1   
- [9] base64enc_0.1-3    httpcode_0.2.0     rstudioapi_0.7     hexbin_1.27.2     
-[13] MatrixModels_0.4-1 lubridate_1.7.4    xml2_1.2.0         codetools_0.2-15  
-[17] splines_3.5.1      R.methodsS3_1.7.1  bold_0.5.0         jsonlite_1.5      
-[21] png_0.1-7          R.oo_1.22.0        shiny_1.1.0        compiler_3.5.1    
-[25] httr_1.3.1         backports_1.1.2    assertthat_0.2.0   lazyeval_0.2.1    
-[29] cli_1.0.0          later_0.7.3        htmltools_0.3.6    tools_3.5.1       
-[33] bindrcpp_0.2.2     coda_0.19-1        gtable_0.2.0       CHNOSZ_1.1.3      
-[37] gmodels_2.18.1     cellranger_1.1.0   spdep_0.7-7        crul_0.6.0        
-[41] gdata_2.18.0       ape_5.1            nlme_3.1-137       crosstalk_1.0.0   
-[45] iterators_1.0.10   rvest_0.3.2        mime_0.5           gtools_3.8.1      
-[49] spgwr_0.6-32       DEoptimR_1.0-8     LearnBayes_2.15.1  MASS_7.3-50       
-[53] zoo_1.8-3          promises_1.0.1     hms_0.4.2          expm_0.999-2      
-[57] yaml_2.1.19        curl_3.2           reshape_0.8.7      stringi_1.1.7     
-[61] maptools_0.9-2     e1071_1.7-0        boot_1.3-20        rlang_0.2.1       
-[65] pkgconfig_2.0.1    bindr_0.1.1        sf_0.6-3           htmlwidgets_1.2   
-[69] tidyselect_0.2.4   plyr_1.8.4         R6_2.2.2           DBI_1.0.0         
-[73] pillar_1.3.0       haven_1.1.2        foreign_0.8-70     withr_2.1.2       
-[77] units_0.6-0        modelr_0.1.2       crayon_1.3.4       readxl_1.1.0      
-[81] data.table_1.11.4  webshot_0.5.0      digest_0.6.15      classInt_0.2-3    
-[85] xtable_1.8-2       httpuv_1.4.5       R.utils_2.6.0      stats4_3.5.1      
-[89] munsell_0.5.0      viridisLite_0.3.0 
+ [1] httr_1.3.1         jsonlite_1.5       viridisLite_0.3.0  bold_0.5.0        
+ [5] modelr_0.1.2       assertthat_0.2.0   cellranger_1.1.0   yaml_2.1.19       
+ [9] pillar_1.3.0       backports_1.1.2    rvest_0.3.2        colorspace_1.3-2  
+[13] Matrix_1.2-14      plyr_1.8.4         pkgconfig_2.0.1    httpcode_0.2.0    
+[17] haven_1.1.2        xtable_1.8-2       CHNOSZ_1.1.3       MatrixModels_0.4-1
+[21] withr_2.1.2        hexbin_1.27.2      lazyeval_0.2.1     cli_1.0.0         
+[25] crayon_1.3.4       readxl_1.1.0       nlme_3.1-137       class_7.3-14      
+[29] xml2_1.2.0         tools_3.5.1        data.table_1.11.4  hms_0.4.2         
+[33] munsell_0.5.0      bindrcpp_0.2.2     e1071_1.7-0        compiler_3.5.1    
+[37] rlang_0.2.1        units_0.6-0        classInt_0.2-3     iterators_1.0.10  
+[41] rstudioapi_0.7     gtable_0.2.0       codetools_0.2-15   DBI_1.0.0         
+[45] reshape_0.8.7      curl_3.2           R6_2.2.2           zoo_1.8-3         
+[49] lubridate_1.7.4    bindr_0.1.1        rprojroot_1.3-2    ape_5.1           
+[53] stringi_1.1.7      crul_0.6.0         Rcpp_0.12.17       sf_0.6-3          
+[57] spData_0.2.9.0     tidyselect_0.2.4  
