@@ -242,4 +242,13 @@ if (FALSE) {
     richness ~ region + Elevation, data,
     fixed.vars = "Elevation", kernel = "gaussian", bw = auto_bw
   )
+  model_df <- cbind(
+    x = model$SDF@coords[, 1],
+    y = model$SDF@coords[, 2],
+    model$SDF@data
+  )
+  ggplot(model_df %>% filter(x > 60), aes(x, y)) +
+    geom_point(aes(col = regionSWAFR_L)) +
+    scale_color_continuous(low = "black", high = "white")
+  # Works... bu this isn't the right type of model...
 }
