@@ -115,7 +115,7 @@ pairwise_matrix <- function(...) {
   )
   pw
 }
-pairwise_compare <- function(pw, method = "matrix") {
+pairwise_compare <- function(pw, method = "matrix", use_parallel = FALSE) {
   stopifnot(method %in% c("matrix", "expand.grid"))
   print(glue(
     "Comparing values in pw matrix..."
@@ -131,11 +131,26 @@ pairwise_compare <- function(pw, method = "matrix") {
   pb <- txtProgressBar(0, length(row_vals) * length(col_vals))
   if (method == "matrix") {
     k <- 0
-    for (i in seq_along(rownames(pw))) {
-      for (j in seq_along(colnames(pw))) {
-        pw[i, j] <- row_vals[[i]] > col_vals[[j]]
-        k <- k + 1
-        setTxtProgressBar(pb, k)
+    if (use_parallel) {
+      cluster <- makeCluster(detectCores() - 1)
+      parLapply(cluster,
+        seq_along(rownames(pw)),
+        function(i) {
+          for (j in seq_along(colnames(pw))) {
+            pw[i, j] <- row_vals[[i]] > col_vals[[j]]
+            k <- k + 1
+            setTxtProgressBar(pb, k)
+          }
+        }
+      )
+      stopCluster(cluster)
+    } else {
+      for (i in seq_along(rownames(pw))) {
+        for (j in seq_along(colnames(pw))) {
+          pw[i, j] <- row_vals[[i]] > col_vals[[j]]
+          k <- k + 1
+          setTxtProgressBar(pb, k)
+        }
       }
     }
   } else if (method == "expand.grid") {
@@ -165,8 +180,8 @@ CLES_jackknife <- function(pw, method = "matrix", n, size_x, size_y) {
       jackknifed_pw <- as.vector(pw[random_rows, random_cols])
       x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
     } else if (method == "expand.grid") {
-      random_rows <- sample(seq(max(pw$x_coord)),size_x,replace = FALSE)
-      random_cols <- sample(seq(max(pw$y_coord)),size_y,replace = FALSE)
+      random_rows <- sample(seq(max(pw$x_coord)),size_x, replace = FALSE)
+      random_cols <- sample(seq(max(pw$y_coord)),size_y, replace = FALSE)
       jackknifed_pw <- filter(pw,
         x_coord %in% random_rows,
         y_coord %in% random_cols
@@ -181,23 +196,54 @@ CLES_jackknife <- function(pw, method = "matrix", n, size_x, size_y) {
   CLES_values
 }
 
-# Testing
+# Tests ------------------------------------------------------------------------
 if (FALSE) {
-  n <- 50
-  expand_grid_bm <- microbenchmark(times = n,
-    list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
-      map(prep_layer2) %>%
-      pairwise_compare(method = "expand.grid")  # Long form pairwise matrix
-  )
-  matrix_bm <- microbenchmark(times = n,
-    list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
-      map(prep_layer2) %>%
-      pairwise_matrix() %>%
-      pairwise_compare(method = "matrix")  # Manually fill a matrix
-  )
+
+compare_benchmarks <- function(x, y, n) {
   print(glue(
-    "{100 * length(which(matrix_bm$time < expand_grid_bm$time)) / n}% \\
-    of times using matrix() was faster than using expand.grid()"
+    "{100 * length(which(x$time < y$time)) / n}% \\
+    of times x was faster than using y"
   ))
-  # 100% were faster, t.f. using matrix() method from now on... (default)
+}
+
+# Choosing betw. expand.grid() and matrix() method of constructing
+# pairwise comparison matrix
+n <- 50
+expand_grid_bm <- microbenchmark(times = n,
+  list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
+    map(prep_layer2) %>%
+    pairwise_compare(method = "expand.grid")  # Long form pairwise matrix
+)
+matrix_bm <- microbenchmark(times = n,
+  list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
+    map(prep_layer2) %>%
+    pairwise_matrix() %>%
+    pairwise_compare(method = "matrix")  # Manually fill a matrix
+)
+compare_benchmarks(matrix_bm, expand_grid_bm, n)
+# 100% were faster, t.f. using matrix() method from now on... (default)
+
+# Next step:
+# Parallel-ising this for 0.05º resolution data (to run on Rm3.10 PC)
+parallel_once <-
+  list(GCFR_variables[[1]], SWAFR_variables[[1]]) %>%
+    map(prep_layer2) %>%
+    pairwise_matrix() %>%
+    pairwise_compare(use_parallel = TRUE)
+
+n <- 10
+linear_bm <- microbenchmark(times = n,
+  list(GCFR_variables[[1]], SWAFR_variables[[1]]) %>%
+    map(prep_layer2) %>%
+    pairwise_matrix() %>%
+    pairwise_compare(use_parallel = FALSE)
+)
+parallel_bm <- microbenchmark(times = n,
+  list(GCFR_variables[[1]], SWAFR_variables[[1]]) %>%
+    map(prep_layer2) %>%
+    pairwise_matrix() %>%
+    pairwise_compare(use_parallel = TRUE)
+)
+compare_benchmarks(linear_bm, parallel_bm, n)
+
 }
