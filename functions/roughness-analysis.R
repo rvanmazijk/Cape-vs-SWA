@@ -166,7 +166,7 @@ CLES_jackknife <- function(pw, method, n, size_x, size_y) {
       random_rows <- sample(seq(max(pw$x_coord)), size_x, replace = FALSE)
       random_cols <- sample(seq(max(pw$y_coord)), size_y, replace = FALSE)
       jackknifed_pw <- filter(pw,
-        x_coord %in% random_rows &
+        x_coord %in% random_rows,
         y_coord %in% random_cols
       )
       x_gt_y <- sum(jackknifed_pw$diffs, na.rm = TRUE)
