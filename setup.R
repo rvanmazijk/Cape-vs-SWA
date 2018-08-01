@@ -7,17 +7,17 @@
 if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
 pacman::p_load(
   # General programming
-  magrittr, here, glue, stringr, foreach, xfun,
+  magrittr, here, glue, stringr, foreach, xfun, microbenchmark,
   # Parallel processing
   parallel,
   # GIS
   raster, sp, rgdal,
   # Taxonomy
   taxize,
-  # Tabular data manipulation
+  # Tabular data-manipulation
   tidyverse, reshape2, readr,
   # Statistics and modelling
-  quantreg, broom, canprot, #? lmodel2,
+  quantreg, broom, canprot,
   # Visualisations
   ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial
 )
