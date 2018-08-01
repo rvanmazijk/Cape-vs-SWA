@@ -115,15 +115,21 @@ pairwise_matrix <- function(...) {
   )
   pw
 }
-pairwise_compare <- function(pw, method = "matrix") {
+pairwise_compare <- function(layers = NULL, pw = NULL, method = "matrix") {
   stopifnot(method %in% c("matrix", "expand.grid"))
   print(glue(
     "Comparing values in pw matrix..."
   ))
-  row_vals <- as.numeric(rownames(pw))
-  col_vals <- as.numeric(colnames(pw))
+  if (method == "matrix" && !is.null(pw) && is.null(layers)) {
+    row_vals <- as.numeric(rownames(pw))
+    col_vals <- as.numeric(colnames(pw))
+  } else if (method == "expand.grid" && is.null(pw) && !is.null(layers)) {
+    row_vals <- layers[[1]]
+    col_vals <- layers[[2]]
+    pw <- expand.grid(x = row_vals, y = col_vals)
+  }
   pb <- txtProgressBar(0, length(row_vals) * length(col_vals))
-  if (method == "for") {
+  if (method == "matrix" && !is.null(pw) && is.null(layers)) {
     k <- 0
     for (i in seq_along(rownames(pw))) {
       for (j in seq_along(colnames(pw))) {
@@ -132,16 +138,15 @@ pairwise_compare <- function(pw, method = "matrix") {
         setTxtProgressBar(pb, k)
       }
     }
-  } else if (method == "expand.grid") {
-    pw <- expand.grid(x = x_vals, y = y_vals)
+  } else if (method == "expand.grid" && is.null(pw) && !is.null(layers)) {
     for (i in seq(nrow(pw))) {
       pw$x_coord[i] <- which(pw$x[i] == x_vals)
       pw$y_coord[i] <- which(pw$y[i] == y_vals)
       setTxtProgressBar(pb, i)
     }
-    close(pb)
     pw$diffs <- pw$x > pw$y
   }
+  close(pb)
   pw
 }
 CLES_jackknife <- function(pw, method, n, size_x, size_y) {
