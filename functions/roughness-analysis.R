@@ -115,8 +115,8 @@ pairwise_matrix <- function(...) {
   )
   pw
 }
-pairwise_compare <- function(pw, method = "for") {
-  stopifnot(method %in% c("for", "expand.grid"))
+pairwise_compare <- function(pw, method = "matrix") {
+  stopifnot(method %in% c("matrix", "expand.grid"))
   print(glue(
     "Comparing values in pw matrix..."
   ))
@@ -145,7 +145,7 @@ pairwise_compare <- function(pw, method = "for") {
   pw
 }
 CLES_jackknife <- function(pw, pw_format, n, size_x, size_y) {
-  stopifnot(pw_format %in% c("matrix", "long"))
+  stopifnot(pw_format %in% c("matrix", "expand.grid"))
   print(glue(
     "Calculating CLES for each jackknife-sample of the pw matrix..."
   ))
@@ -157,7 +157,7 @@ CLES_jackknife <- function(pw, pw_format, n, size_x, size_y) {
       random_cols <- sample(seq(ncol(pw)), size_y, replace = FALSE)
       jackknifed_pw <- as.vector(pw[random_rows, random_cols])
       x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
-    } else if (pw_format == "long") {
+    } else if (pw_format == "expand.grid") {
       random_rows <- sample(seq(max(pw$x_coord)), size_x, replace = FALSE)
       random_cols <- sample(seq(max(pw$y_coord)), size_y, replace = FALSE)
       jackknifed_pw <- filter(pw,
