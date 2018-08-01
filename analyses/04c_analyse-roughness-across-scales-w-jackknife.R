@@ -3,20 +3,12 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
 
 set.seed(1234)
-
-# Test
-if (FALSE) {
-  list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
-    map(prep_layer2) %>%
-    pairwise_matrix() %>%
-    pairwise_compare() %>%
-    CLES_jackknife(n = 100, size_x = 10, size_y = 10)
-  # Works!
-}
 
 # Compute and store all pairwise comparisons of roughness in cells -------------
 

@@ -115,21 +115,21 @@ pairwise_matrix <- function(...) {
   )
   pw
 }
-pairwise_compare <- function(layers = NULL, pw = NULL, method = "matrix") {
+pairwise_compare <- function(pw, method = "matrix") {
   stopifnot(method %in% c("matrix", "expand.grid"))
   print(glue(
     "Comparing values in pw matrix..."
   ))
-  if (method == "matrix" && !is.null(pw) && is.null(layers)) {
+  if (method == "matrix") {
     row_vals <- as.numeric(rownames(pw))
     col_vals <- as.numeric(colnames(pw))
-  } else if (method == "expand.grid" && is.null(pw) && !is.null(layers)) {
-    row_vals <- layers[[1]]
-    col_vals <- layers[[2]]
+  } else if (method == "expand.grid") {
+    row_vals <- pw[[1]]
+    col_vals <- pw[[2]]
     pw <- expand.grid(x = row_vals, y = col_vals)
   }
   pb <- txtProgressBar(0, length(row_vals) * length(col_vals))
-  if (method == "matrix" && !is.null(pw) && is.null(layers)) {
+  if (method == "matrix") {
     k <- 0
     for (i in seq_along(rownames(pw))) {
       for (j in seq_along(colnames(pw))) {
@@ -138,10 +138,12 @@ pairwise_compare <- function(layers = NULL, pw = NULL, method = "matrix") {
         setTxtProgressBar(pb, k)
       }
     }
-  } else if (method == "expand.grid" && is.null(pw) && !is.null(layers)) {
+  } else if (method == "expand.grid") {
+    pw$x_coord <- NULL
+    pw$y_coord <- NULL
     for (i in seq(nrow(pw))) {
-      pw$x_coord[i] <- which(pw$x[i] == x_vals)
-      pw$y_coord[i] <- which(pw$y[i] == y_vals)
+      pw$x_coord[[i]] <- which(pw$x[[i]] == row_vals)
+      pw$y_coord[[i]] <- which(pw$y[[i]] == col_vals)
       setTxtProgressBar(pb, i)
     }
     pw$diffs <- pw$x > pw$y
@@ -149,7 +151,7 @@ pairwise_compare <- function(layers = NULL, pw = NULL, method = "matrix") {
   close(pb)
   pw
 }
-CLES_jackknife <- function(pw, method, n, size_x, size_y) {
+CLES_jackknife <- function(pw, method = "matrix", n, size_x, size_y) {
   stopifnot(method %in% c("matrix", "expand.grid"))
   print(glue(
     "Calculating CLES for each jackknife-sample of the pw matrix..."
@@ -163,8 +165,8 @@ CLES_jackknife <- function(pw, method, n, size_x, size_y) {
       jackknifed_pw <- as.vector(pw[random_rows, random_cols])
       x_gt_y <- sum(jackknifed_pw, na.rm = TRUE)
     } else if (method == "expand.grid") {
-      random_rows <- sample(seq(max(pw$x_coord)), size_x, replace = FALSE)
-      random_cols <- sample(seq(max(pw$y_coord)), size_y, replace = FALSE)
+      random_rows <- sample(seq(max(pw$x_coord)),size_x,replace = FALSE)
+      random_cols <- sample(seq(max(pw$y_coord)),size_y,replace = FALSE)
       jackknifed_pw <- filter(pw,
         x_coord %in% random_rows,
         y_coord %in% random_cols
@@ -177,4 +179,25 @@ CLES_jackknife <- function(pw, method, n, size_x, size_y) {
   }
   close(pb)
   CLES_values
+}
+
+# Testing
+if (FALSE) {
+  n <- 50
+  expand_grid_bm <- microbenchmark(times = n,
+    list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
+      map(prep_layer2) %>%
+      pairwise_compare(method = "expand.grid")  # Long form pairwise matrix
+  )
+  matrix_bm <- microbenchmark(times = n,
+    list(GCFR_variables_3QDS[[1]], SWAFR_variables_3QDS[[1]]) %>%
+      map(prep_layer2) %>%
+      pairwise_matrix() %>%
+      pairwise_compare(method = "matrix")  # Manually fill a matrix
+  )
+  print(glue(
+    "{100 * length(which(matrix_bm$time < expand_grid_bm$time)) / n}% \\
+    of times using matrix() was faster than using expand.grid()"
+  ))
+  # 100% were faster, t.f. using matrix() method from now on... (default)
 }
