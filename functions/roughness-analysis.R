@@ -90,7 +90,7 @@ IQ99R <- function(x) quantile(x, 0.99) - quantile(x, 0.01)
 IQ95R <- function(x) quantile(x, 0.95) - quantile(x, 0.05)
 
 # Jackknife-version of analysis
-prep_layer2 <- function(x, resolution = NULL) {
+prep_layer2 <- function(x) {
   print(glue(
     "Creating roughness layers..."
   ))
