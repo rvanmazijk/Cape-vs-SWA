@@ -19,7 +19,9 @@ pacman::p_load(
   # Statistics and modelling
   quantreg, broom, canprot,
   # Visualisations
-  ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial
+  ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial,
+  # Writing
+  knitr, rmarkdown, bookdown, kableExtra
 )
 
 # Record session information ---------------------------------------------------
