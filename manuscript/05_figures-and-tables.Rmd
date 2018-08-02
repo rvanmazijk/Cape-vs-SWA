@@ -58,7 +58,7 @@ Roughness values were calculated following Equation \@ref(eq:roughness).
 Areas beneath curves sum to one for each violin, and points within represent the median of each distribution.
 Violin-plots were constructed with Gaussian distributions with bandwidth following Silverman's "rule of thumb" [@Silverman1986].
 The degree to which Cape roughness values exceed SWA values is described by the $CLES$ (see Materials and methods).
-Roughness values were found to be significantly greater in the Cape in all cases ($P \lt 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
+Roughness values were found to be significantly greater in the Cape in all cases ($P < 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
 The magnitude of the ranges of Z-scaled roughness values (**B,D**) vary with spatial resolution, described here by the 95%-to-5% and 99%-to-1% interquantile ranges.
 Lines connect points for illustration, and are paler for the wider quantile.
 <!--TODO: change IQuR in y-axes simply to "Range"-->
