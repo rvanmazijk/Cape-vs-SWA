@@ -1,0 +1,39 @@
+# Tables {-}
+
+```{r setup-tables, include=FALSE}
+source(here::here("setup.R"))
+data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
+import_objects(here::here("outputs/06_species-turnover-and-richness/"))
+```
+
+```{r data-sources, results="asis"}
+knitr::kable(data_sources, caption = "(ref:data-sources)")
+```
+
+(ref:data-sources) Table: Data sources used in this study. Abbreviations are as follows:<!--TODO-->.
+
+```{r species-model-table, results="asis"}
+tidy_terms <- c(
+  "Intercept",
+  "$log(\\overline{S_{QDS}} + 1)$",
+  "$\\overline{J_{QDS}}$",
+  "$SWA$",
+  "$log(\\overline{S_{QDS}} + 1) \\times SWA$",
+  "$\\overline{J_{QDS}} \\times SWA$"
+)
+out <- my_model_table(
+  model = species_turnover_richness_HDS_m,
+  tidy_terms = tidy_terms,
+  AIC_table = species_HDS_AIC_table
+)
+knitr::kable(
+  out$model_table,
+  align = c("l", "r", "r"),
+  caption = "(ref:species-model-table)"
+)
+```
+
+(ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
+The Cape was fit as the baseline, hence SWA represents the categorical term here.
+This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r out$deltaAIC`).
+Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover) and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).

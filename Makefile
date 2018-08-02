@@ -16,12 +16,10 @@ GITBOOK = \
 	$(OUT)/materials-and-methods.html \
 	$(OUT)/results.html \
 	$(OUT)/discussion.html \
-	$(OUT)/biosketches.html \
-	$(OUT)/orcid-nos-.html \
-	$(OUT)/references.html \
 	$(OUT)/tables.html \
 	$(OUT)/figures.html \
-	$(OUT)/appendix.html
+	$(OUT)/appendix.html \
+	$(OUT)/references.html
 PDF = $(OUT)/*.pdf
 
 #FIGURES = $(wildcard figures/*.png)

@@ -1,12 +1,31 @@
 # Appendix {-}
 
-## Tables {-}
-
-```{r turnover-vs-geodist-model-table, results="asis"}
+```{r setup-appendix, include=FALSE}
 import_objects(
   here::here("outputs/05_species-turnover-w-distance/"),
   ignore_RDS = TRUE
 )
+```
+
+## Biosketches {-}
+
+**Ruan van Mazijk** is a Masters student broadly interested in comparative biology and ...<!--TODO: finish-->
+
+**Michael D. Cramer** <!--TODO-->
+
+**G. Anthony Verboom** <!--TODO-->
+
+## ORCID nos. {-}
+
+RVM: 0000-0003-2659-6909
+
+MDC: <!--TODO-->
+
+GAV: <!--TODO-->
+
+## Tables {-}
+
+```{r turnover-vs-geodist-model-table, results="asis"}
 out <- my_model_table(
   model_tidy = species_turnover_geodist_m_tidy,
   tidy_terms = c(
