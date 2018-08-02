@@ -44,7 +44,7 @@ Note, this model does not represent those curves plot in Figures \@ref(fig:richn
 ## Figures {-}
 
 ```{r richness-vs-turnover-3QDS, fig.cap="(ref:richness-vs-turnover-3QDS)"}
-knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png.png"))
+knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png"))
 ```
 
 (ref:richness-vs-turnover-3QDS) [Same as \@ref(fig:richness-vs-turnover)B,C, but for 3QDS, not HDS, as the focal scale.]
