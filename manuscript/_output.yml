@@ -1,7 +1,9 @@
 bookdown::gitbook:
   number_sections: false
-#bookdown::pdf_book:
-#  includes:
-#    in-header: style.sty  # FIXME
-#  latex_engine: xelatex
-#  mainfont: Helvetica
+bookdown::pdf_book:
+  latex_engine: xelatex
+  toc: false
+  number_sections: false
+  #mainfont: Helvetica  # FIXME
+  #includes:
+  #  in-header: style.sty  # FIXME

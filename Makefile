@@ -3,7 +3,7 @@
 PROJECT = .
 
 MANUSCRIPT = $(PROJECT)/manuscript
-MANUSCRIPT_RMD = $(wildcard $(MANUSCRIPT)/*.{Rmd,yml,bib,csl})
+MANUSCRIPT_RMD = $(wildcard $(MANUSCRIPT)/*.{Rmd,bib,csl})
 MANUSCRIPT_HTML = \
 	$(MANUSCRIPT)/_book/index.html \
 	$(MANUSCRIPT)/_book/introduction.html \
@@ -16,41 +16,40 @@ MANUSCRIPT_HTML = \
 	$(MANUSCRIPT)/_book/tables.html \
 	$(MANUSCRIPT)/_book/figures.html \
 	$(MANUSCRIPT)/_book/appendix.html
-# TODO
-#MANUSCRIPT_PDF = $(MANUSCRIPT)/.*pdf
+MANUSCRIPT_PDF = $(MANUSCRIPT)/_book/_main.pdf
 
 # TODO
 #FIGURES = $(wildcard $(PROJECT)/figures/*.png)
 #FIGURES_R = $(wildcard $(FIGURES)/*.R)
 #OUTPUTS = $(PROJECT)/outputs/*.{csv,RDS,R}
 
-# Define bookdown::render_book()-call ------------------------------------------
+# Define bookdown::render_book()-calls -----------------------------------------
 
-RENDER = Rscript -e " \
+RENDER_HTML = Rscript -e " \
 	setwd('$(MANUSCRIPT)'); \
 	require(bookdown); \
-	render_book('$<')"
+	render_book('$<', 'bookdown::gitbook')"
 
-# TODO
-#RENDER_PDF =
+RENDER_PDF = Rscript -e " \
+	setwd('$(MANUSCRIPT)'); \
+	require(bookdown); \
+	render_book('$<', 'bookdown::pdf_book')"
 
 # Describe "MAKE" dependencies -------------------------------------------------
 
-manuscript: $(MANUSCRIPT_HTML)
+all: gitbook pdf
+gitbook: $(MANUSCRIPT_HTML)
+pdf: $(MANUSCRIPT_PDF) $(MANUSCRIPT_RMD)
 
-$(MANUSCRIPT)/%.html: $(MANUSCRIPT)/index.Rmd
-	$(RENDER)
+$(MANUSCRIPT)/%.html: $(MANUSCRIPT)/index.Rmd $(MANUSCRIPT_RMD)
+	$(RENDER_HTML)
 
-# TODO
-#$(MANUSCRIPT)/%.pdf: $(MANUSCRIPT)/index.Rmd
-#	$(RENDER_PDF)
+$(MANUSCRIPT_PDF): $(MANUSCRIPT)/index.Rmd
+	$(RENDER_PDF)
 
 # TODO
 #$(MANUSCRIPT)/%.html: $(FIGURES) $(OUTPUTS)
-
 #$(FIGURES)/%.png: $(FIGURES_R)/%.R
 #	Rscript -e "source('$<')"
-
 #$(FIGURES): $(OUTPUTS)
-
 #$(OUTPUTS): calls in figure-setup.R and analyses/ to make outputs
