@@ -1,5 +1,5 @@
 ---
-title: 'Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse flora'
+title: 'Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse floras'
 subtitle: 'Running title: Environmental heterogeneity and plant species richness'
 author: 'Ruan van Mazijk^1,§^, Michael D. Cramer^1^ and G. Anthony Verboom^1^'
 bibliography: Cape-vs-SWA.bib
