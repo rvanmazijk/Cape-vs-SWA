@@ -8,8 +8,6 @@
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
 
-set.seed(1234)
-
 # Compute and store all pairwise comparisons of roughness in cells -------------
 
 # .... 0.05 --------------------------------------------------------------------
@@ -223,6 +221,8 @@ rm(pw_comparisons_3QDS)
 # Jackknife-sample those and get CLES for each jackknife-sample ----------------
 
 # (And not for 3QDS as that is the limiting scale)
+
+set.seed(1234)
 
 n_jackknifes <- 1000
 nrow_3QDS <- unique(map_int(pw_comparisons_3QDS, nrow))
