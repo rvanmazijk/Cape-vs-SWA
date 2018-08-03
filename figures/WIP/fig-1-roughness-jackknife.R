@@ -1,3 +1,4 @@
+# ...
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -33,6 +34,15 @@ var_colours <- c(
   "#37A541",  # greeen for NDVI
   "#BA793E"   # brown  for soils
 )
+
+jackknifed_CLES_summary_HDS %>%
+  gather(variable, CLES) %>%
+  mutate(mean_or_sd = ifelse(str_detect(variable, "_mean"),
+                             "CLES_mean",
+                             "CLES_sd")) %>%
+  mutate(variable = str_remove(variable, "_mean")) %>%
+  mutate(variable = str_remove(variable, "_sd")) %>%
+  spread(mean_or_sd, CLES)
 
 data <- test_results_CLES_for_plot %>%
   mutate(

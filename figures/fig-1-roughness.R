@@ -175,7 +175,7 @@ roughness_combined <- plot_grid(
 
 # Save
 ggsave(
-  here::here("figures/roughness.png"),
+  here::here("figures/fig-1-roughness.png"),
   roughness_combined,
   width = 10, height = 5,
   dpi = 300
