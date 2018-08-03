@@ -1,8 +1,4 @@
 ---
-author: |
-  | Ruan van Mazijk^1,§^, Michael D. Cramer^1^ and G. Anthony Verboom^1^
-  | ^1^Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
-  | ^§^Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 # J Biogeog: 300 word abstract
 # FIXME:
 #abstract: '`r readr::read_file("_foo.Rmd")`'
@@ -18,6 +14,7 @@ abstract: |
   | Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
 title: 'Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse flora'
 subtitle: 'Running title: Environmental heterogeneity and plant species richness'
+author: 'Ruan van Mazijk^1,§^, Michael D. Cramer^1^ and G. Anthony Verboom^1^'
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
 ---
@@ -30,6 +27,10 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 ```
+
+^1^Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
+
+^§^Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 
 # Acknowledgements {-}
 
