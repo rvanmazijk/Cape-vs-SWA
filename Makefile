@@ -1,40 +1,34 @@
 # Setup ------------------------------------------------------------------------
 
 # Input files
+FIGURES_R = $(wildcard figures/fig-*.R)
+FIGURES = $(FIGURES_R:.R=.png)
 INDEX = manuscript/index.Rmd
-META = \
-	manuscript/_output.yml \
-	manuscript/*.bib \
-	manuscript/*.csl
-BODY = manuscript/*.Rmd
+META = $(wildcard manuscript/*.{yml,bib,csl})
+BODY = $(wildcard manuscript/*.Rmd)
 
 # Output files
-OUT = manuscript/_book
 GITBOOK = \
-	$(OUT)/index.html \
-	$(OUT)/introduction.html \
-	$(OUT)/materials-and-methods.html \
-	$(OUT)/results.html \
-	$(OUT)/discussion.html \
-	$(OUT)/tables.html \
-	$(OUT)/figures.html \
-	$(OUT)/appendix.html \
-	$(OUT)/references.html
-PDF = $(OUT)/*.pdf
-
-#FIGURES = $(wildcard figures/*.png)
-#FIGURES_R = $(wildcard figures/*.R)
-#OUTPUTS = $(outputs/*.{csv,RDS,R})
+	manuscript/_manuscript/index.html \
+	manuscript/_manuscript/introduction.html \
+	manuscript/_manuscript/materials-and-methods.html \
+	manuscript/_manuscript/results.html \
+	manuscript/_manuscript/discussion.html \
+	manuscript/_manuscript/tables.html \
+	manuscript/_manuscript/figures.html \
+	manuscript/_manuscript/appendix.html \
+	manuscript/_manuscript/references.html
+PDF = manuscript/_manuscript/manuscript.pdf
 
 # Define bookdown::render_book()-calls -----------------------------------------
 
-RENDER_GITBOOK = Rscript -e " \
-	setwd('manuscript'); \
+RENDER_GITBOOK = Rscript -e \
+	"setwd('manuscript'); \
 	require(bookdown); \
 	render_book('$<', 'bookdown::gitbook')"
 
-RENDER_PDF = Rscript -e " \
-	setwd('manuscript'); \
+RENDER_PDF = Rscript -e \
+	"setwd('manuscript'); \
 	require(bookdown); \
 	render_book('$<', 'bookdown::pdf_book')"
 
@@ -46,14 +40,14 @@ gitbook: $(GITBOOK)
 
 pdf: $(PDF)
 
-$(OUT)/%.html: $(INDEX) $(META) $(BODY)
+$(GITBOOK): $(INDEX) $(META) $(BODY) $(FIGURES)
 	$(RENDER_GITBOOK)
 
-$(OUT)/%.pdf: $(INDEX) $(META) $(BODY)
+$(PDF): $(INDEX) $(META) $(BODY) $(FIGURES)
 	$(RENDER_PDF)
 
-#manuscript/%.html: $(FIGURES) $(OUTPUTS)
-#figures/%.png: figures/%.R
-#	Rscript -e "source('$<')"
-#$(FIGURES): $(OUTPUTS)
-#$(OUTPUTS):  # calls in figure-setup.R and analyses/ to make outputs
+# TODO: $(BODY) $(FIGURES): $(OUTPUTS)
+# At the moment, calls in figure-setup.R and analyses/ to make outputs
+
+figures/fig-%.png: figures/fig-%.R
+	Rscript -e "source('$<')"
