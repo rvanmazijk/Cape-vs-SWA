@@ -111,5 +111,3 @@ Cf.
 I have demonstrated support for the idea that environmental heterogeneity is positively associated with species richness, particularly Mediterranean systems.
 In the SWAFR and the GCFR, high levels of endemism and biodiversity are also likely the results of long-term landscape and climatic stability [@Hopper1979].
 Thus, the roles of environmental variability through space, and stability through time, are the two main ways in which the environment relates to biodiversity in these regions.
-
-***
