@@ -9,9 +9,6 @@ abstract: |
   | **Methods** Geospatial data, floral occurrence data --> regression analyses, non-parametric statistics
   | **Results** TODO
   | **Main conclusions** TODO
-  |
-  | _Keywords_
-  | Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
 title: 'Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse flora'
 subtitle: 'Running title: Environmental heterogeneity and plant species richness'
 author: 'Ruan van Mazijk^1,§^, Michael D. Cramer^1^ and G. Anthony Verboom^1^'
@@ -28,9 +25,21 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r keywords, include=FALSE}
+keywords <- paste(sort(read.csv("keywords.csv")[[1]]), collapse = ", ")
+keywords <- paste0(
+  toupper(substr(keywords, 1, 1)), 
+  substr(keywords, 2, nchar(keywords))
+)
+```
+
 ^1^Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 
 ^§^Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
+
+_Keywords_
+
+`r keywords`
 
 # Acknowledgements {-}
 
