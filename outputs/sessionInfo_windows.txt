@@ -17,12 +17,12 @@ other attached packages:
  [1] ggspatial_1.0.1      rasterVis_0.45       latticeExtra_0.6-28  RColorBrewer_1.1-2  
  [5] lattice_0.20-35      scales_0.5.0         cowplot_0.9.3        gridExtra_2.3       
  [9] canprot_0.1.1        broom_0.5.0          quantreg_5.36        SparseM_1.77        
-[13] reshape2_1.4.3       taxize_0.9.4         rgdal_1.3-3          raster_2.6-7        
-[17] sp_1.3-1             microbenchmark_1.4-4 xfun_0.3             foreach_1.4.4       
-[21] here_0.1             magrittr_1.5         pacman_0.4.6         glue_1.3.0          
-[25] forcats_0.3.0        stringr_1.3.1        dplyr_0.7.6          purrr_0.2.5         
-[29] readr_1.1.1          tidyr_0.8.1          tibble_1.4.2         ggplot2_3.0.0       
-[33] tidyverse_1.2.1     
+[13] reshape2_1.4.3       forcats_0.3.0        dplyr_0.7.6          purrr_0.2.5         
+[17] readr_1.1.1          tidyr_0.8.1          tibble_1.4.2         ggplot2_3.0.0       
+[21] tidyverse_1.2.1      taxize_0.9.4         rgdal_1.3-3          raster_2.6-7        
+[25] sp_1.3-1             microbenchmark_1.4-4 xfun_0.3             foreach_1.4.4       
+[29] stringr_1.3.1        glue_1.3.0           here_0.1             magrittr_1.5        
+[33] pacman_0.4.6        
 
 loaded via a namespace (and not attached):
  [1] nlme_3.1-137       sf_0.6-3           bold_0.5.0         lubridate_1.7.4   

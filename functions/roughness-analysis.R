@@ -107,7 +107,7 @@ pairwise_matrix <- function(...) {
   y <- input[[2]]
   pw <- matrix(
     nrow = length(x), ncol = length(y),
-    dimnames = list(seq(x), seq(y))
+    dimnames = list(x, y)
   )
   pw
 }
