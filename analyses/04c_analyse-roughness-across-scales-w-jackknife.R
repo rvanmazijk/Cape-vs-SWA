@@ -175,7 +175,6 @@ for (var in var_names) {
     here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_QDS_2018-08-03.csv"))
   )
 }
-rm(pw_comparisons_QDS)
 
 # .... HDS ---------------------------------------------------------------------
 
@@ -195,7 +194,6 @@ for (var in var_names) {
     here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_HDS_2018-08-03.csv"))
   )
 }
-rm(pw_comparisons_HDS)
 
 # .... 3QDS --------------------------------------------------------------------
 
@@ -215,8 +213,6 @@ for (var in var_names) {
     here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_3QDS_2018-08-03.csv"))
   )
 }
-rm(pw_comparisons_3QDS)
-
 
 # Jackknife-sample those and get CLES for each jackknife-sample ----------------
 
