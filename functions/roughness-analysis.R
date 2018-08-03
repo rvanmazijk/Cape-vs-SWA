@@ -91,18 +91,14 @@ IQ95R <- function(x) quantile(x, 0.95) - quantile(x, 0.05)
 
 # Jackknife-version of analysis
 prep_layer2 <- function(x) {
-  print(glue(
-    "Creating roughness layers..."
-  ))
+  message("Creating roughness layers...")
   x %>%
     focal_sd() %>%
     getValues() %>%
     na.omit()
 }
 pairwise_matrix <- function(...) {
-  print(glue(
-    "Constructing pairwise matrix of values..."
-  ))
+  message("Constructing pairwise matrix of values...")
   input <- c(...)
   if (!is.list(input)) {
     input <- list(...)
@@ -117,9 +113,7 @@ pairwise_matrix <- function(...) {
 }
 pairwise_compare <- function(pw, method = "matrix", use_parallel = FALSE) {
   stopifnot(method %in% c("matrix", "expand.grid"))
-  print(glue(
-    "Comparing values in pw matrix..."
-  ))
+  message("Comparing values in pw matrix...")
   if (method == "matrix") {
     row_vals <- as.numeric(rownames(pw))
     col_vals <- as.numeric(colnames(pw))
@@ -168,9 +162,7 @@ pairwise_compare <- function(pw, method = "matrix", use_parallel = FALSE) {
 }
 CLES_jackknife <- function(pw, method = "matrix", n, size_x, size_y) {
   stopifnot(method %in% c("matrix", "expand.grid"))
-  print(glue(
-    "Calculating CLES for each jackknife-sample of the pw matrix..."
-  ))
+  message("Calculating CLES for each jackknife-sample of the pw matrix...")
   CLES_values <- vector(length = n)
   pb <- txtProgressBar(0, n)
   for (i in 1:n) {
