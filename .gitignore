@@ -6,4 +6,4 @@ manuscript/_book/
 manuscript/lib*/
 *.html
 outputs/compare-roughness-bootstrap/
-outputs/04_roughness-across-scales/pw-comparisons*
+outputs/04_roughness-across-scales/pw-comparisons*parallel*
