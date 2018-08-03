@@ -2,7 +2,7 @@
 *.DS_Store
 *.Rhistory
 packrat/lib*/
-manuscript/_book/
+manuscript/_manuscript/
 manuscript/lib*/
 *.html
 outputs/compare-roughness-bootstrap/

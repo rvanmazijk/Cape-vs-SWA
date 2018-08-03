@@ -1,0 +1,4 @@
+book_filename: manuscript
+repo: https://github.com/rvanmazijk/Cape-vs-SWA/
+output_dir: _manuscript
+delete_merged_file: true
