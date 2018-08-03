@@ -1,6 +1,4 @@
 ---
-title: "Linking patterns of plant species richness and turnover to environmental heterogeneity in two Mediterranean flora"
-subtitle: "Running title: Plant species richness & environmental heterogeneity in two Mediterranean flora"
 author: |
   | Ruan van Mazijk^1,§^, Michael D. Cramer^1^ and G. Anthony Verboom^1^
   | ^1^Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
@@ -18,6 +16,8 @@ abstract: |
   |
   | _Keywords_
   | Macroecology, biodiversity, plant species richness, Greater Cape Floristic Region, Southwest Australia Floristic Region, fynbos, kwongan
+title: 'Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse flora'
+subtitle: 'Running title: Environmental heterogeneity and plant species richness'
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
 ---
