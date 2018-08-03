@@ -51,7 +51,6 @@ if (FALSE) {
 
 }
 
-
 # Done:
 parallel_elev_pw <-
   list(GCFR_variables[[1]], SWAFR_variables[[1]]) %>%
@@ -64,7 +63,7 @@ write_csv(
 )
 rm(parallel_elev_pw)
 
-# TODO:
+# Done:
 parallel_MAP_pw <-
   list(GCFR_variables[[2]], SWAFR_variables[[2]]) %>%
   map(prep_layer2) %>%
@@ -76,7 +75,7 @@ write_csv(
 )
 rm(parallel_MAP_pw)
 
-# TODO:
+# Done:
 parallel_PDQ_pw <-
   list(GCFR_variables[[3]], SWAFR_variables[[3]]) %>%
   map(prep_layer2) %>%
@@ -88,7 +87,7 @@ write_csv(
 )
 rm(parallel_PDQ_pw)
 
-# TODO:
+# Done:
 parallel_surfT_pw <-
   list(GCFR_variables[[4]], SWAFR_variables[[4]]) %>%
   map(prep_layer2) %>%
@@ -100,7 +99,7 @@ write_csv(
 )
 rm(parallel_surfT_pw)
 
-# TODO:
+# Done:
 parallel_NDVI_pw <-
   list(GCFR_variables[[5]], SWAFR_variables[[5]]) %>%
   map(prep_layer2) %>%
@@ -112,7 +111,7 @@ write_csv(
 )
 rm(parallel_NDVI_pw)
 
-# TODO:
+# Done:
 parallel_CEC_pw <-
   list(GCFR_variables[[6]], SWAFR_variables[[6]]) %>%
   map(prep_layer2) %>%
@@ -124,7 +123,7 @@ write_csv(
 )
 rm(parallel_CEC_pw)
 
-# TODO:
+# Done:
 parallel_clay_pw <-
   list(GCFR_variables[[7]], SWAFR_variables[[7]]) %>%
   map(prep_layer2) %>%
@@ -136,7 +135,7 @@ write_csv(
 )
 rm(parallel_clay_pw)
 
-# TODO:
+# Done:
 parallel_soilC_pw <-
   list(GCFR_variables[[8]], SWAFR_variables[[8]]) %>%
   map(prep_layer2) %>%
@@ -148,7 +147,7 @@ write_csv(
 )
 rm(parallel_soilC_pw)
 
-# TODO:
+# Done:
 parallel_pH_pw <-
   list(GCFR_variables[[9]], SWAFR_variables[[9]]) %>%
   map(prep_layer2) %>%
@@ -162,6 +161,7 @@ rm(parallel_pH_pw)
 
 # .... QDS ---------------------------------------------------------------------
 
+# Done:
 pw_comparisons_QDS <- map2(
   .x = GCFR_variables_QDS,
   .y = SWAFR_variables_QDS,
@@ -171,9 +171,17 @@ pw_comparisons_QDS <- map2(
     pairwise_matrix() %>%
     pairwise_compare()
 )
+for (var in var_names) {
+  write_csv(
+    as.data.frame(pw_comparisons_QDS[var]),
+    here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_QDS_2018-08-03.csv"))
+  )
+}
+rm(pw_comparisons_QDS)
 
 # .... HDS ---------------------------------------------------------------------
 
+# Done:
 pw_comparisons_HDS <- map2(
   .x = GCFR_variables_HDS,
   .y = SWAFR_variables_HDS,
@@ -183,9 +191,17 @@ pw_comparisons_HDS <- map2(
     pairwise_matrix() %>%
     pairwise_compare()
 )
+for (var in var_names) {
+  write_csv(
+    as.data.frame(pw_comparisons_HDS[var]),
+    here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_HDS_2018-08-03.csv"))
+  )
+}
+rm(pw_comparisons_HDS)
 
 # .... 3QDS --------------------------------------------------------------------
 
+# Done:
 pw_comparisons_3QDS <- map2(
   .x = GCFR_variables_3QDS,
   .y = SWAFR_variables_3QDS,
@@ -195,6 +211,14 @@ pw_comparisons_3QDS <- map2(
     pairwise_matrix() %>%
     pairwise_compare()
 )
+for (var in var_names) {
+  write_csv(
+    as.data.frame(pw_comparisons_3QDS[var]),
+    here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_3QDS_2018-08-03.csv"))
+  )
+}
+rm(pw_comparisons_3QDS)
+
 
 # Jackknife-sample those and get CLES for each jackknife-sample ----------------
 
