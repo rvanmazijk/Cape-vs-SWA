@@ -1,7 +1,7 @@
 ---
 title: 'Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse floras'
 subtitle: 'Running title: Environmental heterogeneity and plant species richness'
-author: 'Ruan van Mazijk^1,§^, Michael D. Cramer^1^ and G. Anthony Verboom^1^'
+author: 'Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom'
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
 ---
@@ -15,9 +15,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-^1^Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
+Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 
-^§^Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
+Corresponding author: Ruan van Mazijk, ruanvmazijk@gmail.com, +27 21 650 3684
+
 # Abstract {-}
 
 <!--J Biogeog: 300 word abstract-->
