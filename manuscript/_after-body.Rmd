@@ -36,12 +36,10 @@ Use echo=FALSE explicitly in chunks below.
 Avoids missing "Shaded" environment in LaTeX fragment.
 -->
 
-```{r roughness, echo=FALSE, fig.cap="(ref:roughness)", fig.pos="H"}
-#, out.width="18cm"}
+```{r roughness, echo=FALSE, fig.cap="(ref:roughness)", fig.pos="H", out.width="18cm"}
 knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
 ```
 
-```{r richness-vs-turnover, echo=FALSE, fig.cap="(ref:richness-vs-turnover)", fig.pos="H"}
-#, out.width="18cm"}
-knitr::include_graphics(here::here("figures/fig-2-richness-vs-turnover.png"), dpi = 100)
+```{r richness-vs-turnover, echo=FALSE, fig.cap="(ref:richness-vs-turnover)", fig.pos="H", out.width="18cm"}
+knitr::include_graphics(here::here("figures/fig-2-richness-vs-turnover.png"))
 ```
