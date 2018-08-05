@@ -37,10 +37,12 @@ capture.output(
 # Custom settings and functions for this project -------------------------------
 
 # Import all functions in R-scripts in functions/
-map(
-  list.files(here::here("functions/"), pattern = ".R", full.names = TRUE),
-  source
+my_functions <- list.files(
+  here::here("functions/"),
+  pattern = ".R",
+  full.names = TRUE
 )
+map(my_functions, source)
 
 # Global GIS variables
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -53,8 +55,13 @@ my_palette <- c(
   "#56B4E9"   # SWA (SWAFR) blue
 )
 # Cleaner theme
-theme_set(theme_bw() + theme(strip.background = element_blank(),
-                             panel.grid = element_blank()))
+my_theme <-
+  theme_bw() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid = element_blank()
+  )
+theme_set(my_theme)
 
 # Define analysis & output paths -----------------------------------------------
 

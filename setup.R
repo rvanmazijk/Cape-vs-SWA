@@ -78,8 +78,10 @@ my_palette <- c(
 # Cleaner theme
 my_theme <-
   theme_bw() +
-  theme(strip.background = element_blank(),
-        panel.grid = element_blank())
+  theme(
+    strip.background = element_blank(),
+    panel.grid = element_blank()
+  )
 theme_set(my_theme)
 
 # Define analysis & output paths -----------------------------------------------
