@@ -272,7 +272,6 @@ jackknifed_pH_0.05 <- jackknife_CLES_0.05(
 
 jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
   CLES_jackknife,
-  pw_format = "matrix",
   n = n_jackknifes,
   size_x = nrow_3QDS,
   size_y = ncol_3QDS
@@ -282,7 +281,6 @@ jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
 
 jackknifed_CLES_HDS <- map_df(pw_comparisons_HDS,
   CLES_jackknife,
-  pw_format = "matrix",
   n = n_jackknifes,
   size_x = nrow_3QDS,
   size_y = ncol_3QDS
