@@ -49,6 +49,8 @@ if (FALSE) {
 
 }
 
+out_dir <- here::here("outputs/04_roughness-across-scales")
+
 # Done:
 parallel_elev_pw <-
   list(GCFR_variables[[1]], SWAFR_variables[[1]]) %>%
@@ -57,7 +59,7 @@ parallel_elev_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_elev_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Elevation_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Elevation_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_elev_pw)
 
@@ -69,7 +71,7 @@ parallel_MAP_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_MAP_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_MAP_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_MAP_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_MAP_pw)
 
@@ -81,7 +83,7 @@ parallel_PDQ_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_PDQ_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_PDQ_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_PDQ_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_PDQ_pw)
 
@@ -93,7 +95,7 @@ parallel_surfT_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_surfT_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Surface-T_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Surface-T_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_surfT_pw)
 
@@ -105,7 +107,7 @@ parallel_NDVI_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_NDVI_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_NDVI_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_NDVI_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_NDVI_pw)
 
@@ -117,7 +119,7 @@ parallel_CEC_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_CEC_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_CEC_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_CEC_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_CEC_pw)
 
@@ -129,7 +131,7 @@ parallel_clay_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_clay_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Clay_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Clay_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_clay_pw)
 
@@ -141,7 +143,7 @@ parallel_soilC_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_soilC_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Soil-C_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Soil-C_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_soilC_pw)
 
@@ -153,7 +155,7 @@ parallel_pH_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_pH_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_pH_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_pH_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_pH_pw)
 
@@ -172,7 +174,7 @@ pw_comparisons_QDS <- map2(
 for (var in var_names) {
   write_csv(
     as.data.frame(pw_comparisons_QDS[var]),
-    here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_QDS_2018-08-03.csv"))
+    here::here(glue("{out_dir}/pw-comparisons_{var}_QDS_2018-08-03.csv"))
   )
 }
 
@@ -191,7 +193,7 @@ pw_comparisons_HDS <- map2(
 for (var in var_names) {
   write_csv(
     as.data.frame(pw_comparisons_HDS[var]),
-    here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_HDS_2018-08-03.csv"))
+    here::here(glue("{out_dir}/pw-comparisons_{var}_HDS_2018-08-03.csv"))
   )
 }
 
@@ -210,7 +212,7 @@ pw_comparisons_3QDS <- map2(
 for (var in var_names) {
   write_csv(
     as.data.frame(pw_comparisons_3QDS[var]),
-    here::here(glue("outputs/04_roughness-across-scales/pw-comparisons_{var}_3QDS_2018-08-03.csv"))
+    here::here(glue("{out_dir}/pw-comparisons_{var}_3QDS_2018-08-03.csv"))
   )
 }
 
@@ -240,31 +242,32 @@ jackknife_CLES_0.05 <- function(path) {
   )
 }
 jackknifed_elev_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Elevation_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Elevation_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_MAP_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_MAP_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_MAP_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_PDQ_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_PDQ_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_PDQ_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_surfT_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Surface-T_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Surface-T_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_NDVI_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_NDVI_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_NDVI_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_CEC_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_CEC_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_CEC_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_clay_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Clay_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Clay_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_soilC_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Soil-C_0.05_parallel_2018-08-03.csv")
+  glue("{out_dir}/pw-comparisons_Soil-C_0.05_parallel_2018-08-03.csv")
 )
 jackknifed_pH_0.05 <- jackknife_CLES_0.05(
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_pH_0.05_parallel_2018-08-03.csv"))
+  glue("{out_dir}/pw-comparisons_pH_0.05_parallel_2018-08-03.csv")
+)
 
 # ...
 
@@ -305,28 +308,28 @@ jackknifed_CLES_summary_HDS <- summarise_all(
 
 write_csv(
   jackknifed_CLES_QDS,
-  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_QDS.csv")
+  glue("{out_dir}/jackknifed_CLES_QDS.csv")
 )
 write_csv(
   jackknifed_CLES_HDS,
-  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_HDS.csv")
+  glue("{out_dir}/jackknifed_CLES_HDS.csv")
 )
 # TODO
 #write_csv(
 #  jackknifed_CLES_0.05,
-#  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_0.05.csv")
+#  glue("{out_dir}/jackknifed_CLES_0.05.csv")
 #)
 
 write_csv(
   jackknifed_CLES_summary_QDS,
-  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_summary_QDS.csv")
+  glue("{out_dir}/jackknifed_CLES_summary_QDS.csv")
 )
 write_csv(
   jackknifed_CLES_summary_HDS,
-  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_summary_HDS.csv")
+  glue("{out_dir}/jackknifed_CLES_summary_HDS.csv")
 )
 # TODO
 #write_csv(
 #  jackknifed_CLES_summary_0.05,
-#  here::here("outputs/04_roughness-across-scales/jackknifed_CLES_0.05.csv")
+#  glue("{out_dir}/jackknifed_CLES_0.05.csv")
 #)

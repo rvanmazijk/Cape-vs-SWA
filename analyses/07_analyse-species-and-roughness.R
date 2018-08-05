@@ -15,16 +15,22 @@ set.seed(1234)
 GCFR_3QDS_cell_nos <- unlist(cellFromPolygon(GCFR_richness_3QDS, GCFR_border))
 GCFR_HDS_cell_nos <- unlist(cellFromPolygon(GCFR_richness_HDS, GCFR_border))
 GCFR_QDS_cell_nos <- unlist(cellFromPolygon(GCFR_richness_QDS, GCFR_border))
-GCFR_QDS_cell_xys <- xyFromCell(GCFR_richness_QDS, GCFR_QDS_cell_nos)
-GCFR_3QDS_cell_nos_from_QDS_xys <- cellFromXY(GCFR_richness_3QDS, GCFR_QDS_cell_xys)
-GCFR_HDS_cell_nos_from_QDS_xys <- cellFromXY(GCFR_richness_HDS, GCFR_QDS_cell_xys)
+GCFR_QDS_cell_xys <-
+  xyFromCell(GCFR_richness_QDS, GCFR_QDS_cell_nos)
+GCFR_3QDS_cell_nos_from_QDS_xys <-
+  cellFromXY(GCFR_richness_3QDS, GCFR_QDS_cell_xys)
+GCFR_HDS_cell_nos_from_QDS_xys <-
+  cellFromXY(GCFR_richness_HDS, GCFR_QDS_cell_xys)
 
 SWAFR_3QDS_cell_nos <- unlist(cellFromPolygon(SWAFR_richness_3QDS, SWAFR_border))
 SWAFR_HDS_cell_nos <- unlist(cellFromPolygon(SWAFR_richness_HDS, SWAFR_border))
 SWAFR_QDS_cell_nos <- unlist(cellFromPolygon(SWAFR_richness_QDS, SWAFR_border))
-SWAFR_QDS_cell_xys <- xyFromCell(SWAFR_richness_QDS, SWAFR_QDS_cell_nos)
-SWAFR_3QDS_cell_nos_from_QDS_xys <- cellFromXY(SWAFR_richness_3QDS, SWAFR_QDS_cell_xys)
-SWAFR_HDS_cell_nos_from_QDS_xys <- cellFromXY(SWAFR_richness_HDS, SWAFR_QDS_cell_xys)
+SWAFR_QDS_cell_xys <-
+  xyFromCell(SWAFR_richness_QDS, SWAFR_QDS_cell_nos)
+SWAFR_3QDS_cell_nos_from_QDS_xys <-
+  cellFromXY(SWAFR_richness_3QDS, SWAFR_QDS_cell_xys)
+SWAFR_HDS_cell_nos_from_QDS_xys <-
+  cellFromXY(SWAFR_richness_HDS, SWAFR_QDS_cell_xys)
 
 GCFR_3QDS_HDS_QDS_cells_df <- tibble(
   region      = "GCFR",
@@ -42,8 +48,10 @@ SWAFR_3QDS_HDS_QDS_cells_df <- tibble(
   HDS_cell_no = SWAFR_HDS_cell_nos_from_QDS_xys,
   DS_cell_no  = SWAFR_3QDS_cell_nos_from_QDS_xys
 )
-threeQDS_HDS_QDS_cells_df <-
-  rbind(GCFR_3QDS_HDS_QDS_cells_df, SWAFR_3QDS_HDS_QDS_cells_df)
+threeQDS_HDS_QDS_cells_df <- rbind(
+  GCFR_3QDS_HDS_QDS_cells_df,
+  SWAFR_3QDS_HDS_QDS_cells_df
+)
 
 # ... --------------------------------------------------------------------------
 

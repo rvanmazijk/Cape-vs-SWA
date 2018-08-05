@@ -7,10 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    echo = TRUE, 
-    message = FALSE, 
-    warning = FALSE, 
-    results = "hide"
+  echo = TRUE, 
+  message = FALSE, 
+  warning = FALSE, 
+  results = "hide"
 )
 ```
 
@@ -65,7 +65,6 @@ turnover_across_richness(250, 500)
 ```{r}
 turnover_across_richness(50, 500)
 ```
-
 
 ## Regional richness = 100
 

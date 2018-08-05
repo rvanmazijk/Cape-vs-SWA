@@ -7,9 +7,11 @@
 # From SANParks, via SANBI-GIS portal
 
 GCFR_border <-
-  readOGR(here::here("data/raw-data/borders/CCAB_current_biome"),
-          layer = "Current_biome") %>%
-  subset(!is.na(LA_CURRENT)) %>%  # removes this one pesky NA
+  readOGR(
+    here::here("data/raw-data/borders/CCAB_current_biome"),
+    layer = "Current_biome"
+  ) %>%
+  subset(!is.na(LA_CURRENT)) %>% # removes this one pesky NA
   subset(LA_CURRENT %in% c("Fynbos", "Succulent Karoo"))
 GCFR_border_buffered <- buffer_border(GCFR_border, "GCFR")
 # Save
@@ -27,10 +29,14 @@ writeOGR(
 )
 
 GCFR_box <-
-  matrix(nrow = 4, ncol = 2,
-         data = c( 16,  16,  31,  31,
-                  -27, -37, -37, -27)) %>%
-                  # From "blocks" used to download SoilGrids250m
+  matrix(
+    nrow = 4, ncol = 2,
+    data = c(
+       16,  16,  31,  31,
+      -27, -37, -37, -27
+    )
+  ) %>%
+  # From "blocks" used to download SoilGrids250m
   Polygon(hole = TRUE) %>%
   list() %>%
   Polygons(ID = 1) %>%
@@ -61,10 +67,14 @@ writeOGR(
 )
 
 SWAFR_box <-
-  matrix(nrow = 4, ncol = 2,
-         data = c(112, 112, 127, 127,
-                  -25, -36, -36, -25)) %>%
-                  # From "blocks" used to download SoilGrids250m
+  matrix(
+    nrow = 4, ncol = 2,
+    data = c(
+      112, 112, 127, 127,
+      -25, -36, -36, -25
+    )
+  ) %>%
+  # From "blocks" used to download SoilGrids250m
   Polygon(hole = TRUE) %>%
   list() %>%
   Polygons(ID = 1) %>%
@@ -78,13 +88,14 @@ writeOGR(
   driver = "ESRI Shapefile"
 )
 
-
 # Regional Larsen QDS grids ----------------------------------------------------
 
 # GCFR
 GCFR_QDS <-
-  readOGR(here::here("data/raw-data/borders/qdgc_zaf"),
-          layer = "qdgc_02_zaf") %>%
+  readOGR(
+    here::here("data/raw-data/borders/qdgc_zaf"),
+    layer = "qdgc_02_zaf"
+  ) %>%
   crop(GCFR_box)
 for (layer in names(GCFR_QDS)) {
   writeOGR(
@@ -97,8 +108,10 @@ for (layer in names(GCFR_QDS)) {
 
 # SWAFR
 SWAFR_QDS <-
-  readOGR(here::here("data/raw-data/borders/qdgc_aus"),
-          layer = "qdgc_02_aus") %>%
+  readOGR(
+    here::here("data/raw-data/borders/qdgc_aus"),
+    layer = "qdgc_02_aus"
+  ) %>%
   crop(SWAFR_box)
 for (layer in names(SWAFR_QDS)) {
   writeOGR(
@@ -108,4 +121,3 @@ for (layer in names(SWAFR_QDS)) {
     driver = "ESRI Shapefile"
   )
 }
-

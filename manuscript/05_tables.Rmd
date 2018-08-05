@@ -65,8 +65,10 @@ out <- my_model_table(
 )
 out %>%
   magrittr::extract("model_table") %>%
-  knitr::kable(align = c("l", "r", "r"),
-               caption = "(ref:species-model-table)") %>%
+  knitr::kable(
+    align = c("l", "r", "r"),
+    caption = "(ref:species-model-table)"
+  ) %>%
   hold_pos_if_latex()
 ```
 
@@ -83,8 +85,10 @@ out <- my_model_table(
 )
 out %>%
   magrittr::extract("model_table") %>%
-  knitr::kable(align = c("l", "r", "r"),
-               caption = "(ref:species-model-table-3QDS)") %>%
+  knitr::kable(
+    align = c("l", "r", "r"),
+    caption = "(ref:species-model-table-3QDS)"
+  ) %>%
   hold_pos_if_latex()
 ```
 
