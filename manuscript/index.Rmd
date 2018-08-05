@@ -4,6 +4,8 @@ subtitle: 'Running title: Environmental heterogeneity and plant species richness
 author: 'Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom'
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
+header-includes:
+  - \usepackage{float}
 ---
 
 ```{r setup, include=FALSE}
