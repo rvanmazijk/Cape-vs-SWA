@@ -54,7 +54,7 @@ Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-p
 
 _Keywords_
 
-`r paste(sort(read.csv("keywords.csv")[[1]]), collapse = ", ")`
+biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region, kwongan, macroecology, species richness, species turnover, vascular plants, Southwest Australia Floristic Region
 
 # Acknowledgements {-}
 
