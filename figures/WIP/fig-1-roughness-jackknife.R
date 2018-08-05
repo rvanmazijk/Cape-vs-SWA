@@ -1,6 +1,9 @@
-# ...
+# Make Fig. 1 (Environmental heterogeneity and scales)
+# (Simpler version, emphasising CLES)
 # Cape vs SWA publication
 # Ruan van Mazijk
+
+# Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
 import_objects(output_paths[[1]])
@@ -35,6 +38,8 @@ var_colours <- c(
   "#BA793E"   # brown  for soils
 )
 
+# Data-wrangling ---------------------------------------------------------------
+
 jackknifed_CLES_summary_QDS %<>%
   gather(variable, CLES) %>%
   mutate(mean_or_sd = ifelse(str_detect(variable, "_mean"),
@@ -60,11 +65,10 @@ jackknifed_CLES_summary <- full_join(
   jackknifed_CLES_summary_QDS,
   jackknifed_CLES_summary_HDS
 )
-jackknifed_CLES_summary %<>%
-  mutate(
-    CLES_upper = CLES_mean + CLES_sd,
-    CLES_lower = CLES_mean - CLES_sd
-  )
+jackknifed_CLES_summary %<>% mutate(
+  CLES_upper = CLES_mean + CLES_sd,
+  CLES_lower = CLES_mean - CLES_sd
+)
 test_results_summary %<>%
   gather(resolution, sig, -variable) %>%
   mutate(sig = ifelse(sig, "", "NS")) %>%
