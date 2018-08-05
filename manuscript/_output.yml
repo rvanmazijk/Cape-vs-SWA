@@ -1,5 +1,12 @@
 bookdown::gitbook:
+  toc: true
   number_sections: false
+  pandoc_args: [
+    "--include-after-body", "_after-body.html"
+  ]
 bookdown::pdf_book:
-  number_sections: false
   toc: false
+  number_sections: false
+  pandoc_args: [
+    "--include-after-body", "_after-body.tex"
+  ]
