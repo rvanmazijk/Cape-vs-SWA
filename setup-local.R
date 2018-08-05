@@ -2,46 +2,25 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-# Load necessary packages ------------------------------------------------------
+# Load and/or download necessary packages --------------------------------------
 
-# General programming
-library(magrittr)
-library(here)
-library(glue)
-library(stringr)
-library(foreach)
-library(xfun)
-library(microbenchmark)
-
-# Parallel processing
-library(parallel)
-
-# GIS
-library(rgdal)
-library(raster)
-library(sp)
-
-# Taxonomy and species name cleaning
-library(taxize)
-
-# Tabular data-manipulation
-library(tidyverse)
-library(reshape2)
-library(readr)
-
-# Statistics and modelling
-library(quantreg)
-library(broom)
-library(canprot)
-
-# Visualisations
-library(ggplot2)
-library(grid)
-library(gridExtra)
-library(cowplot)
-library(scales)
-library(rasterVis)
-library(ggspatial)
+if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
+pacman::p_load(
+  # General programming
+  magrittr, here, glue, stringr, foreach, xfun, microbenchmark,
+  # Parallel processing
+  parallel,
+  # GIS
+  raster, sp, rgdal,
+  # Taxonomy
+  taxize,
+  # Tabular data-manipulation
+  tidyverse, reshape2, readr,
+  # Statistics and modelling
+  quantreg, broom, canprot,
+  # Visualisations
+  ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial
+)
 
 # Record session information ---------------------------------------------------
 
@@ -58,12 +37,10 @@ capture.output(
 # Custom settings and functions for this project -------------------------------
 
 # Import all functions in R-scripts in functions/
-my_functions <- list.files(
-  here::here("functions/"),
-  pattern = ".R",
-  full.names = TRUE
+map(
+  list.files(here::here("functions/"), pattern = ".R", full.names = TRUE),
+  source
 )
-map(my_functions, source)
 
 # Global GIS variables
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -76,11 +53,8 @@ my_palette <- c(
   "#56B4E9"   # SWA (SWAFR) blue
 )
 # Cleaner theme
-my_theme <-
-  theme_bw() +
-  theme(strip.background = element_blank(),
-        panel.grid = element_blank())
-theme_set(my_theme)
+theme_set(theme_bw() + theme(strip.background = element_blank(),
+                             panel.grid = element_blank()))
 
 # Define analysis & output paths -----------------------------------------------
 
