@@ -220,15 +220,66 @@ for (var in var_names) {
 
 # (And not for 3QDS as that is the limiting scale)
 
-set.seed(1234)
+# Read results back in
 
+pw_comparisons_QDS <- vector("list", length = length(var_names))
+for (i in seq_along(var_names)) {
+  pw_comparisons_QDS[[i]] <- as.matrix(read_csv(glue(
+    "{out_dir}/pw-comparisons_{var_names[[i]]}_QDS_2018-08-03.csv"
+  )))
+  colnames(pw_comparisons_QDS[[i]]) <- NULL
+}
+names(pw_comparisons_QDS) <- var_names
+
+pw_comparisons_HDS <- vector("list", length = length(var_names))
+for (i in seq_along(var_names)) {
+  pw_comparisons_HDS[[i]] <- as.matrix(read_csv(glue(
+    "{out_dir}/pw-comparisons_{var_names[[i]]}_HDS_2018-08-03.csv"
+  )))
+  colnames(pw_comparisons_HDS[[i]]) <- NULL
+}
+names(pw_comparisons_HDS) <- var_names
+
+pw_comparisons_3QDS <- vector("list", length = length(var_names))
+for (i in seq_along(var_names)) {
+  pw_comparisons_3QDS[[i]] <- as.matrix(read_csv(glue(
+    "{out_dir}/pw-comparisons_{var_names[[i]]}_3QDS_2018-08-03.csv"
+  )))
+  colnames(pw_comparisons_3QDS[[i]]) <- NULL
+}
+names(pw_comparisons_3QDS) <- var_names
+
+# Set up for jackknife reproducibly
+
+set.seed(1234)
 n_jackknifes <- 1000
+
 nrow_3QDS <- unique(map_int(pw_comparisons_3QDS, nrow))
 ncol_3QDS <- unique(map_int(pw_comparisons_3QDS, ncol))
+
+# .... QDS ---------------------------------------------------------------------
+
+jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
+  CLES_jackknife,
+  n = n_jackknifes,
+  size_x = nrow_3QDS,
+  size_y = ncol_3QDS
+)
+
+# .... HDS ---------------------------------------------------------------------
+
+jackknifed_CLES_HDS <- map_df(pw_comparisons_HDS,
+  CLES_jackknife,
+  n = n_jackknifes,
+  size_x = nrow_3QDS,
+  size_y = ncol_3QDS
+)
 
 # .... 0.05º -------------------------------------------------------------------
 
 # TODO
+
+set.seed(1234)
 
 jackknife_CLES_0.05 <- function(path) {
   # Duplicate colnames (= roughness values) don't matter at this point,
@@ -270,24 +321,6 @@ jackknifed_pH_0.05 <- jackknife_CLES_0.05(
 )
 
 # ...
-
-# .... QDS ---------------------------------------------------------------------
-
-jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
-  CLES_jackknife,
-  n = n_jackknifes,
-  size_x = nrow_3QDS,
-  size_y = ncol_3QDS
-)
-
-# .... HDS ---------------------------------------------------------------------
-
-jackknifed_CLES_HDS <- map_df(pw_comparisons_HDS,
-  CLES_jackknife,
-  n = n_jackknifes,
-  size_x = nrow_3QDS,
-  size_y = ncol_3QDS
-)
 
 # Summarise the jackknifed CLES values -----------------------------------------
 
