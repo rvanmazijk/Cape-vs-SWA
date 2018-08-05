@@ -23,12 +23,12 @@ PDF = manuscript/_manuscript/_manuscript.pdf
 
 RENDER_GITBOOK = Rscript -e \
 	"setwd('manuscript'); \
-	require(bookdown); \
+	library(bookdown); \
 	render_book('$<', 'bookdown::gitbook')"
 
 RENDER_PDF = Rscript -e \
 	"setwd('manuscript'); \
-	require(bookdown); \
+	library(bookdown); \
 	render_book('$<', 'bookdown::pdf_book')"
 
 # Describe "MAKE" dependencies -------------------------------------------------
