@@ -1,3 +1,5 @@
+\break
+
 # Tables {-}
 
 ```{r setup-tables, include=FALSE}
