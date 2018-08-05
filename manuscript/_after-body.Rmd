@@ -1,0 +1,19 @@
+# Biosketches
+
+**Ruan van Mazijk** is a Masters student broadly interested in comparative biology and ...<!--TODO: finish-->
+
+**Michael D. Cramer** <!--TODO-->
+
+**G. Anthony Verboom** <!--TODO-->dfsdf
+
+# Author contributions
+
+MDC and GAV conceived the study question, which RVM investigated under their supervision for his BSc Hons project. The analyses and programming work were largely devised by RVM, with input from the other authors, and was carried out by RVM. RVM wrote the first draft of the manuscript and all authors contributed equally thereafter.
+
+# ORCID numbers
+
+RVM: 0000-0003-2659-6909
+
+MDC: 0000-0003-0989-3266
+
+GAV: 0000-0002-1363-9781<!--?-->
