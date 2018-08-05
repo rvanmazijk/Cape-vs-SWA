@@ -1,9 +1,9 @@
 # Linking patterns of plant species richness and turnover to environmental heterogeneity in two Mediterranean flora: the Cape and Southwest Australia
 
-*Ruan van Mazijk[1,§], Michael D. Cramer[1] and G. Anthony Verboom[1]*
+*Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom*
 
-- [1] Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
-- [§] Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
+- Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
+- Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 
 <p>
   <img src="logos/UCT-logo.png" width=100>
@@ -30,7 +30,7 @@ This work is funded by the South African Department of Science and Technology (D
 
 ## Technical details
 
-This manuscript was written using [`bookdown`](https://bookdown.org/), an open-source package for technical writing using R, R Markdown and pandoc.
+This manuscript was written using [`bookdown`](https://bookdown.org/), an open-source package for technical writing using R, RMarkdown and pandoc.
 
 All analyses were carried out in R. The workflow used to write this paper was roughly as follows (illustrated using [GraphViz](https://www.graphviz.org/)), outlining the roles of the various sub-directories of this repository:
 
@@ -39,3 +39,5 @@ All analyses were carried out in R. The workflow used to write this paper was ro
 Raw-data is processed and analysed. Data-processing, analyses and figure production use R packages and bespoke code, loaded by `setup.R`. Derived data and analyses' outputs are used to produce figures. Analyses' outputs, figures and manuscript components are compiled using `bookdown`.
 
 A more detailed layout of the relationships between this repository's components is described [here](https://rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.svg), also using [GraphViz](https://www.graphviz.org/).
+
+In order to reproduce the analyses and manuscript, simply run the command `make` in the command line (e.g. Bash) in this directory. The `Makefile` then ...<!--TODO: WIP-->
