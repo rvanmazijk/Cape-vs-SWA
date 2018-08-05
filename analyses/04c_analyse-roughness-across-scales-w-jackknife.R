@@ -224,7 +224,52 @@ n_jackknifes <- 1000
 nrow_3QDS <- unique(map_int(pw_comparisons_3QDS, nrow))
 ncol_3QDS <- unique(map_int(pw_comparisons_3QDS, ncol))
 
-# QDS
+# .... 0.05º -------------------------------------------------------------------
+
+# TODO
+
+jackknife_CLES_0.05 <- function(path) {
+  # Duplicate colnames (= roughness values) don't matter at this point,
+  # so using read_csv(cols(.default)) is fine
+  pw_comparisons_0.05 <- read_csv(path)
+  CLES_jackknife(
+    pw_comparisons_0.05,
+    n = n_jackknifes,
+    size_x = nrow_3QDS,
+    size_y = ncol_3QDS
+  )
+}
+jackknifed_elev_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Elevation_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_MAP_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_MAP_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_PDQ_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_PDQ_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_surfT_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Surface-T_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_NDVI_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_NDVI_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_CEC_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_CEC_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_clay_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Clay_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_soilC_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Soil-C_0.05_parallel_2018-08-03.csv")
+)
+jackknifed_pH_0.05 <- jackknife_CLES_0.05(
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_pH_0.05_parallel_2018-08-03.csv"))
+
+# ...
+
+# .... QDS ---------------------------------------------------------------------
+
 jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
   CLES_jackknife,
   pw_format = "matrix",
@@ -232,7 +277,9 @@ jackknifed_CLES_QDS <- map_df(pw_comparisons_QDS,
   size_x = nrow_3QDS,
   size_y = ncol_3QDS
 )
-# HDS
+
+# .... HDS ---------------------------------------------------------------------
+
 jackknifed_CLES_HDS <- map_df(pw_comparisons_HDS,
   CLES_jackknife,
   pw_format = "matrix",
@@ -240,18 +287,13 @@ jackknifed_CLES_HDS <- map_df(pw_comparisons_HDS,
   size_x = nrow_3QDS,
   size_y = ncol_3QDS
 )
-# 0.05º
-# TODO
-# NOTE: do NOT put before QDS, as set.seed affects commands in order
-#jackknifed_CLES_0.05 <- map_df(pw_comparisons_0.05,
-#  CLES_jackknife,
-#  n = n_jackknifes,
-#  size_x = nrow_3QDS,
-#  size_y = ncol_3QDS
-#)
 
 # Summarise the jackknifed CLES values -----------------------------------------
 
+jackknifed_CLES_summary_0.05 <- summarise_all(
+  jackknifed_CLES_0.05,
+  .funs = list(mean = mean, sd = sd)
+)
 jackknifed_CLES_summary_QDS <- summarise_all(
   jackknifed_CLES_QDS,
   .funs = list(mean = mean, sd = sd)
@@ -260,13 +302,6 @@ jackknifed_CLES_summary_HDS <- summarise_all(
   jackknifed_CLES_HDS,
   .funs = list(mean = mean, sd = sd)
 )
-# 0.05º
-# TODO
-# NOTE: do NOT put before QDS, as set.seed affects commands in order
-#jackknifed_CLES_summary_0.05 <- summarise_all(
-#  jackknifed_CLES_0.05,
-#  .funs = list(mean = mean, sd = sd)
-#)
 
 # Save jackknifed samples + summaries ------------------------------------------
 
