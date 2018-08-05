@@ -16,9 +16,8 @@ GITBOOK = \
 	manuscript/_manuscript/discussion.html \
 	manuscript/_manuscript/tables.html \
 	manuscript/_manuscript/figures.html \
-	manuscript/_manuscript/appendix.html \
 	manuscript/_manuscript/references.html
-PDF = manuscript/_manuscript/manuscript.pdf
+PDF = manuscript/_manuscript/_manuscript.pdf
 
 # Define bookdown::render_book()-calls -----------------------------------------
 
