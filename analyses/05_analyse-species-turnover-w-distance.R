@@ -32,13 +32,16 @@ GCFR_point_query_genus <-
 GCFR_point_query_family <-
   GCFR_clean_flora_spdf_family %over% GCFR_border
 stopifnot(
-  length(GCFR_clean_flora_spdf_species) == length(!is.na(GCFR_point_query_species))
+  length(GCFR_clean_flora_spdf_species) ==
+    length(!is.na(GCFR_point_query_species))
 )
 stopifnot(
-  length(GCFR_clean_flora_spdf_genus) == length(!is.na(GCFR_point_query_genus))
+  length(GCFR_clean_flora_spdf_genus) ==
+    length(!is.na(GCFR_point_query_genus))
 )
 stopifnot(
-  length(GCFR_clean_flora_spdf_family) == length(!is.na(GCFR_point_query_family))
+  length(GCFR_clean_flora_spdf_family) ==
+    length(!is.na(GCFR_point_query_family))
 )
 
 # Trim!
@@ -73,13 +76,16 @@ SWAFR_point_query_genus <-
 SWAFR_point_query_family <-
   SWAFR_clean_flora_spdf_family %over% SWAFR_border
 stopifnot(
-  length(SWAFR_clean_flora_spdf_species) == length(!is.na(SWAFR_point_query_species))
+  length(SWAFR_clean_flora_spdf_species) ==
+    length(!is.na(SWAFR_point_query_species))
 )
 stopifnot(
-  length(SWAFR_clean_flora_spdf_genus) == length(!is.na(SWAFR_point_query_genus))
+  length(SWAFR_clean_flora_spdf_genus) ==
+    length(!is.na(SWAFR_point_query_genus))
 )
 stopifnot(
-  length(SWAFR_clean_flora_spdf_family) == length(!is.na(SWAFR_point_query_family))
+  length(SWAFR_clean_flora_spdf_family) ==
+    length(!is.na(SWAFR_point_query_family))
 )
 trimmed_SWAFR_clean_flora_spdf_species <-
   SWAFR_clean_flora_spdf_species[!is.na(SWAFR_point_query_species)[, 1], ]
@@ -126,20 +132,26 @@ species_turnover_geodist_GCFR <- calc_all_pw_jaccard(
   communities_by_cell = communities_by_cell_QDS$GCFR$species,
   richness_QDS = GCFR_richness_QDS,
   feature_column = "species",
-  cell_nos = levels(as.factor(trimmed_GCFR_clean_flora_spdf_species$cell_nos))
+  cell_nos = levels(as.factor(
+    trimmed_GCFR_clean_flora_spdf_species$cell_nos
+  ))
 )
 genus_turnover_geodist_GCFR <- calc_all_pw_jaccard(
   communities_by_cell = communities_by_cell_QDS$GCFR$genus,
   richness_QDS = GCFR_richness_QDS,
   feature_column = "genus",
-  cell_nos = levels(as.factor(trimmed_GCFR_clean_flora_spdf_genus$cell_nos))
+  cell_nos = levels(as.factor(
+    trimmed_GCFR_clean_flora_spdf_genus$cell_nos
+  ))
 )
 
 family_species_turnover_geodist_GCFR <- calc_all_pw_jaccard(
   communities_by_cell = communities_by_cell_QDS$GCFR$family,
   richness_QDS = GCFR_richness_QDS,
   feature_column = "family",
-  cell_nos = levels(as.factor(trimmed_GCFR_clean_flora_spdf_family$cell_nos))
+  cell_nos = levels(as.factor(
+    trimmed_GCFR_clean_flora_spdf_family$cell_nos
+  ))
 )
 
 # .... SWAFR -------------------------------------------------------------------
@@ -148,21 +160,27 @@ species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
   communities_by_cell = communities_by_cell_QDS$SWAFR$species,
   richness_QDS = SWAFR_richness_QDS,
   feature_column = "species",
-  cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_species$cell_nos))
+  cell_nos = levels(as.factor(
+    trimmed_SWAFR_clean_flora_spdf_species$cell_nos
+  ))
 )
 
 genus_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
   communities_by_cell = communities_by_cell_QDS$SWAFR$genus,
   richness_QDS = SWAFR_richness_QDS,
   feature_column = "genus",
-  cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_genus$cell_nos))
+  cell_nos = levels(as.factor(
+    trimmed_SWAFR_clean_flora_spdf_genus$cell_nos
+  ))
 )
 
 family_species_turnover_geodist_SWAFR <- calc_all_pw_jaccard(
   communities_by_cell = communities_by_cell_QDS$SWAFR$family,
   richness_QDS = SWAFR_richness_QDS,
   feature_column = "family",
-  cell_nos = levels(as.factor(trimmed_SWAFR_clean_flora_spdf_family$cell_nos))
+  cell_nos = levels(as.factor(
+    trimmed_SWAFR_clean_flora_spdf_family$cell_nos
+  ))
 )
 
 # Combine both regions data-frames ---------------------------------------------
@@ -179,7 +197,9 @@ species_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
   species_turnover_geodist,
-  here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist.csv")
+  here::here(
+    "outputs/05_species-turnover-w-distance/species_turnover_geodist.csv"
+  )
 )
 
 # .... Genus -------------------------------------------------------------------
@@ -194,7 +214,9 @@ genus_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
   genus_turnover_geodist,
-  here::here("outputs/05_species-turnover-w-distance/genus_turnover_geodist.csv")
+  here::here(
+    "outputs/05_species-turnover-w-distance/genus_turnover_geodist.csv"
+  )
 )
 
 # .... Family ------------------------------------------------------------------
@@ -209,7 +231,9 @@ family_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
   family_turnover_geodist,
-  here::here("outputs/05_species-turnover-w-distance/family_turnover_geodist.csv")
+  here::here(
+    "outputs/05_species-turnover-w-distance/family_turnover_geodist.csv"
+  )
 )
 
 # Model ------------------------------------------------------------------------
@@ -223,18 +247,24 @@ species_turnover_geodist_m <- species_turnover_geodist %>%
 # Save to disc
 write_rds(
   species_turnover_geodist_m,
-  here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m.RDS")
+  here::here(
+    "outputs/05_species-turnover-w-distance/species_turnover_geodist_m.RDS"
+  )
 )
 # Save summaries to disc
 species_turnover_geodist_m_tidy <- broom::tidy(species_turnover_geodist_m)
 write_csv(
   species_turnover_geodist_m_tidy,
-  here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m_tidy.csv")
+  here::here(
+    "outputs/05_species-turnover-w-distance/species_turnover_geodist_m_tidy.csv"
+  )
 )
 species_turnover_geodist_m_glance <- broom::glance(species_turnover_geodist_m)
 write_csv(
   species_turnover_geodist_m_glance,
-  here::here("outputs/05_species-turnover-w-distance/species_turnover_geodist_m_glance.csv")
+  here::here(
+    "outputs/05_species-turnover-w-distance/species_turnover_geodist_m_glance.csv"
+    )
 )
 
 # .... Genus -------------------------------------------------------------------
@@ -246,7 +276,9 @@ genus_turnover_geodist_m <- genus_turnover_geodist %>%
 # Save to disc
 write_rds(
   genus_turnover_geodist_m,
-  here::here("outputs/05_species-turnover-w-distance/genus_turnover_geodist_m.RDS")
+  here::here(
+    "outputs/05_species-turnover-w-distance/genus_turnover_geodist_m.RDS"
+  )
 )
 # TODO: save summaries to disc
 
@@ -259,6 +291,8 @@ family_turnover_geodist_m <- family_turnover_geodist %>%
 # Save to disc
 write_rds(
   family_turnover_geodist_m,
-  here::here("outputs/05_species-turnover-w-distance/family_turnover_geodist_m.RDS")
+  here::here(
+    "outputs/05_species-turnover-w-distance/family_turnover_geodist_m.RDS"
+  )
 )
 # TODO: save summaries to disc

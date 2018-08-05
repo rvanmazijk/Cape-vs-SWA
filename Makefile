@@ -48,7 +48,9 @@ RENDER_AFTER_BODY_TEX = Rscript -e \
 
 all: gitbook pdf
 
-gitbook: $(GITBOOK)
+gitbook:
+	echo "Not rendering properly at the moment (Re: table floats, figure sizes)"
+  #$(GITBOOK)
 
 pdf: $(PDF)
 

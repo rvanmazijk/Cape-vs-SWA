@@ -103,7 +103,7 @@ model_specs <- list(
   full     =  c("all")
 )
 GCFR_models <- map(.x = model_specs,
-  ~ gwr_model(
+  .f = ~ gwr_model(
     pkg = "spgwr",
     data = GCFR_all_QDS_pts,
     columns = .x,
@@ -111,7 +111,7 @@ GCFR_models <- map(.x = model_specs,
   )
 )
 SWAFR_models <- map(.x = model_specs,
-  ~ gwr_model(
+  .f = ~ gwr_model(
     pkg = "spgwr",
     data = SWAFR_all_QDS_pts,
     columns = .x,

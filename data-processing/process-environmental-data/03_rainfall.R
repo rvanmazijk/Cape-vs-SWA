@@ -50,8 +50,7 @@ clusterMap(cluster,
   region = c("GCFR", "SWAFR"),
   giswd = giswd,
   function(box, region, giswd) {
-
-    years <- 1981:2016   # no 2017 annual yet, duh
+    years <- 1981:2016 # no 2017 annual yet, duh
     stacked_chirps <- raster::stack()
 
     for (i in seq_along(years)) {
@@ -80,7 +79,6 @@ clusterMap(cluster,
     message(glue::glue("
       CHIRPS_annual_{region}_box.grd written to disk
     "))
-
   }
 )
 stopCluster(cluster)
@@ -243,7 +241,7 @@ for (i in seq_along(chirps_by_year)) {
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
-       )
+      )
     }
 }
 chirps_by_year_by_month <- chirps_by_year
@@ -369,9 +367,9 @@ if (FALSE) {
 
   # Whereas this is still supported
   p_load(dismo)
-  tmin <- c(10,12,14,16,18,20,22,21,19,17,15,12)
+  tmin <- c(10, 12, 14, 16, 18, 20, 22, 21, 19, 17, 15, 12)
   tmax <- tmin + 5
-  prec <- c(0,2,10,30,80,160,80,20,40,60,20,0)
+  prec <- c(0, 2, 10, 30, 80, 160, 80, 20, 40, 60, 20, 0)
   dismo::biovars(prec, tmin, tmax)
 
   # But it "requires" all 3 input vars,
@@ -384,10 +382,9 @@ if (FALSE) {
   # !! Now *all* in helper-funs/ !!
 
   if (FALSE) {
-
-    window <- function(x)  {
+    window <- function(x) {
       lng <- length(x)
-      x <- c(x,  x[1:3])
+      x <- c(x, x[1:3])
       m <- matrix(ncol = 3, nrow = lng)
       for (i in 1:3) {
         m[, i] <- x[i:(lng + i - 1)]
@@ -400,28 +397,28 @@ if (FALSE) {
     # or
     prec_GCFR <- as.matrix(crop(GCFR_monthly_CHIRPS_means, GCFR_border))
 
-		# P15. Precipitation Seasonality(Coefficient of Variation)
-		# the "1 +" is to avoid strange CVs for areas
-		# where mean rainfaill is < 1)
-		# Note: This does not vary *too much*
-		# depending on the extent of the input raster
-		pcv <- apply(prec_box + 1, 1, cv)
-		pcv <- raster(t(matrix(pcv, nrow = 211, ncol = 133)))
+    # P15. Precipitation Seasonality(Coefficient of Variation)
+    # the "1 +" is to avoid strange CVs for areas
+    # where mean rainfaill is < 1)
+    # Note: This does not vary *too much*
+    # depending on the extent of the input raster
+    pcv <- apply(prec_box + 1, 1, cv)
+    pcv <- raster(t(matrix(pcv, nrow = 211, ncol = 133)))
     plot(pcv)
     # cf.
     pcv <- apply(prec_GCFR + 1, 1, cv)
-		pcv <- raster(t(matrix(pcv, nrow = 211, ncol = 133)))
+    pcv <- raster(t(matrix(pcv, nrow = 211, ncol = 133)))
     plot(pcv)
 
     # P16. Precipitation of Wettest Quarter
     # Note: This *does* change notably
     # depending on the extent of the input raster
-		wet <- t(apply(prec_box, 1, window))
+    wet <- t(apply(prec_box, 1, window))
     pwq <- apply(wet, 1, max)
     pwq <- raster(t(matrix(pwq, nrow = 211, ncol = 133)))
     plot(pwq)
     # cf.
-		wet <- t(apply(prec_GCFR, 1, window))
+    wet <- t(apply(prec_GCFR, 1, window))
     pwq <- apply(wet, 1, max)
     pwq <- raster(t(matrix(pwq, nrow = 211, ncol = 133)))
     plot(pwq)
@@ -438,9 +435,7 @@ if (FALSE) {
     tmp <- t(apply(as.matrix(GCFR), 1, window)) / 3
     # P10. Mean Temperature of Warmest Quarter
     twq <- apply(tmp, 1, max)
-
   }
-
 }
 
 # Now for real
@@ -488,7 +483,7 @@ for (i in seq_along(chirps_by_year)) {
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
-       )
+      )
     }
 }
 chirps_by_year_by_month <- chirps_by_year
@@ -547,7 +542,7 @@ for (j in seq_along(months)) {
   month_stack <- stack()
   for (i in seq_along(years[years != 2017])) {
     x <- chirps_monthly_SWAFR[[
-      chirps_by_year_by_month[[as.character(years[i])]][months[j]]
+    chirps_by_year_by_month[[as.character(years[i])]][months[j]]
     ]]
     month_stack %<>% stack(x)
   }
