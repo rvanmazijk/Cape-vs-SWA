@@ -5,7 +5,7 @@
 source(here::here("setup.R"))
 
 if (all(!folder_is_empty(output_paths))) {
-  map(output_paths, import_objects, max_file_siz_mb = 10)
+  map(output_paths, import_objects, max_file_size_mb = 50)
 } else {
   map(pre_analysis_import_paths, source)
   map2(

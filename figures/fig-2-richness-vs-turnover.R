@@ -97,13 +97,19 @@ richness_vs_turnover_HDS_plot <- gamma_beta_alpha_HDS %>%
 
 # Combine those figures --------------------------------------------------------
 
-fig_combined <- plot_grid(rel_widths = c(1.0, 1.9), labels = c("A", "B"),
+fig_combined <- plot_grid(
+  rel_widths = c(1.0, 1.9),
+  labels = c("(a)", ""), hjust = c(-2.5, 0), vjust = 2,
   plotlist = list(
     fig_turnover_vs_geodist,
-    plot_grid(rel_widths = c(1.0, 0.8), plotlist = list(
-      richness_vs_richness_HDS_plot,
-      richness_vs_turnover_HDS_plot
-    ))
+    plot_grid(
+      rel_widths = c(1.0, 0.8),
+      labels = c("(b)", "(c)"), hjust = c(-2.5, -0.75), vjust = 2,
+      plotlist = list(
+        richness_vs_richness_HDS_plot,
+        richness_vs_turnover_HDS_plot
+      )
+    )
   )
 )
 ggsave(
