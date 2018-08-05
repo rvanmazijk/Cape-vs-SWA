@@ -264,6 +264,11 @@ Source: CRAN
 Version: 1.7-0
 Hash: 54c6b974d385e3c0961eb4cefc9ea0c5
 
+Package: enc
+Source: CRAN
+Version: 0.2.0
+Hash: d7625df773f4a18ffb69ed0961f720d7
+
 Package: evaluate
 Source: CRAN
 Version: 0.10.1
@@ -368,6 +373,12 @@ Source: CRAN
 Version: 0.2.0
 Hash: 368cd36e433bc92585482ce49b7028ab
 
+Package: httpuv
+Source: CRAN
+Version: 1.4.5
+Hash: a21b769562c800e73d417208d7b242ab
+Requires: BH, Rcpp, later, promises
+
 Package: httr
 Source: CRAN
 Version: 1.3.1
@@ -419,6 +430,12 @@ Source: CRAN
 Version: 0.3
 Hash: ecf589b42cd284b03a4beb9665482d3e
 
+Package: later
+Source: CRAN
+Version: 0.7.3
+Hash: 087b02f5b287d252fc78a4489de3ff3b
+Requires: BH, Rcpp, rlang
+
 Package: lattice
 Source: CRAN
 Version: 0.20-35
@@ -467,6 +484,12 @@ Package: mime
 Source: CRAN
 Version: 0.5
 Hash: 463550cf44fb6f0a2359368f42eebe62
+
+Package: miniUI
+Source: CRAN
+Version: 0.1.1.1
+Hash: c7e3ea486421c2fa5b03bb7fcd0415f6
+Requires: htmltools, shiny
 
 Package: mnormt
 Source: CRAN
@@ -569,6 +592,12 @@ Version: 1.2.0
 Hash: 0ff5f631b66daf57857f28062f3e6f30
 Requires: R6, crayon, hms, prettyunits
 
+Package: promises
+Source: CRAN
+Version: 1.0.1
+Hash: 1e5d5469b95be6e1b6cd8c35e3bdea60
+Requires: R6, Rcpp, later, magrittr, rlang
+
 Package: psych
 Source: CRAN
 Version: 1.8.4
@@ -616,6 +645,12 @@ Package: rematch
 Source: CRAN
 Version: 1.0.1
 Hash: ad4faf59e7611117ff165817074c50c7
+
+Package: rematch2
+Source: CRAN
+Version: 2.0.1
+Hash: b7f86a340a404c69cfb770dfd2081dd9
+Requires: tibble
 
 Package: rentrez
 Source: CRAN
@@ -742,11 +777,23 @@ Version: 0.6-3
 Hash: 07417af99b65851b70b73d3273b01f9c
 Requires: DBI, Rcpp, classInt, magrittr, units
 
+Package: shiny
+Source: CRAN
+Version: 1.1.0
+Hash: ab653b45dba6dc82eef68fb1e18a3b1a
+Requires: R6, crayon, digest, htmltools, httpuv, jsonlite, later, mime,
+    promises, rlang, sourcetools, xtable
+
 Package: solrium
 Source: CRAN
 Version: 1.0.0
 Hash: b1de1d915debf5fe77d7d0ae1e574e03
 Requires: R6, crul, dplyr, jsonlite, plyr, tibble, xml2
+
+Package: sourcetools
+Source: CRAN
+Version: 0.1.7
+Hash: d093478ac90064e670cd4bf1a99b47b6
 
 Package: sp
 Source: CRAN
@@ -775,6 +822,13 @@ Source: CRAN
 Version: 1.3.1
 Hash: 9f417a1d899ed1f080942ab36998e8b5
 Requires: glue, magrittr, stringi
+
+Package: styler
+Source: CRAN
+Version: 1.0.2
+Hash: a803f5288519f928124d6305af477120
+Requires: backports, cli, enc, magrittr, purrr, rematch2, rlang,
+    rprojroot, tibble, withr
 
 Package: taxize
 Source: CRAN
