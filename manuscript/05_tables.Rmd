@@ -12,22 +12,12 @@ import_objects(
   here::here("outputs/05_species-turnover-w-distance/"),
   ignore_RDS = TRUE
 )
-tbl_format <- options("knitr.table.format")
-hold_pos_if_latex <- function(x, format = tbl_format) {
-  print(glue(
-    "Rendering to {format}, so will use kableExtra to prevent table floating"
-  ))
-  if (format == "pdf") {
-    x %<>% kableExtra::kable_styling(latex_options = "hold_position")
-  }
-  x
-}
 ```
 
 ```{r data-sources, results="asis"}
 data_sources %>%
   knitr::kable(caption = "(ref:data-sources)") %>%
-  hold_pos_if_latex()
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 (ref:data-sources) Data sources used in this study. Abbreviations are as follows:<!--TODO-->.
@@ -43,7 +33,7 @@ species_turnover_geodist_m_tidy %>%
   my_model_table(tidy_terms = tidy_terms) %>%
   magrittr::extract("model_table") %>%
   knitr::kable(caption = "(ref:turnover-vs-geodist-model-table)") %>%
-  hold_pos_if_latex()
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 (ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (as Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells.
@@ -69,7 +59,7 @@ out %>%
     align = c("l", "r", "r"),
     caption = "(ref:species-model-table)"
   ) %>%
-  hold_pos_if_latex()
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 (ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
@@ -89,7 +79,7 @@ out %>%
     align = c("l", "r", "r"),
     caption = "(ref:species-model-table-3QDS)"
   ) %>%
-  hold_pos_if_latex()
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 (ref:species-model-table-3QDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of 3QDS species richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$, as Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
