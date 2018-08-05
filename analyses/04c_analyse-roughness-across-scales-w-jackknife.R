@@ -57,7 +57,7 @@ parallel_elev_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_elev_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Elevation_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Elevation_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_elev_pw)
 
@@ -69,7 +69,7 @@ parallel_MAP_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_MAP_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_MAP_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_MAP_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_MAP_pw)
 
@@ -81,7 +81,7 @@ parallel_PDQ_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_PDQ_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_PDQ_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_PDQ_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_PDQ_pw)
 
@@ -93,7 +93,7 @@ parallel_surfT_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_surfT_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Surface-T_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Surface-T_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_surfT_pw)
 
@@ -105,7 +105,7 @@ parallel_NDVI_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_NDVI_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_NDVI_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_NDVI_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_NDVI_pw)
 
@@ -117,7 +117,7 @@ parallel_CEC_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_CEC_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_CEC_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_CEC_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_CEC_pw)
 
@@ -129,7 +129,7 @@ parallel_clay_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_clay_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Clay_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Clay_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_clay_pw)
 
@@ -141,7 +141,7 @@ parallel_soilC_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_soilC_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_Soil-C_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_Soil-C_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_soilC_pw)
 
@@ -153,7 +153,7 @@ parallel_pH_pw <-
   pairwise_compare(use_parallel = TRUE)
 write_csv(
   as.data.frame(parallel_pH_pw),
-  here::here("outputs/04_roughness-across-scales/pw-comparisons_pH_0.05_parallel_2018-08-02.csv")
+  here::here("outputs/04_roughness-across-scales/pw-comparisons_pH_0.05_parallel_2018-08-03.csv")
 )
 rm(parallel_pH_pw)
 
