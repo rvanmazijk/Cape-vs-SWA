@@ -90,3 +90,22 @@ ggplot(data, aes(resolution, CLES, col = variable_type)) +
       rep(var_colours[4], 4)
     ))
   ))
+
+####
+
+jackknifed_CLES_summary_QDS %>%
+  gather(variable, CLES) %>%
+  mutate(stat = ifelse(
+    str_detect(variable, "mean"),
+    "mean",
+    "sd"
+  )) %>%
+  mutate(variable = str_remove(variable, "_.+$")) %>%
+  spread(stat, CLES) %>%
+  ggplot(aes(variable, mean)) +
+    geom_point() +
+    geom_errorbar(
+      aes(ymin = mean - sd, ymax = mean + sd),
+      width = 0
+    ) +
+    ylab("mean +- sd")
