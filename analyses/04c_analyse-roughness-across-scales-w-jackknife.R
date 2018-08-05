@@ -8,6 +8,8 @@
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
 
+out_dir <- here::here("outputs/04_roughness-across-scales")
+
 # Compute and store all pairwise comparisons of roughness in cells -------------
 
 # .... 0.05 --------------------------------------------------------------------
@@ -48,8 +50,6 @@ if (FALSE) {
   ))
 
 }
-
-out_dir <- here::here("outputs/04_roughness-across-scales")
 
 # Done:
 parallel_elev_pw <-
@@ -174,7 +174,7 @@ pw_comparisons_QDS <- map2(
 for (var in var_names) {
   write_csv(
     as.data.frame(pw_comparisons_QDS[var]),
-    here::here(glue("{out_dir}/pw-comparisons_{var}_QDS_2018-08-03.csv"))
+    glue("{out_dir}/pw-comparisons_{var}_QDS_2018-08-03.csv")
   )
 }
 
@@ -193,7 +193,7 @@ pw_comparisons_HDS <- map2(
 for (var in var_names) {
   write_csv(
     as.data.frame(pw_comparisons_HDS[var]),
-    here::here(glue("{out_dir}/pw-comparisons_{var}_HDS_2018-08-03.csv"))
+    glue("{out_dir}/pw-comparisons_{var}_HDS_2018-08-03.csv")
   )
 }
 
@@ -212,7 +212,7 @@ pw_comparisons_3QDS <- map2(
 for (var in var_names) {
   write_csv(
     as.data.frame(pw_comparisons_3QDS[var]),
-    here::here(glue("{out_dir}/pw-comparisons_{var}_3QDS_2018-08-03.csv"))
+    glue("{out_dir}/pw-comparisons_{var}_3QDS_2018-08-03.csv")
   )
 }
 
@@ -340,6 +340,10 @@ jackknifed_CLES_summary_HDS <- summarise_all(
 # Save jackknifed samples + summaries ------------------------------------------
 
 write_csv(
+  jackknifed_CLES_0.05,
+  glue("{out_dir}/jackknifed_CLES_0.05.csv")
+)
+write_csv(
   jackknifed_CLES_QDS,
   glue("{out_dir}/jackknifed_CLES_QDS.csv")
 )
@@ -347,12 +351,11 @@ write_csv(
   jackknifed_CLES_HDS,
   glue("{out_dir}/jackknifed_CLES_HDS.csv")
 )
-# TODO
-#write_csv(
-#  jackknifed_CLES_0.05,
-#  glue("{out_dir}/jackknifed_CLES_0.05.csv")
-#)
 
+write_csv(
+  jackknifed_CLES_summary_0.05,
+  glue("{out_dir}/jackknifed_CLES_0.05.csv")
+)
 write_csv(
   jackknifed_CLES_summary_QDS,
   glue("{out_dir}/jackknifed_CLES_summary_QDS.csv")
@@ -361,8 +364,3 @@ write_csv(
   jackknifed_CLES_summary_HDS,
   glue("{out_dir}/jackknifed_CLES_summary_HDS.csv")
 )
-# TODO
-#write_csv(
-#  jackknifed_CLES_summary_0.05,
-#  glue("{out_dir}/jackknifed_CLES_0.05.csv")
-#)
