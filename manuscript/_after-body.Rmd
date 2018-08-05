@@ -17,3 +17,28 @@ RVM: 0000-0003-2659-6909
 MDC: 0000-0003-0989-3266
 
 GAV: 0000-0002-1363-9781<!--?-->
+
+# Figures
+
+```{r setup-figures, include=FALSE}
+source(here::here("setup.R"))
+source_if_needed(
+  output_path = here::here("figures/"),
+  source_path = here::here("figures/make-figures.R"),
+  import = FALSE
+)
+```
+
+<!--
+Use echo=FALSE explicitly in chunks below.
+Avoids missing "Shaded" environment in LaTeX fragment.
+-->
+
+```{r roughness, echo=FALSE, fig.cap="(ref:roughness)", fig.pos="H"}
+#, out.width="18cm"}
+knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
+```
+
+```{r richness-vs-turnover, echo=FALSE, fig.cap="(ref:richness-vs-turnover)", fig.pos="H"}
+#, out.width="18cm"}
+knitr::include_graphics(here::here("figures/fig-2-richness-vs-turnover.png"), dpi = 100)
