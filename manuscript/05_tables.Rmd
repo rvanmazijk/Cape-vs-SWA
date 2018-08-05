@@ -19,7 +19,7 @@ data_sources %>%
   knitr::kable(caption = "(ref:data-sources)") %>%
 ```
 
-(ref:data-sources) Table: Data sources used in this study. Abbreviations are as follows:<!--TODO-->.
+(ref:data-sources) Data sources used in this study. Abbreviations are as follows:<!--TODO-->.
 
 ```{r turnover-vs-geodist-model-table, results="asis"}
 tidy_terms <- c(
