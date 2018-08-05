@@ -15,22 +15,23 @@ import_objects(
 ```
 
 ```{r data-sources, results="asis"}
-knitr::kable(data_sources, caption = "(ref:data-sources)")
+data_sources %>%
+  knitr::kable(caption = "(ref:data-sources)") %>%
 ```
 
 (ref:data-sources) Table: Data sources used in this study. Abbreviations are as follows:<!--TODO-->.
 
 ```{r turnover-vs-geodist-model-table, results="asis"}
-out <- my_model_table(
-  model_tidy = species_turnover_geodist_m_tidy,
-  tidy_terms = c(
-    "Intercept",
-    "log Distance between cells",
-    "Cape",
-    "log Distance between cells $\\times$ Cape"
-  )
+tidy_terms <- c(
+  "Intercept",
+  "log Distance between cells",
+  "Cape",
+  "log Distance between cells $\\times$ Cape"
 )
-knitr::kable(out$model_table, caption = "(ref:turnover-vs-geodist-model-table)")
+species_turnover_geodist_m_tidy %>%
+  my_model_table(tidy_terms = tidy_terms) %>%
+  magrittr::extract("model_table") %>%
+  knitr::kable(caption = "(ref:turnover-vs-geodist-model-table)") %>%
 ```
 
 (ref:turnover-vs-geodist-model-table) Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (as Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells.
@@ -50,11 +51,10 @@ out <- my_model_table(
   tidy_terms = tidy_terms,
   AIC_table = species_HDS_AIC_table
 )
-knitr::kable(
-  out$model_table,
-  align = c("l", "r", "r"),
-  caption = "(ref:species-model-table)"
-)
+out %>%
+  magrittr::extract("model_table") %>%
+  knitr::kable(align = c("l", "r", "r"),
+               caption = "(ref:species-model-table)") %>%
 ```
 
 (ref:species-model-table) Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$) and turnover ($\overline{J_{QDS}}$; Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
@@ -65,14 +65,13 @@ Note, this model does not represent those curves plot in Figures \@ref(fig:richn
 ```{r species-model-table-3QDS, results="asis"}
 out <- my_model_table(
   model = species_turnover_richness_3QDS_m,
-  tidy_terms = tidy_terms,
+  tidy_terms = tidy_terms,  # from previous chunk
   AIC_table = species_3QDS_AIC_table
 )
-knitr::kable(
-  out$model_table,
-  align = c("l", "r", "r"),
-  caption = "(ref:species-model-table-3QDS)"
-)
+out %>%
+  magrittr::extract("model_table") %>%
+  knitr::kable(align = c("l", "r", "r"),
+               caption = "(ref:species-model-table-3QDS)") %>%
 ```
 
 (ref:species-model-table-3QDS) Estimated coefficients and significances ($P$-value) following multiple linear regression of 3QDS species richness ($S_{3QDS}$) against the mean QDS richness ($\overline{S_{QDS}}$) ($log(x + 1)$-transformed) and turnover ($\overline{J_{QDS}}$, as Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
