@@ -33,6 +33,7 @@ library(readr)
 library(quantreg)
 library(broom)
 library(canprot)
+library(spgwr)
 
 # Visualisations
 library(ggplot2)

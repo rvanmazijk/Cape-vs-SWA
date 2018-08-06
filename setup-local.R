@@ -17,7 +17,7 @@ pacman::p_load(
   # Tabular data-manipulation
   tidyverse, reshape2, readr,
   # Statistics and modelling
-  quantreg, broom, canprot,
+  quantreg, broom, canprot, spgwr,
   # Visualisations
   ggplot2, grid, gridExtra, cowplot, scales, rasterVis, ggspatial
 )
