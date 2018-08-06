@@ -1,6 +1,6 @@
 \break 
 
-# Figures {-}
+# Figure captions {-}
 
 ## Figure 1 {-}
 
