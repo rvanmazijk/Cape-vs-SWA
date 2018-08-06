@@ -2,7 +2,7 @@
 
 # Figure captions {-}
 
-## Figure 1 {-}
+## Figure \@ref(fig:roughness) {-}
 
 (ref:roughness) Comparisons of distributions of calculated environmental roughness values in the Cape and SWA, for elevation, NDVI and climatic variables (**A,B**) and edaphic variables (**C,D**).
 Each row of panels within **A,C** and **B,D** illustrate the distributions for a different variable.
@@ -19,7 +19,7 @@ Lines connect points for illustration, and are paler for the wider quantile.
 
 (ref:roughness)
 
-## Figure 2 {-}
+## Figure \@ref(fig:richness-vs-turnover) {-}
 
 (ref:richness-vs-turnover) Regressions involving plant species richness and turnover.
 Species turnover (as Jaccards distance) between QDS-pairs increases as pairs are more geographically separated (**A**).
