@@ -33,7 +33,7 @@ RENDER_GITBOOK = Rscript -e \
 RENDER_PDF = Rscript -e \
 	"setwd('manuscript'); \
 	library(bookdown); \
-	render_book('$<', 'bookdown::pdf_book')"
+	render_book('$<', 'bookdown::pdf_document2')"
 
 # After-body fragments
 # (setwd("manuscript") not needed for fragments)
