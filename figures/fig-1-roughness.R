@@ -184,6 +184,74 @@ z_dbn_plot <- data_for_violin_plot %>%
 #    panel.border = element_blank()
 #  )
 
+
+# Map panels of elevation ------------------------------------------------------
+
+map(pre_analysis_import_paths, source)
+
+map_panel <- function(x, border, var = NULL) {
+  gplot(x) +
+    geom_tile(aes(fill = value)) +
+    geom_spatial(border, fill = NA, col = "black") +
+    scale_fill_viridis_c(na.value = NA, name = var) +
+    theme(
+      legend.position = c(0.75, 1),
+      legend.justification = c(1, 1),
+      legend.text = element_text(hjust = 1),
+      panel.border = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text = element_blank()
+    )
+}
+map_panels <- function(x, border, var = NULL, var_title = NULL) {
+  stopifnot(is.list(x))
+  abs <- map(x, var)
+  rough <- map(abs, focal_sd)
+  GCFR_elev <-
+    c(abs, rough) %>%
+    map(
+      map_panel,
+      border = border,
+      var = var
+    )
+}
+
+GCFR_elev_panels <- map_panels(
+  list(
+    GCFR_variables,
+    GCFR_variables_3QDS
+  ),
+  border = GCFR_border_buffered,
+  var = "Elevation",
+  var_title = "Elevation (m)"
+)
+SWAFR_elev_panels <- map_panels(
+  list(
+    SWAFR_variables,
+    SWAFR_variables_3QDS
+  ),
+  border = SWAFR_border_buffered,
+  var = "Elevation",
+  var_title = "Elevation (m)"
+)
+
+plot_grid(plotlist = GCFR_elev_panels)
+plot_grid(plotlist = SWAFR_elev_panels)
+
+#elev_panels_plot <-
+#  plot_grid(ncol = 2, plotlist = list(
+#    plot_grid(ncol = 1, plotlist =
+#      GCFR_environment_plots[1:5]
+#    ),
+#    plot_grid(ncol = 1, rel_heights = c(4, 1), plotlist = list(
+#      plot_grid(ncol = 1, plotlist =
+#        GCFR_environment_plots[6:9]
+#      ),
+#      grid.rect(gp = gpar(col = "white"))
+#    ))
+#  ))
+
 # Combine CLES and Z plots -----------------------------------------------------
 
 legends <- plot_grid(
