@@ -12,28 +12,36 @@ names(GCFR_roughness_QDS) %<>% paste0("_rough")
 SWAFR_roughness_QDS <- map(SWAFR_variables_QDS, focal_sd)
 names(SWAFR_roughness_QDS) %<>% paste0("_rough")
 GCFR <-
-  c(richness = mask(GCFR_richness_QDS, GCFR_border_buffered),
+  c(
+    richness = mask(GCFR_richness_QDS, GCFR_border_buffered),
     GCFR_variables_QDS,
-    GCFR_roughness_QDS) %>%
+    GCFR_roughness_QDS
+  ) %>%
   map(getValues) %>%
   as_tibble()
 SWAFR <-
-  c(richness = mask(SWAFR_richness_QDS, SWAFR_border_buffered),
+  c(
+    richness = mask(SWAFR_richness_QDS, SWAFR_border_buffered),
     SWAFR_variables_QDS,
-    SWAFR_roughness_QDS) %>%
-  map(getValue~ .[]) %>%
+    SWAFR_roughness_QDS
+  ) %>%
+  map(getValue) %>%
   as_tibble()
 data <-
-  rbind(cbind(region = "GCFR", GCFR),
-        cbind(region = "SWAFR", SWAFR)) %>%
+  rbind(
+    cbind(region = "GCFR", GCFR),
+    cbind(region = "SWAFR", SWAFR)
+  ) %>%
   as_tibble() %>%
   na.exclude() %>%
   # Adjust environmental values stored at x10 etc.
-  mutate(`Surface T` = `Surface T` - 273.15,
-         NDVI        = NDVI / 1e+07,
-         NDVI_rough  = NDVI_rough / 1e+07,
-         pH          = pH / 10,
-         pH_rough    = pH_rough / 10)
+  mutate(
+    `Surface T` = `Surface T` - 273.15,
+    NDVI        = NDVI / 1e+07,
+    NDVI_rough  = NDVI_rough / 1e+07,
+    pH          = pH / 10,
+    pH_rough    = pH_rough / 10
+  )
 data$region %<>% as.character()
 
 pairs(data[, 3:11])
@@ -65,28 +73,36 @@ names(GCFR_roughness_3QDS) %<>% paste0("_rough")
 SWAFR_roughness_3QDS <- map(SWAFR_variables_3QDS, focal_sd)
 names(SWAFR_roughness_3QDS) %<>% paste0("_rough")
 GCFR <-
-  c(richness = mask(GCFR_richness_3QDS, GCFR_border_buffered),
+  c(
+    richness = mask(GCFR_richness_3QDS, GCFR_border_buffered),
     GCFR_variables_3QDS,
-    GCFR_roughness_3QDS) %>%
-  map(~ .[]) %>%
+    GCFR_roughness_3QDS
+  ) %>%
+  map(getValues) %>%
   as_tibble()
 SWAFR <-
-  c(richness = mask(SWAFR_richness_3QDS, SWAFR_border_buffered),
+  c(
+    richness = mask(SWAFR_richness_3QDS, SWAFR_border_buffered),
     SWAFR_variables_3QDS,
-    SWAFR_roughness_3QDS) %>%
-  map(~ .[]) %>%
+    SWAFR_roughness_3QDS
+  ) %>%
+  map(getValues) %>%
   as_tibble()
 data <-
-  rbind(cbind(region = "GCFR", GCFR),
-        cbind(region = "SWAFR", SWAFR)) %>%
+  rbind(
+    cbind(region = "GCFR", GCFR),
+    cbind(region = "SWAFR", SWAFR)
+  ) %>%
   as_tibble() %>%
   na.exclude() %>%
   # Adjust environmental values stored at x10 etc.
-  mutate(`Surface T` = `Surface T` - 273.15,
-         NDVI        = NDVI / 1e+07,
-         NDVI_rough  = NDVI_rough / 1e+07,
-         pH          = pH / 10,
-         pH_rough    = pH_rough / 10)
+  mutate(
+    `Surface T` = `Surface T` - 273.15,
+    NDVI        = NDVI / 1e+07,
+    NDVI_rough  = NDVI_rough / 1e+07,
+    pH          = pH / 10,
+    pH_rough    = pH_rough / 10
+  )
 data$region %<>% as.character()
 
 pairs(data[, 3:11])

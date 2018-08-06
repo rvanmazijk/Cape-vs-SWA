@@ -11,7 +11,7 @@
 #' @return A list containing the raw terms of the model for inspection,
 #'     the final nice table,
 #'     and the delta AIC of \code{model}
-my_model_table <- function(model = NULL, model_tidy = NULL,
+my_model_table <- function(model_tidy = NULL, model = NULL,
                            tidy_terms = c("Intercept"),
                            AIC_table = NULL) {
 

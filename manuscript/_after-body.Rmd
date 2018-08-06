@@ -1,0 +1,47 @@
+\break
+
+# Biosketches {-}
+
+**Ruan van Mazijk** is a Masters student broadly interested in comparative biology and ...<!--TODO: finish-->
+
+**Michael D. Cramer** <!--TODO-->
+
+**G. Anthony Verboom** <!--TODO-->
+
+# Author contributions {-}
+
+MDC and GAV conceived the study question, which RVM investigated under their supervision for his BSc Hons project. The analyses and programming work were largely devised by RVM, with input from the other authors, and was carried out by RVM. RVM wrote the first draft of the manuscript and all authors contributed equally thereafter.
+
+# ORCID numbers {-}
+
+RVM: 0000-0003-2659-6909
+
+MDC: 0000-0003-0989-3266
+
+GAV: 0000-0002-1363-9781<!--?-->
+
+\break
+
+# Figures {-}
+
+```{r setup-figures, include=FALSE}
+source(here::here("setup.R"))
+source_if_needed(
+  output_path = here::here("figures/"),
+  source_path = here::here("figures/make-figures.R"),
+  import = FALSE
+)
+```
+
+<!--
+Use echo=FALSE explicitly in chunks below.
+Avoids missing "Shaded" environment in LaTeX fragment.
+-->
+
+```{r roughness, echo=FALSE, fig.cap="(ref:roughness)", fig.pos="H", out.width="18cm"}
+knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
+```
+
+```{r richness-vs-turnover, echo=FALSE, fig.cap="(ref:richness-vs-turnover)", fig.pos="H", out.width="18cm"}
+knitr::include_graphics(here::here("figures/fig-2-richness-vs-turnover.png"))
+```

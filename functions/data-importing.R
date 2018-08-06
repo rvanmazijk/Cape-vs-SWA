@@ -28,23 +28,28 @@ folder_is_empty <- function(..., ignore = ".R") {
 #'     Useful if RDS files in your path are known to be large.
 #' @param ... Other parametes to pass to \code{folder_is_empty}
 import_objects <- function(path, ignore_RDS = FALSE,
-                           ignore = ".R") {
+                           ignore = ".R", max_file_size_mb = 10) {
   files <- list.files(
     path,
     pattern = glue::glue("[^\\{ignore}]$"),
     full.names = TRUE
   )
+  max_file_size_b <- max_file_size_mb * 1e6
   if (folder_is_empty(path, ignore = ignore)) {
     message("No objects in folder")
   } else {
     for (file in files) {
-      object_name <- xfun::sans_ext(basename(file))
-      ext <- tolower(xfun::file_ext(file))
-      object <- switch(ext,
-        "csv" = readr::read_csv(file),
-        "rds" = if (!ignore_RDS) readr::read_rds(file) else next
-      )
-      assign(object_name, object, envir = .GlobalEnv)
+      if (file.size(file) > max_file_size_b) {
+        message(glue("Ignoring {file}"))
+      } else {
+        object_name <- xfun::sans_ext(basename(file))
+        ext <- tolower(xfun::file_ext(file))
+        object <- switch(ext,
+          "csv" = readr::read_csv(file),
+          "rds" = if (!ignore_RDS) readr::read_rds(file) else next
+        )
+        assign(object_name, object, envir = .GlobalEnv)
+      }
     }
   }
 }

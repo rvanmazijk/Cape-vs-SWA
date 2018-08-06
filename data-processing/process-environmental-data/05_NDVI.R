@@ -5,7 +5,9 @@
 
 # Import order-information-file to get URLs for MOD13C2 (NDVI) rasters ---------
 
-order <- as_tibble(read.csv(here::here("data/raw-data/NASA-ladsweb-MOD13C2-order-501172795.csv")))
+order <- as_tibble(read.csv(
+  here::here("data/raw-data/NASA-ladsweb-MOD13C2-order-501172795.csv")
+))
 
 # Download HDF4 files ----------------------------------------------------------
 
@@ -115,7 +117,7 @@ GCFR_box <- readRDS(here::here("data/derived-data/borders/GCFR_box.rds"))
 # Reproject it to the CRS of the NASA tiffs
 proj4string(GCFR_box) == std_CRS
 NASA_CRS <- crs(raster(paste0(giswd, "MOD13C2_GeoTiffs/", files[1])))
-GCFR_box_NASA <-  spTransform(GCFR_box, CRSobj = NASA_CRS)
+GCFR_box_NASA <- spTransform(GCFR_box, CRSobj = NASA_CRS)
 
 # Use this, in parallel, to crop those tiffs
 cluster <- makeCluster(detectCores() - 1, outfile = "")
@@ -144,7 +146,7 @@ SWAFR_box <- readRDS(here::here("data/derived-data/borders/SWAFR_box.rds"))
 # Reproject it to the CRS of the NASA tiffs
 proj4string(SWAFR_box) == std_CRS
 NASA_CRS <- crs(raster(paste0(giswd, "MOD13C2_GeoTiffs/", files[1])))
-SWAFR_box_NASA <-  spTransform(SWAFR_box, CRSobj = NASA_CRS)
+SWAFR_box_NASA <- spTransform(SWAFR_box, CRSobj = NASA_CRS)
 
 # Use this, in parallel, to crop those tiffs
 cluster <- makeCluster(detectCores() - 1, outfile = "")
@@ -278,7 +280,7 @@ for (i in seq_along(files_by_year)) {
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
-       )
+      )
     }
 }
 
@@ -354,8 +356,10 @@ for (month in c("Feb", "Mar", "Apr")) {
 
 # ............ May to December -------------------------------------------------
 
-for (month in c("May", "Jun", "Jul", "Aug",
-        "Sep", "Oct", "Nov", "Dec")) {
+for (month in c(
+  "May", "Jun", "Jul", "Aug",
+  "Sep", "Oct", "Nov", "Dec"
+)) {
   GCFR_month_NDVI_stack <- stack()
   for (i in seq_along(2000:2016)) {
     layer <- raster(paste0(
@@ -473,7 +477,7 @@ for (i in seq_along(files_by_year)) {
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
-       )
+      )
     }
 }
 

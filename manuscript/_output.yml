@@ -1,7 +1,9 @@
 bookdown::gitbook:
-  number_sections: false
-#bookdown::pdf_book:
-#  includes:
-#    in-header: style.sty  # FIXME
-#  latex_engine: xelatex
-#  mainfont: Helvetica
+  split_by: rmd
+  pandoc_args: [
+    "--include-after-body", "_after-body.html"
+  ]
+bookdown::pdf_document2:
+  pandoc_args: [
+    "--include-after-body", "_after-body.tex"
+  ]

@@ -37,7 +37,7 @@ order2$name %<>% as.character()
 order2$last_modified %<>% lubridate::as_datetime()
 FTP <- "ftp://ladsweb.modaps.eosdis.nasa.gov/orders/501148261/"
 
-order[,] == order2[,]
+order[, ] == order2[, ]
 # Same :)
 
 pb <- txtProgressBar(min = 0, max = length(order2$name), style = 3)
@@ -82,10 +82,14 @@ jan_file_query <- modfile_query(month = "Jan")
 levels(jan_file_query$month)
 # Write Jan, Feb, Mar and May's mean_monthly_LSTs to disc AND to object,
 # for years 2000:2017 (default):
-modis_jan <- proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Jan"))
-modis_feb <- proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Feb"))
-modis_mar <- proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Mar"))
-modis_apr <- proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Apr"))
+modis_jan <-
+  proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Jan"))
+modis_feb <-
+  proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Feb"))
+modis_mar <-
+  proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Mar"))
+modis_apr <-
+  proj_crop_mask_mean_write(df_of_files = modfile_query(month = "Apr"))
 
 # Write Ma to  Jun, ... Dec's mean_monthly_LST to disc AND to object,
 # for years 2000:2016 (b.c. 2017 May+ DNE):
@@ -285,7 +289,6 @@ writeRaster(
   overwrite = T
 )
 
-
 # Quarterly-derived bioclimatic variables --------------------------------------
 
 # .... Import monthly LST stacks -----------------------------------------------
@@ -295,14 +298,14 @@ GCFR_monthly_LST <- import_raster_stack(
   "MODIS_monthly_means_GCFR_0.05_buffered.grd",
   n_bands = 12
 )
-proj4string(GCFR_monthly_LST) == std_CRS  # TRUE
+proj4string(GCFR_monthly_LST) == std_CRS # TRUE
 res(GCFR_monthly_LST)
 SWAFR_monthly_LST <- import_raster_stack(
   "temperature",
   "MODIS_monthly_means_SWAFR_0.05_buffered.grd",
   n_bands = 12
 )
-proj4string(SWAFR_monthly_LST) == std_CRS  # TRUE
+proj4string(SWAFR_monthly_LST) == std_CRS # TRUE
 res(SWAFR_monthly_LST)
 
 # .... Make LST in the warmest quarter and coolest quarter ---------------------
