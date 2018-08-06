@@ -36,13 +36,12 @@ $U$-tests for almost all environmental variables yielded significant differences
 ## Figure \@ref(fig:richness-vs-turnover) {-}
 
 (ref:richness-vs-turnover) Regressions involving plant species richness and turnover.
-Species turnover (as Jaccards distance) between QDS-pairs increases as pairs are more geographically separated (**A**).
+Species turnover (as Jaccards distance) between QDS-pairs increases as pairs are more geographically separated (a).
 Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity.
 Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region separately.
 Following a 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable (Table \@ref(tab:turnover-vs-geodist-model-table)), a significant interaction between distance and region was found ($P < 0.001$), such that the Cape positively effects the distance slope term.
-Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (**B**) and the average species turnover between QDS in a given HDS (**C**).
+Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (b) and the average species turnover between QDS in a given HDS (c).
 Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences.
-<!--TODO: add panel label C-->
 
 (ref:richness-vs-turnover)
 
