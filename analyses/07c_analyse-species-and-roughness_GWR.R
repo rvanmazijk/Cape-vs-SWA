@@ -1,4 +1,5 @@
-# First attempt at geographically weighted regressions (GWRs)
+# Geographically weighted regressions of species richness
+# as a function of environment and environmental heterogeneity
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -6,7 +7,6 @@
 
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
-pacman::p_load(spgwr, GWmodel)
 
 # Collate data -----------------------------------------------------------------
 
@@ -104,7 +104,6 @@ model_specs <- list(
 )
 GCFR_models <- map(.x = model_specs,
   .f = ~ gwr_model(
-    pkg = "spgwr",
     data = GCFR_all_QDS_pts,
     columns = .x,
     rasterize_with = GCFR_richness_QDS
@@ -112,7 +111,6 @@ GCFR_models <- map(.x = model_specs,
 )
 SWAFR_models <- map(.x = model_specs,
   .f = ~ gwr_model(
-    pkg = "spgwr",
     data = SWAFR_all_QDS_pts,
     columns = .x,
     rasterize_with = SWAFR_richness_QDS
