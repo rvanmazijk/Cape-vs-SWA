@@ -1,4 +1,5 @@
 bookdown::gitbook:
+  split_by: rmd
   pandoc_args: [
     "--include-after-body", "_after-body.html"
   ]
