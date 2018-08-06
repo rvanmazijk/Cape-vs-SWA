@@ -134,6 +134,7 @@ model_specs <- list(
   non_soil = -c(7:10, 16:19),
   full     =  c("all")
 )
+set.seed(1234)
 GCFR_models <- map(.x = model_specs,
   .f = ~ gwr_model(
     data = GCFR_all_QDS_pts,
@@ -141,6 +142,7 @@ GCFR_models <- map(.x = model_specs,
     rasterize_with = GCFR_richness_QDS
   )
 )
+set.seed(1234)
 SWAFR_models <- map(.x = model_specs,
   .f = ~ gwr_model(
     data = SWAFR_all_QDS_pts,
@@ -156,17 +158,20 @@ SWAFR_models <- map(.x = model_specs,
 # Overall "ranking" of model fits
 delta_AICc(GCFR_models)
 delta_AICc(SWAFR_models)
+
 # Specific model comparisons
-delta_AICc(GCFR_models[c("null", "abs",  "rough",    "full")])
+delta_AICc(GCFR_models[c( "null", "abs",  "rough",    "full")])
 delta_AICc(SWAFR_models[c("null", "abs",  "rough",    "full")])
-delta_AICc(GCFR_models[c("null", "elev", "non_elev", "full")])
+delta_AICc(GCFR_models[c( "null", "elev", "non_elev", "full")])
 delta_AICc(SWAFR_models[c("null", "elev", "non_elev", "full")])
-delta_AICc(GCFR_models[c("null", "soil", "non_soil", "full")])
+delta_AICc(GCFR_models[c( "null", "soil", "non_soil", "full")])
 delta_AICc(SWAFR_models[c("null", "soil", "non_soil", "full")])
-map(GCFR_models, anova)  # TODO: interpretation of this?
+
+# TODO: interpretation of this?
+map(GCFR_models, anova)
 map(SWAFR_models, anova)
 
-####
+#### WIP
 spplot(
   GCFR_models$elev$SDF["Elevation"], scales = list(draw = TRUE),
   sp.layout = list(GCFR_border_buffered)
@@ -176,3 +181,64 @@ spplot(
   sp.layout = list(SWAFR_border_buffered)
 )
 ####
+
+# .... Combined regions' models ------------------------------------------------
+
+# Note, "region" column is simply to aid visualisation later.
+# GWR cannot actually handle a discrete term directly (hence -1 for
+# some model specs) but the spatial covariance matrix means that we can see
+# how different the local coefficients turn out to be estimated w/i each region.
+
+model_specs <- list(
+  null     =  c(NULL),
+  abs      =  c(2, 3:11),
+  rough    =  c(2, 12:20),
+  elev     =  c(2, 3, 12),
+  non_elev = -c(1, 3, 12),
+  soil     =  c(2, 8:11, 17:20),
+  non_soil = -c(1, 8:11, 17:20),
+  full     = -c(1)
+)
+set.seed(1234)
+combined_models <- map(.x = model_specs,
+  .f = ~ gwr_model(
+    data = BOTH_all_QDS_pts,
+    columns = .x
+  )
+)
+
+delta_AICc(combined_models)
+
+delta_AICc(combined_models[c("null", "abs",  "rough",    "full")])
+delta_AICc(combined_models[c("null", "elev", "non_elev", "full")])
+delta_AICc(combined_models[c("null", "soil", "non_soil", "full")])
+
+full_coeff <- combined_models$full$SDF@data
+full_coeff <- cbind(region = BOTH_all_QDS_pts@data$region, full_coeff)
+names(full_coeff)[[70]] <- "pred.se2"
+full_coeff %<>% as_tibble()
+
+# Compare coefficients of absolute variables between regions
+full_coeff %>%
+  select(region, Elevation:pH) %>%
+  gather(term, est, -region) %>%
+  ggplot(aes(est, col = region, fill = region)) +
+    geom_histogram(alpha = 0.5) +
+    scale_colour_manual(values = my_palette) +
+    scale_fill_manual(values = my_palette) +
+    facet_wrap(~ term, scales = "free")
+
+# Compare coefficients of roughness variables between regions
+full_coeff %>%
+  select(region, rough_Elevation:rough_pH) %>%
+  gather(term, est, -region) %>%
+  ggplot(aes(est, col = region, fill = region)) +
+    geom_histogram(alpha = 0.5) +
+    scale_colour_manual(values = my_palette) +
+    scale_fill_manual(values = my_palette) +
+    facet_wrap(~ term, scales = "free")
+
+# TODO: what do all the *other* columns in the GWR output mean?
+#   --> DO SOME READING
+# TODO: make this sort of graphical comparison between
+#   the separate models' estimates
