@@ -131,7 +131,7 @@ CLES_plot <- ggplot(data, aes(resolution, CLES, col = variable_type)) +
     ))
   ))
 
-# Roughness violin plots -------------------------------------------------------
+# Roughness distribution plots -------------------------------------------------
 
 # Tidy-up raw distribution dataframe
 data_for_violin_plot$variable %<>% factor(levels = var_names)
@@ -209,7 +209,7 @@ final_plot <- plot_grid(
 )
 
 ggsave(
-  here::here("figures/fig-1-roughness-jackknife.png"),
+  here::here("figures/fig-1-roughness.png"),
   final_plot,
   width = 10, height = 4,
   dpi = 300
