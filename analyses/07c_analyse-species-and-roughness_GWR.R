@@ -1,4 +1,4 @@
-# Geographically weighted regressions of species richness
+# Geographically weighted regressions of *log* species richness
 # as a function of environment and environmental heterogeneity
 # Cape vs SWA publication
 # Ruan van Mazijk
@@ -35,7 +35,7 @@ for (i in seq_along(SWAFR_roughness_QDS)) {
 # Combine richness, environment and roughness into SpatialPointsDataFrames
 # GCFR
 GCFR_all_QDS <- c(
-  richness = GCFR_richness_QDS,
+  richness = log(GCFR_richness_QDS),
   map(GCFR_variables_QDS, na.omit),
   GCFR_roughness_QDS
 )
@@ -54,9 +54,20 @@ GCFR_all_QDS_pts <- SpatialPointsDataFrame(
   coords = na.omit(GCFR_all_QDS_df)[,  c(1, 2)],
   proj4string = CRS(std_CRS)
 )
+# Adjust environmental values stored at x10 etc.
+GCFR_all_QDS_pts@data %<>% mutate(
+  `Surface T` = `Surface T` - 273.15, # no adj needed for rough, as additive
+  NDVI        = NDVI / 1e+07,
+  rough_NDVI  = rough_NDVI / 1e+07,
+  pH          = pH / 10,
+  rough_pH    = rough_pH / 10
+)
+# TODO: Check which other vars have been x10
+# TODO: Check units for NDVI
+
 # SWAFR
 SWAFR_all_QDS <- c(
-  richness = SWAFR_richness_QDS,
+  richness = log(SWAFR_richness_QDS),
   map(SWAFR_variables_QDS, na.omit),
   SWAFR_roughness_QDS
 )
@@ -75,6 +86,17 @@ SWAFR_all_QDS_pts <- SpatialPointsDataFrame(
   coords = na.omit(SWAFR_all_QDS_df)[,  c(1, 2)],
   proj4string = CRS(std_CRS)
 )
+# Adjust environmental values stored at x10 etc.
+SWAFR_all_QDS_pts@data %<>% mutate(
+  `Surface T` = `Surface T` - 273.15, # no adj needed for rough, as additive
+  NDVI        = NDVI / 1e+07,
+  rough_NDVI  = rough_NDVI / 1e+07,
+  pH          = pH / 10,
+  rough_pH    = rough_pH / 10
+)
+# TODO: Check which other vars have been x10
+# TODO: Check units for NDVI
+
 # Combined
 BOTH_all_QDS_pts <- SpatialPointsDataFrame(
   data = rbind(
@@ -87,6 +109,16 @@ BOTH_all_QDS_pts <- SpatialPointsDataFrame(
   ),
   proj4string = CRS(std_CRS)
 )
+# Adjust environmental values stored at x10 etc.
+BOTH_all_QDS_pts@data %<>% mutate(
+  `Surface T` = `Surface T` - 273.15, # no adj needed for rough, as additive
+  NDVI        = NDVI / 1e+07,
+  rough_NDVI  = rough_NDVI / 1e+07,
+  pH          = pH / 10,
+  rough_pH    = rough_pH / 10
+)
+# TODO: Check which other vars have been x10
+# TODO: Check units for NDVI
 
 # Fit models -------------------------------------------------------------------
 
