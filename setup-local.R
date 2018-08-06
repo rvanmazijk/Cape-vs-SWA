@@ -7,9 +7,9 @@
 if (!require(pacman)) install.packages("pacman", dependencies = TRUE)
 pacman::p_load(
   # General programming
-  magrittr, here, glue, stringr, foreach, xfun, microbenchmark,
+  magrittr, here, glue, stringr, foreach, xfun,
   # Parallel processing
-  parallel,
+  parallel, microbenchmark,
   # GIS
   raster, sp, rgdal,
   # Taxonomy

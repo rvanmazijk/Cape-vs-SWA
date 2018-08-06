@@ -11,10 +11,10 @@ library(glue)
 library(stringr)
 library(foreach)
 library(xfun)
-library(microbenchmark)
 
 # Parallel processing
 library(parallel)
+library(microbenchmark)
 
 # GIS
 library(rgdal)
