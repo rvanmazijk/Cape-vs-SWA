@@ -6,10 +6,14 @@
 source(here::here("setup.R"))
 data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
 import_objects(
-  here::here("outputs/06_species-turnover-and-richness/")
+  here::here("outputs/species-turnover-and-richness/")
 )
 import_objects(
-  here::here("outputs/05_species-turnover-w-distance/"),
+  here::here("outputs/species-turnover-w-distance/"),
+  ignore_RDS = TRUE
+)
+import_objects(
+  here::here("outputs/species-and-roughness/"),
   ignore_RDS = TRUE
 )
 ```
@@ -95,3 +99,35 @@ The Cape was fit as the baseline, hence the SWA represents the categorical term 
 <!--TODO: use SWA as baseline? to be more consistent w/ tab:turnover-vs-geodist-model-table-->
 These models were better fitting than similar models without region categories ($\Delta AIC =$ `r out$deltaAIC`).
 Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover)B,C and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
+
+```{r species-roughness-AICc, results="asis"}
+out <- bind_rows(.id = "region", list(
+  Cape = GCFR_models_AICc_all, 
+  SWA = SWAFR_models_AICc_all,
+  Both = combined_models_AICc_all
+))
+out %>%
+  mutate(model = case_when(
+    model == "null"     ~ "Null",
+    model == "full"     ~ "Full",
+    model == "abs"      ~ "Absolute variables",
+    model == "rough"    ~ "Roughness variables",
+    model == "elev"     ~ "Elevation",
+    model == "non_elev" ~ "Non-elevation variables",
+    model == "soil"     ~ "Soil variables",
+    model == "non_soil" ~ "Non-soil variables"
+  )) %>%
+  arrange(region, delta_AICc) %>%
+  select(-region) %>%
+  knitr::kable(
+    escape = FALSE,
+    col.names = c("Predictors", "$AICc$", "$\\delta AICc$", "$w_{AICc}$"),
+    caption = "(ref:species-roughness-AICc)"
+  ) %>%
+  kableExtra::group_rows("Cape", 1, 8) %>%
+  kableExtra::group_rows("SWA", 9, 16) %>%
+  kableExtra::group_rows("Both", 17, 24) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+(ref:species-roughness-AICc) Foo
