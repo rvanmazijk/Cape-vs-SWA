@@ -21,7 +21,6 @@ import_objects(
 ```{r data-sources, results="asis"}
 data_sources %>%
   knitr::kable(
-    escape = FALSE,
     caption = "(ref:data-sources)"
   ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
