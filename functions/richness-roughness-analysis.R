@@ -1,21 +1,28 @@
 # GWR helper function
-gwr_model <- function(data, columns = NULL, rasterize_with = NULL) {
+gwr_model <- function(data, columns = NULL, rasterize_with = NULL,
+                      formula_override = NULL) {
 
   stopifnot(class(data) == "SpatialPointsDataFrame")
 
   # Set explanatory variables --------------------------------------------------
 
-  if (is.null(columns)) {
-    message("Defaulting to null model")
-    formula <- richness ~ 1
-    columns <- c(1:nlayers(data))  # To prevent "unsupported index type NULL"
-  } else if (columns == "all") {
-    message("Defaulting to full model")
-    formula <- richness ~ .
-    columns <- c(1:nlayers(data))
-  } else {
+  if (!is.null(formula_override)) {
+    message("Using manual formula")
     message(glue("Using columns {columns}"))
-    formula <- richness ~ .
+    formula <- formula_override
+  } else {
+    if (is.null(columns)) {
+      message("Defaulting to null model")
+      formula <- richness ~ 1
+      columns <- c(1:nlayers(data))  # To prevent "unsupported index type NULL"
+    } else if (columns == "all") {
+      message("Defaulting to full model")
+      formula <- richness ~ .
+      columns <- c(1:nlayers(data))
+    } else {
+      message(glue("Using columns {columns}"))
+      formula <- richness ~ .
+    }
   }
 
   # Compute optimal bandwidth for kernels --------------------------------------
