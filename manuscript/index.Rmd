@@ -4,6 +4,8 @@ author: Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
 toc: false
+header-includes:
+  - \usepackage{float}  # so _after-body.Rmd can "hold" tables and figures
 ---
 
 ```{r setup, include=FALSE}
