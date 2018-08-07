@@ -21,6 +21,7 @@ import_objects(
 ```{r data-sources, results="asis"}
 data_sources %>%
   knitr::kable(
+    booktabs = TRUE,
     caption = "(ref:data-sources)"
   ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
@@ -40,6 +41,7 @@ species_turnover_geodist_m_tidy %>%
   magrittr::extract("model_table") %>%
   knitr::kable(
     escape = FALSE,
+    booktabs = TRUE,
     caption = "(ref:turnover-vs-geodist-model-table)"
   ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
@@ -66,6 +68,7 @@ out %>%
   magrittr::extract("model_table") %>%
   knitr::kable(
     escape = FALSE,
+    booktabs = TRUE,
     align = c("l", "r", "r"),
     caption = "(ref:species-model-table)"
   ) %>%
@@ -87,6 +90,7 @@ out %>%
   magrittr::extract("model_table") %>%
   knitr::kable(
     escape = FALSE,
+    booktabs = TRUE,
     align = c("l", "r", "r"),
     caption = "(ref:species-model-table-3QDS)"
   ) %>%
@@ -121,6 +125,7 @@ out %>%
   knitr::kable(
     escape = FALSE,
     col.names = c("Predictors", "$AICc$", "$\\delta AICc$", "$w_{AICc}$"),
+    booktabs = TRUE,
     caption = "(ref:species-roughness-AICc)"
   ) %>%
   kableExtra::group_rows("Cape", 1, 8) %>%
