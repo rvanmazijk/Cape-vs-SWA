@@ -1,4 +1,4 @@
-# Make Fig. 2 (Richness and turnover)
+# Make Fig. 2 (Exploring species richness and turnover)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
