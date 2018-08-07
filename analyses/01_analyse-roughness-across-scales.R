@@ -5,6 +5,8 @@
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
 
+out_dir <- here::here("outputs/roughness-across-scales")
+
 set.seed(1234)
 
 # Test 0.05deg, QDS, HDS, 3QDS comparisons -------------------------------------
@@ -40,7 +42,7 @@ test_results_summary <- test_results %>%
 # Save to disc
 write_csv(
   test_results_summary,
-  here::here("outputs/04_roughness-across-scales/test_results_summary.csv")
+  glue("{out_dir}/test_results_summary.csv")
 )
 
 # CLES for those tests ---------------------------------------------------------
@@ -68,7 +70,7 @@ test_results_CLES_for_plot <- test_results_CLES %>%
 # Save to disc
 write_csv(
   test_results_CLES_for_plot,
-  here::here("outputs/04_roughness-across-scales/test_results_CLES_for_plot.csv")
+  glue("{out_dir}/test_results_CLES_for_plot.csv")
 )
 
 # Prep data for violin plot ----------------------------------------------------
@@ -100,7 +102,7 @@ data_for_violin_plot_tidy <- data_for_violin_plot %$%
 # Save to disc
 write_csv(
   data_for_violin_plot_tidy,
-  here::here("outputs/04_roughness-across-scales/data_for_violin_plot.csv")
+  glue("{out_dir}/data_for_violin_plot.csv")
 )
 
 # Analyse IQ95R (and IQ99R) ~ scale --------------------------------------------
@@ -129,5 +131,5 @@ IQ95R_data <- data_for_violin_plot_tidy %>%
 # Save to disc
 write_csv(
   IQ95R_data,
-  here::here("outputs/04_roughness-across-scales/IQ95R_data.csv")
+  glue("{out_dir}/IQ95R_data.csv")
 )
