@@ -21,9 +21,9 @@ Department of Biological Sciences, University of Cape Town, Rondebosch, South Af
 
 Corresponding author: Ruan van Mazijk, ruanvmazijk@gmail.com, +27 21 650 3684
 
-# Running title {- }
+***
 
-Environmental heterogeneity and plant species richness
+**Running title:** Environmental heterogeneity and plant species richness
 
 # Abstract {-}
 
