@@ -140,4 +140,7 @@ out %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-(ref:species-roughness-AICc) Foo
+(ref:species-roughness-AICc) Comparisons of Akaike information criterion values (small sample-size-corrected, $AICc$) of various geographically weighted regressions (GWR) of log-transformed species richness as a function of various sets of environmental variables. 
+Models were fit for the Cape and SWA richness and environmental data both separately and together. 
+GWR methods preclude the need for a categorical predictor for the Cape vs SWA, as the longitudinal (and to a lesser extent latitudinal) differences between the regions allows local regression coefficients in each region to differ. 
+<!--TODO: complete/expand: Models fit for each of the three geographic extents: null ($S_{ij} \sim \beta_{0}_{ij} + \beta_{1}_{ij} Lon_{ij} + \beta_{2}_{ij} Lat_{ij} + \beta\epsilon_{ij}$), ...-->
