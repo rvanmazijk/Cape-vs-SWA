@@ -4,8 +4,8 @@
 # Ruan van Mazijk
 
 source(here::here("setup.R"))
-source(here::here("analyses/01_import-region-polygons.R"))
-source(here::here("analyses/02_import-floral-data.R"))
+source(here::here("data/01_import-region-polygons.R"))
+source(here::here("data/02_import-floral-data.R"))
 
 out_dir <- here::here("outputs/species-turnover-and-richness")
 

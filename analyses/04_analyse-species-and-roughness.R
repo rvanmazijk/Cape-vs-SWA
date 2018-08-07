@@ -6,7 +6,7 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-map(pre_analysis_import_paths, source)
+map(data_import_paths, source)
 
 # Collate data -----------------------------------------------------------------
 
