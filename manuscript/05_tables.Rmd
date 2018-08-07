@@ -16,7 +16,10 @@ import_objects(
 
 ```{r data-sources, results="asis"}
 data_sources %>%
-  knitr::kable(caption = "(ref:data-sources)") %>%
+  knitr::kable(
+    escape = FALSE,
+    caption = "(ref:data-sources)"
+  ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
@@ -32,7 +35,10 @@ tidy_terms <- c(
 species_turnover_geodist_m_tidy %>%
   my_model_table(tidy_terms = tidy_terms) %>%
   magrittr::extract("model_table") %>%
-  knitr::kable(caption = "(ref:turnover-vs-geodist-model-table)") %>%
+  knitr::kable(
+    escape = FALSE,
+    caption = "(ref:turnover-vs-geodist-model-table)"
+  ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
@@ -56,6 +62,7 @@ out <- my_model_table(
 out %>%
   magrittr::extract("model_table") %>%
   knitr::kable(
+    escape = FALSE,
     align = c("l", "r", "r"),
     caption = "(ref:species-model-table)"
   ) %>%
@@ -76,6 +83,7 @@ out <- my_model_table(
 out %>%
   magrittr::extract("model_table") %>%
   knitr::kable(
+    escape = FALSE,
     align = c("l", "r", "r"),
     caption = "(ref:species-model-table-3QDS)"
   ) %>%
