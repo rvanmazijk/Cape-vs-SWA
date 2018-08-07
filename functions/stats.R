@@ -136,7 +136,7 @@ test_error_rate <- function(mu1 = 0, mu2 = mu2, sd = 1, n_sim = 100) {
   type_1_error_rate
 }
 
-delta_AICc <- function(x, file) {
+delta_AICc <- function(x, file = NULL) {
   stopifnot(exprs = {
     is.list(x)
     all(map_chr(x, class) == "gwr")
@@ -152,6 +152,8 @@ delta_AICc <- function(x, file) {
       akaike_weights = akaike_weights
     ) %>%
     arrange(delta_AICc)
-  write_csv(out, file)
+  if (!is.null(file)) {
+    write_csv(out, file)
+  }
   out
 }
