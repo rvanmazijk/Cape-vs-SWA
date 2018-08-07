@@ -87,8 +87,8 @@ theme_set(my_theme)
 
 # Define analysis & output paths -----------------------------------------------
 
-pre_analysis_import_paths <- list.files(
-  here::here("analyses"),
+data_import_paths <- list.files(
+  here::here("data"),
   pattern = "^\\d{2}_import-.*\\.R",
   full.names = TRUE
 )
