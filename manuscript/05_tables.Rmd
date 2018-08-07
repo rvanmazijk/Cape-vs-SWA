@@ -120,12 +120,18 @@ out %>%
     model == "soil"     ~ "Soil variables",
     model == "non_soil" ~ "Non-soil variables"
   )) %>%
+  mutate_if(is.numeric, function(x) {
+    x %>%
+      round(digits = 2) %>%
+      format(digits = 3, nsmall = 2)
+  }) %>%
   arrange(region, delta_AICc) %>%
   select(-region) %>%
   knitr::kable(
     escape = FALSE,
     col.names = c("Predictors", "$AICc$", "$\\delta AICc$", "$w_{AICc}$"),
     booktabs = TRUE,
+    align = c("l", "r", "r", "r"),
     caption = "(ref:species-roughness-AICc)"
   ) %>%
   kableExtra::group_rows("Cape", 1, 8) %>%
