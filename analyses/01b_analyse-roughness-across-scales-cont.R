@@ -8,7 +8,7 @@
 source(here::here("setup.R"))
 map(pre_analysis_import_paths, source)
 
-out_dir <- here::here("outputs/04_roughness-across-scales")
+out_dir <- here::here("outputs/roughness-across-scales")
 
 # Compute and store all pairwise comparisons of roughness in cells -------------
 

@@ -6,7 +6,9 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-map(pre_analysis_import_paths, source)
+map(data_import_paths, source)
+
+out_dir <- here::here("outputs/species-and-roughness")
 
 # Collate data -----------------------------------------------------------------
 
@@ -134,38 +136,42 @@ model_specs <- list(
   non_soil = -c(7:10, 16:19),
   full     =  c("all")
 )
-set.seed(1234)
-GCFR_models <- map(.x = model_specs,
-  .f = ~ gwr_model(
-    data = GCFR_all_QDS_pts,
-    columns = .x,
-    rasterize_with = GCFR_richness_QDS
+
+# Fit models if not already done
+
+GCFR_models_path <- glue("{out_dir}/GCFR_models.RDS")
+if (!file.exists(GCFR_models_path)) {
+  set.seed(1234)
+  GCFR_models <- map(.x = model_specs,
+    .f = ~ gwr_model(
+      data = GCFR_all_QDS_pts,
+      columns = .x,
+      rasterize_with = GCFR_richness_QDS
+    )
   )
-)
-set.seed(1234)
-SWAFR_models <- map(.x = model_specs,
-  .f = ~ gwr_model(
-    data = SWAFR_all_QDS_pts,
-    columns = .x,
-    rasterize_with = SWAFR_richness_QDS
+  write_rds(GCFR_models, GCFR_models_path)
+} else {
+  GCFR_models <- read_rds(GCFR_models_path)
+}
+
+SWAFR_models_path <- glue("{out_dir}/SWAFR_models.RDS")
+if (!file.exists(SWAFR_models_path)) {
+  set.seed(1234)
+  SWAFR_models <- map(.x = model_specs,
+    .f = ~ gwr_model(
+      data = SWAFR_all_QDS_pts,
+      columns = .x,
+      rasterize_with = SWAFR_richness_QDS
+    )
   )
-)
+  write_rds(SWAFR_models, SWAFR_models_path)
+} else {
+  SWAFR_models <- read_rds(SWAFR_models_path)
+}
 # NOTE:
 # - non_elev: richness ~ soil + climate + ndvi + roughnesses thereof
 # - non_soil: richness ~ elev + climate + ndvi + roughnesses thereof
 # - etc.
-
-# Overall "ranking" of model fits
-delta_AICc(GCFR_models)
-delta_AICc(SWAFR_models)
-
-# Specific model comparisons
-delta_AICc(GCFR_models[c( "null", "abs",  "rough",    "full")])
-delta_AICc(SWAFR_models[c("null", "abs",  "rough",    "full")])
-delta_AICc(GCFR_models[c( "null", "elev", "non_elev", "full")])
-delta_AICc(SWAFR_models[c("null", "elev", "non_elev", "full")])
-delta_AICc(GCFR_models[c( "null", "soil", "non_soil", "full")])
-delta_AICc(SWAFR_models[c("null", "soil", "non_soil", "full")])
 
 # TODO: interpretation of this?
 map(GCFR_models, anova)
@@ -199,19 +205,85 @@ model_specs <- list(
   non_soil = -c(1, 8:11, 17:20),
   full     = -c(1)
 )
-set.seed(1234)
-combined_models <- map(.x = model_specs,
-  .f = ~ gwr_model(
-    data = BOTH_all_QDS_pts,
-    columns = .x
+
+# Fit models if not already done
+
+combined_models_path <- glue("{out_dir}/combined_models.RDS")
+if (!file.exists(combined_models_path)) {
+  set.seed(1234)
+  foo <- map(.x = model_specs,
+    .f = ~ gwr_model(
+      data = BOTH_all_QDS_pts,
+      columns = .x
+    )
   )
+  write_rds(combined_models, combined_models_path)
+} else {
+  combined_models <- read_rds(combined_models_path)
+}
+
+# Interpret models -------------------------------------------------------------
+
+# .... Separate regions' models ------------------------------------------------
+
+# Overall "ranking" of model fits
+delta_AICc(
+  GCFR_models,
+  glue("{out_dir}/GCFR_models_AICc_all.csv")
+)
+delta_AICc(
+  SWAFR_models,
+  glue("{out_dir}/SWAFR_models_AICc_all.csv")
 )
 
-delta_AICc(combined_models)
+# Specific model comparisons
+abs_vs_rough     <- c("null", "abs",  "rough",    "full")
+elev_vs_non_elev <- c("null", "elev", "non_elev", "full")
+soil_vs_non_soil <- c("null", "soil", "non_soil", "full")
+delta_AICc(
+  GCFR_models[abs_vs_rough],
+  glue("{out_dir}/GCFR_models_AICc_abs_vs_rough.csv")
+)
+delta_AICc(
+  SWAFR_models[abs_vs_rough],
+  glue("{out_dir}/SWAFR_models_AICc_abs_vs_rough.csv")
+)
+delta_AICc(
+  GCFR_models[elev_vs_non_elev],
+  glue("{out_dir}/GCFR_models_AICc_elev_vs_non_elev.csv")
+)
+delta_AICc(
+  SWAFR_models[elev_vs_non_elev],
+  glue("{out_dir}/SWAFR_models_AICc_elev_vs_non_elev.csv")
+)
+delta_AICc(
+  GCFR_models[soil_vs_non_soil],
+  glue("{out_dir}/GCFR_models_AICc_soil_vs_non_soil.csv")
+)
+delta_AICc(
+  SWAFR_models[soil_vs_non_soil],
+  glue("{out_dir}/SWAFR_models_AICc_soil_vs_non_soil.csv")
+)
 
-delta_AICc(combined_models[c("null", "abs",  "rough",    "full")])
-delta_AICc(combined_models[c("null", "elev", "non_elev", "full")])
-delta_AICc(combined_models[c("null", "soil", "non_soil", "full")])
+# .... Combined regions' models ------------------------------------------------
+
+delta_AICc(
+  combined_models,
+  glue("{out_dir}/combined_models_AICc_all.csv")
+)
+delta_AICc(
+  combined_models[abs_vs_rough],
+  glue("{out_dir}/combined_models_AICc_abs_vs_rough.csv")
+)
+delta_AICc(
+  combined_models[elev_vs_non_elev],
+  glue("{out_dir}/combined_models_AICc_elev_vs_non_elev.csv")
+)
+delta_AICc(
+  combined_models[soil_vs_non_soil],
+  glue("{out_dir}/combined_models_AICc_soil_vs_non_soil.csv")
+)
+
 
 full_coeff <- combined_models$full$SDF@data
 full_coeff <- cbind(region = BOTH_all_QDS_pts@data$region, full_coeff)

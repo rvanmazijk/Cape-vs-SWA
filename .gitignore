@@ -5,4 +5,5 @@ packrat/lib*/
 manuscript/lib*/
 manuscript/_manuscript/
 *.html
-outputs/04_roughness-across-scales/pw-comparisons*parallel*
+outputs/roughness-across-scales/pw-comparisons*parallel*
+outputs/species-and-roughness/*.RDS

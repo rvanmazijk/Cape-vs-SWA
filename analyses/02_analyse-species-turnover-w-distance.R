@@ -3,8 +3,10 @@
 # Ruan van Mazijk
 
 source(here::here("setup.R"))
-source(here::here("analyses/01_import-region-polygons.R"))
-source(here::here("analyses/02_import-floral-data.R"))
+source(here::here("data/01_import-region-polygons.R"))
+source(here::here("data/02_import-floral-data.R"))
+
+out_dir <- here::here("outputs/species-turnover-w-distance")
 
 # Trim floral occurrences outside of regions -----------------------------------
 
@@ -197,9 +199,7 @@ species_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
   species_turnover_geodist,
-  here::here(
-    "outputs/05_species-turnover-w-distance/species_turnover_geodist.csv"
-  )
+  glue("{out_dir}/species_turnover_geodist.csv")
 )
 
 # .... Genus -------------------------------------------------------------------
@@ -214,9 +214,7 @@ genus_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
   genus_turnover_geodist,
-  here::here(
-    "outputs/05_species-turnover-w-distance/genus_turnover_geodist.csv"
-  )
+  glue("{out_dir}/genus_turnover_geodist.csv")
 )
 
 # .... Family ------------------------------------------------------------------
@@ -231,9 +229,7 @@ family_turnover_geodist %<>% filter(geodist > 0)
 # Save to disc
 write_csv(
   family_turnover_geodist,
-  here::here(
-    "outputs/05_species-turnover-w-distance/family_turnover_geodist.csv"
-  )
+  glue("{out_dir}/family_turnover_geodist.csv")
 )
 
 # Model ------------------------------------------------------------------------
@@ -247,24 +243,18 @@ species_turnover_geodist_m <- species_turnover_geodist %>%
 # Save to disc
 write_rds(
   species_turnover_geodist_m,
-  here::here(
-    "outputs/05_species-turnover-w-distance/species_turnover_geodist_m.RDS"
-  )
+  glue("{out_dir}/species_turnover_geodist_m.RDS")
 )
 # Save summaries to disc
 species_turnover_geodist_m_tidy <- broom::tidy(species_turnover_geodist_m)
 write_csv(
   species_turnover_geodist_m_tidy,
-  here::here(
-    "outputs/05_species-turnover-w-distance/species_turnover_geodist_m_tidy.csv"
-  )
+  glue("{out_dir}/species_turnover_geodist_m_tidy.csv")
 )
 species_turnover_geodist_m_glance <- broom::glance(species_turnover_geodist_m)
 write_csv(
   species_turnover_geodist_m_glance,
-  here::here(
-    "outputs/05_species-turnover-w-distance/species_turnover_geodist_m_glance.csv"
-    )
+  glue("{out_dir}/species_turnover_geodist_m_glance.csv")
 )
 
 # .... Genus -------------------------------------------------------------------
@@ -276,9 +266,7 @@ genus_turnover_geodist_m <- genus_turnover_geodist %>%
 # Save to disc
 write_rds(
   genus_turnover_geodist_m,
-  here::here(
-    "outputs/05_species-turnover-w-distance/genus_turnover_geodist_m.RDS"
-  )
+  glue("{out_dir}/genus_turnover_geodist_m.RDS")
 )
 # TODO: save summaries to disc
 
@@ -291,8 +279,6 @@ family_turnover_geodist_m <- family_turnover_geodist %>%
 # Save to disc
 write_rds(
   family_turnover_geodist_m,
-  here::here(
-    "outputs/05_species-turnover-w-distance/family_turnover_geodist_m.RDS"
-  )
+  glue("{out_dir}/family_turnover_geodist_m.RDS")
 )
 # TODO: save summaries to disc
