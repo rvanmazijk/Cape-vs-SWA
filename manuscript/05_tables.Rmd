@@ -129,14 +129,14 @@ out %>%
   select(-region) %>%
   knitr::kable(
     escape = FALSE,
-    col.names = c("Predictors", "$AICc$", "$\\delta AICc$", "$w_{AICc}$"),
     booktabs = TRUE,
     align = c("l", "r", "r", "r"),
+    col.names = c("Model predictors", "$AICc$", "$\\Delta AICc$", "$w_{AICc}$"),
     caption = "(ref:species-roughness-AICc)"
   ) %>%
-  kableExtra::group_rows("Cape", 1, 8) %>%
-  kableExtra::group_rows("SWA", 9, 16) %>%
-  kableExtra::group_rows("Both", 17, 24) %>%
+  kableExtra::group_rows("Cape:", 1, 8) %>%
+  kableExtra::group_rows("SWA:", 9, 16) %>%
+  kableExtra::group_rows("Both:", 17, 24) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
