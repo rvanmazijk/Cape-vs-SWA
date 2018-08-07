@@ -415,16 +415,16 @@ write_csv(
 
 # Tidy up
 rm(
-    species_turnover_richness_HDS_m,
-    genus_turnover_richness_HDS_m,
-    family_turnover_richness_HDS_m,
-    species_turnover_richness_3QDS_m,
-    genus_turnover_richness_3QDS_m,
-    family_turnover_richness_3QDS_m,
-    species_HDS_AIC_table,
-    genus_HDS_AIC_table,
-    family_HDS_AIC_table,
-    species_3QDS_AIC_table,
-    genus_3QDS_AIC_table,
-    family_3QDS_AIC_table
+  species_turnover_richness_HDS_m,
+  genus_turnover_richness_HDS_m,
+  family_turnover_richness_HDS_m,
+  species_turnover_richness_3QDS_m,
+  genus_turnover_richness_3QDS_m,
+  family_turnover_richness_3QDS_m,
+  species_HDS_AIC_table,
+  genus_HDS_AIC_table,
+  family_HDS_AIC_table,
+  species_3QDS_AIC_table,
+  genus_3QDS_AIC_table,
+  family_3QDS_AIC_table
 )
