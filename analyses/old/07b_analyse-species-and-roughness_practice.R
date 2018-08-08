@@ -135,7 +135,7 @@ enviro_scatters +
     x = 0.02, y = 0.5,
     angle = 90
   )
-# TODO: boxplots along sides of each panel
+# Idea: boxplots along sides of each panel?
 
 tidy_var_names <- function(x) str_replace_all(tolower(x), " ", "_")
 names(GCFR_variables_QDS) %<>% tidy_var_names()
