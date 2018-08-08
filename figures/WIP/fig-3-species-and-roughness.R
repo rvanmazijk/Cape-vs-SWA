@@ -2,36 +2,40 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-# Setup ------------------------------------------------------------------------
-
 source(here::here("figures/figure-setup.R"))
 
-# ... --------------------------------------------------------------------------
+all_GWR_models_outputs %<>% mutate(region = case_when(
+  region == "GCFR"  ~ "Cape",
+  region == "SWAFR" ~ "SWA",
+  TRUE              ~ region
+))
 
-# TODO: Import outputs needed from GWR analysis script
-
-# Visualise model results ------------------------------------------------------
-
+model_specs <- c(
+  "null",
+  "abs",
+  "rough",
+  "elev",
+  "non_elev",
+  "soil",
+  "non_soil",
+  "full"
 )
-# .... Combined regions' models ------------------------------------------------
 
-full_coeff <- combined_models$full$SDF@data
-full_coeff <- cbind(
-  obs_log_richness = BOTH_all_QDS_pts@data$richness,
-  region = BOTH_all_QDS_pts@data$region,
-  full_coeff
-)
-names(full_coeff)[[71]] <- "pred.se2"
-full_coeff %<>%
-  as_tibble() %>%
-  mutate(
-    region = case_when(
-      region == "GCFR" ~ "Cape",
-      region == "SWAFR" ~ "SWA"
-    ),
-    obs_richness = exp(obs_log_richness),
-    pred_richness = exp(pred)
-  )
+all_GWR_models_outputs %>%
+  filter(model %in% model_specs[c(2, 3, 8)]) %>%
+  select(
+    model_region, model, region,
+    Elevation:rough_pH
+  ) %>%
+  gather(
+    term, est,
+    -model_region, -model, -region
+  ) %>%
+  ggplot(aes(est, col = region, fill = region)) +
+    geom_histogram(alpha = 0.5) +
+    scale_colour_manual(values = my_palette) +
+    scale_fill_manual(values = my_palette) +
+    facet_wrap(model ~ term, ncol = 3, dir = "v", scales = "free")
 
 # Compare coefficients of absolute variables between regions
 full_coeff %>%
