@@ -1,9 +1,10 @@
-bookdown::gitbook:
-  split_by: rmd
-  pandoc_args: [
-    "--include-after-body", "_after-body.html"
-  ]
 bookdown::pdf_document2:
   pandoc_args: [
     "--include-after-body", "_after-body.tex"
   ]
+# FIXME:
+#bookdown::gitbook:
+#  split_by: rmd
+#  pandoc_args: [
+#    "--include-after-body", "_after-body.html"
+#  ]
