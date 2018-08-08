@@ -40,4 +40,4 @@ Raw-data is processed and analysed. Data-processing, analyses and figure product
 
 A more detailed layout of the relationships between this repository's components is described [here](https://rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.svg), also using [GraphViz](https://www.graphviz.org/).
 
-In order to reproduce the analyses and manuscript, simply run the command `make` in the command line (e.g. Bash) in this directory. The `Makefile` then ...<!--TODO: WIP-->
+<!--In order to reproduce the analyses and manuscript, simply run the command `make` in the command line (e.g. Bash) in this directory. The `Makefile` then ...-->
