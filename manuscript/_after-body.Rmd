@@ -7,6 +7,22 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup-tables, include=FALSE}
+source(here::here("setup.R"))
+data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
+import_objects(
+  here::here("outputs/species-turnover-and-richness/")
+)
+import_objects(
+  here::here("outputs/species-turnover-w-distance/"),
+  ignore_RDS = TRUE
+)
+import_objects(
+  here::here("outputs/species-and-roughness/"),
+  ignore_RDS = TRUE
+)
+```
+
 \break
 
 # Biosketches {-}
@@ -32,22 +48,6 @@ GAV: 0000-0002-1363-9781<!--?-->
 \break
 
 # Tables {-}
-
-```{r setup-tables, include=FALSE}
-source(here::here("setup.R"))
-data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
-import_objects(
-  here::here("outputs/species-turnover-and-richness/")
-)
-import_objects(
-  here::here("outputs/species-turnover-w-distance/"),
-  ignore_RDS = TRUE
-)
-import_objects(
-  here::here("outputs/species-and-roughness/"),
-  ignore_RDS = TRUE
-)
-```
 
 ```{r data-sources, results="asis"}
 data_sources %>%
@@ -242,15 +242,6 @@ knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png"))
 -->
 
 # Figures {-}
-
-```{r setup-figures, include=FALSE}
-source(here::here("setup.R"))
-source_if_needed(
-  output_path = here::here("figures/"),
-  source_path = here::here("figures/make-figures.R"),
-  import = FALSE
-)
-```
 
 <!--
 Use echo=FALSE explicitly in chunks below.
