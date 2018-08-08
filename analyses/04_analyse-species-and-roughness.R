@@ -268,3 +268,82 @@ delta_AICc(
   combined_models[soil_vs_non_soil],
   glue("{out_dir}/combined_models_AICc_soil_vs_non_soil.csv")
 )
+
+# Output all model outputs -----------------------------------------------------
+
+GCFR_models_outputs <- map_df(
+  .x = GCFR_models,
+  .id = "model",
+  .f = function(.x) {
+    model_outputs <- .x$SDF@data
+    model_outputs <- cbind(
+      obs_log_richness = GCFR_all_QDS_pts@data$richness,
+      model_outputs
+    )
+    names(model_outputs)[names(model_outputs) == "pred.se"][[2]] <- "pred.se2"
+    model_outputs %<>%
+      as_tibble() %>%
+      mutate(
+        obs_richness = exp(obs_log_richness),
+        pred_richness = exp(pred)
+      )
+  }
+)
+GCFR_models_outputs$region <- "GCFR"
+
+SWAFR_models_outputs <- map_df(
+  .x = SWAFR_models,
+  .id = "model",
+  .f = function(.x) {
+    model_outputs <- .x$SDF@data
+    model_outputs <- cbind(
+      obs_log_richness = SWAFR_all_QDS_pts@data$richness,
+      model_outputs
+    )
+    names(model_outputs)[names(model_outputs) == "pred.se"][[2]] <- "pred.se2"
+    model_outputs %<>%
+      as_tibble() %>%
+      mutate(
+        obs_richness = exp(obs_log_richness),
+        pred_richness = exp(pred)
+      )
+  }
+)
+SWAFR_models_outputs$region <- "SWAFR"
+
+combined_models_outputs <- map_df(
+  .x = combined_models,
+  .id = "model",
+  .f = function(.x) {
+    model_outputs <- .x$SDF@data
+    model_outputs <- cbind(
+      obs_log_richness = BOTH_all_QDS_pts@data$richness,
+      region = BOTH_all_QDS_pts@data$region,
+      model_outputs
+    )
+    names(model_outputs)[names(model_outputs) == "pred.se"][[2]] <- "pred.se2"
+    model_outputs %<>%
+      as_tibble() %>%
+      mutate(
+        region = case_when(
+          region == "GCFR" ~ "Cape",
+          region == "SWAFR" ~ "SWA"
+        ),
+        obs_richness = exp(obs_log_richness),
+        pred_richness = exp(pred)
+      )
+  }
+)
+
+all_GWR_models_outputs <- bind_rows(
+  list(
+    GCFR = GCFR_models_outputs,
+    SWAFR = SWAFR_models_outputs,
+    both = combined_models_outputs
+  ),
+  .id = "model_region"
+)
+write_csv(
+  all_GWR_models_outputs,
+  glue("{out_dir}/all_GWR_models_outputs.csv")
+)
