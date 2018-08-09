@@ -411,8 +411,6 @@ write_non_CRAP_bad_gnr_spp <- function() {
 
 manual_explore_flagged <- function() {
 
-  # TODO: ?
-
   import_GCFR <- function() {
     GCFR_names_flagged <- read.csv(here::here(
       "Data",
@@ -488,8 +486,6 @@ manual_explore_flagged <- function() {
 
 
 drop_flagged_spp <- function() {
-
-  # TODO: ?
 
   # What proportion of GBIF names are CRAP?
   nrow(GCFR_names_CRAP) / length(GCFR_spp_sets$species)

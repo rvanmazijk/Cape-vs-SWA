@@ -629,7 +629,7 @@ writeRaster(
 
 # Crop-mask to "boxes" ---------------------------------------------------------
 
-# TODO: Why did I do this again?
+# Why did I do this again?
 # Ag, doesn't matter,,,
 
 GCFR_box <- readOGR(here::here("data/derived-data/borders/GCFR_box/"))
