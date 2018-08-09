@@ -41,12 +41,21 @@ import_objects(
 )
 tidy_terms <- c(
   "Intercept",
-  "$log(\\overline{S_{QDS}} + 1)$",
-  "$\\overline{J_{QDS}}$",
+  "$log($Mean QDS richness + 1$)$",
+  "Mean QDS turnover",
   "SWA",
-  "$log(\\overline{S_{QDS}} + 1) \\times$ SWA",
-  "$\\overline{J_{QDS}} \\times$ SWA"
+  "$log($Mean QDS richness + 1$)$ $\\times$ SWA",
+  "Mean QDS turnover $\\times$ SWA"
 )
+# Verbose version:
+#tidy_terms <- c(
+#  "Intercept",
+#  "$log(\\overline{S_{QDS}} + 1)$",
+#  "$\\overline{J_{QDS}}$",
+#  "SWA",
+#  "$log(\\overline{S_{QDS}} + 1) \\times$ SWA",
+#  "$\\overline{J_{QDS}} \\times$ SWA"
+#)
 species_model_table <- my_model_table(
   model = species_turnover_richness_HDS_m,
   tidy_terms = tidy_terms,
