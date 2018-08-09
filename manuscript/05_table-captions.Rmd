@@ -44,7 +44,7 @@ The Cape term represents the difference between Cape and SWA species turnover, f
 ## Table \@ref(tab:species-model-table) {-}
 
 (ref:species-model-table)
-Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$, Equation \@ref(eq:S-QDS-def)) and turnover (Jaccards distance, $\overline{J_{QDS}}$, Equation \@ref(eq:T-QDS-def)) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
+Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness against the mean QDS species richness and turnover (Jaccards distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
 The Cape was fit as the baseline, hence SWA represents the categorical term here.
 <!--TODO: use SWA as baseline? to be more consistent w/ tab:turnover-vs-geodist-model-table-->
 This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r species_model_table$deltaAIC`).
