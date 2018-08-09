@@ -8,10 +8,6 @@ These effects vary somewhat with the spatial scale concerned.
 In some variables, the differentiation between Cape and SWA heterogeneity lessens at coarser scales (Figure \@ref(fig:roughness)).
 Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney $U$ tests, $P > 0.05$, Figure \@ref(fig:roughness)).
 
-<!--
-Moreover, the degree to which either region is heterogeneous concerns both which environmental variable and which spatial scale is considered. Regarding spatial scale, we see that $CLES$-values of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS) in size, compared to 0.05º x 0.05º---though there are exceptions.
-This means that, generally, the Cape has greater EH than SWA when comparing differences between smaller areas of land.
--->
 
 Most obviously, and as expected, topographic heterogeneity is greatest in the Cape (Figure \@ref(fig:roughness)a)<!--SWA is _flat_!-->.
 Though SWA has a slightly wider distribution of elevational roughness values at coarse scales (e.g. 3QDS, Figure \@ref(fig:roughness)a) compared to fine scales (0.05º), so does the Cape.
@@ -22,11 +18,6 @@ Notably, the difference between Cape and SWA mean annual rainfall and land surfa
 
 Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)c).
 
-<!--
-For elevation, there is much wider range of roughness values observed in the Cape than in SWA at finer scales (e.g. elevation, Figure \@ref(fig:roughness)B,D).
-For edaphic variables, there is usually a greater range of roughness values observed in SWA (e.g. pH, Figure \@ref(fig:roughness)D).
-In other words, the differences in roughness values between the two regions are most pronounced at finer scales.
--->
 
 Regarding the variables concerned, when comparing the Cape to SWA, $CLES$-values are generally lower ($CLES > 0.80$) for edaphic variables (CEC, clay, soil C, and pH, Figure \@ref(fig:roughness)C) and NDVI (Figure \@ref(fig:roughness)A), compared to climatic variables (MAP, PDQ, surface T) and elevation (Figure \@ref(fig:roughness)A).
 Therefore, we can differentiate the Cape and SWA environments based on which environmental axes are more heterogeneous in either region, as they differ somewhat in this regard.
