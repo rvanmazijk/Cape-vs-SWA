@@ -7,64 +7,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup-tables, include=FALSE}
-
-source(here::here("setup.R"))
-
-# Table 1 ----------------------------------------------------------------------
-
-data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
-
-# Table 2 ----------------------------------------------------------------------
-
-import_objects(
-  here::here("outputs/species-turnover-w-distance/"),
-  ignore_RDS = TRUE
-)
-tidy_terms <- c(
-  "Intercept",
-  "$log($Distance between cells$)$",
-  "Cape",
-  "$log($Distance between cells$)$ $\\times$ Cape"
-)
-turnover_vs_geodist_model_table <- my_model_table(
-  model_tidy = species_turnover_geodist_m_tidy,
-  tidy_terms = tidy_terms
-)
-
-# Table 3 ----------------------------------------------------------------------
-
-import_objects(
-  here::here("outputs/species-turnover-and-richness/")
-)
-tidy_terms <- c(
-  "Intercept",
-  "$log(\\overline{S_{QDS}} + 1)$",
-  "$\\overline{J_{QDS}}$",
-  "SWA",
-  "$log(\\overline{S_{QDS}} + 1) \\times$ SWA",
-  "$\\overline{J_{QDS}} \\times$ SWA"
-)
-species_model_table <- my_model_table(
-  model = species_turnover_richness_HDS_m,
-  tidy_terms = tidy_terms,
-  AIC_table = species_HDS_AIC_table
-)
-
-# Table 4 ----------------------------------------------------------------------
-
-import_objects(
-  here::here("outputs/species-and-roughness/"),
-  ignore_RDS = TRUE
-)
-species_roughness_AICc <- bind_rows(.id = "region", list(
-  Cape = GCFR_models_AICc_all,
-  SWA = SWAFR_models_AICc_all,
-  Both = combined_models_AICc_all
-))
-
-```
-
 \break
 
 # Biosketches {-}
@@ -80,45 +22,6 @@ species_roughness_AICc <- bind_rows(.id = "region", list(
 MDC and GAV conceived the study question, which RVM investigated under their supervision for his BSc Hons project. The analyses and programming work were largely devised by RVM, with input from the other authors, and was carried out by RVM. RVM wrote the first draft of the manuscript and all authors contributed equally thereafter.
 
 \break
-
-# Table captions {-}
-
-## Table 1 <!--FIXME: \@ref(tab:data-sources)--> {-}
-
-(ref:data-sources)
-Data sources used in this study.
-Abbreviations are as follows:<!--TODO-->.
-
-(ref:data-sources)
-
-## Table \@ref(tab:turnover-vs-geodist-model-table) {-}
-
-(ref:turnover-vs-geodist-model-table)
-Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (as Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells.
-The Cape term represents the difference between Cape and SWA species turnover, for a given geographic distance.
-
-(ref:turnover-vs-geodist-model-table)
-
-## Table \@ref(tab:species-model-table) {-}
-
-(ref:species-model-table)
-Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness ($S_{HDS}$) against the mean QDS species richness ($\overline{S_{QDS}}$, Equation \@ref(eq:S-QDS-def)) and turnover (Jaccards distance, $\overline{J_{QDS}}$, Equation \@ref(eq:T-QDS-def)) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
-The Cape was fit as the baseline, hence SWA represents the categorical term here.
-<!--TODO: use SWA as baseline? to be more consistent w/ tab:turnover-vs-geodist-model-table-->
-This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r species_model_table$deltaAIC`).
-Note, this model does not represent those curves plot in Figures \@ref(fig:richness-vs-turnover) and \@ref(fig:richness-vs-turnover-3QDS) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
-
-(ref:species-model-table)
-
-## Table \@ref(tab:species-roughness-AICc) {-}
-
-(ref:species-roughness-AICc)
-Comparisons of Akaike information criterion values (small sample-size-corrected, $AICc$) of various geographically weighted regressions (GWR) of log-transformed species richness as a function of various sets of environmental variables.
-Models were fit for the Cape and SWA richness and environmental data both separately and together.
-GWR methods preclude the need for a categorical predictor for the Cape vs SWA, as the longitudinal (and to a lesser extent latitudinal) differences between the regions allows local regression coefficients in each region to differ.
-<!--TODO: complete/expand: Models fit for each of the three geographic extents: null ($S_{ij} \sim \beta_{0}_{ij} + \beta_{1}_{ij} Lon_{ij} + \beta_{2}_{ij} Lat_{ij} + \beta\epsilon_{ij}$), ...-->
-
-(ref:species-roughness-AICc)
 
 # Tables {-}
 
