@@ -31,7 +31,7 @@ We can differentiate the Cape and SWA environments based on which environmental 
 
 ## Species richness as determined by species turnover <!--TODO: reword-->
 
-### Quantifying the "general" degree of species turnover in each region
+<!--Quantifying the "general" degree of species turnover in each region-->
 
 Following quantile regressions of the 5%-quantile of pairwise species turnover against the distance between pairs' sites (Figure \@ref(fig:richness-vs-turnover)a), there is evidence that SWA exhibits a lower lowermost-bound of observed species turnover. This is because of the relative positive influence of a site's being "from the Cape", as opposed to SWA, on the 5%-quantile of species turnover ("Cape"-term, $P < 0.001$, Table \@ref(tab:turnover-vs-geodist-model-table)).
 As expected, species turnover was greatest between distant pairs of QDS ($P < 0.001$, Table \@ref(tab:turnover-vs-geodist-model-table), Figure \@ref(fig:richness-vs-turnover)a).
