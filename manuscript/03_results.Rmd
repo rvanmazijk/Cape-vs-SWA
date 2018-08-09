@@ -36,3 +36,26 @@ We can differentiate the Cape and SWA environments based on which environmental 
 Following quantile regressions of the 5%-quantile of pairwise species turnover against the distance between pairs' sites (Figure \@ref(fig:richness-vs-turnover)a), there is evidence that SWA exhibits a lower lowermost-bound of observed species turnover. This is because of the relative positive influence of a site's being "from the Cape", as opposed to SWA, on the 5%-quantile of species turnover ("Cape"-term, $P < 0.001$, Table \@ref(tab:turnover-vs-geodist-model-table)).
 As expected, species turnover was greatest between distant pairs of QDS ($P < 0.001$, Table \@ref(tab:turnover-vs-geodist-model-table), Figure \@ref(fig:richness-vs-turnover)a).
 
+<!--How species richness is determined by species turnover-->
+
+<!--Logic: Richness @ coarse scale ~ $\sum$ Richness @ finer scale + $\sum$ Turnover @ finer scale-->
+
+When plotting coarse scale richness (HDS) against fine scale richness and turnover (QDS) (Figure \@ref(fig:richness-vs-turnover)b,c), we see that for a mean QDS richness, Cape HDS are generally more species rich than SWA HDS.
+Also, for a given mean QDS turnover, Cape HDS are generally more species rich than SWA HDS.
+For the sake of interpretation, it is appealling to think of the graph inverted: for a given HDS richness (taken as the horizontal axis now), the Cape is less rich and has less turnover between QDS than SWA.
+However, the graph was plotted as presented for the sake of agreement with the regression model (below), which does support the sentiment of an inverted interpretation.
+
+Following the regressions of coarse scale richness (HDS) against fine scale richness and turnover (QDS) (Equation \@ref(eq:S-HDS-formula)), we see a significant negative interaction between SWA and mean QDS richness (Table \@ref(tab:species-model-table)), supporting the visually obvious difference between the Cape in SWA in Figure \@ref(fig:richness-vs-turnover)b.
+
+<!--...--->
+
+Assume HDS scale richness is the integration of QDS scale richness and turnover between QDS.
+We can see that HDS richness "saturates" as a function of QDS richness at a lower HDS richness level in SWA than in the Cape.
+Alternatively, the QDS richness required to attain a given HDS richness is much lower in the Cape---Cape QDS richness is more "powerful" and has a greater impact on HDS richness than QDS richness in SWA.
+In other words: the rate of change in HDS richness ~ QDS richness in the Cape is _faster_, as is evident in the negative slope effect of the SWA on the logarithmic slope relative to the Cape.
+
+Now for HDS richness ~ QDS turnover.
+HDS richness declines with increasing turnover.
+Why?
+Let us turn the process on its head: why does high turnover arise from low richness QDS?
+Well, when richness is low, possible opportunities for high turnover increase.<!--TODO: expand-->
