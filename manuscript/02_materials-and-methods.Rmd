@@ -91,30 +91,25 @@ These rasters were produced at QDS, HDS, and 3QDS resolutions.
 ### Quantifying environmental heterogeneity
 
 First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions.
-Using the R package "raster" [@Hijmans2016], we used a modified version of the "roughness" index in the "terrain" function: for a three by three neighbourhood of cells, our index $roughness'$ is the average square-root of the squared difference between each of the $n$ neighbour cells' values $x_i$ and the central focal cell's value $x_{focal}$:
+Using the R package "raster" [@Hijmans2016], we used a modified version of the "roughness" index in the "terrain" function: for a three by three neighbourhood of cells, our index of roughness is the average square-root of the squared difference between each of the $n$ neighbour cells' values $x_i$ and the central focal cell's value $x_{focal}$:
 
 \begin{equation}
-  roughness' =
+  Roughness =
     \frac{1}{n}
     \sqrt{\sum_{i = 1}^{n}
           \left( x_{focal} - x_{i} \right)^{2}}
   (\#eq:roughness)
 \end{equation}
 
-Note, in order to use as much data from within regions' borders as possible, roughnes swas computed if a focal cell had at least one neighbour cell---that is, $roughness'$ is defined where $n_{x_{focal}} \geq 1$.
+Note, in order to use as much data from within regions' borders as possible, roughnes swas computed if a focal cell had at least one neighbour cell---that is, roughness is defined where $n_{x_{focal}} \geq 1$.
 Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity.
-We compared the distributions of heterogeneity values in each variable in each region with non-parametric Mann-Whitney U tests, as almost all variables could not be normalised by log-transformations.
+We compared the distributions of roughness values in each variable in each region with non-parametric Mann-Whitney $U$-tests, as almost all variables could not be normalised by log-transformations.
 We also compare the effect size of the Cape vs SWA using the "common language effect size" (CLES), using the R package "canprot".
 The CLES is the proportion of all pairwise comparisons between two sample groups' observations where one group's value is greater than the other.
-In our case, of all pairwise comparisons of a variable's heterogeneity values between the Cape and SWA, we calculated the CLES as the proportion of pairs where Cape heterogeneity values were greater than that of SWA.
+In our case, of all pairwise comparisons of a variable's roughness values between the Cape and SWA, we calculated the CLES as the proportion of pairs where Cape roughness values were greater than that of SWA.
 This allowed us to assess prediction [(i)][Hypothesis-v2].
-
-To compare the spatial scales of heterogeneity (prediction [(ii)][[Hypothesis-v2]) between each region, we used Mann-Whitney U tests at both 0.05º x 0.05º and 3QDS resolutions.
-Moreover, the heterogeneity values at the coarser scale were derived from the original absolute environmental raster layers rescaled to 0.75 degrees resolution.
-We also compared inter-quantile ranges of heterogeneity values at different spatial scales (i.e.
-raster resolutions, namely 0.05º x 0.05º, QDS, HDS, and 3QDS respectively).
-Once again, this entailed recalculating the heterogeneity layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
-Using inter-quantile ranges allowed us to investigate the spread of heterogeneity values seen in each region, and how this spread differs at different scales.
+To compare the spatial scales of heterogeneity (prediction [(ii)][[Hypothesis-v2]) between each region, we repeated this analysis at all four spatial scales.
+Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
 
 ### Relating species richness and species turnover
 
