@@ -1,6 +1,8 @@
 # Setup ------------------------------------------------------------------------
 
 # Input files
+FUN = $(wildcard functions/*.R)
+OUTPUTS = $(wildcard outputs/*/*.csv)
 FIGURES_R = $(wildcard figures/fig-*.R)
 FIGURES = $(FIGURES_R:.R=.png)
 INDEX = manuscript/index.Rmd
@@ -13,6 +15,7 @@ BODY = $(wildcard manuscript/*.Rmd)
 
 # Output files
 PDF = manuscript/_manuscript/_manuscript.pdf
+AFTER_BODY = manuscript/_after-body.tex
 # FIXME:
 #GITBOOK = \
 #	manuscript/_manuscript/index.html \
@@ -55,10 +58,10 @@ gitbook:
 
 pdf: $(PDF)
 
-$(PDF): $(INDEX) $(META) $(BODY) manuscript/_after-body.tex $(FIGURES)
+$(PDF): $(INDEX) $(META) $(BODY) $(AFTER_BODY) $(OUTPUTS) $(FIGURES) $(FUN)
 	$(RENDER_PDF)
 
-manuscript/_after-body.tex: manuscript/_after-body.Rmd
+$(AFTER_BODY): manuscript/_after-body.Rmd $(FUN)
 	$(RENDER_AFTER_BODY_TEX)
 
 # FIXME:
@@ -73,4 +76,3 @@ manuscript/_after-body.tex: manuscript/_after-body.Rmd
 
 figures/fig-%.png: figures/fig-%.R
 	Rscript -e "source('$<')"
-
