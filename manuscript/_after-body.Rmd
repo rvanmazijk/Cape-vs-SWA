@@ -142,7 +142,7 @@ Note, this model does not represent those curves plot in Figures \@ref(fig:richn
 
 ```{r species-roughness-AICc, results="asis"}
 out <- bind_rows(.id = "region", list(
-  Cape = GCFR_models_AICc_all, 
+  Cape = GCFR_models_AICc_all,
   SWA = SWAFR_models_AICc_all,
   Both = combined_models_AICc_all
 ))
@@ -177,9 +177,9 @@ out %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-(ref:species-roughness-AICc) Comparisons of Akaike information criterion values (small sample-size-corrected, $AICc$) of various geographically weighted regressions (GWR) of log-transformed species richness as a function of various sets of environmental variables. 
-Models were fit for the Cape and SWA richness and environmental data both separately and together. 
-GWR methods preclude the need for a categorical predictor for the Cape vs SWA, as the longitudinal (and to a lesser extent latitudinal) differences between the regions allows local regression coefficients in each region to differ. 
+(ref:species-roughness-AICc) Comparisons of Akaike information criterion values (small sample-size-corrected, $AICc$) of various geographically weighted regressions (GWR) of log-transformed species richness as a function of various sets of environmental variables.
+Models were fit for the Cape and SWA richness and environmental data both separately and together.
+GWR methods preclude the need for a categorical predictor for the Cape vs SWA, as the longitudinal (and to a lesser extent latitudinal) differences between the regions allows local regression coefficients in each region to differ.
 <!--TODO: complete/expand: Models fit for each of the three geographic extents: null ($S_{ij} \sim \beta_{0}_{ij} + \beta_{1}_{ij} Lon_{ij} + \beta_{2}_{ij} Lat_{ij} + \beta\epsilon_{ij}$), ...-->
 
 \break
@@ -209,12 +209,12 @@ Lines connect points for illustration, and are paler for the wider quantile.
 
 <!--New jackknife-style Figure 1:-->
 
-(ref:roughness) Comparisons of different types of environmental heterogeneity in the Cape and SWA. 
-(a) Example distributions of roughness values (Equation \@ref(eqn:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales. 
-Each distribution has under it area 1. 
+(ref:roughness) Comparisons of different types of environmental heterogeneity in the Cape and SWA.
+(a) Example distributions of roughness values (Equation \@ref(eqn:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales.
+Each distribution has under it area 1.
 Distributions were constructed with Gaussian kernels, with bandwidth following Silverman's "rule of thumb" [@Silverman1986; $0.9 \times min \left ( \left \{ \sigma, \frac{IQR}{1.34 \times n^{-\frac{1}{5}}} \right \} \right )$].
-These distributions of roughness values were compared between the Cape and SWA at each of the four spatial scales, not just 0.05º and 3QDS, using non-parametric Mann-Whitney $U$-tests to test for differences. 
-The "common language effect size" ($CLES$, see text) describes these differences (b). 
+These distributions of roughness values were compared between the Cape and SWA at each of the four spatial scales, not just 0.05º and 3QDS, using non-parametric Mann-Whitney $U$-tests to test for differences.
+The "common language effect size" ($CLES$, see text) describes these differences (b).
 $U$-tests for almost all environmental variables yielded significant differences ($P < 0.05$) between Cape and SWA values ($NS$, non-significant differences).
 
 (ref:roughness)
@@ -248,10 +248,10 @@ Use echo=FALSE explicitly in chunks below.
 Avoids missing "Shaded" environment in LaTeX fragment.
 -->
 
-```{r roughness, echo=FALSE, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
-knitr::include_graphics(here::here("figures/fig-1-roughness_manual-edit.png"))
+```{r roughness, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
+knitr::include_graphics(here::here("figures/fig-1-roughness_manual-edit3.png"))
 ```
 
-```{r richness-vs-turnover, echo=FALSE, fig.pos="H", out.width="18cm", fig.cap="(ref:richness-vs-turnover)"}
+```{r richness-vs-turnover, fig.pos="H", out.width="18cm", fig.cap="(ref:richness-vs-turnover)"}
 knitr::include_graphics(here::here("figures/fig-2-richness-vs-turnover.png"))
 ```
