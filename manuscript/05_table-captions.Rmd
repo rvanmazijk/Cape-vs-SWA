@@ -34,7 +34,7 @@ Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation
 ## Table \@ref(tab:turnover-vs-geodist-model-table) {-}
 
 (ref:turnover-vs-geodist-model-table)
-Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise species turnover (as Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells.
+Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise vascular plant species turnover (Jaccards distance) as a function of the geographic distance (km, log-transformed) between QDS cells.
 The Cape term represents the difference between Cape and SWA species turnover, for a given geographic distance.
 
 (ref:turnover-vs-geodist-model-table)
