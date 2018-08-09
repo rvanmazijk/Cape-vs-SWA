@@ -86,13 +86,17 @@ MDC and GAV conceived the study question, which RVM investigated under their sup
 # Tables {-}
 
 ```{r data-sources, results="asis"}
+options(knitr.kable.NA = "")
 data_sources %>%
   knitr::kable(
+    format = "latex",
+    escape = FALSE,
     booktabs = TRUE,
     caption = "(ref:data-sources)"
   ) %>%
+  kableExtra::group_rows("Climatic variables", 4, 6) %>%
+  kableExtra::group_rows("Soil variables (SoilGrids250m)", 7, 10) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
-# TODO: use kableExtra::group_rows() a.o.t. these cheat-rows!
 ```
 
 ```{r turnover-vs-geodist-model-table, results="asis"}
