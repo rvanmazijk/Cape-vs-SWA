@@ -19,7 +19,8 @@ Intuitively, then, elevation serves as a "benchmark test" for our comparisons of
 Additionally, we can conclude that although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA.
 
 Climatic heterogeneity presents less differentation between the Cape and SWA than elevational roughness, though still the Cape predominates (Figure \@ref(fig:roughess)b).
-Notably, the difference between Cape and SWA mean annual rainfall and land surface temperature heterogeneity lessens when considered at coarse spatial scales (3QDS scale, Figure \@ref(roughness)b). Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape across all spatial scales considered.
+Notably, the difference between Cape and SWA mean annual rainfall and land surface temperature heterogeneity lessens when considered at coarse spatial scales (3QDS scale, Figure \@ref(roughness)b).
+Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape across all spatial scales considered.
 
 Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)c).
 
