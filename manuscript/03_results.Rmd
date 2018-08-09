@@ -15,12 +15,12 @@ This means that, generally, the Cape has greater EH than SWA when comparing diff
 
 Most obviously, and as expected, topographic heterogeneity is greatest in the Cape (Figure \@ref(fig:roughness)a)<!--SWA is _flat_!-->.
 Though SWA has a slightly wider distribution of elevational roughness values at coarse scales (e.g. 3QDS, Figure \@ref(fig:roughness)a) compared to fine scales (0.05º), so does the Cape.
-As such, the relative difference between the two regions seems invariant with spatial scale ($CLES \approx 0.95, Figure \@ref(fig:roughness)s).
+As such, the relative difference between the two regions seems invariant with spatial scale ($CLES \approx 0.95$, Figure \@ref(fig:roughness)).
 
 Climatic heterogeneity presents less differentation between the Cape and SWA than elevational roughness, though still the Cape predominates (Figure \@ref(fig:roughess)b).
 Notably, the difference between Cape and SWA mean annual rainfall and land surface temperature heterogeneity lessens when considered at coarse spatial scales (3QDS scale, Figure \@ref(roughness)b). Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape across all spatial scales considered.
 
-Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60, Figure \@ref(fig:roughness)c).
+Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)c).
 
 <!--
 For elevation, there is much wider range of roughness values observed in the Cape than in SWA at finer scales (e.g. elevation, Figure \@ref(fig:roughness)B,D).
