@@ -45,7 +45,6 @@ my_model_table <- function(model_tidy = NULL, model = NULL,
     Estimate = round(estimate, digits = 3),
     `$P$-value` = p.value %>%
        round(digits = 3) %>%
-       format(scientific = FALSE) %>%
        ifelse(. == 0.000, "< 0.001", .)
     )
 
