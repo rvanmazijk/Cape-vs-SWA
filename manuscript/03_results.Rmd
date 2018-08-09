@@ -29,4 +29,4 @@ Concerning edaphic variables (Figure \@ref(fig:roughness)d), the Cape and SWA ar
 We can differentiate the Cape and SWA environments based on which environmental axes are more heterogeneous in either region, as they differ somewhat in this regard.
 <!--TODO: expand-->
 
-## Species richness as determined by species turnover <!--TODO:Reword-->
+## Species richness as determined by species turnover <!--TODO: reword-->
