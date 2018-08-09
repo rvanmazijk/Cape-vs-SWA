@@ -7,6 +7,64 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup-tables, include=FALSE}
+
+source(here::here("setup.R"))
+
+# Table 1 ----------------------------------------------------------------------
+
+data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
+
+# Table 2 ----------------------------------------------------------------------
+
+import_objects(
+  here::here("outputs/species-turnover-w-distance/"),
+  ignore_RDS = TRUE
+)
+tidy_terms <- c(
+  "Intercept",
+  "$log($Distance between cells$)$",
+  "Cape",
+  "$log($Distance between cells$)$ $\\times$ Cape"
+)
+turnover_vs_geodist_model_table <- my_model_table(
+  model_tidy = species_turnover_geodist_m_tidy,
+  tidy_terms = tidy_terms
+)
+
+# Table 3 ----------------------------------------------------------------------
+
+import_objects(
+  here::here("outputs/species-turnover-and-richness/")
+)
+tidy_terms <- c(
+  "Intercept",
+  "$log(\\overline{S_{QDS}} + 1)$",
+  "$\\overline{J_{QDS}}$",
+  "SWA",
+  "$log(\\overline{S_{QDS}} + 1) \\times$ SWA",
+  "$\\overline{J_{QDS}} \\times$ SWA"
+)
+species_model_table <- my_model_table(
+  model = species_turnover_richness_HDS_m,
+  tidy_terms = tidy_terms,
+  AIC_table = species_HDS_AIC_table
+)
+
+# Table 4 ----------------------------------------------------------------------
+
+import_objects(
+  here::here("outputs/species-and-roughness/"),
+  ignore_RDS = TRUE
+)
+species_roughness_AICc <- bind_rows(.id = "region", list(
+  Cape = GCFR_models_AICc_all,
+  SWA = SWAFR_models_AICc_all,
+  Both = combined_models_AICc_all
+))
+
+```
+
 \break
 
 # Biosketches {-}
