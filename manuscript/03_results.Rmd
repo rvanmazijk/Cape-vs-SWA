@@ -2,8 +2,10 @@
 
 ## Describing environmental heterogeneity numerically across scales
 
-The Cape has greater extremes and a wider range of fine-scale climatic roughness values within its limits (Figure \@ref(fig:roughness)A), while SWA has the greater extremes and wider range of fine-scale edaphic roughness values (Figure \@ref(fig:roughness)C).
 Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cells (common-language effect size $CLES > 0.50$, Mann-Whitney $U$-test $P < 0.05$, Figure \@ref(fig:roughness)b).
+The Cape is thus more environmentaly heterogeneous than SWA overall, but the degree to which it is more heterogeneous varies between environmental variables.
+These effects vary somewhat with the spatial scale concerned (Figure \@ref(fig:roughness)b).
+
 Moreover, the degree to which either region is heterogeneous concerns both which environmental variable and which spatial scale is considered. Regarding spatial scale, we see that $CLES$-values of Cape vs SWA grid-cells are generally lower when grid-cells are 0.75º x 0.75º (= 3QDS) in size, compared to 0.05º x 0.05º---though there are exceptions.
 This means that, generally, the Cape has greater EH than SWA when comparing differences between smaller areas of land.
 Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney $U$ tests, $P > 0.05$, Figure \@ref(fig:roughness)A,C).
