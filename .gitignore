@@ -1,9 +1,9 @@
 .Rproj.user
 *.DS_Store
 *.Rhistory
-packrat/lib*/
-manuscript/lib*/
-manuscript/_manuscript/
+*lib*
 *.html
+*.tex
 outputs/roughness-across-scales/pw-comparisons*parallel*
 outputs/species-and-roughness/*.RDS
+packrat/lib*/
