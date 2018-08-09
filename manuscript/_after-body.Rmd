@@ -249,7 +249,7 @@ Avoids missing "Shaded" environment in LaTeX fragment.
 -->
 
 ```{r roughness, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
-knitr::include_graphics(here::here("figures/fig-1-roughness_manual-edit3.png"))
+knitr::include_graphics(here::here("figures/fig-1-roughness_manual-edit4.png"))
 ```
 
 ```{r richness-vs-turnover, fig.pos="H", out.width="18cm", fig.cap="(ref:richness-vs-turnover)"}
