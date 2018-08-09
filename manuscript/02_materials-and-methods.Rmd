@@ -146,7 +146,7 @@ Average QDS turnover for a given HDS ($\overline{T_{QDS}}_i$), based on $n = {j 
 
 Thus, we regress coarse scale richness as follows:
 
-\begin{align}
+\begin{align*} \tag{4}
   \widehat{S_{HDS_{i}}} =
     &\ \beta_0 + \\
     &\ \beta_1 \overline{S_{QDS}}_{i} +
@@ -156,7 +156,7 @@ Thus, we regress coarse scale richness as follows:
        \beta_5 \overline{T_{QDS}}_{i} SWA_{i} +
        \epsilon_i
   (\#eq:S-HDS-formula)
-\end{align}
+\end{align*}
 
 where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_{QDS}}$ is $log(x + 1)$-transformed.
 This model allows us to compare the spatial-scaling drivers<!--FIXME: reword--> of species richness in either region: whether coarse scale increases in species richness are determined more by (a) being composed of richer---but more similar---communities or by (b) being composed of many different communities.
