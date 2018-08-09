@@ -219,7 +219,7 @@ Species turnover was calculated for all possible pairs of cells, but only the tu
 Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region separately.
 Following a 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable (Table \@ref(tab:turnover-vs-geodist-model-table)), a significant interaction between distance and region was found ($P < 0.001$), such that the Cape positively effects the distance slope term.
 Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (b) and the average species turnover between QDS in a given HDS (c).
-Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was log(x + 1)-transformed), separately for each region, for illustration of the two regions' differences.
+Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was log(x + 1)-transformed), separately for each region, for illustration of the two regions' differences, for interpretation alongside Table \@ref(tab:species-model-table).
 
 (ref:richness-vs-turnover)
 
