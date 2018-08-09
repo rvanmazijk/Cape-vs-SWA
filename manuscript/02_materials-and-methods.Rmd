@@ -117,7 +117,7 @@ Regarding predictions [(iii) and (iv)][Hypothesis-v2], we wished to compare the 
 
 First, for [(iii)][Hypothesis-v2], we compared the degree of species turnover in general in each region by computing all pairwise Jaccard distances [@ref] between QDS' communities.
 We then regressed these turnover values for each pair of cells against the physical distance between the centres of those cells.
-The range of turnover values was found to be highest at small distances (Figure \@ref(fig:roughness)A), and indeed complete species turnover between cell pairs was observed at all distances.
+The range of turnover values was found to be highest at small distances (Figure \@ref(fig:roughness)a), and indeed complete species turnover between cell pairs was observed at all distances.
 Thus we used quantile regressions of the 5% quantile of species turnover as a function of geographic distances (using "quantreg" [@R-quantreg] in R).
 This allowed us to compare the lower bounds of species turnover between the Cape and SWA.
 
