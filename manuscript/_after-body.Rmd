@@ -204,8 +204,8 @@ Roughness values were found to be significantly greater in the Cape in all cases
 The magnitude of the ranges of Z-scaled roughness values (**B,D**) vary with spatial resolution, described here by the 95%-to-5% and 99%-to-1% interquantile ranges.
 Lines connect points for illustration, and are paler for the wider quantile.
 -->
-<!--TODO: change IQuR in y-axes simply to "Range"-->
-<!--TODO: plot jittered points on 3QDS violins, as I have seen when fiddling with PCAs that there are indeed very few points for those distributions (which is fine, but note it!)-->
+<!--Idea: change IQuR in y-axes simply to "Range"-->
+<!--Idea: plot jittered points on 3QDS violins, as I have seen when fiddling with PCAs that there are indeed very few points for those distributions (which is fine, but note it!)-->
 
 <!--New jackknife-style Figure 1:-->
 
