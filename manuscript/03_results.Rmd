@@ -29,30 +29,4 @@ Concerning edaphic variables (Figure \@ref(fig:roughness)d), the Cape and SWA ar
 We can differentiate the Cape and SWA environments based on which environmental axes are more heterogeneous in either region, as they differ somewhat in this regard.
 <!--TODO: expand-->
 
-<!--TODO: interpret the similar spread of values + less-often-different-median roughness at coarser scales-->
-
-<!--
-
-...
-
-Furthermore, regarding elevation, the Cape is shown here to be more rough than SWA.
-But, we move from at fine scales having some overlap in the roughness values, which have relatively great spread in both regions, to much less overlap at coarser scales (where the spread of values is lesser).
-This leads us to think about: overlap and spread (below).
-
-...
-
-There is overlap in the range of roughness values observed in the Cape and SWA for each environmental variable especially at finer spatial scales.
-Also, the range of values observed is also itself greater at finer spatial scales.
-
-...
-
-Consulting Figure \@ref(fig:roughness)B,D:This elaborates on the overlap and spread idea from earlier, where now we can see that generally the spread of observed roughness values is more similar in magnitude between the two regions at coarser scales, and more different at finer scales.
-Though this plot is illustrative only and derived from Figure \@ref(fig:roughness-violins), we can see it mirror how SWA has a greater range of roughness values in soil variables (and, Re: Figure \@ref(fig:roughness)B,D, we know a general roughness at least as high as the Cape's in those too!).
-
-Elevation, PDQ: Cape is rougher and has a greater range of roughnesses (Figure \@ref(fig:roughness)A,C, \@ref(fig:roughness)B,D) at all scales, especially at finer scales.
-
-Clay, soil C, pH: Extreme values of roughness observed very high in SWA.
-
--->
-
 ## Species richness as determined by species turnover <!--TODO:Reword-->
