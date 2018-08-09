@@ -21,6 +21,8 @@ species_model_table <- my_model_table(
 )
 ```
 
+Captions are also repeated alongside their respective tables for readability.
+
 ## Table 1 <!--FIXME: \@ref(tab:data-sources)--> {-}
 
 (ref:data-sources)
