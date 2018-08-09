@@ -1,7 +1,7 @@
 # Table captions {-}
 
 ```{r setup-table3, include=FALSE}
-# Make Table 3 here too, to get AIC in-text
+# Make Table 3 here, in addition to in _after-body.Rmd, to get AIC in-text
 source(here::here("setup.R"))
 import_objects(
   here::here("outputs/species-turnover-and-richness/")
