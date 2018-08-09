@@ -5,8 +5,12 @@ author: Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
 toc: false
-header-includes:
+header-includes:  # for PDF
   - \usepackage{float}  # so _after-body.Rmd can "hold" tables and figures
+  - \usepackage{lineno}  # for line-numbering in PDF
+  - \def\linenumberfont{\normalfont\footnotesize\rmfamily}  # Make line-numbering bigger
+  - \linenumbers
+  - \raggedright  # Un-justify all text
 ---
 
 ```{r setup, include=FALSE}
@@ -70,3 +74,6 @@ Abbreviations {-}
 - environmental heterogeneity (EH)
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 -->
+
+<!--Switch back font-size-->
+\normalsize
