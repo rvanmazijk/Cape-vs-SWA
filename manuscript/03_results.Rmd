@@ -23,7 +23,11 @@ Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape
 
 Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)c).
 
+Concerning edaphic variables (Figure \@ref(fig:roughness)d), the Cape and SWA are similarly heterogeneous at coarser scales, particularly in terms of CEC and Soil C.
+<!--TODO: expand-->
 
+We can differentiate the Cape and SWA environments based on which environmental axes are more heterogeneous in either region, as they differ somewhat in this regard.
+<!--TODO: expand-->
 
 <!--TODO: interpret the similar spread of values + less-often-different-median roughness at coarser scales-->
 
