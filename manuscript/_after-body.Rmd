@@ -209,13 +209,13 @@ Lines connect points for illustration, and are paler for the wider quantile.
 
 <!--New jackknife-style Figure 1:-->
 
-(ref:roughness) Comparisons of different types of environmental heterogeneity in the Cape and SWA.
-(a) Example distributions of roughness values (Equation \@ref(eqn:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales.
+(ref:roughness) Comparisons of different types of environmental heterogeneity in the Cape and SWA---namely for (a) elevation, (b) climatic variables, (c) NDVI and (d) soil variables---in each panel consisting of three sub-panels per variable type.
+The upper row of panels shows example distributions of roughness values (Equation \@ref(eq:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales.
 Each distribution has under it area 1.
-Distributions were constructed with Gaussian kernels, with bandwidth following Silverman's "rule of thumb" [@Silverman1986; $0.9 \times min \left ( \left \{ \sigma, \frac{IQR}{1.34 \times n^{-\frac{1}{5}}} \right \} \right )$].
-These distributions of roughness values were compared between the Cape and SWA at each of the four spatial scales, not just 0.05º and 3QDS, using non-parametric Mann-Whitney $U$-tests to test for differences.
+Distributions were constructed with Gaussian kernels, with bandwidth following Silverman's "rule of thumb" [@Silverman1986]<!--$0.9 \times min \left ( \left \{ \sigma, \frac{IQR}{1.34 \times n^{-\frac{1}{5}}} \right \} \right )$-->.
+In the lower row of panels, these distributions of roughness values were compared between the Cape and SWA at each of the four spatial scales, not just 0.05º and 3QDS, using non-parametric Mann-Whitney $U$-tests to test for differences.
 The "common language effect size" ($CLES$, see text) describes these differences (b).
-$U$-tests for almost all environmental variables yielded significant differences ($P < 0.05$) between Cape and SWA values ($NS$, non-significant differences).
+$U$-tests for almost all environmental variables yielded significant differences ($P < 0.05$) between Cape and SWA values (NS, non-significant differences).
 
 (ref:roughness)
 
@@ -227,7 +227,7 @@ Species turnover was calculated for all possible pairs of cells, but only the tu
 Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region separately.
 Following a 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable (Table \@ref(tab:turnover-vs-geodist-model-table)), a significant interaction between distance and region was found ($P < 0.001$), such that the Cape positively effects the distance slope term.
 Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (b) and the average species turnover between QDS in a given HDS (c).
-Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was $log(x + 1)$-transformed), separately for each region, for illustration of the two regions' differences.
+Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was log(x + 1)-transformed), separately for each region, for illustration of the two regions' differences.
 
 (ref:richness-vs-turnover)
 
