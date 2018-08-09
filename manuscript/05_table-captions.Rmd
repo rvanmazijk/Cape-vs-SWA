@@ -26,8 +26,8 @@ Captions are also repeated alongside their respective tables for readability.
 ## Table 1 <!--FIXME: \@ref(tab:data-sources)--> {-}
 
 (ref:data-sources)
-Data sources used in this study.
-Abbreviations are as follows:<!--TODO-->.
+Georeferenced vascular plant species occurence and environmental data sources used in this study.
+Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity.
 
 (ref:data-sources)
 
