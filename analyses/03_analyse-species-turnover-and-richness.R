@@ -184,6 +184,7 @@ SWAFR_richness_turnover_3QDS_family <- compile_gamma_beta_alpha(
 )
 
 # .... Merge both regions ------------------------------------------------------
+
 richness_turnover_3QDS_species <- rbind(
   cbind(
     region = "GCFR",
