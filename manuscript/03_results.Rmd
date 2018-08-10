@@ -59,3 +59,4 @@ HDS richness declines with increasing turnover.
 Why?
 Let us turn the process on its head: why does high turnover arise from low richness QDS?
 Well, when richness is low, possible opportunities for high turnover increase.<!--TODO: expand-->
+The SWA interaction term for this is also negative (though only marginally significant), suggesting that the decline in observed HDS richness ~ QDS turnover is less steep in SWA.
