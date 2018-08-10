@@ -108,7 +108,7 @@ We also compare the effect size of the Cape vs SWA using the "common language ef
 The CLES is the proportion of all pairwise comparisons between two sample groups' observations where one group's value is greater than the other.
 In our case, of all pairwise comparisons of a variable's roughness values between the Cape and SWA, we calculated the CLES as the proportion of pairs where Cape roughness values were greater than that of SWA.
 This allowed us to assess prediction [(i)][Hypothesis-v2].
-To compare the spatial scales of heterogeneity (prediction [(ii)][[Hypothesis-v2]) between each region, we repeated this analysis at all four spatial scales.
+To compare the spatial scales of heterogeneity (prediction [(ii)][Hypothesis-v2]) between each region, we repeated this analysis at all four spatial scales.
 Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
 
 ### Relating species richness and species turnover
