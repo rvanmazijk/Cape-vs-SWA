@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 # Inputs -----------------------------------------------------------------------
 
+=======
+>>>>>>> c9433d4432ef0784009b98d41b1f83aa48cb296c
 # Find all function scripts, output CSVs
 FUNCTIONS = $(wildcard functions/*.R)
 OUTPUTS = $(wildcard outputs/*/*.csv)
@@ -12,8 +15,11 @@ FIGURES_PNG = $(FIGURES_R:.R=.png)
 # Find all numbered ms .Rmd fils
 BODY = $(wildcard manuscript/*_*.Rmd)
 
+<<<<<<< HEAD
 # Outputs ----------------------------------------------------------------------
 
+=======
+>>>>>>> c9433d4432ef0784009b98d41b1f83aa48cb296c
 # PDF output depends on
 # 	- index.Rmd,
 #		- the ms body,
@@ -24,11 +30,15 @@ BODY = $(wildcard manuscript/*_*.Rmd)
 manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf: manuscript/index.Rmd $(BODY) manuscript/_after-body.tex manuscript/_bookdown.yml manuscript/_output.yml manuscript/Cape-vs-SWA.bib manuscript/journal-of-biogeography.csl $(OUTPUTS) $(FUNCTIONS)
 	Rscript -e "setwd('manuscript'); library(bookdown); render_book('$<', 'bookdown::pdf_document2')"
 
+<<<<<<< HEAD
 # The rendered after-body depends on:
 # 	- its source .Rmd file,
 # 	- the rendered figures,
 #  	- analyses' outputs
 #		- some functions
+=======
+# The after-body depends on the analyses' outputs too, and the figures and functions
+>>>>>>> c9433d4432ef0784009b98d41b1f83aa48cb296c
 manuscript/_after-body.tex: manuscript/_after-body.Rmd $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
 	Rscript -e "library(rmarkdown); render('$<', 'latex_fragment')"
 	# NOTE: setwd("manuscript") not needed for fragments
