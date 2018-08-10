@@ -36,9 +36,7 @@ turnover_vs_geodist_model_table <- my_model_table(
 
 # Table 3 ----------------------------------------------------------------------
 
-import_objects(
-  here::here("outputs/species-turnover-and-richness/")
-)
+import_objects(here::here("outputs/species-turnover-and-richness/"))
 tidy_terms <- c(
   "Intercept",
   "$log($Mean QDS richness + 1$)$",
