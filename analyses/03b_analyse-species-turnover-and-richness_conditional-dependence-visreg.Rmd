@@ -13,8 +13,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   fig.height = 4,
-  fig.width = 4,
-  fig.pos = "hold"
+  fig.width = 4
 )
 ```
 
@@ -98,7 +97,7 @@ visreg::visreg(
 
 # High species turnover between low richness sites??
 
-> Why does high turnover arise from low richness QDS? Because when site richness is low, possible opportunities for high turnover between sites increase.
+> _Why does high turnover arise from low richness QDS? Because when site richness is low, possible opportunities for high turnover between sites increase._
 
 This is paraphrased from my draft of my results section (as of `r format(Sys.time(), "%F")`).
 
