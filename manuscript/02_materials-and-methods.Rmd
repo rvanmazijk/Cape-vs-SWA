@@ -128,7 +128,7 @@ Moreover, average turnover between fine scale cells excluded turnover values bet
 -->
 We focussed on this relationship with HDS as the coarse scale and QDS as the fine scale---as there are four QDS within each HDS, and QDS was the highest precision to which our species data were recorded.
 Mean QDS richness for a given HDS-cell is based on four QDS-cells.
-Mean QDS turnover for a given HDS-cell is based on the turnover between $n = {j = 4 \choose 2} = 6$ QDS pairs (namely pairs $QDS_{1,2}$, $QDS_{1,3}$, $QDS_{1,4}$, $QDS_{2,3}$, $QDS_{2,4}$ and$QDS_{3,4}$).
+Mean QDS turnover for a given HDS-cell is based on the turnover between $n = {4 \choose 2} = 6$ QDS pairs.
 
 <!--Verbose verions:
 
