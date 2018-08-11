@@ -24,6 +24,9 @@ library(sp)
 # Taxonomy and species name cleaning
 library(taxize)
 
+# Pairwise Jaccard distance calculations
+library(vegan)
+
 # Tabular data-manipulation
 library(tidyverse)
 library(reshape2)

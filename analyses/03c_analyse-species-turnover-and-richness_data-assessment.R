@@ -6,7 +6,6 @@ source(here::here("setup.R"))
 source(here::here("data/01_import-region-polygons.R"))
 source(here::here("data/02_import-floral-data.R"))
 
-library(vegan)  # For more flexible pairwise Jaccard distances
 
 # GCFR -------------------------------------------------------------------------
 
