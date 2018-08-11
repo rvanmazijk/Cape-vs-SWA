@@ -150,9 +150,8 @@ if (!file.exists(GCFR_models_path)) {
     )
   )
   write_rds(GCFR_models, GCFR_models_path)
-} else {
-  GCFR_models <- read_rds(GCFR_models_path)
 }
+GCFR_models <- read_rds(GCFR_models_path)
 
 SWAFR_models_path <- glue("{out_dir}/SWAFR_models.RDS")
 if (!file.exists(SWAFR_models_path)) {
@@ -165,9 +164,9 @@ if (!file.exists(SWAFR_models_path)) {
     )
   )
   write_rds(SWAFR_models, SWAFR_models_path)
-} else {
-  SWAFR_models <- read_rds(SWAFR_models_path)
 }
+SWAFR_models <- read_rds(SWAFR_models_path)
+
 # NOTE:
 # - non_elev: richness ~ soil + climate + ndvi + roughnesses thereof
 # - non_soil: richness ~ elev + climate + ndvi + roughnesses thereof
