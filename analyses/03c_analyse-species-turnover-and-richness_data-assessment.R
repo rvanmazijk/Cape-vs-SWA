@@ -197,7 +197,6 @@ if (!file.exists(SWAFR_spp_path)) {
 
 SWAFR_spp <- readOGR(SWAFR_spp_path)
 
-# Models -----------------------------------------------------------------------
 # .... Combine regions' data ---------------------------------------------------
 
 names(GCFR_spp)[6:8] <-
@@ -215,28 +214,100 @@ richness_turnover_data <- as_tibble(rbind(
   cbind(region = "SWA", SWAFR_spp_data)
 ))
 
+# Models: Attempt 1 ------------------------------------------------------------
 
+GCFR_m1 <- lm(
+  HDS_richness ~ mean_QDS_richness,
+  data = na.exclude(filter(richness_turnover_data, region == "Cape"))
 )
-
-GCFR_model <- lm(
+GCFR_m2 <- lm(
   HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
-  data = filter(richness_turnover_data, region == "Cape")
+  data = na.exclude(filter(richness_turnover_data, region == "Cape"))
 )
-GCFR_model_interaction <- lm(
+GCFR_m3 <- lm(
   HDS_richness ~ mean_QDS_richness * mean_QDS_turnover,
-  data = filter(richness_turnover_data, region == "Cape")
+  data = na.exclude(filter(richness_turnover_data, region == "Cape"))
 )
-AIC(GCFR_model, GCFR_model_interaction)
+anova(GCFR_m1, GCFR_m2, GCFR_m3)
+visreg::visreg(
+  GCFR_m3,
+  xvar = "mean_QDS_richness",
+  by = "mean_QDS_turnover",
+  overlay = TRUE
+)
 
-SWAFR_model <- lm(
+SWAFR_m1 <- lm(
+  HDS_richness ~ mean_QDS_richness,
+  data = na.exclude(filter(richness_turnover_data, region == "SWA"))
+)
+SWAFR_m2 <- lm(
   HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
-  data = filter(richness_turnover_data, region == "SWA")
+  data = na.exclude(filter(richness_turnover_data, region == "SWA"))
 )
-SWAFR_model_interaction <- lm(
+SWAFR_m3 <- lm(
   HDS_richness ~ mean_QDS_richness * mean_QDS_turnover,
-  data = filter(richness_turnover_data, region == "SWA")
+  data = na.exclude(filter(richness_turnover_data, region == "SWA"))
 )
-AIC(SWAFR_model, SWAFR_model_interaction)
+anova(SWAFR_m1, SWAFR_m2, SWAFR_m3)
+
+GCFR_m3 %>%
+  visreg::visreg(
+    xvar = "mean_QDS_richness",
+    by = "mean_QDS_turnover",
+    overlay = TRUE,
+    gg = TRUE,
+    breaks = c(0.70, 0.85, 1.00)
+  ) +
+  labs(
+    x = "Mean QDS richness",
+    y = "HDS richness"
+  ) +
+  guides(
+    col = guide_legend(title = "Mean QDS turnover"),
+    fill = guide_legend(title = "Mean QDS turnover")
+  )
+
+SWAFR_m3 %>%
+  visreg::visreg(
+    xvar = "mean_QDS_richness",
+    by = "mean_QDS_turnover",
+    overlay = TRUE,
+    gg = TRUE,
+    breaks = c(0.70, 0.85, 1.00)
+  ) +
+  labs(
+    x = "Mean QDS richness",
+    y = "HDS richness"
+  ) +
+  guides(
+    col = guide_legend(title = "Mean QDS turnover"),
+    fill = guide_legend(title = "Mean QDS turnover")
+  )
+
+tidy(GCFR_m3)
+tidy(SWAFR_m3)
+
+plot(
+  SWAFR_spp_data$HDS_richness,
+  predict.lm(
+    GCFR_m3,
+    newdata = SWAFR_spp_data[, c("mean_QDS_richness", "mean_QDS_turnover")]
+  ),
+  xlab = "Obs. SWA HDS richness",
+  ylab = "Exp. SWA HDS richness\n(Cape model)"
+)
+abline(0, 1)
+
+plot(
+  GCFR_spp_data$HDS_richness,
+  predict.lm(
+    SWAFR_m3,
+    newdata = GCFR_spp_data[, c("mean_QDS_richness", "mean_QDS_turnover")]
+  ),
+  xlab = "Obs. Cape HDS richness",
+  ylab = "Exp. Cape HDS richness\n(SWA model)"
+)
+abline(0, 1)
 
 combined_model <- lm(
   HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
