@@ -49,7 +49,7 @@ richness_turnover_data %>%
     geom_point() +
     geom_smooth(method = lm) +
     labs(
-      x = "Mean QDS richness",
+      x = "Mean QDS turnover",
       y = "HDS richness"
     ) +
     scale_colour_manual(name = "Region", values = my_palette)
