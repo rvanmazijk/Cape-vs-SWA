@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 
 ```{r, include=FALSE}
 source(here::here("setup.R"))
-library(visreg)
 import_objects(here::here("outputs/species-turnover-and-richness/"))
 ```
 
