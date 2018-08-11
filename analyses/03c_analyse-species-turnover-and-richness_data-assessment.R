@@ -198,7 +198,12 @@ if (!file.exists(SWAFR_spp_path)) {
 SWAFR_spp <- readOGR(SWAFR_spp_path)
 
 # Models -----------------------------------------------------------------------
+# .... Combine regions' data ---------------------------------------------------
 
+names(GCFR_spp)[6:8] <-
+  c("HDS_richness", "mean_QDS_richness", "mean_QDS_turnover")
+names(SWAFR_spp)[6:8] <-
+  c("HDS_richness", "mean_QDS_richness", "mean_QDS_turnover")
 GCFR_spp_data <- GCFR_spp@data %>%
   select(hdgc, HDS_richness, mean_QDS_richness, mean_QDS_turnover) %>%
   distinct()
