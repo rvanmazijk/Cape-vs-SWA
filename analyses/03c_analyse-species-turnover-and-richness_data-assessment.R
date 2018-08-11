@@ -195,11 +195,13 @@ expect_HDS_richness(richness = 10, turnover = 1.0, n = 4)
 # 4 site case: complete turnover
 expect_HDS_richness(richness = 10, turnover = 0.5, n = 4)
 
-richness_turnover_data %<>% mutate(expect_HDS_richness = expect_HDS_richness(
-  mean_QDS_richness,
-  mean_QDS_turnover,
-  n = 4  # TODO: generate n_QDS in loops above, for use here
-))
+richness_turnover_data %<>% mutate(
+  expect_HDS_richness = expect_HDS_richness(
+    mean_QDS_richness,
+    mean_QDS_turnover,
+    n = 4  # TODO: generate n_QDS in loops above, for use here
+  )
+)
 
 GCFR_model <- lm(
   HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
