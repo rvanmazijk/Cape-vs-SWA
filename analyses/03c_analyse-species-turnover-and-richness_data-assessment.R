@@ -242,26 +242,3 @@ combined_model_interaction <- lm(
   data = richness_turnover_data
 )
 AIC(combined_model, combined_model_interaction)
-
-# Expected HDS richness from QDS on first principles ---------------------------
-
-expect_HDS_richness <- function(richness, turnover, n) {
-  richness * ((n - 1) + turnover)
-}
-# E.g.
-# 2 site case: complete turnover
-expect_HDS_richness(richness = 10, turnover = 1.0, n = 2)
-# 2 site case: incomplete turnover
-expect_HDS_richness(richness = 10, turnover = 0.5, n = 2)
-# 4 site case: incomplete turnover
-expect_HDS_richness(richness = 10, turnover = 1.0, n = 4)
-# 4 site case: complete turnover
-expect_HDS_richness(richness = 10, turnover = 0.5, n = 4)
-
-richness_turnover_data %<>% mutate(
-  expect_HDS_richness = expect_HDS_richness(
-    mean_QDS_richness,
-    mean_QDS_turnover,
-    n = 4  # TODO: generate n_QDS in loops above, for use here
-  )
-)
