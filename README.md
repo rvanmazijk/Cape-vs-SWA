@@ -1,9 +1,9 @@
 # Linking patterns of plant species richness and turnover to environmental heterogeneity in two Mediterranean flora: the Cape and Southwest Australia
 
-*Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom*
+_Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
 
 - Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
-- Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
+- Corresponding author: RVM (ruanvmazijk@gmail.com, +27 21 650 3684)
 
 <p>
   <img src="logos/UCT-logo.png" width=100/>
@@ -40,4 +40,4 @@ Raw-data is processed and analysed. Data-processing, analyses and figure product
 
 A more detailed layout of the relationships between this repository's components is described [here](https://rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.svg), also using [GraphViz](https://www.graphviz.org/).
 
-<!--In order to reproduce the analyses and manuscript, simply run the command `make` in the command line (e.g. Bash) in this directory. The `Makefile` then ...-->
+<!--In order to reproduce the analyses and manuscript, simply run the command `make` in the command line (e.g. Bash) in this directory.-->
