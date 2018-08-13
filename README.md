@@ -6,8 +6,8 @@
 - Corresponding author: ruanvmazijk@gmail.com, +27 21 650 3684
 
 <p>
-  <img src="logos/UCT-logo.png" width=100>
-  <img src="logos/BIO-logo.png" width=100>
+  <img src="logos/UCT-logo.png" width=100/>
+  <img src="logos/BIO-logo.png" width=100/>
 </p>
 
 ## Preamble
@@ -23,9 +23,9 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 This work is funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
 
 <p>
-  <img src="logos/DST-logo.png" width=180>
-  <img src="logos/NRF-logo.png" width=100>
-  <img src="logos/SAAB-logo.png" width=100>
+  <img src="logos/DST-logo.png" width=180/>
+  <img src="logos/NRF-logo.png" width=100/>
+  <img src="logos/SAAB-logo.png" width=100/>
 </p>
 
 ## Technical details
