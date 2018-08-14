@@ -12,7 +12,7 @@ source(here::here("data/02_import-floral-data.R"))
 # .... GCFR --------------------------------------------------------------------
 
 GCFR_spp_path <- here::here(
-  "outputs/species-turnover-and-richness/GCFR_spp_2018-08-10"
+  "outputs/species-turnover-and-richness/GCFR_spp_2018-08-14"
 )
 
 if (!file.exists(GCFR_spp_path)) {
@@ -33,6 +33,7 @@ if (!file.exists(GCFR_spp_path)) {
 
   # Init empty columns for data to come
   GCFR_spp@data$HDS_richness <- NA
+  GCFR_spp@data$n_QDS <- NA
   GCFR_spp@data$mean_QDS_richness <- NA
   GCFR_spp@data$mean_QDS_turnover <- NA
 
@@ -76,6 +77,8 @@ if (!file.exists(GCFR_spp_path)) {
       community_matrix %>%
       vegdist(method = "jaccard") %>%
       mean(na.rm = TRUE)
+    GCFR_spp$n_QDS[GCFR_spp$hdgc == current_HDS] <-
+      nrow(community_matrix)
     GCFR_spp$mean_QDS_richness[GCFR_spp$hdgc == current_HDS] <-
       community_matrix %>%
       t() %>%
@@ -92,7 +95,7 @@ if (!file.exists(GCFR_spp_path)) {
     writeOGR(
       GCFR_spp,
       dsn = here::here(
-        "outputs/species-turnover-and-richness/GCFR_spp_2018-08-10"
+        "outputs/species-turnover-and-richness/GCFR_spp_2018-08-14"
       ),
       layer = layer,
       driver = "ESRI Shapefile"
@@ -106,7 +109,7 @@ GCFR_spp <- readOGR(GCFR_spp_path)
 # .... SWAFR -------------------------------------------------------------------
 
 SWAFR_spp_path <- here::here(
-  "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-10"
+  "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-14"
 )
 
 if (!file.exists(SWAFR_spp_path)) {
@@ -127,6 +130,7 @@ if (!file.exists(SWAFR_spp_path)) {
 
   # Init empty columns for data to come
   SWAFR_spp@data$HDS_richness <- NA
+  SWAFR_spp@data$n_QDS <- NA
   SWAFR_spp@data$mean_QDS_richness <- NA
   SWAFR_spp@data$mean_QDS_turnover <- NA
 
@@ -170,6 +174,8 @@ if (!file.exists(SWAFR_spp_path)) {
       community_matrix %>%
       vegdist(method = "jaccard") %>%
       mean(na.rm = TRUE)
+    SWAFR_spp$n_QDS[SWAFR_spp$hdgc == current_HDS] <-
+      nrow(community_matrix)
     SWAFR_spp$mean_QDS_richness[SWAFR_spp$hdgc == current_HDS] <-
       community_matrix %>%
       t() %>%
@@ -186,7 +192,7 @@ if (!file.exists(SWAFR_spp_path)) {
     writeOGR(
       SWAFR_spp,
       dsn = here::here(
-        "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-10"
+        "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-14"
       ),
       layer = layer,
       driver = "ESRI Shapefile"
@@ -199,15 +205,15 @@ SWAFR_spp <- readOGR(SWAFR_spp_path)
 
 # .... Combine regions' data ---------------------------------------------------
 
-names(GCFR_spp)[6:8] <-
-  c("HDS_richness", "mean_QDS_richness", "mean_QDS_turnover")
-names(SWAFR_spp)[6:8] <-
-  c("HDS_richness", "mean_QDS_richness", "mean_QDS_turnover")
+names(GCFR_spp)[6:9] <-
+  c("HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover")
+names(SWAFR_spp)[6:9] <-
+  c("HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover")
 GCFR_spp_data <- GCFR_spp@data %>%
-  select(hdgc, HDS_richness, mean_QDS_richness, mean_QDS_turnover) %>%
+  select(hdgc, HDS_richness, n_QDS, mean_QDS_richness, mean_QDS_turnover) %>%
   distinct()
 SWAFR_spp_data <- SWAFR_spp@data %>%
-  select(hdgc, HDS_richness, mean_QDS_richness, mean_QDS_turnover) %>%
+  select(hdgc, HDS_richness, n_QDS, mean_QDS_richness, mean_QDS_turnover) %>%
   distinct()
 richness_turnover_data <- as_tibble(rbind(
   cbind(region = "Cape", GCFR_spp_data),

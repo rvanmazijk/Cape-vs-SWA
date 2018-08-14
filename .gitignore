@@ -9,4 +9,6 @@ outputs/roughness-across-scales/pw-comparisons*parallel*
 outputs/species-and-roughness/*.RDS
 outputs/species-turnover-and-richness/GCFR_spp_2018-08-10/
 outputs/species-turnover-and-richness/SWAFR_spp_2018-08-10/
+outputs/species-turnover-and-richness/GCFR_spp_2018-08-14/
+outputs/species-turnover-and-richness/SWAFR_spp_2018-08-14/
 *_cache
