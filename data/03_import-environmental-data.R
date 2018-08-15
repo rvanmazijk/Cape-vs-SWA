@@ -167,25 +167,41 @@ SWAFR_variables %<>%
 names(GCFR_variables) <- var_names
 names(SWAFR_variables) <- var_names
 
-GCFR_variables_QDS <- GCFR_variables %>%
-  map(resample, GCFR_richness_QDS, method = "bilinear") %>%
-  map(mask, GCFR_border_buffered)
-GCFR_variables_HDS <- GCFR_variables %>%
-  map(resample, GCFR_richness_HDS, method = "bilinear") %>%
-  map(mask, GCFR_border_buffered)
-GCFR_variables_3QDS <- GCFR_variables %>%
-  map(resample, GCFR_richness_3QDS, method = "bilinear") %>%
-  map(mask, GCFR_border_buffered)
+# Roughness layers -------------------------------------------------------------
 
-SWAFR_variables_QDS <- SWAFR_variables %>%
-  map(resample, SWAFR_richness_QDS, method = "bilinear") %>%
-  map(mask, SWAFR_border_buffered)
-SWAFR_variables_HDS <- SWAFR_variables %>%
-  map(resample, SWAFR_richness_HDS, method = "bilinear") %>%
-  map(mask, SWAFR_border_buffered)
-SWAFR_variables_3QDS <- SWAFR_variables %>%
-  map(resample, SWAFR_richness_3QDS, method = "bilinear") %>%
-  map(mask, SWAFR_border_buffered)
+GCFR_roughness <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.05
+)
+GCFR_roughness_QDS <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.25
+)
+GCFR_roughness_HDS <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.50
+)
+GCFR_roughness_3QDS <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.75
+)
+
+SWAFR_roughness <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.05
+)
+SWAFR_roughness_QDS <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.25
+)
+SWAFR_roughness_HDS <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.50
+)
+SWAFR_roughness_3QDS <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.75
+)
 
 # Tidy up
 rm(
