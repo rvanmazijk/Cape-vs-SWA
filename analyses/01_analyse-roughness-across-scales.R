@@ -74,35 +74,3 @@ write_csv(
   test_results_CLES_for_plot,
   glue("{out_dir}/test_results_CLES_for_plot.csv")
 )
-
-# Prep data for violin plot ----------------------------------------------------
-
-data_for_violin_plot <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
-  rbind(
-    cbind(region = "GCFR", map2_df(GCFR_variables, resolution, prep_layer)),
-    cbind(region = "SWAFR", map2_df(SWAFR_variables, resolution, prep_layer))
-  )
-}
-data_for_violin_plot_tidy <- data_for_violin_plot %$%
-  rbind(
-    cbind(resolution = "0.05º", .[[1]]),
-    cbind(resolution = "QDS",   .[[2]]),
-    cbind(resolution = "HDS",   .[[3]]),
-    cbind(resolution = "3QDS",  .[[4]])
-  ) %>%
-  as_tibble() %>%
-  gather(variable, roughness, -resolution, -region) %>%
-  na.omit() %>%
-  group_by(resolution, variable) %>%
-  mutate(z_roughness = scale(roughness)) %>%  # Z-scale!
-  ungroup() %>%
-  mutate(
-    variable = factor(variable, levels = var_names),
-    region = ifelse(region == "GCFR", "Cape", "SWA")
-  )
-
-# Save to disc
-write_csv(
-  data_for_violin_plot_tidy,
-  glue("{out_dir}/data_for_violin_plot.csv")
-)
