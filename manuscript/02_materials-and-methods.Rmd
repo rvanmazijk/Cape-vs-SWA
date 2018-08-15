@@ -111,7 +111,7 @@ This allowed us to assess prediction [(i)][Hypothesis-v2].
 To compare the spatial scales of heterogeneity (prediction [(ii)][Hypothesis-v2]) between each region, we repeated this analysis at all four spatial scales.
 Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
 
-### Relating species richness and species turnover
+### Predicting richness and turnover with environmental heterogeneity
 
 Regarding predictions [(iii) and (iv)][Hypothesis-v2], we wished to compare the relative importance of species turnover in each region as a predictor of species richness.
 
