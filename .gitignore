@@ -5,10 +5,9 @@ packrat/lib*/
 *lib*
 *.html
 *.tex
-outputs/roughness-across-scales/pw-comparisons*parallel*
+data/derived-data/flora/GCFR_spp_2018-08-10/
+data/derived-data/flora/SWAFR_spp_2018-08-10/
+data/derived-data/flora/GCFR_spp_2018-08-14/
+data/derived-data/flora/SWAFR_spp_2018-08-14/
 outputs/species-and-roughness/*.RDS
-outputs/species-turnover-and-richness/GCFR_spp_2018-08-10/
-outputs/species-turnover-and-richness/SWAFR_spp_2018-08-10/
-outputs/species-turnover-and-richness/GCFR_spp_2018-08-14/
-outputs/species-turnover-and-richness/SWAFR_spp_2018-08-14/
 *_cache

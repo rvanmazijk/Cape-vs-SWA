@@ -6,15 +6,17 @@ data_dir <- here::here("data/derived-data")
 
 # Elevation --------------------------------------------------------------------
 
-GCFR_elev <-
-  raster(glue("{data_dir}/elevation/elevation_GCFR_box.tif"))
+GCFR_elev <- raster(glue(
+  "{data_dir}/elevation/elevation_GCFR_box.tif"
+))
 stopifnot(exprs = {
   proj4string(GCFR_elev) == std_CRS
   round(res(GCFR_elev), 2) == 0.05
 })
 
-SWAFR_elev <-
-  raster(glue("{data_dir}/elevation/elevation_SWAFR_box.tif"))
+SWAFR_elev <- raster(glue(
+  "{data_dir}/elevation/elevation_SWAFR_box.tif"
+))
 stopifnot(exprs = {
   proj4string(SWAFR_elev) == std_CRS
   round(res(SWAFR_elev), 2) == 0.05
@@ -22,69 +24,83 @@ stopifnot(exprs = {
 
 # Rainfall ---------------------------------------------------------------------
 
-GCFR_MAP <-
-  raster(glue("{data_dir}/rainfall/MAP_GCFR_box.tif"))
+GCFR_MAP <- raster(glue(
+  "{data_dir}/rainfall/MAP_GCFR_box.tif"
+))
 stopifnot(exprs = {
   proj4string(GCFR_MAP) == std_CRS
   round(res(GCFR_MAP), 2) == 0.05
 })
-GCFR_PWQ <-
-  raster(glue("{data_dir}/rainfall/GCFR_PWQ_box.tif"))
-GCFR_PDQ <-
-  raster(glue("{data_dir}/rainfall/GCFR_PDQ_box.tif"))
-GCFR_PCV <-
-  raster(glue("{data_dir}/rainfall/GCFR_PCV_box.tif"))
+GCFR_PWQ <- raster(glue(
+  "{data_dir}/rainfall/GCFR_PWQ_box.tif"
+))
+GCFR_PDQ <- raster(glue(
+  "{data_dir}/rainfall/GCFR_PDQ_box.tif"
+))
+GCFR_PCV <- raster(glue(
+  "{data_dir}/rainfall/GCFR_PCV_box.tif"
+))
 
-SWAFR_MAP <-
-  raster(glue("{data_dir}/rainfall/MAP_SWAFR_box.tif"))
+SWAFR_MAP <- raster(glue(
+  "{data_dir}/rainfall/MAP_SWAFR_box.tif"
+))
 stopifnot(exprs = {
   proj4string(SWAFR_MAP) == std_CRS
   round(res(SWAFR_MAP), 2) == 0.05
 })
-SWAFR_PWQ <-
-  raster(glue("{data_dir}/rainfall/SWAFR_PWQ_box.tif"))
-SWAFR_PDQ <-
-  raster(glue("{data_dir}/rainfall/SWAFR_PDQ_box.tif"))
-SWAFR_PCV <-
-  raster(glue("{data_dir}/rainfall/SWAFR_PCV_box.tif"))
+SWAFR_PWQ <- raster(glue(
+  "{data_dir}/rainfall/SWAFR_PWQ_box.tif"
+))
+SWAFR_PDQ <- raster(glue(
+  "{data_dir}/rainfall/SWAFR_PDQ_box.tif"
+))
+SWAFR_PCV <- raster(glue(
+  "{data_dir}/rainfall/SWAFR_PCV_box.tif"
+))
 
 # Land surface temperature -----------------------------------------------------
 
-GCFR_MLST <-
-  raster(glue("{data_dir}/temperature/MODIS_annual_mean_GCFR_0.05_buffered.grd"))
+GCFR_MLST <- raster(glue(
+  "{data_dir}/temperature/MODIS_annual_mean_GCFR_0.05_buffered.grd"
+))
 stopifnot(exprs = {
   proj4string(GCFR_MLST) == std_CRS
   round(res(GCFR_MLST), 2) == 0.05
 })
-GCFR_TWQ <-
-  raster(glue("{data_dir}/temperature/GCFR_TWQ_buffered.tif"))
-GCFR_TCQ <-
-  raster(glue("{data_dir}/temperature/GCFR_TCQ_buffered.tif"))
+GCFR_TWQ <- raster(glue(
+  "{data_dir}/temperature/GCFR_TWQ_buffered.tif"
+))
+GCFR_TCQ <- raster(glue(
+  "{data_dir}/temperature/GCFR_TCQ_buffered.tif"
+))
 
-SWAFR_MLST <-
-  raster(glue(
-    "{data_dir}/temperature/MODIS_annual_mean_SWAFR_0.05_buffered.grd"
-  ))
+SWAFR_MLST <- raster(glue(
+  "{data_dir}/temperature/MODIS_annual_mean_SWAFR_0.05_buffered.grd"
+))
 stopifnot(exprs = {
   proj4string(SWAFR_MLST) == std_CRS
   round(res(SWAFR_MLST), 2) == 0.05
 })
-SWAFR_TWQ <-
-  raster(glue("{data_dir}/temperature/SWAFR_TWQ_buffered.tif"))
-SWAFR_TCQ <-
-  raster(glue("{data_dir}/temperature/SWAFR_TCQ_buffered.tif"))
+SWAFR_TWQ <- raster(glue(
+  "{data_dir}/temperature/SWAFR_TWQ_buffered.tif"
+))
+SWAFR_TCQ <- raster(glue(
+  "{data_dir}/temperature/SWAFR_TCQ_buffered.tif"
+))
 
 # NDVI -------------------------------------------------------------------------
 
-GCFR_NDVI <-
-  raster(glue("{data_dir}/NDVI/GCFR_NDVI.tif"))
+GCFR_NDVI <- raster(glue(
+  "{data_dir}/NDVI/GCFR_NDVI.tif"
+))
 stopifnot(exprs  = {
   proj4string(GCFR_NDVI) == std_CRS
   round(res(GCFR_NDVI), 2) == 0.05
 })
 
-SWAFR_NDVI <-
-  raster(glue("{data_dir}/NDVI/SWAFR_NDVI.tif"))
+SWAFR_NDVI <- raster(glue(
+  "{data_dir}/NDVI/SWAFR_NDVI.tif"
+))
 stopifnot(exprs = {
   proj4string(SWAFR_NDVI) == std_CRS
   round(res(SWAFR_NDVI), 2) == 0.05
