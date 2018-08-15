@@ -1,6 +1,6 @@
 # Results
 
-## Describing environmental heterogeneity numerically across scales
+## Describing environmental heterogeneity across scales
 
 Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cells ($CLES > 0.50$, Mann-Whitney $U$-test: $P < 0.05$, Figure \@ref(fig:roughness)).
 The Cape is thus more environmentaly heterogeneous than SWA overall, but the degree to which it is more heterogeneous varies between environmental variables.
