@@ -31,27 +31,6 @@ Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation
 
 (ref:data-sources)
 
-## Table \@ref(tab:turnover-vs-geodist-model-table) {-}
-
-(ref:turnover-vs-geodist-model-table)
-Estimated coefficients and significances ($P$-value) following quantile regression of the 5%-quantile ($\tau = 0.05$) of pairwise vascular plant species turnover (Jaccard distance) as a function of the geographic distance (km, $log$-transformed) between QDS cells.
-The Cape term represents the difference between Cape and SWA species turnover, for a given geographic distance.
-<!--TODO: redo w/ Cape as baseline to match species-model-table-->
-<!--TODO: embed within Figure 2-->
-
-(ref:turnover-vs-geodist-model-table)
-
-## Table \@ref(tab:species-model-table) {-}
-
-(ref:species-model-table)
-Estimated coefficients and significances ($P$-value) following multiple linear regression of HDS species richness against the mean QDS species richness ($log(x + 1)$-transformed) and turnover (Jaccard distance) within a given HDS, of the form in Equation \@ref(eq:S-HDS-formula).
-The Cape was fit as the baseline, hence SWA represents the categorical term here.
-<!--TODO: use SWA as baseline? to be more consistent w/ tab:turnover-vs-geodist-model-table-->
-This was model was better fitting than a similar model without a region category ($\Delta AIC =$ `r species_model_table$deltaAIC`).
-Note, this model does not represent those curves plot in Figure \@ref(fig:richness-vs-turnover) (there, the curves are from simple linear regressions of the variables in each panel, separated by region).
-
-(ref:species-model-table)
-
 ## Table \@ref(tab:species-roughness-AICc) {-}
 
 (ref:species-roughness-AICc)
