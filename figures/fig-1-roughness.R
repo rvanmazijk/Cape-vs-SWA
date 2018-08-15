@@ -70,10 +70,10 @@ test_results_summary %<>%
 data <- test_results_CLES_for_plot %>%
   mutate(
     variable_type = case_when(  # for colouring variables' lines etc.
-      variable == "Elevation"      ~ "\n\nElevation",
-      variable == "NDVI"           ~ "\n\nNDVI",
-      variable %in% var_names[2:4] ~ "e.g. MAP\n\nClimate",
-      variable %in% var_names[6:9] ~ "e.g. CEC\n\nSoil"
+      variable == "Elevation"      ~ "Elevation",
+      variable == "NDVI"           ~ "NDVI",
+      variable %in% var_names[2:4] ~ "Climate",
+      variable %in% var_names[6:9] ~ "Soil"
       # (\n\n to "label" z_dbn_plot above CLES plot (cheat!))
     ),
     CLES = 1 - CLES  # Make CLES Cape - SWA, not SWA - Cape
@@ -83,10 +83,10 @@ data <- test_results_CLES_for_plot %>%
   mutate(
     variable = factor(variable, levels = var_names),
     variable_type = factor(variable_type, levels = c(
-      "\n\nElevation",
-      "e.g. MAP\n\nClimate",
-      "\n\nNDVI",
-      "e.g. CEC\n\nSoil"
+      "Elevation",
+      "Climate",
+      "NDVI",
+      "Soil"
     )),
     resolution = factor(resolution, levels = c("0.05º", "QDS", "HDS", "3QDS"))
   )
@@ -138,30 +138,31 @@ CLES_plot <- ggplot(data, aes(resolution, CLES, col = variable_type)) +
 
 # Roughness distribution plots -------------------------------------------------
 
-# Tidy-up raw distribution dataframe
-data_for_violin_plot$variable %<>% factor(levels = var_names)
-
 z_dbn_plot <- data_for_violin_plot %>%
   filter(
     resolution %in% c("0.05º", "3QDS"),
     variable %in% c("Elevation", "MAP", "NDVI", "CEC")
   ) %>%
-  ggplot(aes(z_roughness, col = region, fill = region)) +
-  geom_density(alpha = 0.5) +
+  mutate(variable = case_when(
+    variable == "Elevation" ~ "Elevation",
+    variable == "MAP"       ~ "Climate e.g. MAP",
+    variable == "NDVI"      ~ "NDVI",
+    variable == "CEC"       ~ "Soil e.g. CEC"
+  )) %>%
+  mutate(variable = factor(variable, levels = c(
+    "Elevation",
+    "Climate e.g. MAP",
+    "NDVI",
+    "Soil e.g. CEC"
+  ))) %>%
+  ggplot(aes(z_roughness, fill = region)) +
+  geom_histogram(position = "dodge", bins = 20) +
   xlim(min(data_for_violin_plot$z_roughness), 5) +
-  scale_colour_manual(name = "Region", values = my_palette) +
   scale_fill_manual(name = "Region", values = my_palette) +
-  facet_wrap(
-    ~ variable + resolution,
-    nrow = 1,
-    strip.position = "bottom",
-    labeller = label_bquote(.(resolution))
-  ) +
-  theme(
-    axis.title = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    panel.border = element_blank()
+  facet_grid(resolution ~ variable, scales = "free_y") +
+  labs(
+    x = "Z(Roughness)",
+    y = "No. cells"
   )
 
 #adj_z_roughness <- abs(min(data_for_violin_plot$z_roughness)) + 0.1
@@ -262,18 +263,18 @@ z_dbn_plot <- data_for_violin_plot %>%
 legends <- plot_grid(
   get_legend(z_dbn_plot),
   get_legend(CLES_plot),
-  nrow = 2, rel_heights = c(1, 2)
+  nrow = 2
 )
-z_dbn_plot <- plot_grid(
+CLES_plot2 <- plot_grid(
+  CLES_plot + theme(legend.position = "none"),
   grid.rect(gp = gpar(col = "white")),
-  z_dbn_plot + theme(legend.position = "none"),
-  nrow = 1, rel_widths = c(0.2, 4)
+  nrow = 1, rel_widths = c(4, 0.1)
 )
 final_plot <- plot_grid(
   z_dbn_plot + theme(legend.position = "none"),
-  CLES_plot + theme(legend.position = "none"),
-  nrow = 2, rel_heights = c(1, 2),
-  labels = c("(a)", "(b)"), vjust = c(1.5, 3)
+  CLES_plot2,
+  nrow = 2, rel_heights = c(1.5, 1),
+  labels = c("(a)", "(b)")
 )
 final_plot <- plot_grid(
   final_plot,
@@ -284,7 +285,7 @@ final_plot <- plot_grid(
 ggsave(
   here::here("figures/fig-1-roughness.png"),
   final_plot,
-  width = 10, height = 4,
+  width = 9, height = 6,
   dpi = 300
 )
 
