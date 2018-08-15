@@ -12,7 +12,7 @@ source(here::here("data/02_import-floral-data.R"))
 # .... GCFR --------------------------------------------------------------------
 
 GCFR_spp_path <- here::here(
-  "outputs/species-turnover-and-richness/GCFR_spp_2018-08-10"
+  "outputs/species-turnover-and-richness/GCFR_spp_2018-08-14"
 )
 
 if (!file.exists(GCFR_spp_path)) {
@@ -33,6 +33,7 @@ if (!file.exists(GCFR_spp_path)) {
 
   # Init empty columns for data to come
   GCFR_spp@data$HDS_richness <- NA
+  GCFR_spp@data$n_QDS <- NA
   GCFR_spp@data$mean_QDS_richness <- NA
   GCFR_spp@data$mean_QDS_turnover <- NA
 
@@ -76,6 +77,8 @@ if (!file.exists(GCFR_spp_path)) {
       community_matrix %>%
       vegdist(method = "jaccard") %>%
       mean(na.rm = TRUE)
+    GCFR_spp$n_QDS[GCFR_spp$hdgc == current_HDS] <-
+      nrow(community_matrix)
     GCFR_spp$mean_QDS_richness[GCFR_spp$hdgc == current_HDS] <-
       community_matrix %>%
       t() %>%
@@ -92,7 +95,7 @@ if (!file.exists(GCFR_spp_path)) {
     writeOGR(
       GCFR_spp,
       dsn = here::here(
-        "outputs/species-turnover-and-richness/GCFR_spp_2018-08-10"
+        "outputs/species-turnover-and-richness/GCFR_spp_2018-08-14"
       ),
       layer = layer,
       driver = "ESRI Shapefile"
@@ -106,7 +109,7 @@ GCFR_spp <- readOGR(GCFR_spp_path)
 # .... SWAFR -------------------------------------------------------------------
 
 SWAFR_spp_path <- here::here(
-  "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-10"
+  "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-14"
 )
 
 if (!file.exists(SWAFR_spp_path)) {
@@ -127,6 +130,7 @@ if (!file.exists(SWAFR_spp_path)) {
 
   # Init empty columns for data to come
   SWAFR_spp@data$HDS_richness <- NA
+  SWAFR_spp@data$n_QDS <- NA
   SWAFR_spp@data$mean_QDS_richness <- NA
   SWAFR_spp@data$mean_QDS_turnover <- NA
 
@@ -170,6 +174,8 @@ if (!file.exists(SWAFR_spp_path)) {
       community_matrix %>%
       vegdist(method = "jaccard") %>%
       mean(na.rm = TRUE)
+    SWAFR_spp$n_QDS[SWAFR_spp$hdgc == current_HDS] <-
+      nrow(community_matrix)
     SWAFR_spp$mean_QDS_richness[SWAFR_spp$hdgc == current_HDS] <-
       community_matrix %>%
       t() %>%
@@ -186,7 +192,7 @@ if (!file.exists(SWAFR_spp_path)) {
     writeOGR(
       SWAFR_spp,
       dsn = here::here(
-        "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-10"
+        "outputs/species-turnover-and-richness/SWAFR_spp_2018-08-14"
       ),
       layer = layer,
       driver = "ESRI Shapefile"
@@ -199,122 +205,117 @@ SWAFR_spp <- readOGR(SWAFR_spp_path)
 
 # .... Combine regions' data ---------------------------------------------------
 
-names(GCFR_spp)[6:8] <-
-  c("HDS_richness", "mean_QDS_richness", "mean_QDS_turnover")
-names(SWAFR_spp)[6:8] <-
-  c("HDS_richness", "mean_QDS_richness", "mean_QDS_turnover")
+vars_to_keep <- c(
+  "HDS_richness",
+  "n_QDS",
+  "mean_QDS_richness",
+  "mean_QDS_jaccard"
+)
+names(GCFR_spp)[6:9] <- vars_to_keep
+names(SWAFR_spp)[6:9] <- vars_to_keep
 GCFR_spp_data <- GCFR_spp@data %>%
-  select(hdgc, HDS_richness, mean_QDS_richness, mean_QDS_turnover) %>%
+  select(vars_to_keep) %>%
   distinct()
 SWAFR_spp_data <- SWAFR_spp@data %>%
-  select(hdgc, HDS_richness, mean_QDS_richness, mean_QDS_turnover) %>%
+  select(vars_to_keep) %>%
   distinct()
-richness_turnover_data <- as_tibble(rbind(
-  cbind(region = "Cape", GCFR_spp_data),
-  cbind(region = "SWA", SWAFR_spp_data)
-))
-
-# Models: Attempt 1 ------------------------------------------------------------
-
-GCFR_m1 <- lm(
-  HDS_richness ~ mean_QDS_richness,
-  data = na.exclude(filter(richness_turnover_data, region == "Cape"))
-)
-GCFR_m2 <- lm(
-  HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
-  data = na.exclude(filter(richness_turnover_data, region == "Cape"))
-)
-GCFR_m3 <- lm(
-  HDS_richness ~ mean_QDS_richness * mean_QDS_turnover,
-  data = na.exclude(filter(richness_turnover_data, region == "Cape"))
-)
-anova(GCFR_m1, GCFR_m2, GCFR_m3)
-visreg::visreg(
-  GCFR_m3,
-  xvar = "mean_QDS_richness",
-  by = "mean_QDS_turnover",
-  overlay = TRUE
-)
-
-SWAFR_m1 <- lm(
-  HDS_richness ~ mean_QDS_richness,
-  data = na.exclude(filter(richness_turnover_data, region == "SWA"))
-)
-SWAFR_m2 <- lm(
-  HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
-  data = na.exclude(filter(richness_turnover_data, region == "SWA"))
-)
-SWAFR_m3 <- lm(
-  HDS_richness ~ mean_QDS_richness * mean_QDS_turnover,
-  data = na.exclude(filter(richness_turnover_data, region == "SWA"))
-)
-anova(SWAFR_m1, SWAFR_m2, SWAFR_m3)
-
-GCFR_m3 %>%
-  visreg::visreg(
-    xvar = "mean_QDS_richness",
-    by = "mean_QDS_turnover",
-    overlay = TRUE,
-    gg = TRUE,
-    breaks = c(0.70, 0.85, 1.00)
-  ) +
-  labs(
-    x = "Mean QDS richness",
-    y = "HDS richness"
-  ) +
-  guides(
-    col = guide_legend(title = "Mean QDS turnover"),
-    fill = guide_legend(title = "Mean QDS turnover")
+richness_turnover_data <-
+  rbind(
+    cbind(region = "Cape", GCFR_spp_data),
+    cbind(region = "SWA", SWAFR_spp_data)
+  ) %>%
+  as_tibble() %>%
+  filter(n_QDS > 1) %>%  # turnover is non-sensicle for 1 QDS)
+  mutate(
+    add_residual_turnover = HDS_richness - mean_QDS_richness,
+    add_residual_turnover_prop = add_residual_turnover / HDS_richness,
+    mul_residual_turnover = HDS_richness / mean_QDS_richness
   )
 
-SWAFR_m3 %>%
-  visreg::visreg(
-    xvar = "mean_QDS_richness",
-    by = "mean_QDS_turnover",
-    overlay = TRUE,
-    gg = TRUE,
-    breaks = c(0.70, 0.85, 1.00)
-  ) +
-  labs(
-    x = "Mean QDS richness",
-    y = "HDS richness"
-  ) +
-  guides(
-    col = guide_legend(title = "Mean QDS turnover"),
-    fill = guide_legend(title = "Mean QDS turnover")
+# Compare data between GCFR and SWAFR ------------------------------------------
+
+# .... Mean Jaccard distance between QDS in HDS --------------------------------
+
+# For any no. QDS >= 2
+richness_turnover_data %$% compare_samples(
+  mean_QDS_jaccard[region == "Cape"],
+  mean_QDS_jaccard[region == "SWA"],
+  alternative = "two.sided"
+)
+richness_turnover_data %$%
+  hist(mean_QDS_jaccard[region == "Cape"], breaks = 30)
+richness_turnover_data %$%
+  hist(mean_QDS_jaccard[region == "SWA"], breaks = 30)
+
+# For when no. QDS = 4 only
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  compare_samples(
+    mean_QDS_jaccard[region == "Cape"],
+    mean_QDS_jaccard[region == "SWA"],
+    alternative = "two.sided"
   )
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  hist(mean_QDS_jaccard[region == "Cape"], breaks = 30)
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  hist(mean_QDS_jaccard[region == "SWA"], breaks = 30)
 
-tidy(GCFR_m3)
-tidy(SWAFR_m3)
+# .... Additively defined residual turnover in HDS -----------------------------
 
-plot(
-  SWAFR_spp_data$HDS_richness,
-  predict.lm(
-    GCFR_m3,
-    newdata = SWAFR_spp_data[, c("mean_QDS_richness", "mean_QDS_turnover")]
-  ),
-  xlab = "Obs. SWA HDS richness",
-  ylab = "Exp. SWA HDS richness\n(Cape model)"
-)
-abline(0, 1)
+# For any no. QDS >= 2
+richness_turnover_data %$%
+  compare_samples(
+    add_residual_turnover[region == "Cape"],
+    add_residual_turnover[region == "SWA"],
+    alternative = "two.sided"
+  )
+richness_turnover_data %$%
+  hist(add_residual_turnover[region == "Cape"], breaks = 30)
+richness_turnover_data %$%
+  hist(add_residual_turnover[region == "SWA"], breaks = 30)
 
-plot(
-  GCFR_spp_data$HDS_richness,
-  predict.lm(
-    SWAFR_m3,
-    newdata = GCFR_spp_data[, c("mean_QDS_richness", "mean_QDS_turnover")]
-  ),
-  xlab = "Obs. Cape HDS richness",
-  ylab = "Exp. Cape HDS richness\n(SWA model)"
-)
-abline(0, 1)
+# For when no. QDS = 4 only
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  compare_samples(
+    add_residual_turnover[region == "Cape"],
+    add_residual_turnover[region == "SWA"],
+    alternative = "two.sided"
+  )
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  hist(add_residual_turnover[region == "Cape"], breaks = 30)
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  hist(add_residual_turnover[region == "SWA"], breaks = 30)
 
-combined_model <- lm(
-  HDS_richness ~ mean_QDS_richness + mean_QDS_turnover,
-  data = richness_turnover_data
-)
-combined_model_interaction <- lm(
-  HDS_richness ~ mean_QDS_richness * mean_QDS_turnover,
-  data = richness_turnover_data
-)
-AIC(combined_model, combined_model_interaction)
+# .... Additively defined residual turnover in HDS (proportion) ----------------
+
+# For any no. QDS >= 2
+richness_turnover_data %$%
+  compare_samples(
+    add_residual_turnover_prop[region == "Cape"],
+    add_residual_turnover_prop[region == "SWA"],
+    alternative = "two.sided"
+  )
+richness_turnover_data %$%
+  hist(add_residual_turnover_prop[region == "Cape"], breaks = 30)
+richness_turnover_data %$%
+  hist(add_residual_turnover_prop[region == "SWA"], breaks = 30)
+
+# For when no. QDS = 4 only
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  compare_samples(
+    add_residual_turnover_prop[region == "Cape"],
+    add_residual_turnover_prop[region == "SWA"],
+    alternative = "two.sided"
+  )
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  hist(add_residual_turnover_prop[region == "Cape"], breaks = 30)
+richness_turnover_data %>%
+  filter(n_QDS == 4) %$%
+  hist(add_residual_turnover_prop[region == "SWA"], breaks = 30)

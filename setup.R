@@ -77,7 +77,7 @@ std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 # <http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette>
 my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
-  "#56B4E9"   # SWA (SWAFR) blue
+  "#307aa5"   # SWA (SWAFR) blue
 )
 # Cleaner theme
 my_theme <-
