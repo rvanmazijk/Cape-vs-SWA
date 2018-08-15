@@ -29,9 +29,12 @@ var_colours <- c(
 
 jackknifed_CLES_summary_QDS %<>%
   gather(variable, CLES) %>%
-  mutate(mean_or_sd = ifelse(str_detect(variable, "_mean"),
-                             "CLES_mean",
-                             "CLES_sd")) %>%
+  mutate(mean_or_sd =
+    ifelse(str_detect(variable, "_mean"),
+      "CLES_mean",
+      "CLES_sd"
+    )
+  ) %>%
   mutate(variable = str_remove(variable, "_mean")) %>%
   mutate(variable = str_remove(variable, "_sd")) %>%
   spread(mean_or_sd, CLES) %>%
@@ -39,9 +42,12 @@ jackknifed_CLES_summary_QDS %<>%
 jackknifed_CLES_summary_QDS$variable %<>% factor(levels = var_names)
 jackknifed_CLES_summary_HDS %<>%
   gather(variable, CLES) %>%
-  mutate(mean_or_sd = ifelse(str_detect(variable, "_mean"),
-                             "CLES_mean",
-                             "CLES_sd")) %>%
+  mutate(mean_or_sd =
+    ifelse(str_detect(variable, "_mean"),
+      "CLES_mean",
+      "CLES_sd"
+    )
+  ) %>%
   mutate(variable = str_remove(variable, "_mean")) %>%
   mutate(variable = str_remove(variable, "_sd")) %>%
   spread(mean_or_sd, CLES) %>%
