@@ -10,117 +10,107 @@ map(data_import_paths, source)
 
 out_dir <- here::here("outputs/species-and-roughness")
 
-# Collate data -----------------------------------------------------------------
+# Compile data -----------------------------------------------------------------
 
-# Prepare richness, environment roughness layers
-# GCFR
-for (i in seq_along(GCFR_variables_QDS)) {
-  names(GCFR_variables_QDS[[i]]) <- var_names[[i]]
-}
-names(GCFR_richness_QDS) <- "richness"
-GCFR_roughness_QDS <- map(GCFR_variables_QDS, focal_sd)
-names(GCFR_roughness_QDS) %<>% paste0("rough_", .)
-for (i in seq_along(GCFR_roughness_QDS)) {
-  names(GCFR_roughness_QDS[[i]]) <- paste0("rough_", var_names[[i]])
-}
-# SWAFR
-for (i in seq_along(SWAFR_variables_QDS)) {
-  names(SWAFR_variables_QDS[[i]]) <- var_names[[i]]
-}
-names(SWAFR_richness_QDS) <- "richness"
-SWAFR_roughness_QDS <- map(SWAFR_variables_QDS, focal_sd)
-names(SWAFR_roughness_QDS) %<>% paste0("rough_", .)
-for (i in seq_along(SWAFR_roughness_QDS)) {
-  names(SWAFR_roughness_QDS[[i]]) <- paste0("rough_", var_names[[i]])
-}
+# .... GCFR --------------------------------------------------------------------
 
-# Combine richness, environment and roughness into SpatialPointsDataFrames
-# GCFR
-GCFR_all_QDS <- c(
-  richness = log(GCFR_richness_QDS),
-  map(GCFR_variables_QDS, na.omit),
-  GCFR_roughness_QDS
+for (i in seq_along(GCFR_variables_HDS)) {
+  names(GCFR_variables_HDS[[i]]) <- var_names[[i]]
+}
+GCFR_roughness_HDS <- map(GCFR_variables_HDS, focal_sd)
+names(GCFR_roughness_HDS) %<>% paste0("rough_", .)
+for (i in seq_along(GCFR_roughness_HDS)) {
+  names(GCFR_roughness_HDS[[i]]) <- paste0("rough_", var_names[[i]])
+}
+GCFR_variables_HDS <- c(
+  map(GCFR_variables_HDS, na.omit),
+  GCFR_roughness_HDS
 )
-GCFR_all_QDS_df <- GCFR_all_QDS %>%
+GCFR_variables_HDS_pts <- GCFR_variables_HDS %>%
   map(rasterToPoints) %>%
   map(as_tibble) %>%
-  reduce(right_join)
-names(GCFR_all_QDS_df) <- c(
-  "x", "y",
-  "richness",
-  names(GCFR_variables),
-  names(GCFR_roughness_QDS)
+  reduce(right_join) %$%
+  SpatialPointsDataFrame(
+    coords = select(., x, y),
+    data = select(., -x, -y),
+    proj4string = CRS(std_CRS)
+  )
+GCFR_variables_HDS_pts@data <- cbind(
+  GCFR_variables_HDS_pts@data,
+  GCFR_variables_HDS_pts %>%
+    over(GCFR_QDS) %>%
+    select(qdgc) %>%
+    transmute(hdgc = substr(qdgc, 1, 8))
 )
-GCFR_all_QDS_pts <- SpatialPointsDataFrame(
-  data   = na.omit(GCFR_all_QDS_df)[, -c(1, 2)],
-  coords = na.omit(GCFR_all_QDS_df)[,  c(1, 2)],
-  proj4string = CRS(std_CRS)
-)
-# Adjust environmental values stored at x10 etc.
-GCFR_all_QDS_pts@data %<>% mutate(
-  `Surface T` = `Surface T` - 273.15, # no adj needed for rough, as additive
-  NDVI        = NDVI / 1e+07,
-  rough_NDVI  = rough_NDVI / 1e+07,
-  pH          = pH / 10,
-  rough_pH    = rough_pH / 10
-)
-# TODO: Check which other vars have been x10
-# TODO: Check units for NDVI
 
-# SWAFR
-SWAFR_all_QDS <- c(
-  richness = log(SWAFR_richness_QDS),
-  map(SWAFR_variables_QDS, na.omit),
-  SWAFR_roughness_QDS
+# .... SWAFR -------------------------------------------------------------------
+
+for (i in seq_along(SWAFR_variables_HDS)) {
+  names(SWAFR_variables_HDS[[i]]) <- var_names[[i]]
+}
+SWAFR_roughness_HDS <- map(SWAFR_variables_HDS, focal_sd)
+names(SWAFR_roughness_HDS) %<>% paste0("rough_", .)
+for (i in seq_along(SWAFR_roughness_HDS)) {
+  names(SWAFR_roughness_HDS[[i]]) <- paste0("rough_", var_names[[i]])
+}
+SWAFR_variables_HDS <- c(
+  map(SWAFR_variables_HDS, na.omit),
+  SWAFR_roughness_HDS
 )
-SWAFR_all_QDS_df <- SWAFR_all_QDS %>%
+SWAFR_variables_HDS_pts <- SWAFR_variables_HDS %>%
   map(rasterToPoints) %>%
   map(as_tibble) %>%
-  reduce(right_join)
-names(SWAFR_all_QDS_df) <- c(
-  "x", "y",
-  "richness",
-  names(SWAFR_variables),
-  names(SWAFR_roughness_QDS)
+  reduce(right_join) %$%
+  SpatialPointsDataFrame(
+    coords = select(., x, y),
+    data = select(., -x, -y),
+    proj4string = CRS(std_CRS)
+  )
+SWAFR_variables_HDS_pts@data <- cbind(
+  SWAFR_variables_HDS_pts@data,
+  SWAFR_variables_HDS_pts %>%
+    over(SWAFR_QDS) %>%
+    select(qdgc) %>%
+    transmute(hdgc = substr(qdgc, 1, 8))
 )
-SWAFR_all_QDS_pts <- SpatialPointsDataFrame(
-  data   = na.omit(SWAFR_all_QDS_df)[, -c(1, 2)],
-  coords = na.omit(SWAFR_all_QDS_df)[,  c(1, 2)],
-  proj4string = CRS(std_CRS)
-)
-# Adjust environmental values stored at x10 etc.
-SWAFR_all_QDS_pts@data %<>% mutate(
-  `Surface T` = `Surface T` - 273.15, # no adj needed for rough, as additive
+
+# .... Adjust environmental values stored at x10 etc. --------------------------
+
+GCFR_variables_HDS_pts@data %<>% mutate(
+  `Surface T` = `Surface T` - 273.15, # K -> ºC (no adj needed for rough)
   NDVI        = NDVI / 1e+07,
   rough_NDVI  = rough_NDVI / 1e+07,
   pH          = pH / 10,
   rough_pH    = rough_pH / 10
 )
+
+SWAFR_variables_HDS_pts@data %<>% mutate(
+  `Surface T` = `Surface T` - 273.15,
+  NDVI        = NDVI / 1e+07,
+  rough_NDVI  = rough_NDVI / 1e+07,
+  pH          = pH / 10,
+  rough_pH    = rough_pH / 10
+)
+
 # TODO: Check which other vars have been x10
 # TODO: Check units for NDVI
 
-# Combined
-BOTH_all_QDS_pts <- SpatialPointsDataFrame(
-  data = rbind(
-    cbind(region = "GCFR",  na.omit(GCFR_all_QDS_df)[, -c(1, 2)]),
-    cbind(region = "SWAFR", na.omit(SWAFR_all_QDS_df)[, -c(1, 2)])
-  ),
-  coords = rbind(
-    na.omit(GCFR_all_QDS_df)[,  c(1, 2)],
-    na.omit(SWAFR_all_QDS_df)[,  c(1, 2)]
-  ),
-  proj4string = CRS(std_CRS)
+# .... Combined regions' data --------------------------------------------------
+
+GCFR_variables_HDS_pts2 <- GCFR_variables_HDS_pts
+GCFR_variables_HDS_pts2@data %<>% left_join(
+  cbind(region = "GCFR", GCFR_spp_data)
 )
-# Adjust environmental values stored at x10 etc.
-BOTH_all_QDS_pts@data %<>% mutate(
-  `Surface T` = `Surface T` - 273.15, # no adj needed for rough, as additive
-  NDVI        = NDVI / 1e+07,
-  rough_NDVI  = rough_NDVI / 1e+07,
-  pH          = pH / 10,
-  rough_pH    = rough_pH / 10
+
+SWAFR_variables_HDS_pts2 <- SWAFR_variables_HDS_pts
+SWAFR_variables_HDS_pts2@data %<>% left_join(
+  cbind(region = "SWAFR", SWAFR_spp_data)
 )
-# TODO: Check which other vars have been x10
-# TODO: Check units for NDVI
+
+both_regions_pts <- maptools::spRbind(
+  GCFR_variables_HDS_pts2,
+  SWAFR_variables_HDS_pts2
+)
 
 # Fit models -------------------------------------------------------------------
 
