@@ -4,7 +4,7 @@ Captions are also repeated alongside their respective figures for readability.
 
 ## Figure \@ref(fig:roughness) {-}
 
-(ref:roughness) Comparisons of different types of environmental heterogeneity in the Cape and SWA---namely for (a) elevation, (b) climatic variables, (c) NDVI and (d) soil variables---in each panel consisting of three sub-panels per variable type.
+(ref:roughness) Types of environmental heterogeneity, compared between the the Cape and SWA---namely for (a) elevation, (b) climatic variables, (c) NDVI and (d) soil variables---in each panel consisting of three sub-panels per variable type.
 The upper row of panels shows example distributions of roughness values (Equation \@ref(eq:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales.
 Each distribution has under it area 1.
 Histograms were constructed using 20 breaks.
