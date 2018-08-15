@@ -125,6 +125,11 @@ Version: 0.2.2
 Hash: d1189679aec436c9280c498e5d01eaa8
 Requires: Rcpp, bindr, plogr
 
+Package: bitops
+Source: CRAN
+Version: 1.0-6
+Hash: 67d0775189fd0041d95abca618c5c07e
+
 Package: bold
 Source: CRAN
 Version: 0.5.0
@@ -148,6 +153,12 @@ Source: CRAN
 Version: 0.4.4
 Hash: dc14fe971ee0fdd4e22b5b1d11611a37
 Requires: dplyr, nlme, plyr, psych, reshape2, stringr, tidyr
+
+Package: caTools
+Source: CRAN
+Version: 1.17.1.1
+Hash: 1764f9cb70825aa7a1c461e7514ffb73
+Requires: bitops
 
 Package: callr
 Source: CRAN
@@ -463,6 +474,12 @@ Source: CRAN
 Version: 1.5
 Hash: bdc4d48c3135e8f3b399536ddf160df4
 
+Package: maptools
+Source: CRAN
+Version: 0.9-3
+Hash: 3312f4caa1c8edf58ca61f97cd2f5524
+Requires: foreign, lattice, sp
+
 Package: markdown
 Source: CRAN
 Version: 0.8
@@ -535,6 +552,11 @@ Source: CRAN
 Version: 0.4.6
 Hash: 297da4f438f208b46c42bbfcf0001082
 Requires: devtools
+
+Package: permute
+Source: CRAN
+Version: 0.9-4
+Hash: 9e0f52c901043914869df608e0c5fa98
 
 Package: pillar
 Source: CRAN
@@ -904,6 +926,12 @@ Package: utf8
 Source: CRAN
 Version: 1.1.4
 Hash: f3f97ce59092abc8ed3fd098a59e236c
+
+Package: vegan
+Source: CRAN
+Version: 2.5-2
+Hash: 69bd667591f80a83214109501fc8ab48
+Requires: lattice, permute
 
 Package: viridis
 Source: CRAN
