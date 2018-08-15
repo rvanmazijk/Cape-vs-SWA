@@ -4,7 +4,6 @@
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("figures/figure-setup.R"))
 source(here::here("setup.R"))
 
 output_path <- here::here("outputs/roughness")
@@ -29,44 +28,6 @@ var_colours <- c(
   "#BA793E"   # brown  for soils
 )
 
-# Data-wrangling ---------------------------------------------------------------
-
-jackknifed_CLES_summary_QDS %<>%
-  gather(variable, CLES) %>%
-  mutate(mean_or_sd =
-    ifelse(str_detect(variable, "_mean"),
-      "CLES_mean",
-      "CLES_sd"
-    )
-  ) %>%
-  mutate(variable = str_remove(variable, "_mean")) %>%
-  mutate(variable = str_remove(variable, "_sd")) %>%
-  spread(mean_or_sd, CLES) %>%
-  mutate(resolution = "QDS")
-jackknifed_CLES_summary_QDS$variable %<>% factor(levels = var_names)
-jackknifed_CLES_summary_HDS %<>%
-  gather(variable, CLES) %>%
-  mutate(mean_or_sd =
-    ifelse(str_detect(variable, "_mean"),
-      "CLES_mean",
-      "CLES_sd"
-    )
-  ) %>%
-  mutate(variable = str_remove(variable, "_mean")) %>%
-  mutate(variable = str_remove(variable, "_sd")) %>%
-  spread(mean_or_sd, CLES) %>%
-  mutate(resolution = "HDS")
-jackknifed_CLES_summary_HDS$variable %<>% factor(levels = var_names)
-
-jackknifed_CLES_summary <- full_join(
-  jackknifed_CLES_summary_QDS,
-  jackknifed_CLES_summary_HDS
-)
-jackknifed_CLES_summary %<>% mutate(
-  CLES_upper = CLES_mean + CLES_sd,
-  CLES_lower = CLES_mean - CLES_sd
-)
-test_results_summary %<>%
   gather(resolution, sig, -variable) %>%
   mutate(sig = ifelse(sig, "", "NS")) %>%
   left_join(jackknifed_CLES_summary)
@@ -107,20 +68,6 @@ CLES_plot <- ggplot(data, aes(resolution, CLES, col = variable_type)) +
   geom_line(
     aes(group = variable)#, position = pd
   ) +
-  #geom_errorbar(
-  #  aes(
-  #    ymin = CLES_lower,
-  #    ymax = CLES_upper,
-  #    group = paste(variable, resolution)
-  #  ),
-  #  width = 0, alpha = 0.5,
-  #  position = pd
-  #) +
-  #geom_point(
-  #  aes(y = CLES_mean, shape = variable),
-  #  size = 2, alpha = 0.5,
-  #  position = pd
-  #) +
   geom_text(aes(label = sig), size = 2, col = "black", nudge_x = 0.4) +
   scale_colour_manual(values = var_colours, guide = FALSE) +
   scale_shape_manual(values = var_shapes) +
@@ -192,31 +139,6 @@ z_dbn_plot <- data_for_violin_plot %>%
     x = "Z(Roughness)",
     y = "No. cells"
   )
-
-#adj_z_roughness <- abs(min(data_for_violin_plot$z_roughness)) + 0.1
-#
-#z_dbn_plot_adj <- data_for_violin_plot %>%
-#  filter(
-#    resolution %in% c("0.05º", "3QDS"),
-#    variable %in% c("Elevation", "MAP", "NDVI", "CEC")
-#  ) %>%
-#  ggplot(aes(log(z_roughness + adj_z_roughness), col = region, fill = region)) +
-#  geom_density(alpha = 0.5) +
-#  xlim(min(data_for_violin_plot$z_roughness), 5) +
-#  scale_colour_manual(name = "Region", values = my_palette) +
-#  scale_fill_manual(name = "Region", values = my_palette) +
-#  facet_wrap(
-#    ~ variable + resolution,
-#    nrow = 1,
-#    strip.position = "bottom",
-#    labeller = label_bquote(.(resolution))
-#  ) +
-#  theme(
-#    axis.title = element_blank(),
-#    axis.ticks = element_blank(),
-#    axis.text = element_blank(),
-#    panel.border = element_blank()
-#  )
 
 # Map panels of elevation ------------------------------------------------------
 
