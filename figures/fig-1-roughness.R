@@ -5,9 +5,7 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-
-output_path <- here::here("outputs/roughness")
-import_objects(output_path)
+U_CLES_results <- read_csv(here::here("outputs/roughness/U_CLES_results.csv"))
 
 var_shapes <- c(
   17,  # triangle      for elevation
@@ -28,25 +26,16 @@ var_colours <- c(
   "#BA793E"   # brown  for soils
 )
 
-U_tests_summary <- U_tests %>%
-  transmute(
-    resolution = resolution,
-    variable = variable,
-    sig = ifelse(p.value < 0.05, "", "NS")
-  )
-
-roughness_analysis_data <- CLES_results %>%
+roughness_analysis_data <- U_CLES_results %>%
   mutate(
+    U_sig = ifelse(U_p_value < 0.05, "", "NS"),
     variable_type = case_when(  # for colouring variables' lines etc.
       variable == "Elevation"      ~ "Elevation",
       variable == "NDVI"           ~ "NDVI",
       variable %in% var_names[2:4] ~ "Climate",
       variable %in% var_names[6:9] ~ "Soil"
-    ),
-    CLES = 1 - CLES  # Make CLES Cape - SWA, not SWA - Cape
-    # (from obs CLES, not jackknife mean CLES)
+    )
   ) %>%
-  full_join(U_tests_summary) %>%
   mutate(
     variable = factor(variable, levels = var_names),
     variable_type = factor(variable_type, levels = c(
@@ -61,11 +50,11 @@ roughness_analysis_data <- CLES_results %>%
 # Make CLES ~ resolution panels ------------------------------------------------
 
 # Basic plot
-CLES_plot <-
-  ggplot(roughness_analysis_data, aes(resolution, CLES, col = variable_type)) +
-  geom_point(aes(shape = variable), size = 2) +
-  geom_line(aes(group = variable)) +
-  geom_text(aes(label = sig), size = 2, col = "black", nudge_x = 0.4)
+CLES_plot <- roughness_analysis_data %>%
+  ggplot(aes(resolution, CLES_value, col = variable_type)) +
+    geom_point(aes(shape = variable), size = 2) +
+    geom_line(aes(group = variable)) +
+    geom_text(aes(label = U_sig), size = 2, col = "black", nudge_x = 0.4)
 
 # Theme and nicer labels
 CLES_plot <- CLES_plot +
