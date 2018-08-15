@@ -14,23 +14,8 @@ $U$-tests for almost all environmental variables yielded significant differences
 
 (ref:roughness)
 
-## Figure \@ref(fig:richness-vs-turnover) {-}
+## Figure \@ref(fig:turnover) {-}
 
-(ref:richness-vs-turnover) Regressions involving plant species richness and turnover.
-Species turnover (as Jaccard distance) between QDS-pairs increases as pairs are more geographically separated (a).
-Species turnover was calculated for all possible pairs of cells, but only the turnover values for a random 5000 pairs in each region have been plotted, for clarity.
-Fitted lines represent the 5%-quantile regressions of turnover as a function of log-distance for each region separately.
-Following a 5%-quantile regression of turnover as a function of log-distance with region as a categorical variable (Table \@ref(tab:turnover-vs-geodist-model-table)), a significant interaction between distance and region was found ($P < 0.001$), such that the Cape positively effects the distance slope term.
-Scatter-plots of HDS-scale species richness against the average QDS-scale richness in a given HDS (b) and the average species turnover between QDS in a given HDS (c).
-Curves represent simples linear regressions of HDS richness against these two respective independent variables (note, mean QDS richness was log(x + 1)-transformed), separately for each region, for illustration of the two regions' differences, for interpretation alongside Table \@ref(tab:species-model-table).
+(ref:turnover) Species turnover, described in two forms ((a) mean Jaccard distance between QDS in each HDS ($\bar{J}_{QDS}$), (b) additively defined turnover ($T_{HDS}$, see Equation \@ref(eq:whittaker)) as a proportion of HDS richness ($S_{HDS}$)), compared between the Cape and SWA. Mann-Whitney $U$-tests between the Cape and SWA distributions of $\bar{J}_{QDS}$ and $T_{HDS}$ yielded significant differences.
 
-(ref:richness-vs-turnover)
-
-<!--
-```{r richness-vs-turnover-3QDS, fig.cap="(ref:richness-vs-turnover-3QDS)"}
-knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png"))
-```
-
-(ref:richness-vs-turnover-3QDS) [Same as \@ref(fig:richness-vs-turnover)B,C, but for 3QDS, not HDS, as the focal scale.]
-
-(ref:richness-vs-turnover-3QDS)
+(ref:turnover)

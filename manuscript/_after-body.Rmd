@@ -103,6 +103,6 @@ species_roughness_AICc %>%
 knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
 ```
 
-```{r richness-vs-turnover, fig.pos="H", out.width="18cm", fig.cap="(ref:richness-vs-turnover)"}
-knitr::include_graphics(here::here("figures/fig-2-richness-vs-turnover.png"))
+```{r turnover, fig.pos="H", out.width="12cm", fig.cap="(ref:turnover)"}
+knitr::include_graphics(here::here("figures/fig-2-turnover.png"))
 ```
