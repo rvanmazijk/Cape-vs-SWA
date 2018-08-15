@@ -4,25 +4,6 @@ Captions are also repeated alongside their respective figures for readability.
 
 ## Figure \@ref(fig:roughness) {-}
 
-<!--Old violin-plot-style Figure 1:-->
-
-<!--
-(ref:roughness) Comparisons of distributions of calculated environmental roughness values in the Cape and SWA, for elevation, NDVI and climatic variables (**A,B**) and edaphic variables (**C,D**).
-Each row of panels within **A,C** and **B,D** illustrate the distributions for a different variable.
-Violin-plots (**A,C**) of the distributions of roughness values (Z-scaled to be comparable across panels) are presented at 0.05º and 3QDS scales.
-Roughness values were calculated following Equation \@ref(eq:roughness).
-Areas beneath curves sum to one for each violin, and points within represent the median of each distribution.
-Violin-plots were constructed with Gaussian distributions with bandwidth following Silverman's "rule of thumb" [@Silverman1986].
-The degree to which Cape roughness values exceed SWA values is described by the $CLES$ (see Materials and methods).
-Roughness values were found to be significantly greater in the Cape in all cases ($P < 0.05$), unless marked as non-significant (NS), following Mann-Whitney $U$ tests.
-The magnitude of the ranges of Z-scaled roughness values (**B,D**) vary with spatial resolution, described here by the 95%-to-5% and 99%-to-1% interquantile ranges.
-Lines connect points for illustration, and are paler for the wider quantile.
--->
-<!--Idea: change IQuR in y-axes simply to "Range"-->
-<!--Idea: plot jittered points on 3QDS violins, as I have seen when fiddling with PCAs that there are indeed very few points for those distributions (which is fine, but note it!)-->
-
-<!--New jackknife-style Figure 1:-->
-
 (ref:roughness) Comparisons of different types of environmental heterogeneity in the Cape and SWA---namely for (a) elevation, (b) climatic variables, (c) NDVI and (d) soil variables---in each panel consisting of three sub-panels per variable type.
 The upper row of panels shows example distributions of roughness values (Equation \@ref(eq:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales.
 Each distribution has under it area 1.
@@ -53,4 +34,3 @@ knitr::include_graphics(here::here("figures/richness-vs-turnover-3QDS.png"))
 (ref:richness-vs-turnover-3QDS) [Same as \@ref(fig:richness-vs-turnover)B,C, but for 3QDS, not HDS, as the focal scale.]
 
 (ref:richness-vs-turnover-3QDS)
--->
