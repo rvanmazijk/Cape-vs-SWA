@@ -10,6 +10,8 @@ ignored.packages:
 ignored.directories:
     data
     inst
+    manuscript
+    meetings-and-notes
 quiet.package.installation: TRUE
 snapshot.recommended.packages: FALSE
 snapshot.fields:
