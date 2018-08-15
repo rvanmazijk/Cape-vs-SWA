@@ -28,23 +28,22 @@ var_colours <- c(
   "#BA793E"   # brown  for soils
 )
 
+U_tests_summary %<>%
   gather(resolution, sig, -variable) %>%
-  mutate(sig = ifelse(sig, "", "NS")) %>%
-  left_join(jackknifed_CLES_summary)
+  mutate(sig = ifelse(sig, "", "NS"))
 
-data <- test_results_CLES_for_plot %>%
+roughness_analysis_data <- CLES_results %>%
   mutate(
     variable_type = case_when(  # for colouring variables' lines etc.
       variable == "Elevation"      ~ "Elevation",
       variable == "NDVI"           ~ "NDVI",
       variable %in% var_names[2:4] ~ "Climate",
       variable %in% var_names[6:9] ~ "Soil"
-      # (\n\n to "label" z_dbn_plot above CLES plot (cheat!))
     ),
     CLES = 1 - CLES  # Make CLES Cape - SWA, not SWA - Cape
     # (from obs CLES, not jackknife mean CLES)
   ) %>%
-  full_join(test_results_summary) %>%
+  full_join(U_tests_summary) %>%
   mutate(
     variable = factor(variable, levels = var_names),
     variable_type = factor(variable_type, levels = c(
@@ -58,17 +57,15 @@ data <- test_results_CLES_for_plot %>%
 
 # Make CLES ~ resolution panels ------------------------------------------------
 
-pd <- position_dodge(0.4)
+# Basic plot
+CLES_plot <-
+  ggplot(roughness_analysis_data, aes(resolution, CLES, col = variable_type)) +
+  geom_point(aes(shape = variable), size = 2) +
+  geom_line(aes(group = variable)) +
+  geom_text(aes(label = sig), size = 2, col = "black", nudge_x = 0.4)
 
-CLES_plot <- ggplot(data, aes(resolution, CLES, col = variable_type)) +
-  geom_point(
-    aes(shape = variable),
-    size = 2#, position = pd
-  ) +
-  geom_line(
-    aes(group = variable)#, position = pd
-  ) +
-  geom_text(aes(label = sig), size = 2, col = "black", nudge_x = 0.4) +
+# Theme and nicer labels
+CLES_plot <- CLES_plot +
   scale_colour_manual(values = var_colours, guide = FALSE) +
   scale_shape_manual(values = var_shapes) +
   facet_wrap(~ variable_type, nrow = 1, dir = "h") +
@@ -216,14 +213,14 @@ legends <- plot_grid(
   get_legend(CLES_plot),
   nrow = 2
 )
-CLES_plot2 <- plot_grid(
+CLES_plot <- plot_grid(
   CLES_plot + theme(legend.position = "none"),
   grid.rect(gp = gpar(col = "white")),
   nrow = 1, rel_widths = c(4, 0.1)
 )
 final_plot <- plot_grid(
   z_dbn_plot + theme(legend.position = "none"),
-  CLES_plot2,
+  CLES_plot,
   nrow = 2, rel_heights = c(1.5, 1),
   labels = c("(a)", "(b)")
 )
