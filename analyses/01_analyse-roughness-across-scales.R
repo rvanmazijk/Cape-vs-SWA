@@ -104,32 +104,3 @@ write_csv(
   data_for_violin_plot_tidy,
   glue("{out_dir}/data_for_violin_plot.csv")
 )
-
-# Analyse IQ95R (and IQ99R) ~ scale --------------------------------------------
-
-IQ95R_data <- data_for_violin_plot_tidy %>%
-  group_by(resolution, region, variable) %>%
-  summarise(
-    IQ99R = IQ99R(z_roughness),
-    IQ95R = IQ95R(z_roughness)
-  ) %>%
-  gather(
-    quantile, IXR,
-    -resolution, -region, -variable
-  ) %>%
-  mutate(quantile =
-    ifelse(quantile == "IQ99R",
-      0.99,
-      ifelse(quantile == "IQ95R",
-        0.95,
-        NA
-      )
-    )
-  ) %>%
-  ungroup()
-
-# Save to disc
-write_csv(
-  IQ95R_data,
-  glue("{out_dir}/IQ95R_data.csv")
-)
