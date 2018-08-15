@@ -144,10 +144,10 @@ SWAFR_variables <- list(
   SWAFR_soils$SWAFR_SWAFR_PHIKCL_M_250m_std_CRS_0.05_0.05
 )
 GCFR_variables %<>%
-  map(crop, GCFR_variables$MLST) %>%  # Choose a layer with the cleanest extent
+  map(crop, GCFR_variables[[4]]) %>%  # Choose a layer with the cleanest extent
   map(mask, GCFR_border_buffered)
 SWAFR_variables %<>%
-  map(crop, SWAFR_variables$MLST) %>%
+  map(crop, SWAFR_variables[[4]]) %>%
   map(mask, SWAFR_border_buffered)
 names(GCFR_variables) <- var_names
 names(SWAFR_variables) <- var_names

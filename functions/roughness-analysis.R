@@ -1,5 +1,6 @@
 # Implement our roughness function (equation in manuscript)
 roughness <- function(x, ...) {
+
   focal(
     x = x,
     w = matrix(1, nrow = 3, ncol = 3),
@@ -30,7 +31,7 @@ get_roughness_values <- function(x, resolution) {
     aggregate(fact = resolution / 0.05) %>%
     roughness() %>%
     getValues() %>%
-    na.omit()
+    na.exclude()
   if (resolution == 0.05) {
     x %<>% base::sample(size = 5000)  # max n U-test accepts
   }

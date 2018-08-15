@@ -78,12 +78,41 @@ CLES_plot <- CLES_plot +
 
 # Roughness distribution plots -------------------------------------------------
 
-data_for_violin_plot <- foreach(resolution = list(0.05, 0.25, 0.50, 0.75)) %do% {
-  rbind(
-    cbind(region = "GCFR", map2_df(GCFR_variables, resolution, prep_layer)),
-    cbind(region = "SWAFR", map2_df(SWAFR_variables, resolution, prep_layer))
-  )
+rm_attr <- function(x) {
+  attributes(x) <- NULL
+  x
 }
+
+# Remove na.exlcude attributes labels
+GCFR_roughness_QDS %<>% map(rm_attr)
+GCFR_roughness_HDS %<>% map(rm_attr)
+GCFR_roughness_3QDS %<>% map(rm_attr)
+SWAFR_roughness_QDS %<>% map(rm_attr)
+SWAFR_roughness_HDS %<>% map(rm_attr)
+SWAFR_roughness_3QDS %<>% map(rm_attr)
+
+roughness_value_data <- as_tibble(rbind(
+  as.data.frame(cbind(region = "Cape", rbind(
+    cbind(resolution = "0.05º", bind_rows(GCFR_roughness)),
+    cbind(resolution = "QDS",   bind_rows(GCFR_roughness_QDS)),
+    cbind(resolution = "HDS",   bind_rows(GCFR_roughness_HDS)),
+    cbind(resolution = "3QDS",  bind_rows(GCFR_roughness_3QDS))
+  ))),
+  as.data.frame(cbind(region = "SWA", rbind(
+    cbind(resolution = "0.05º", bind_rows(SWAFR_roughness)),
+    cbind(resolution = "QDS",   bind_rows(SWAFR_roughness_QDS)),
+    cbind(resolution = "HDS",   bind_rows(SWAFR_roughness_HDS)),
+    cbind(resolution = "3QDS",  bind_rows(SWAFR_roughness_3QDS))
+  )))
+))
+SWAFR_roughness_data <- as_tibble(rbind(
+  cbind(resolution = "0.05º", SWAFR_roughness),
+  cbind(resolution = "QDS",   SWAFR_roughness_QDS),
+  cbind(resolution = "HDS",   SWAFR_roughness_HDS),
+  cbind(resolution = "3QDS",  SWAFR_roughness_3QDS)
+))
+
+
 data_for_violin_plot_tidy <- data_for_violin_plot %$%
   rbind(
     cbind(resolution = "0.05º", .[[1]]),
