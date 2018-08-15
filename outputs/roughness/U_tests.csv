@@ -1,0 +1,37 @@
+resolution,variable,statistic,p.value,method,alternative
+0.05º,Elevation,23337024,0,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,MAP,19402336,0,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,PDQ,20551340,0,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,Surface T,19385306,0,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,NDVI,13465977,2.1991991447667717e-11,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,CEC,16496685.5,9.614979354314946e-169,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,Clay,14811111,1.0700146893662732e-57,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,Soil C,17606625.5,3.726107627085314e-274,Wilcoxon rank sum test with continuity correction,two.sided
+0.05º,pH,16213066.5,6.367354637173179e-146,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,Elevation,261685,9.282560916724739e-135,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,MAP,184026,3.4916679744030184e-19,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,PDQ,237604,1.8192265566191916e-85,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,Surface T,211184,3.754317790428636e-55,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,NDVI,165333,1.8252499162921133e-8,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,CEC,175121,6.050787857436808e-13,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,Clay,174320,5.365639436774548e-7,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,Soil C,180040,2.9145637300538736e-16,Wilcoxon rank sum test with continuity correction,two.sided
+QDS,pH,184378,4.5080997141754515e-12,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,Elevation,20835,3.4957066520217514e-40,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,MAP,13709,2.955638822949145e-4,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,PDQ,18894,5.510071686615109e-26,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,Surface T,15347,8.917984286534172e-14,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,NDVI,13032,0.0031964492787572743,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,CEC,13149,0.004588542747259576,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,Clay,13621,0.020939528775173324,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,Soil C,12631,0.03197296219129206,Wilcoxon rank sum test with continuity correction,two.sided
+HDS,pH,13965,0.006054870944505842,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,Elevation,5266,2.7828724773533533e-21,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,MAP,3210,0.10317514970374332,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,PDQ,4592,1.2228309816785591e-11,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,Surface T,3426,0.010477230171574162,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,NDVI,3121,0.1573300761345695,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,CEC,2666,0.7709863344784138,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,Clay,3581,0.017671776223370763,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,Soil C,2513,0.3866314814366436,Wilcoxon rank sum test with continuity correction,two.sided
+3QDS,pH,3683,0.006161290150852366,Wilcoxon rank sum test with continuity correction,two.sided

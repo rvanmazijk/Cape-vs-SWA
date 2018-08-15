@@ -28,9 +28,12 @@ var_colours <- c(
   "#BA793E"   # brown  for soils
 )
 
-U_tests_summary %<>%
-  gather(resolution, sig, -variable) %>%
-  mutate(sig = ifelse(sig, "", "NS"))
+U_tests_summary <- U_tests %>%
+  transmute(
+    resolution = resolution,
+    variable = variable,
+    sig = ifelse(p.value < 0.05, "", "NS")
+  )
 
 roughness_analysis_data <- CLES_results %>%
   mutate(
