@@ -121,7 +121,7 @@ For (iv) and (v) we modelled species richness ($S$) and turnover as a function o
 <!--Turnover comparisons-->
 
 To compare the extent of species turnover between the Cape and SWA, we determined two metrics of species turnover.
-The first, computes the mean species turnover as Jaccard distance [@R-vegan] between each pair of QDS within each HDS ($\bar{J}_{QDS}$) in both regions.
+The first, computes the mean species turnover as Jaccard distance [@R-vegan] between each pair of QDS within each HDS ($\overline{J}_{QDS}$, based on HDS with $2 \leq n \leq 4$ QDS) in both regions.
 The second is defined in terms of Whittaker's additive definition of $\beta$-diversity [@ref], where
 
 \begin{equation}
@@ -131,7 +131,7 @@ The second is defined in terms of Whittaker's additive definition of $\beta$-div
 
 Here, we treat species richness at the HDS-scale ($S_{HDS})$) as $\gamma$ and at the QDS-scale as $\alpha$.
 Intuitively, the species richness of an area is the result of the richness of sites within that area and the difference in species complements between those sites.
-Thus, we use here an additively defined residual turnover ($T_{HDS}$; i.e. $\beta = \alpha - \gamma$) as the proportion of $S_{HDS}$ unexplained by the mean species richness of HDS' constituent QDS ($\bar{S}_{QDS}$).
-We compare the distributions of $\bar{J}_{QDS}$ and $T_{HDS}$ using non-parametric Mann-Whitney $U$-tests, in order to guard against non-normality.
+Thus, we use here an additively defined residual turnover ($T_{HDS}$; i.e. $\beta = \alpha - \gamma$) as the proportion of $S_{HDS}$ unexplained by the mean species richness of HDS' constituent QDS ($\overline{S}_{QDS}$).
+We compare the distributions of $\overline{J}_{QDS}$ and $T_{HDS}$ using non-parametric Mann-Whitney $U$-tests, in order to guard against non-normality.
 
 <!--S,T ~ E,H-->

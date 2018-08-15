@@ -16,6 +16,6 @@ $U$-tests for almost all environmental variables yielded significant differences
 
 ## Figure \@ref(fig:turnover) {-}
 
-(ref:turnover) Species turnover, described in two forms ((a) mean Jaccard distance between QDS in each HDS ($\bar{J}_{QDS}$), (b) additively defined turnover ($T_{HDS}$, see Equation \@ref(eq:whittaker)) as a proportion of HDS richness ($S_{HDS}$)), compared between the Cape and SWA. Mann-Whitney $U$-tests between the Cape and SWA distributions of $\bar{J}_{QDS}$ and $T_{HDS}$ yielded significant differences.
+(ref:turnover) Species turnover, described in two forms ((a) mean Jaccard distance between QDS in each HDS ($\overline{J}_{QDS}$), (b) additively defined turnover ($T_{HDS}$, see Equation \@ref(eq:whittaker)) as a proportion of HDS richness ($S_{HDS}$)), compared between the Cape and SWA. Mann-Whitney $U$-tests between the Cape and SWA distributions of $\overline{J}_{QDS}$ and $T_{HDS}$ yielded significant differences.
 
 (ref:turnover)
