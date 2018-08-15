@@ -170,7 +170,7 @@ gwr_model2 <- function(my_data, response, predictors) {
 }
 names(both_regions_pts)
 gwr_model2(my_data = both_regions_pts, "HDS_richness", "1")
-
+# FIXME
 
 #### OLD MODELS BELOW ####
 
