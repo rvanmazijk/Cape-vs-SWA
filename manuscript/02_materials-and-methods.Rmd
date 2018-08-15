@@ -104,91 +104,34 @@ Using the R package "raster" [@Hijmans2016], we used a modified version of the "
 Note, in order to use as much data from within regions' borders as possible, roughnes swas computed if a focal cell had at least one neighbour cell---that is, roughness is defined where $n_{x_{focal}} \geq 1$.
 Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity.
 We compared the distributions of roughness values in each variable in each region with non-parametric Mann-Whitney $U$-tests, as almost all variables could not be normalised by log-transformations.
-We also compare the effect size of the Cape vs SWA using the "common language effect size" (CLES), using the R package "canprot".
-The CLES is the proportion of all pairwise comparisons between two sample groups' observations where one group's value is greater than the other.
+We also compare the effect size of the Cape vs SWA using the "common language effect size" ($CLES$), using the R package "canprot".
+The $CLES$ is the proportion of all pairwise comparisons between two sample groups' observations where one group's value is greater than the other.
 In our case, of all pairwise comparisons of a variable's roughness values between the Cape and SWA, we calculated the CLES as the proportion of pairs where Cape roughness values were greater than that of SWA.
-This allowed us to assess prediction [(i)][Hypothesis-v2].
-To compare the spatial scales of heterogeneity (prediction [(ii)][Hypothesis-v2]) between each region, we repeated this analysis at all four spatial scales.
+This allowed us to assess prediction (i).
+To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we repeated this analysis at all four spatial scales.
 Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
 
 ### Predicting richness and turnover with environmental heterogeneity
 
-Regarding predictions [(iii) and (iv)][Hypothesis-v2], we wished to compare the relative importance of species turnover in each region as a predictor of species richness.
+<!--Preamble-->
 
-First, for [(iii)][Hypothesis-v2], we compared the degree of species turnover in general in each region by computing all pairwise Jaccard distances [@ref] between QDS' communities.
-We then regressed these turnover values for each pair of cells against the physical distance between the centres of those cells.
-The range of turnover values was found to be highest at small distances (Figure \@ref(fig:roughness)a), and indeed complete species turnover between cell pairs was observed at all distances.
-Thus we used quantile regressions of the 5% quantile of species turnover as a function of geographic distances (using "quantreg" [@R-quantreg] in R).
-This allowed us to compare the lower bounds of species turnover between the Cape and SWA.
+Regarding prediction (iii), we wished to compare the general degree of species turnover in each region.
+For (iv) and (v) we modelled species richness ($S$) and turnover as a function of various combinations of environmental and environmental heterogeneity variables in both regions.
 
-Regarding prediction [(iv)][Hypothesis-v2], to test how turnover between sites predicts richness across rites, we regressed the species richness in coarse scale cells against the average richness of and average turnover between the constituent fine scale cells within a the coarse scale cell.
-Moreover, average turnover between fine scale cells excluded turnover values between a cell and itself (necessarily 0), and only included turnover values between between cell-pairs once (i.e. between cells $a$ and $b$ and not again between $b$ and $a$, as these are necessarily the same).
-<!--Verbose version:
-Moreover, average turnover between fine scale cells excluded turnover values between a cell $j$ and itself (necessarily 0), and only included turnover values between between cell $j$ and $k$ and not between $k$ and $j$ (as these are necessarily the same).
--->
-We focussed on this relationship with HDS as the coarse scale and QDS as the fine scale---as there are four QDS within each HDS, and QDS was the highest precision to which our species data were recorded.
-Mean QDS richness for a given HDS-cell is based on four QDS-cells.
-Mean QDS turnover for a given HDS-cell is based on the turnover between $n = {4 \choose 2} = 6$ QDS pairs.
+<!--Turnover comparisons-->
 
-<!--Verbose verions:
-
-Average QDS richness for a given HDS-cell ($\overline{S_{QDS}}_i$), then, is based on $j = 4$ QDS-cells, and is treated here as
+To compare the extent of species turnover between the Cape and SWA, we determined two metrics of species turnover.
+The first, computes the mean species turnover as Jaccard distance [@R-vegan] between each pair of QDS within each HDS ($\bar{J}_{QDS}$) in both regions.
+The second is defined in terms of Whittaker's additive definition of $\beta$-diversity [@ref], where
 
 \begin{equation}
-  \overline{S_{QDS}}_{i} =
-    \frac{1}{j}
-    \sum_{j = 1}^{4}
-    S_{QDS_{j}}.
-  (\#eq:S-QDS-def)
+  \gamma = \alpha + \beta
+  (\#eq:whittaker)
 \end{equation}
 
-Average QDS turnover for a given HDS ($\overline{T_{QDS}}_i$), based on $n = {j = 4 \choose 2} = 6$ QDS pairs (namely pairs $QDS_{1,2}$, $QDS_{1,3}$, $QDS_{1,4}$, $QDS_{2,3}$, $QDS_{2,4}$ and$QDS_{3,4}$) is treated here as
+Here, we treat species richness at the HDS-scale ($S_{HDS})$) as $\gamma$ and at the QDS-scale as $\alpha$.
+Intuitively, the species richness of an area is the result of the richness of sites within that area and the difference in species complements between those sites.
+Thus, we use here an additively defined residual turnover ($T_{HDS}$; i.e. $\beta = \alpha - \gamma$) as the proportion of $S_{HDS}$ unexplained by the mean species richness of HDS' constituent QDS ($\bar{S}_{QDS}$).
+We compare the distributions of $\bar{J}_{QDS}$ and $T_{HDS}$ using non-parametric Mann-Whitney $U$-tests, in order to guard against non-normality.
 
-\begin{equation}
-  \overline{T_{QDS}}_{i} =
-    \frac{1}{n}
-    \sum_{n = 1}^{6}
-    T_{QDS_{n}}.
-  (\#eq:T-QDS-def)
-\end{equation}
---->
-Thus, we regress coarse scale richness as follows:
-
-\begin{equation}
-\begin{split}
-  \widehat{S_{HDS_{i}}} =
-    &\ \beta_0 + \\
-    &\ \beta_1 \overline{S_{QDS}}_{i} +
-       \beta_2 \overline{T_{QDS}}_{i} +
-       \beta_3 SWA_i + \\
-    &\ \beta_4 \overline{S_{QDS}}_{i} SWA_{i} +
-       \beta_5 \overline{T_{QDS}}_{i} SWA_{i} +
-       \epsilon_i
-  (\#eq:S-HDS-formula)
-\end{split}
-\end{equation}
-
-<!--Simpler verion:
-\begin{equation}
-\begin{split}
-  HDS \ richness =
-    &\ Intercept + \\
-    &\ Mean \ QDS \ richness +
-       Mean \ QDS \ turnover +
-       SWA + \\
-    &\ Mean \ QDS \ richness \times SWA + \\
-    &\ Mean \ QDS \ turnover \times SWA
-  (\#eq:S-HDS-formula)
-\end{split}
-\end{equation}
--->
-
-where $\epsilon \sim N \left( \overline{x}, \sigma^2 \right)$, and $\overline{S_{QDS}}$ is $log(x + 1)$-transformed.
-This model allows us to compare the spatial-scaling drivers<!--FIXME: reword--> of species richness in either region: whether coarse scale increases in species richness are determined more by (a) being composed of richer---but more similar---communities or by (b) being composed of many different communities.
-These represent the two logical extremes.
-
-### Predicting species richness and turnover with environmental heterogeneity
-
-<!--TODO-->
-
-<!--NOTE: Multiple linear regression modelling vs mixed effect modelling vs BRT modelling-->
+<!--S,T ~ E,H-->
