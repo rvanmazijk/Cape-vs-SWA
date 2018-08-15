@@ -136,7 +136,8 @@ add_residual_turnover_prop_panel <- richness_turnover_data %>%
     ) +
     theme(
       axis.title.y = element_blank(),
-      axis.text.y = element_blank()
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank()
     )
 both_turnover_panels <- plot_grid(
   mean_QDS_jaccard_panel, add_residual_turnover_prop_panel,
@@ -198,7 +199,8 @@ add_residual_turnover_prop_panel2 <- richness_turnover_data %>%
     ) +
     theme(
       axis.title.y = element_blank(),
-      axis.text.y = element_blank()
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank()
     )
 both_turnover_panels2 <- plot_grid(
   mean_QDS_jaccard_panel2, add_residual_turnover_prop_panel2,
