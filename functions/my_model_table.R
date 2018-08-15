@@ -33,18 +33,20 @@ my_model_table <- function(model_tidy = NULL, model = NULL,
   }
 
   if (!"p.value" %in% colnames(model_tidy)) {
-    model_tidy %<>% mutate(p.value = CI_to_P(estimate,
-                           conf.high,
-                           conf.low))
+    model_tidy %<>% mutate(p.value = CI_to_P(
+      estimate,
+      conf.high,
+      conf.low
+    ))
   }
 
-  model_table <- model_tidy %>%
-    transmute(Term = tidy_terms,
-              Estimate = round(estimate, digits = 3),
-              `$P$-value` = p.value %>%
-                 round(digits = 3) %>%
-                 format(scientific = FALSE) %>%
-                 ifelse(. == 0.000, "< 0.001", .))
+  model_table <- transmute(model_tidy,
+    Term = tidy_terms,
+    Estimate = round(estimate, digits = 3),
+    `$P$-value` = p.value %>%
+       round(digits = 3) %>%
+       ifelse(. == 0.000, "< 0.001", .)
+    )
 
   list(
     raw_terms = model_tidy$term,
