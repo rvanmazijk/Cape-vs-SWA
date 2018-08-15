@@ -3,7 +3,9 @@
 # Ruan van Mazijk
 
 source(here::here("setup.R"))
-map(pre_analysis_import_paths, source)
+source(here::here("data/01_import-region-polygons.R"))
+source(here::here("data/02_import-floral-data.R"))
+source(here::here("data/03_import-environmental-data.R"))
 
 out_dir <- here::here("outputs/roughness-across-scales")
 

@@ -5,6 +5,10 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("figures/figure-setup.R"))
+source(here::here("setup.R"))
+
+output_path <- here::here("outputs/roughness")
+import_objects(output_path)
 
 var_shapes <- c(
   17,  # triangle      for elevation

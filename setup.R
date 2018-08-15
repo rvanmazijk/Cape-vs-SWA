@@ -88,24 +88,15 @@ my_theme <-
   )
 theme_set(my_theme)
 
-# Define analysis & output paths -----------------------------------------------
-
-data_import_paths <- list.files(
-  here::here("data"),
-  pattern = "^\\d{2}_import-.*\\.R",
-  full.names = TRUE
+# Environmental variable names in nice order
+var_names <- c(
+  "Elevation",
+  "MAP",
+  "PDQ",
+  "Surface T",
+  "NDVI",
+  "CEC",
+  "Clay",
+  "Soil C",
+  "pH"
 )
-
-analysis_paths <- list.files(
-  here::here("analyses"),
-  pattern = "^\\d{2}_analyse-.*\\.R",
-  full.names = TRUE
-)
-
-no_ext <- "^[^.]+$"
-output_paths <- list.files(
-  here::here("outputs"),
-  pattern = no_ext,
-  full.names = TRUE
-)
-rm(no_ext)
