@@ -31,15 +31,13 @@ stopifnot(exprs = {
   proj4string(GCFR_MAP) == std_CRS
   round(res(GCFR_MAP), 2) == 0.05
 })
-GCFR_PWQ <- raster(glue(
-  "{data_dir}/rainfall/GCFR_PWQ_box.tif"
-))
 GCFR_PDQ <- raster(glue(
   "{data_dir}/rainfall/GCFR_PDQ_box.tif"
 ))
-GCFR_PCV <- raster(glue(
-  "{data_dir}/rainfall/GCFR_PCV_box.tif"
-))
+stopifnot(exprs = {
+  proj4string(GCFR_PDQ) == std_CRS
+  round(res(GCFR_PDQ), 2) == 0.05
+})
 
 SWAFR_MAP <- raster(glue(
   "{data_dir}/rainfall/MAP_SWAFR_box.tif"
@@ -48,15 +46,14 @@ stopifnot(exprs = {
   proj4string(SWAFR_MAP) == std_CRS
   round(res(SWAFR_MAP), 2) == 0.05
 })
-SWAFR_PWQ <- raster(glue(
-  "{data_dir}/rainfall/SWAFR_PWQ_box.tif"
-))
 SWAFR_PDQ <- raster(glue(
   "{data_dir}/rainfall/SWAFR_PDQ_box.tif"
 ))
-SWAFR_PCV <- raster(glue(
-  "{data_dir}/rainfall/SWAFR_PCV_box.tif"
-))
+stopifnot(exprs = {
+  proj4string(GCFR_PDQ) == std_CRS
+  round(res(GCFR_PDQ), 2) == 0.05
+})
+
 
 # Land surface temperature -----------------------------------------------------
 
@@ -67,12 +64,6 @@ stopifnot(exprs = {
   proj4string(GCFR_MLST) == std_CRS
   round(res(GCFR_MLST), 2) == 0.05
 })
-GCFR_TWQ <- raster(glue(
-  "{data_dir}/temperature/GCFR_TWQ_buffered.tif"
-))
-GCFR_TCQ <- raster(glue(
-  "{data_dir}/temperature/GCFR_TCQ_buffered.tif"
-))
 
 SWAFR_MLST <- raster(glue(
   "{data_dir}/temperature/MODIS_annual_mean_SWAFR_0.05_buffered.grd"
@@ -81,12 +72,6 @@ stopifnot(exprs = {
   proj4string(SWAFR_MLST) == std_CRS
   round(res(SWAFR_MLST), 2) == 0.05
 })
-SWAFR_TWQ <- raster(glue(
-  "{data_dir}/temperature/SWAFR_TWQ_buffered.tif"
-))
-SWAFR_TCQ <- raster(glue(
-  "{data_dir}/temperature/SWAFR_TCQ_buffered.tif"
-))
 
 # NDVI -------------------------------------------------------------------------
 
@@ -159,10 +144,10 @@ SWAFR_variables <- list(
   SWAFR_soils$SWAFR_SWAFR_PHIKCL_M_250m_std_CRS_0.05_0.05
 )
 GCFR_variables %<>%
-  map(crop, GCFR_variables[[4]]) %>%
+  map(crop, GCFR_variables$MLST) %>%  # Choose a layer with the cleanest extent
   map(mask, GCFR_border_buffered)
 SWAFR_variables %<>%
-  map(crop, SWAFR_variables[[4]]) %>%
+  map(crop, SWAFR_variables$MLST) %>%
   map(mask, SWAFR_border_buffered)
 names(GCFR_variables) <- var_names
 names(SWAFR_variables) <- var_names
@@ -208,22 +193,13 @@ rm(
   GCFR_elev,
   GCFR_MAP,
   GCFR_PDQ,
-  GCFR_PCV,
-  GCFR_PWQ,
   GCFR_MLST,
-  GCFR_TCQ,
-  GCFR_TWQ,
   GCFR_NDVI,
   GCFR_soils,
-
   SWAFR_elev,
   SWAFR_MAP,
   SWAFR_PDQ,
-  SWAFR_PCV,
-  SWAFR_PWQ,
   SWAFR_MLST,
-  SWAFR_TCQ,
-  SWAFR_TWQ,
   SWAFR_NDVI,
   SWAFR_soils
 )
