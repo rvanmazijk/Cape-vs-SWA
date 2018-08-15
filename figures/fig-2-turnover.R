@@ -106,8 +106,8 @@ mean_QDS_jaccard_panel <- richness_turnover_data %>%
       "text", x = 0.65, y = 0.8 * y_lim,
       parse = TRUE,
       label = paste0(
-        ifelse(mean_QDS_jaccard_test$p.value < 0.05,
-          "italic(P) < 0.05",
+        ifelse(mean_QDS_jaccard_test$p.value < 0.0001,
+          "italic(P) < '0.0001'",  # extra quote to avoid '1e04' rendering
           glue("italic(P) == {mean_QDS_jaccard_test$p.value}")
         )
       )
@@ -128,8 +128,8 @@ add_residual_turnover_prop_panel <- richness_turnover_data %>%
       "text", x = 0.4, y = 0.8 * y_lim,
       parse = TRUE,
       label = paste0(
-        ifelse(add_residual_turnover_prop_test$p.value < 0.05,
-          "italic(P) < 0.05",
+        ifelse(add_residual_turnover_prop_test$p.value < 0.0001,
+          "italic(P) < '0.0001'",
           glue("italic(P) == {add_residual_turnover_prop_test$p.value}")
         )
       )
@@ -167,8 +167,8 @@ mean_QDS_jaccard_panel2 <- richness_turnover_data %>%
       "text", x = 0.65, y = 0.8 * y_lim,
       parse = TRUE,
       label = paste0(
-        ifelse(mean_QDS_jaccard_test2$p.value < 0.05,
-          "italic(P) < 0.05",
+        ifelse(mean_QDS_jaccard_test2$p.value < 0.0001,
+          "italic(P) < '0.0001'",
           glue("italic(P) == {mean_QDS_jaccard_test2$p.value}")
         )
       )
@@ -190,8 +190,8 @@ add_residual_turnover_prop_panel2 <- richness_turnover_data %>%
       "text", x = 0.5, y = 0.8 * y_lim,
       parse = TRUE,
       label = paste0(
-        ifelse(add_residual_turnover_prop_test2$p.value < 0.05,
-          "italic(P) < 0.05",
+        ifelse(add_residual_turnover_prop_test2$p.value < 0.0001,
+          "italic(P) < '0.0001'",
           glue("italic(P) == {add_residual_turnover_prop_test2$p.value}")
         )
       )
