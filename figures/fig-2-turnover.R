@@ -144,7 +144,7 @@ both_turnover_panels <- plot_grid(
   labels = c("(a)", "(b)"), hjust = c(-2.25, -0.75), vjust = c(2, 2)
 )
 ggsave(
-  here::here("figures/fig-2-richness-and-turnover.png"),
+  here::here("figures/fig-2-turnover.png"),
   both_turnover_panels,
   width = 7, height = 3,
   dpi = 300
@@ -206,7 +206,7 @@ both_turnover_panels2 <- plot_grid(
   labels = c("(a)", "(b)"), hjust = c(-2.25, -0.75), vjust = c(2, 2)
 )
 ggsave(
-  here::here("figures/fig-2-richness-and-turnover_n-QDS-4.png"),
+  here::here("figures/fig-2-turnover_n-QDS-4.png"),
   both_turnover_panels2,
   width = 7, height = 3,
   dpi = 300
