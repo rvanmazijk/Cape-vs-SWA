@@ -68,18 +68,16 @@ my_functions <- list.files(
   full.names = TRUE
 )
 map(my_functions, source)
+rm(my_functions)
 
 # Global GIS variables
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
 # Global ggplot2 theme settings
-# Colourblind friendly palette, from
-# <http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette>
 my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
   "#307aa5"   # SWA (SWAFR) blue
 )
-# Cleaner theme
 my_theme <-
   theme_bw() +
   theme(
