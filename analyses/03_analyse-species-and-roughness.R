@@ -112,7 +112,67 @@ both_regions_pts <- maptools::spRbind(
   SWAFR_variables_HDS_pts2
 )
 
+both_regions_pts@data <- both_regions_pts@data %>%
+  # Create other turnover metrics
+  mutate(
+    add_residual_turnover = HDS_richness - mean_QDS_richness,
+    add_residual_turnover_prop = add_residual_turnover / HDS_richness,
+    mul_residual_turnover = HDS_richness / mean_QDS_richness
+  ) %$%
+  # Reorganise columns
+  data.frame(
+    region,
+    hdgc,
+    HDS_richness,
+    n_QDS,
+    mean_QDS_richness,
+    mean_QDS_jaccard,
+    add_residual_turnover,
+    add_residual_turnover_prop,
+    mul_residual_turnover,
+    Elevation,
+    MAP,
+    PDQ,
+    Surface.T,
+    NDVI,
+    CEC,
+    Clay,
+    Soil.C,
+    pH,
+    rough_Elevation,
+    rough_MAP,
+    rough_PDQ,
+    rough_Surface.T,
+    rough_NDVI,
+    rough_CEC,
+    rough_Clay,
+    rough_Soil.C,
+    rough_pH
+  )
+both_regions_pts %<>% na.exclude()
+
 # Fit models -------------------------------------------------------------------
+
+gwr_model2 <- function(my_data, response, predictors) {
+  formula <- glue(
+    "{response} ~ {paste0(predictors, collapse = '+')}"
+  )
+  print(formula)
+  auto_bw <- spgwr::gwr.sel(
+    formula, my_data,
+    gweight = gwr.Gauss, verbose = TRUE
+  )
+  model_gwr <- spgwr::gwr(
+    formula, my_data,
+    gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
+  )
+  model_gwr
+}
+names(both_regions_pts)
+gwr_model2(my_data = both_regions_pts, "HDS_richness", "1")
+
+
+#### OLD MODELS BELOW ####
 
 # .... Separate regions' models ------------------------------------------------
 
