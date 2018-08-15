@@ -5,8 +5,8 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-source(here::here("data/01_import-region-polygons.R"))
-source(here::here("data/02_import-floral-data.R"))
+#source(here::here("data/01_import-region-polygons.R"))
+#source(here::here("data/02_import-floral-data.R"))
 
 # Compile data -----------------------------------------------------------------
 
