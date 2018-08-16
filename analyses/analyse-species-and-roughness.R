@@ -6,9 +6,17 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-map(data_import_paths, source)
+source(here::here("data/import-environmental-data.R"))
+source(here::here("analyses/analyse-turnover.R"))
+richness_turnover_data <- read_csv(here::here(
+  "outputs/turnover/richness_turnover_data.csv"
+))
+GCFR_species
+SWAFR_species
 
-out_dir <- here::here("outputs/species-and-roughness")
+richness_turnover_data
+
+GCFR_variables_
 
 # Compile data -----------------------------------------------------------------
 
