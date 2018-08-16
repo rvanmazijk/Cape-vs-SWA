@@ -6,6 +6,7 @@
 
 source(here::here("setup.R"))
 U_CLES_results <- read_csv(here::here("outputs/roughness/U_CLES_results.csv"))
+roughness_data <- read_csv(here::here("outputs/roughness/roughness_data.csv"))
 
 var_shapes <- c(
   17,  # triangle      for elevation
@@ -78,79 +79,35 @@ CLES_plot <- CLES_plot +
 
 # Roughness distribution plots -------------------------------------------------
 
-rm_attr <- function(x) {
-  attributes(x) <- NULL
-  x
-}
-
-# Remove na.exlcude attributes labels
-GCFR_roughness_QDS %<>% map(rm_attr)
-GCFR_roughness_HDS %<>% map(rm_attr)
-GCFR_roughness_3QDS %<>% map(rm_attr)
-SWAFR_roughness_QDS %<>% map(rm_attr)
-SWAFR_roughness_HDS %<>% map(rm_attr)
-SWAFR_roughness_3QDS %<>% map(rm_attr)
-
-roughness_value_data <- as_tibble(rbind(
-  as.data.frame(cbind(region = "Cape", rbind(
-    cbind(resolution = "0.05º", bind_rows(GCFR_roughness)),
-    cbind(resolution = "QDS",   bind_rows(GCFR_roughness_QDS)),
-    cbind(resolution = "HDS",   bind_rows(GCFR_roughness_HDS)),
-    cbind(resolution = "3QDS",  bind_rows(GCFR_roughness_3QDS))
-  ))),
-  as.data.frame(cbind(region = "SWA", rbind(
-    cbind(resolution = "0.05º", bind_rows(SWAFR_roughness)),
-    cbind(resolution = "QDS",   bind_rows(SWAFR_roughness_QDS)),
-    cbind(resolution = "HDS",   bind_rows(SWAFR_roughness_HDS)),
-    cbind(resolution = "3QDS",  bind_rows(SWAFR_roughness_3QDS))
-  )))
-))
-SWAFR_roughness_data <- as_tibble(rbind(
-  cbind(resolution = "0.05º", SWAFR_roughness),
-  cbind(resolution = "QDS",   SWAFR_roughness_QDS),
-  cbind(resolution = "HDS",   SWAFR_roughness_HDS),
-  cbind(resolution = "3QDS",  SWAFR_roughness_3QDS)
-))
-
-
-data_for_violin_plot_tidy <- data_for_violin_plot %$%
-  rbind(
-    cbind(resolution = "0.05º", .[[1]]),
-    cbind(resolution = "QDS",   .[[2]]),
-    cbind(resolution = "HDS",   .[[3]]),
-    cbind(resolution = "3QDS",  .[[4]])
-  ) %>%
-  as_tibble() %>%
-  gather(variable, roughness, -resolution, -region) %>%
-  na.omit() %>%
-  group_by(resolution, variable) %>%
-  mutate(z_roughness = scale(roughness)) %>%  # Z-scale!
-  ungroup() %>%
-  mutate(
-    variable = factor(variable, levels = var_names),
-    region = ifelse(region == "GCFR", "Cape", "SWA")
-  )
-
-z_dbn_plot <- data_for_violin_plot %>%
+z_dbn_plot_data <- roughness_data %>%
+  # Focal scales and variables for dbn panels
   filter(
     resolution %in% c("0.05º", "3QDS"),
     variable %in% c("Elevation", "MAP", "NDVI", "CEC")
   ) %>%
-  mutate(variable = case_when(
-    variable == "Elevation" ~ "Elevation",
-    variable == "MAP"       ~ "Climate e.g. MAP",
-    variable == "NDVI"      ~ "NDVI",
-    variable == "CEC"       ~ "Soil e.g. CEC"
-  )) %>%
-  mutate(variable = factor(variable, levels = c(
-    "Elevation",
-    "Climate e.g. MAP",
-    "NDVI",
-    "Soil e.g. CEC"
-  ))) %>%
-  ggplot(aes(z_roughness, fill = region)) +
+  group_by(resolution, variable) %>%
+  mutate(z_roughness = scale(roughness)) %>%  # Z-scale
+  ungroup() %>%
+  mutate(variable =
+    # Group variables for plot
+    case_when(
+      variable == "Elevation" ~ "Elevation",
+      variable == "MAP"       ~ "Climate e.g. MAP",
+      variable == "NDVI"      ~ "NDVI",
+      variable == "CEC"       ~ "Soil e.g. CEC"
+    ) %>%
+    # Reorder new factors
+    factor(levels = c(
+      "Elevation",
+      "Climate e.g. MAP",
+      "NDVI",
+      "Soil e.g. CEC"
+    ))
+  )
+
+z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
   geom_histogram(position = "dodge", bins = 20) +
-  xlim(min(data_for_violin_plot$z_roughness), 5) +
+  xlim(min(z_dbn_plot_data$z_roughness), quantile(z_dbn_plot_data$z_roughness, 0.99)) +
   scale_fill_manual(name = "Region", values = my_palette) +
   facet_grid(resolution ~ variable, scales = "free_y") +
   labs(
@@ -161,71 +118,6 @@ z_dbn_plot <- data_for_violin_plot %>%
 # Map panels of elevation ------------------------------------------------------
 
 # TODO
-
-#map(pre_analysis_import_paths, source)
-#
-#map_panel <- function(x, border, var = NULL) {
-#  gplot(x) +
-#    geom_tile(aes(fill = value)) +
-#    geom_spatial(border, fill = NA, col = "black") +
-#    scale_fill_viridis_c(na.value = NA, name = var) +
-#    theme(
-#      legend.position = c(0.75, 1),
-#      legend.justification = c(1, 1),
-#      legend.text = element_text(hjust = 1),
-#      panel.border = element_blank(),
-#      axis.title = element_blank(),
-#      axis.ticks = element_blank(),
-#      axis.text = element_blank()
-#    )
-#}
-#map_panels <- function(x, border, var = NULL, var_title = NULL) {
-#  stopifnot(is.list(x))
-#  abs <- map(x, var)
-#  rough <- map(abs, focal_sd)
-#  GCFR_elev <-
-#    c(abs, rough) %>%
-#    map(
-#      map_panel,
-#      border = border,
-#      var = var
-#    )
-#}
-#
-#GCFR_elev_panels <- map_panels(
-#  list(
-#    GCFR_variables,
-#    GCFR_variables_3QDS
-#  ),
-#  border = GCFR_border_buffered,
-#  var = "Elevation",
-#  var_title = "Elevation (m)"
-#)
-#SWAFR_elev_panels <- map_panels(
-#  list(
-#    SWAFR_variables,
-#    SWAFR_variables_3QDS
-#  ),
-#  border = SWAFR_border_buffered,
-#  var = "Elevation",
-#  var_title = "Elevation (m)"
-#)
-#
-#plot_grid(plotlist = GCFR_elev_panels)
-#plot_grid(plotlist = SWAFR_elev_panels)
-
-#elev_panels_plot <-
-#  plot_grid(ncol = 2, plotlist = list(
-#    plot_grid(ncol = 1, plotlist =
-#      GCFR_environment_plots[1:5]
-#    ),
-#    plot_grid(ncol = 1, rel_heights = c(4, 1), plotlist = list(
-#      plot_grid(ncol = 1, plotlist =
-#        GCFR_environment_plots[6:9]
-#      ),
-#      grid.rect(gp = gpar(col = "white"))
-#    ))
-#  ))
 
 # Combine CLES and Z plots -----------------------------------------------------
 

@@ -131,3 +131,4 @@ roughness_data <- rbind(
 write_csv(
   roughness_data,
   glue("{output_path}/roughness_data.csv")
+)
