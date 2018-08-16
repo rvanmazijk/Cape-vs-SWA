@@ -1,6 +1,5 @@
 # Implement our roughness function (equation in manuscript)
 roughness <- function(x, ...) {
-
   focal(
     x = x,
     w = matrix(1, nrow = 3, ncol = 3),
@@ -34,7 +33,8 @@ get_roughness <- function(x, resolution = unique(res(x))) {
     aggregate(fact = resolution / 0.05) %>%
     roughness()
 }
-# This one returns a 1 column data-frame of roughness values
+
+# Use get_roughness, and then return a vector of non-NA roughness values
 get_roughness_values <- function(x, resolution = unique(res(x))) {
   x %<>%
     get_roughness(resolution) %>%
@@ -43,5 +43,5 @@ get_roughness_values <- function(x, resolution = unique(res(x))) {
   if (resolution == 0.05) {
     x %<>% base::sample(size = 5000)  # max n U-test accepts
   }
-  data.frame(roughness = x)
+  x
 }
