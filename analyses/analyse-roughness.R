@@ -5,7 +5,7 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-source(here::here("data/03_import-environmental-data.R"))
+source(here::here("data/import-environmental-data.R"))
 
 output_path <- here::here("outputs/roughness")
 
