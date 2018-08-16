@@ -2,63 +2,125 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
 source(here::here("setup.R"))
-source(here::here("data/02_import-floral-data.R"))
+source(here::here("data/import-floral-data.R"))
+
+output_path <- here::here("outputs/turnover")
+
+# Compute HDS richness, mean QDS richness and turnover -------------------------
+
+# If not already computed and saved to disc
+# (I re-ran this script many times, and wanted to avoid repeating
+# the heavy computations.)
+
+GCFR_species_path <- glue("{output_path}/GCFR_spp_2018-08-14")
+SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
+
+# TODO: try computing again, to check reproducible
+#GCFR_species_path <- glue("{output_path}/GCFR_spp_2018-08-14")
+#SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
+
+if (!file.exists(GCFR_species_path)) {
+  GCFR_species <- calc_richness_turnover(
+    flora_points = trimmed_GCFR_clean_flora_spdf_species,
+    QDS_polygon = GCFR_QDS,
+    output_path = output_path,
+    region_name = "GCFR", date = "2018-08-14"
+  )
+} else {
+  GCFR_species <- readOGR(GCFR_species_path)
+}
+
+if (!file.exists(GCFR_species_path)) {
+  GCFR_species <- calc_richness_turnover(
+    flora_points = trimmed_GCFR_clean_flora_spdf_species,
+    QDS_polygon = GCFR_QDS,
+    output_path = output_path,
+    region_name = "GCFR", date = "2018-08-14"
+  )
+} else {
+  SWAFR_species <- readOGR(SWAFR_species_path)
+}
+
+vars_to_keep <- c(
+  "hdgc",
+  "HDS_richness",
+  "n_QDS",
+  "mean_QDS_richness",
+  "mean_QDS_jaccard"
+)
+names(GCFR_species)[5:9] <- vars_to_keep
+names(SWAFR_species)[5:9] <- vars_to_keep
+
+GCFR_species_data <- GCFR_species@data %>%
+  select(vars_to_keep) %>%
+  filter(n_QDS > 1) %>%
+  distinct()
+SWAFR_species_data <- SWAFR_species@data %>%
+  select(vars_to_keep) %>%
+  filter(n_QDS > 1) %>%
+  distinct()
+
+richness_turnover_data <-
+  rbind(
+    cbind(region = "Cape", GCFR_species_data),
+    cbind(region = "SWA", SWAFR_species_data)
+  ) %>%
+  as_tibble() %>%
+  filter(n_QDS > 1) %>%  # turnover is non-sensicle for 1 QDS)
+  mutate(
+    add_residual_turnover = HDS_richness - mean_QDS_richness,
+    add_residual_turnover_prop = add_residual_turnover / HDS_richness,
+    mul_residual_turnover = HDS_richness / mean_QDS_richness
+  )
+
+# Save to disc for Figure 2
+write_csv(
+  richness_turnover_data,
+  glue("{output_path}/richness_turnover_data.csv")
+)
 
 # Compare turnover between GCFR and SWAFR --------------------------------------
 
-# .... Mean Jaccard distance between QDS in HDS --------------------------------
-
+# Example with mean Jaccard distances
 # For any no. QDS >= 2
-richness_turnover_data %$% compare_samples(
-  mean_QDS_jaccard[region == "Cape"],
-  mean_QDS_jaccard[region == "SWA"],
-  alternative = "two.sided"
+jacc <- richness_turnover_data %$% list(
+  Cape = mean_QDS_jaccard[region == "Cape"],
+  SWA = mean_QDS_jaccard[region == "SWA"]
 )
+map(jacc, shapiro.test)  # Not ~ N
+map(jacc, function(x) shapiro.test(log(x))) # Not log ~ N either
+var.test(jacc$Cape, jacc$SWA)  # Variances approx. equal
+# Therefore, use Mann-Whitney U-tests and CLES
+rm(jacc)
 
-# For when no. QDS = 4 only
-richness_turnover_data %>%
-  filter(n_QDS == 4) %$%
-  compare_samples(
-    mean_QDS_jaccard[region == "Cape"],
-    mean_QDS_jaccard[region == "SWA"],
-    alternative = "two.sided"
-  )
+# Compare for real
+turnover_results <- richness_turnover_data %>%
+  # Doing for any no. QDS >= 2
+  # But what about when no. QDS = 4 only?
+  #filter(n_QDS == 4) %>%
+  select(region, mean_QDS_jaccard, add_residual_turnover_prop) %$%
+  list(
+    mean_QDS_jaccard = list(
+      Cape = mean_QDS_jaccard[region == "Cape"],
+      SWA = mean_QDS_jaccard[region == "SWA"]
+    ),
+    add_residual_turnover_prop = list(
+      Cape = add_residual_turnover_prop[region == "Cape"],
+      SWA = add_residual_turnover_prop[region == "SWA"]
+    )
+  ) %>%
+  map_df(.id = "test", function(.x) {
+    U_p_value <- tidy(wilcox.test(.x$Cape, .x$SWA, alternative = "two.sided"))$p.value
+    CLES_value <- CLES(.x$SWA, .x$Cape)  # Order of x and y NB
+    message("Done")
+    tibble(U_p_value, CLES_value)
+  })
 
-# .... Additively defined residual turnover in HDS -----------------------------
-
-# For any no. QDS >= 2
-richness_turnover_data %$%
-  compare_samples(
-    add_residual_turnover[region == "Cape"],
-    add_residual_turnover[region == "SWA"],
-    alternative = "two.sided"
-  )
-
-# For when no. QDS = 4 only
-richness_turnover_data %>%
-  filter(n_QDS == 4) %$%
-  compare_samples(
-    add_residual_turnover[region == "Cape"],
-    add_residual_turnover[region == "SWA"],
-    alternative = "two.sided"
-  )
-
-# .... Additively defined residual turnover in HDS (proportion) ----------------
-
-# For any no. QDS >= 2
-richness_turnover_data %$%
-  compare_samples(
-    add_residual_turnover_prop[region == "Cape"],
-    add_residual_turnover_prop[region == "SWA"],
-    alternative = "two.sided"
-  )
-
-# For when no. QDS = 4 only
-richness_turnover_data %>%
-  filter(n_QDS == 4) %$%
-  compare_samples(
-    add_residual_turnover_prop[region == "Cape"],
-    add_residual_turnover_prop[region == "SWA"],
-    alternative = "two.sided"
-  )
+# Save results to disc
+write_csv(
+  turnover_results,
+  glue("{output_path}/turnover_results.csv")
+)
