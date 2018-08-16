@@ -5,7 +5,6 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-source(here::here("data/import-floral-data.R"))
 
 output_path <- here::here("outputs/turnover")
 
@@ -23,6 +22,10 @@ SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
 #SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
 
 if (!file.exists(GCFR_species_path)) {
+  # Read in processed GBIF occurence data as SpatialPointsDataFrames
+  trimmed_GCFR_clean_flora_spdf_species <- read_rds(here::here(
+    "data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_species"
+  ))
   GCFR_species <- calc_richness_turnover(
     flora_points = trimmed_GCFR_clean_flora_spdf_species,
     QDS_polygon = GCFR_QDS,
@@ -33,12 +36,15 @@ if (!file.exists(GCFR_species_path)) {
   GCFR_species <- readOGR(GCFR_species_path)
 }
 
-if (!file.exists(GCFR_species_path)) {
-  GCFR_species <- calc_richness_turnover(
-    flora_points = trimmed_GCFR_clean_flora_spdf_species,
-    QDS_polygon = GCFR_QDS,
+if (!file.exists(SWAFR_species_path)) {
+  trimmed_SWAFR_clean_flora_spdf_species <- read_rds(here::here(
+    "data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_species"
+  ))
+  DWAFR_species <- calc_richness_turnover(
+    flora_points = trimmed_SWAFR_clean_flora_spdf_species,
+    QDS_polygon = SWAFR_QDS,
     output_path = output_path,
-    region_name = "GCFR", date = "2018-08-14"
+    region_name = "SWAFR", date = "2018-08-14"
   )
 } else {
   SWAFR_species <- readOGR(SWAFR_species_path)
@@ -76,7 +82,7 @@ richness_turnover_data <-
     mul_residual_turnover = HDS_richness / mean_QDS_richness
   )
 
-# Save to disc for Figure 2
+# Save data frame to disc for Figure 2
 write_csv(
   richness_turnover_data,
   glue("{output_path}/richness_turnover_data.csv")
