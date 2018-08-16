@@ -152,42 +152,6 @@ SWAFR_variables %<>%
 names(GCFR_variables) <- var_names
 names(SWAFR_variables) <- var_names
 
-# Roughness layers -------------------------------------------------------------
-
-GCFR_roughness <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.05
-)
-GCFR_roughness_QDS <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.25
-)
-GCFR_roughness_HDS <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.50
-)
-GCFR_roughness_3QDS <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.75
-)
-
-SWAFR_roughness <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.05
-)
-SWAFR_roughness_QDS <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.25
-)
-SWAFR_roughness_HDS <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.50
-)
-SWAFR_roughness_3QDS <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.75
-)
-
 # Tidy up
 rm(
   GCFR_elev,

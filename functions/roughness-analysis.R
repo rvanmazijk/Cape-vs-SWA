@@ -25,11 +25,16 @@ roughness <- function(x, ...) {
 }
 
 # Aggregates a layer to the specified resolution (assuming base res is 0.05º)
-# and calculates the roughness layer of that, return a vector of roughness values
+# and calculates the roughness layer of that
+get_roughness <- function(x, resolution) {
+  x %>%
+    aggregate(fact = resolution / 0.05) %>%
+    roughness()
+}
+# return a vector of roughness values
 get_roughness_values <- function(x, resolution) {
   x %<>%
-    aggregate(fact = resolution / 0.05) %>%
-    roughness() %>%
+    get_roughness(resolution) %>%
     getValues() %>%
     na.exclude()
   if (resolution == 0.05) {

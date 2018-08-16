@@ -2,10 +2,48 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
 source(here::here("setup.R"))
 source(here::here("data/03_import-environmental-data.R"))
 
 output_path <- here::here("outputs/roughness")
+
+# Compute roughness data -------------------------------------------------------
+
+GCFR_roughness <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.05
+)
+GCFR_roughness_QDS <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.25
+)
+GCFR_roughness_HDS <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.50
+)
+GCFR_roughness_3QDS <- map(
+  GCFR_variables,
+  get_roughness_values, resolution = 0.75
+)
+
+SWAFR_roughness <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.05
+)
+SWAFR_roughness_QDS <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.25
+)
+SWAFR_roughness_HDS <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.50
+)
+SWAFR_roughness_3QDS <- map(
+  SWAFR_variables,
+  get_roughness_values, resolution = 0.75
+)
 
 GCFR_roughness_data <- list(
   "0.05º" = GCFR_roughness,
