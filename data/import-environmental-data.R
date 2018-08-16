@@ -4,7 +4,7 @@
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("data/01_import-region-polygons.R"))
+source(here::here("data/import-region-polygons.R"))
 
 data_dir <- here::here("data/derived-data")
 
