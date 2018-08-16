@@ -63,8 +63,9 @@ capture.output(
 
 # Import all functions in R-scripts in functions/
 my_functions <- list.files(
-  here::here("functions/"),
+  here::here("functions"),
   pattern = ".R",
+  recursive = TRUE,
   full.names = TRUE
 )
 map(my_functions, source)
