@@ -26,19 +26,22 @@ roughness <- function(x, ...) {
 
 # Aggregates a layer to the specified resolution (assuming base res is 0.05º)
 # and calculates the roughness layer of that
-get_roughness <- function(x, resolution) {
+get_roughness <- function(x, resolution = unique(res(x))) {
+  print(glue(
+    "Aggregating from {resolution} to {resolution / 0.05}"
+  ))
   x %>%
     aggregate(fact = resolution / 0.05) %>%
     roughness()
 }
-# return a vector of roughness values
-get_roughness_values <- function(x, resolution) {
+# This one returns a 1 column data-frame of roughness values
+get_roughness_values <- function(x, resolution = unique(res(x))) {
   x %<>%
     get_roughness(resolution) %>%
-    getValues() %>%
-    na.exclude()
+    getValues()
+  x <- x[!is.na(x)]
   if (resolution == 0.05) {
     x %<>% base::sample(size = 5000)  # max n U-test accepts
   }
-  x
+  data.frame(roughness = x)
 }

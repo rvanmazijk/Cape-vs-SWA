@@ -11,38 +11,46 @@ output_path <- here::here("outputs/roughness")
 
 # Compute roughness data -------------------------------------------------------
 
-GCFR_roughness <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.05
+GCFR_roughness <- map_df(
+  .x = GCFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x)
 )
-GCFR_roughness_QDS <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.25
+GCFR_roughness_QDS <- map_df(
+  .x = GCFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x, resolution = 0.25)
 )
-GCFR_roughness_HDS <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.50
+GCFR_roughness_HDS <- map_df(
+  .x = GCFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x, resolution = 0.50)
 )
-GCFR_roughness_3QDS <- map(
-  GCFR_variables,
-  get_roughness_values, resolution = 0.75
+GCFR_roughness_3QDS <- map_df(
+  .x = GCFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x, resolution = 0.75)
 )
 
-SWAFR_roughness <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.05
+SWAFR_roughness <- map_df(
+  .x = SWAFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x)
 )
-SWAFR_roughness_QDS <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.25
+SWAFR_roughness_QDS <- map_df(
+  .x = SWAFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x, resolution = 0.25)
 )
-SWAFR_roughness_HDS <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.50
+SWAFR_roughness_HDS <- map_df(
+  .x = SWAFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x, resolution = 0.50)
 )
-SWAFR_roughness_3QDS <- map(
-  SWAFR_variables,
-  get_roughness_values, resolution = 0.75
+SWAFR_roughness_3QDS <- map_df(
+  .x = SWAFR_variables,
+  .id = "variable",
+  .f = ~ get_roughness_values(.x, resolution = 0.75)
 )
 
 GCFR_roughness_data <- list(
@@ -57,6 +65,8 @@ SWAFR_roughness_data <- list(
   "HDS"   = SWAFR_roughness_HDS,
   "3QDS"  = SWAFR_roughness_3QDS
 )
+
+# Perform U-tests and CLES -----------------------------------------------------
 
 # Using Mann-Whitney U-tests at each resolution (0.05º, QDS, HDS and 3QDS)
 # to test for significance,
