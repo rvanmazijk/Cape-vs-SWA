@@ -2,6 +2,10 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
+source(here::here("data/01_import-region-polygons.R"))
+
 data_dir <- here::here("data/derived-data")
 
 # Elevation --------------------------------------------------------------------
