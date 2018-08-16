@@ -97,8 +97,37 @@ U_CLES_results <- map2_df(
   )
 )
 
-# Save to disc
+# Save results to disc
 write_csv(
   U_CLES_results,
   glue("{output_path}/U_CLES_results.csv")
 )
+
+# Save roughness distribution data to disc for use in Figure 1 -----------------
+
+# Format into table
+GCFR_roughness_data %<>% map_df(
+  .id = "resolution",
+  .f = ~ map_df(
+    .x = .x,
+    .id = "variable",
+    .f = ~ data.frame(roughness = .x)
+  )
+)
+SWAFR_roughness_data %<>% map_df(
+  .id = "resolution",
+  .f = ~ map_df(
+    .x = .x,
+    .id = "variable",
+    .f = ~ data.frame(roughness = .x)
+  )
+)
+roughness_data <- rbind(
+  cbind(region = "Cape", GCFR_roughness_data),
+  cbind(region = "SWA", SWAFR_roughness_data)
+)
+
+# Save to disc
+write_csv(
+  roughness_data,
+  glue("{output_path}/roughness_data.csv")
