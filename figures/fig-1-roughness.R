@@ -4,7 +4,10 @@
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("figures/figure-setup.R"))
+source(here::here("setup.R"))
+
+U_CLES_results <- read_csv(here::here("outputs/roughness/U_CLES_results.csv"))
+roughness_data <- read_csv(here::here("outputs/roughness/roughness_data.csv"))
 
 var_shapes <- c(
   17,  # triangle      for elevation
@@ -25,61 +28,16 @@ var_colours <- c(
   "#BA793E"   # brown  for soils
 )
 
-# Data-wrangling ---------------------------------------------------------------
-
-jackknifed_CLES_summary_QDS %<>%
-  gather(variable, CLES) %>%
-  mutate(mean_or_sd =
-    ifelse(str_detect(variable, "_mean"),
-      "CLES_mean",
-      "CLES_sd"
-    )
-  ) %>%
-  mutate(variable = str_remove(variable, "_mean")) %>%
-  mutate(variable = str_remove(variable, "_sd")) %>%
-  spread(mean_or_sd, CLES) %>%
-  mutate(resolution = "QDS")
-jackknifed_CLES_summary_QDS$variable %<>% factor(levels = var_names)
-jackknifed_CLES_summary_HDS %<>%
-  gather(variable, CLES) %>%
-  mutate(mean_or_sd =
-    ifelse(str_detect(variable, "_mean"),
-      "CLES_mean",
-      "CLES_sd"
-    )
-  ) %>%
-  mutate(variable = str_remove(variable, "_mean")) %>%
-  mutate(variable = str_remove(variable, "_sd")) %>%
-  spread(mean_or_sd, CLES) %>%
-  mutate(resolution = "HDS")
-jackknifed_CLES_summary_HDS$variable %<>% factor(levels = var_names)
-
-jackknifed_CLES_summary <- full_join(
-  jackknifed_CLES_summary_QDS,
-  jackknifed_CLES_summary_HDS
-)
-jackknifed_CLES_summary %<>% mutate(
-  CLES_upper = CLES_mean + CLES_sd,
-  CLES_lower = CLES_mean - CLES_sd
-)
-test_results_summary %<>%
-  gather(resolution, sig, -variable) %>%
-  mutate(sig = ifelse(sig, "", "NS")) %>%
-  left_join(jackknifed_CLES_summary)
-
-data <- test_results_CLES_for_plot %>%
+roughness_analysis_data <- U_CLES_results %>%
   mutate(
+    U_sig = ifelse(U_p_value < 0.05, "", "NS"),
     variable_type = case_when(  # for colouring variables' lines etc.
       variable == "Elevation"      ~ "Elevation",
       variable == "NDVI"           ~ "NDVI",
       variable %in% var_names[2:4] ~ "Climate",
       variable %in% var_names[6:9] ~ "Soil"
-      # (\n\n to "label" z_dbn_plot above CLES plot (cheat!))
-    ),
-    CLES = 1 - CLES  # Make CLES Cape - SWA, not SWA - Cape
-    # (from obs CLES, not jackknife mean CLES)
+    )
   ) %>%
-  full_join(test_results_summary) %>%
   mutate(
     variable = factor(variable, levels = var_names),
     variable_type = factor(variable_type, levels = c(
@@ -93,31 +51,15 @@ data <- test_results_CLES_for_plot %>%
 
 # Make CLES ~ resolution panels ------------------------------------------------
 
-pd <- position_dodge(0.4)
+# Basic plot
+CLES_plot <- roughness_analysis_data %>%
+  ggplot(aes(resolution, CLES_value, col = variable_type)) +
+    geom_point(aes(shape = variable), size = 2) +
+    geom_line(aes(group = variable)) +
+    geom_text(aes(label = U_sig), size = 2, col = "black", nudge_x = 0.4)
 
-CLES_plot <- ggplot(data, aes(resolution, CLES, col = variable_type)) +
-  geom_point(
-    aes(shape = variable),
-    size = 2#, position = pd
-  ) +
-  geom_line(
-    aes(group = variable)#, position = pd
-  ) +
-  #geom_errorbar(
-  #  aes(
-  #    ymin = CLES_lower,
-  #    ymax = CLES_upper,
-  #    group = paste(variable, resolution)
-  #  ),
-  #  width = 0, alpha = 0.5,
-  #  position = pd
-  #) +
-  #geom_point(
-  #  aes(y = CLES_mean, shape = variable),
-  #  size = 2, alpha = 0.5,
-  #  position = pd
-  #) +
-  geom_text(aes(label = sig), size = 2, col = "black", nudge_x = 0.4) +
+# Theme and nicer labels
+CLES_plot <- CLES_plot +
   scale_colour_manual(values = var_colours, guide = FALSE) +
   scale_shape_manual(values = var_shapes) +
   facet_wrap(~ variable_type, nrow = 1, dir = "h") +
@@ -138,26 +80,35 @@ CLES_plot <- ggplot(data, aes(resolution, CLES, col = variable_type)) +
 
 # Roughness distribution plots -------------------------------------------------
 
-z_dbn_plot <- data_for_violin_plot %>%
+z_dbn_plot_data <- roughness_data %>%
+  # Focal scales and variables for dbn panels
   filter(
     resolution %in% c("0.05º", "3QDS"),
     variable %in% c("Elevation", "MAP", "NDVI", "CEC")
   ) %>%
-  mutate(variable = case_when(
-    variable == "Elevation" ~ "Elevation",
-    variable == "MAP"       ~ "Climate e.g. MAP",
-    variable == "NDVI"      ~ "NDVI",
-    variable == "CEC"       ~ "Soil e.g. CEC"
-  )) %>%
-  mutate(variable = factor(variable, levels = c(
-    "Elevation",
-    "Climate e.g. MAP",
-    "NDVI",
-    "Soil e.g. CEC"
-  ))) %>%
-  ggplot(aes(z_roughness, fill = region)) +
+  group_by(resolution, variable) %>%
+  mutate(z_roughness = scale(roughness)) %>%  # Z-scale
+  ungroup() %>%
+  mutate(variable =
+    # Group variables for plot
+    case_when(
+      variable == "Elevation" ~ "Elevation",
+      variable == "MAP"       ~ "Climate e.g. MAP",
+      variable == "NDVI"      ~ "NDVI",
+      variable == "CEC"       ~ "Soil e.g. CEC"
+    ) %>%
+    # Reorder new factors
+    factor(levels = c(
+      "Elevation",
+      "Climate e.g. MAP",
+      "NDVI",
+      "Soil e.g. CEC"
+    ))
+  )
+
+z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
   geom_histogram(position = "dodge", bins = 20) +
-  xlim(min(data_for_violin_plot$z_roughness), 5) +
+  xlim(min(z_dbn_plot_data$z_roughness), quantile(z_dbn_plot_data$z_roughness, 0.99)) +
   scale_fill_manual(name = "Region", values = my_palette) +
   facet_grid(resolution ~ variable, scales = "free_y") +
   labs(
@@ -165,99 +116,9 @@ z_dbn_plot <- data_for_violin_plot %>%
     y = "No. cells"
   )
 
-#adj_z_roughness <- abs(min(data_for_violin_plot$z_roughness)) + 0.1
-#
-#z_dbn_plot_adj <- data_for_violin_plot %>%
-#  filter(
-#    resolution %in% c("0.05º", "3QDS"),
-#    variable %in% c("Elevation", "MAP", "NDVI", "CEC")
-#  ) %>%
-#  ggplot(aes(log(z_roughness + adj_z_roughness), col = region, fill = region)) +
-#  geom_density(alpha = 0.5) +
-#  xlim(min(data_for_violin_plot$z_roughness), 5) +
-#  scale_colour_manual(name = "Region", values = my_palette) +
-#  scale_fill_manual(name = "Region", values = my_palette) +
-#  facet_wrap(
-#    ~ variable + resolution,
-#    nrow = 1,
-#    strip.position = "bottom",
-#    labeller = label_bquote(.(resolution))
-#  ) +
-#  theme(
-#    axis.title = element_blank(),
-#    axis.ticks = element_blank(),
-#    axis.text = element_blank(),
-#    panel.border = element_blank()
-#  )
-
 # Map panels of elevation ------------------------------------------------------
 
 # TODO
-
-#map(pre_analysis_import_paths, source)
-#
-#map_panel <- function(x, border, var = NULL) {
-#  gplot(x) +
-#    geom_tile(aes(fill = value)) +
-#    geom_spatial(border, fill = NA, col = "black") +
-#    scale_fill_viridis_c(na.value = NA, name = var) +
-#    theme(
-#      legend.position = c(0.75, 1),
-#      legend.justification = c(1, 1),
-#      legend.text = element_text(hjust = 1),
-#      panel.border = element_blank(),
-#      axis.title = element_blank(),
-#      axis.ticks = element_blank(),
-#      axis.text = element_blank()
-#    )
-#}
-#map_panels <- function(x, border, var = NULL, var_title = NULL) {
-#  stopifnot(is.list(x))
-#  abs <- map(x, var)
-#  rough <- map(abs, focal_sd)
-#  GCFR_elev <-
-#    c(abs, rough) %>%
-#    map(
-#      map_panel,
-#      border = border,
-#      var = var
-#    )
-#}
-#
-#GCFR_elev_panels <- map_panels(
-#  list(
-#    GCFR_variables,
-#    GCFR_variables_3QDS
-#  ),
-#  border = GCFR_border_buffered,
-#  var = "Elevation",
-#  var_title = "Elevation (m)"
-#)
-#SWAFR_elev_panels <- map_panels(
-#  list(
-#    SWAFR_variables,
-#    SWAFR_variables_3QDS
-#  ),
-#  border = SWAFR_border_buffered,
-#  var = "Elevation",
-#  var_title = "Elevation (m)"
-#)
-#
-#plot_grid(plotlist = GCFR_elev_panels)
-#plot_grid(plotlist = SWAFR_elev_panels)
-
-#elev_panels_plot <-
-#  plot_grid(ncol = 2, plotlist = list(
-#    plot_grid(ncol = 1, plotlist =
-#      GCFR_environment_plots[1:5]
-#    ),
-#    plot_grid(ncol = 1, rel_heights = c(4, 1), plotlist = list(
-#      plot_grid(ncol = 1, plotlist =
-#        GCFR_environment_plots[6:9]
-#      ),
-#      grid.rect(gp = gpar(col = "white"))
-#    ))
-#  ))
 
 # Combine CLES and Z plots -----------------------------------------------------
 
@@ -266,14 +127,14 @@ legends <- plot_grid(
   get_legend(CLES_plot),
   nrow = 2
 )
-CLES_plot2 <- plot_grid(
+CLES_plot <- plot_grid(
   CLES_plot + theme(legend.position = "none"),
   grid.rect(gp = gpar(col = "white")),
   nrow = 1, rel_widths = c(4, 0.1)
 )
 final_plot <- plot_grid(
   z_dbn_plot + theme(legend.position = "none"),
-  CLES_plot2,
+  CLES_plot,
   nrow = 2, rel_heights = c(1.5, 1),
   labels = c("(a)", "(b)")
 )
