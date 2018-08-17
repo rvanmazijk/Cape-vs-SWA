@@ -170,6 +170,51 @@ all_data_HDS <- map2(
   }
 )
 
+# Merge the two region's data
+all_data_HDS <- spRbind(all_data_HDS$Cape, all_data_HDS$SWA)
+
+# Reorganise columns
+all_data_HDS@data <- all_data_HDS@data %$% data.frame(
+  # Variable names are tidied automatically (no spaces, etc.)
+  region,
+  hdgc,
+  HDS_richness,
+  n_QDS,
+  mean_QDS_richness,
+  mean_QDS_jaccard,
+  add_residual_turnover,
+  add_residual_turnover_prop,
+  mul_residual_turnover,
+  Elevation,
+  MAP,
+  PDQ,
+  `Surface T`,
+  NDVI,
+  CEC,
+  Clay,
+  `Soil C`,
+  pH,
+  rough_Elevation,
+  rough_MAP,
+  rough_PDQ,
+  `rough_Surface T`,
+  rough_NDVI,
+  rough_CEC,
+  rough_Clay,
+  `rough_Soil C`,
+  rough_pH
+)
+
+# Adjust environmental values stored at x10 etc.
+all_data_HDS@data %<>% mutate(
+  Surface.T  = Surface.T - 273.15, # K -> ºC (no adj needed for rough)
+  NDVI       = NDVI / 1e+07,
+  rough_NDVI = rough_NDVI / 1e+07,
+  pH         = pH / 10,
+  rough_pH   = rough_pH / 10
+)
+# TODO: Check which other vars have been x10
+# TODO: Check units for NDVI
 
 GCFR_variables_
 
