@@ -7,14 +7,13 @@
 
 source(here::here("setup.R"))
 source(here::here("data/import-environmental-data.R"))
-source(here::here("analyses/analyse-turnover.R"))
+#source(here::here("analyses/analyse-turnover.R"))
+#GCFR_species
+#SWAFR_species
 richness_turnover_data <- read_csv(here::here(
   "outputs/turnover/richness_turnover_data.csv"
 ))
-GCFR_species
-SWAFR_species
 
-richness_turnover_data
 # Make one QDS polygons grid for qdgc name lookups
 # First, make each region's QDS polygons have unique IDs
 GCFR_QDS2 <- spChFIDs(GCFR_QDS, paste0("Cape_", GCFR_QDS$qdgc))
@@ -216,7 +215,33 @@ all_data_HDS@data %<>% mutate(
 # TODO: Check which other vars have been x10
 # TODO: Check units for NDVI
 
-GCFR_variables_
+# Start modelling --------------------------------------------------------------
+
+gwr_model2 <- function(my_data, response, predictors) {
+  formula <- glue(
+    "{response} ~ {paste0(predictors, collapse = '+')}"
+  )
+  print(formula)
+  auto_bw <- spgwr::gwr.sel(
+    formula, my_data,
+    gweight = gwr.Gauss, verbose = TRUE
+  )
+  model_gwr <- spgwr::gwr(
+    formula, my_data,
+    gweight = gwr.Gauss, bandwidth = auto_bw, hatmatrix = TRUE
+  )
+  model_gwr
+}
+names(all_data_HDS)
+gwr_model2(my_data = all_data_HDS, "HDS_richness", 1)
+gwr_model2(
+  my_data = all_data_HDS,
+  "HDS_richness",
+  names(all_data_HDS)[str_detect(names(all_data_HDS), "rough_")]
+)
+
+
+
 
 # Compile data -----------------------------------------------------------------
 
