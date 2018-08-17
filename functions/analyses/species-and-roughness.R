@@ -56,6 +56,17 @@ delta_AICc <- function(x, file = NULL) {
     is.list(x)
     all(map_chr(x, class) == "gwr")
   })
+  localR2s <- map_df(
+    .x = x,
+    .id = "model",
+    .f = function(.x) {
+      localR2s <- .x$SDF$localR2
+      data.frame(
+        mean_local_R2 = mean(localR2s),
+        sd_local_R2 = sd(localR2s)
+      )
+    }
+  )
   AICcs <- t(map_df(x, ~ .$results$AICc))
   delta_AICcs <- AICcs - min(AICcs)
   akaike_weights <- exp(-0.5 * delta_AICcs) / sum(exp(-0.5 * delta_AICcs))
@@ -66,6 +77,7 @@ delta_AICc <- function(x, file = NULL) {
       delta_AICc = delta_AICcs[, 1],
       akaike_weights = akaike_weights
     ) %>%
+    full_join(localR2s) %>%
     arrange(delta_AICc)
   if (!is.null(file)) {
     write_csv(out, file)
