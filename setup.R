@@ -20,6 +20,7 @@ library(microbenchmark)
 library(rgdal)
 library(raster)
 library(sp)
+library(maptools)
 
 # Taxonomy and species name cleaning
 library(taxize)
@@ -63,23 +64,22 @@ capture.output(
 
 # Import all functions in R-scripts in functions/
 my_functions <- list.files(
-  here::here("functions/"),
+  here::here("functions"),
   pattern = ".R",
+  recursive = TRUE,
   full.names = TRUE
 )
 map(my_functions, source)
+rm(my_functions)
 
 # Global GIS variables
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
 # Global ggplot2 theme settings
-# Colourblind friendly palette, from
-# <http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette>
 my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
   "#307aa5"   # SWA (SWAFR) blue
 )
-# Cleaner theme
 my_theme <-
   theme_bw() +
   theme(
@@ -88,24 +88,15 @@ my_theme <-
   )
 theme_set(my_theme)
 
-# Define analysis & output paths -----------------------------------------------
-
-data_import_paths <- list.files(
-  here::here("data"),
-  pattern = "^\\d{2}_import-.*\\.R",
-  full.names = TRUE
+# Environmental variable names in nice order
+var_names <- c(
+  "Elevation",
+  "MAP",
+  "PDQ",
+  "Surface T",
+  "NDVI",
+  "CEC",
+  "Clay",
+  "Soil C",
+  "pH"
 )
-
-analysis_paths <- list.files(
-  here::here("analyses"),
-  pattern = "^\\d{2}_analyse-.*\\.R",
-  full.names = TRUE
-)
-
-no_ext <- "^[^.]+$"
-output_paths <- list.files(
-  here::here("outputs"),
-  pattern = no_ext,
-  full.names = TRUE
-)
-rm(no_ext)
