@@ -127,6 +127,49 @@ all_variables_HDS <- map(
 )
 names(all_variables_HDS) <- c("Cape", "SWA")
 
+# Add richness and turnover data to SpatialPointsDataFrames --------------------
+
+# Separate Cape and SWA richness-turnover data for map()-ing below
+richness_turnover_data <- richness_turnover_data %$% list(
+  Cape = filter(richness_turnover_data, region == "Cape"),
+  SWA = filter(richness_turnover_data, region == "SWA")
+)
+
+all_data_HDS <- map2(
+  .x = richness_turnover_data,
+  .y = all_variables_HDS,
+  .f = function(.x, .y) {
+
+    # Find the HDS common to the richness-turnover and the environmental data
+    final_hdgcs <- intersect(.x$hdgc, .y$hdgc)
+    .x <- .x[.x$hdgc %in% final_hdgcs, ]
+    .y <- .y[.y$hdgc %in% final_hdgcs, ]
+
+    # Init empty columns in the environmental data
+    .y$region <- NULL
+    .y$HDS_richness <- NULL
+    .y$n_QDS <- NULL
+    .y$mean_QDS_richness <- NULL
+    .y$mean_QDS_jaccard <- NULL
+    .y$add_residual_turnover <- NULL
+    .y$add_residual_turnover_prop <- NULL
+    .y$mul_residual_turnover <- NULL
+
+    # Add richness-turnover data
+    .y$region <- .x$region
+    .y$HDS_richness <- .x$HDS_richness
+    .y$n_QDS <- .x$n_QDS
+    .y$mean_QDS_richness <- .x$mean_QDS_richness
+    .y$mean_QDS_jaccard <- .x$mean_QDS_jaccard
+    .y$add_residual_turnover <- .x$add_residual_turnover
+    .y$add_residual_turnover_prop <- .x$add_residual_turnover_prop
+    .y$mul_residual_turnover <- .x$mul_residual_turnover
+
+    .y
+
+  }
+)
+
 
 GCFR_variables_
 
