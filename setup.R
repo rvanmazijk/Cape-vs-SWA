@@ -20,6 +20,7 @@ library(microbenchmark)
 library(rgdal)
 library(raster)
 library(sp)
+library(maptools)
 
 # Taxonomy and species name cleaning
 library(taxize)
