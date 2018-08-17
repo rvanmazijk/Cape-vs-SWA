@@ -1,4 +1,5 @@
-# Create a RasterStack of all the soil variables together
+# Create a RasterStack of all the soil variables together, after processing
+# (used when importing environmental data)
 stack_soils <- function(region = c("GCFR", "SWAFR"),
                         variables = c("CECSOL",
                                       "BLDFIE",
