@@ -15,6 +15,118 @@ GCFR_species
 SWAFR_species
 
 richness_turnover_data
+# Make one QDS polygons grid for qdgc name lookups
+# First, make each region's QDS polygons have unique IDs
+GCFR_QDS2 <- spChFIDs(GCFR_QDS, paste0("Cape_", GCFR_QDS$qdgc))
+SWAFR_QDS2 <- spChFIDs(SWAFR_QDS, paste0("SWA_", SWAFR_QDS$qdgc))
+# Then merge
+QDS_grid <- spRbind(GCFR_QDS2, SWAFR_QDS2)
+
+# Compute roughness data (HDS-scale) as SpatialPointsDataFrames ----------------
+
+# Includes absolute environmental data too
+
+all_variables_HDS <- map(
+  .x = list(GCFR_variables, SWAFR_variables),
+  .f = function(.x) {
+
+    # Generate roughness + absolute values for each var ------------------------
+
+    .x <- map(
+      .x = .x,
+      .f = function(.x) {
+
+        # Compute roughness layer ----------------------------------------------
+
+        .x_rough <- .x %>%
+          get_roughness(resolution = 0.50) %>%
+          rasterToPoints() %>%
+          as_tibble()
+        colnames(.x_rough)[[3]] <- "roughness"
+        .x_rough <- SpatialPointsDataFrame(
+          coords = .x_rough[, c("x", "y")],
+          data = .x_rough[, "roughness"],
+          proj4string = CRS(std_CRS)
+        )
+        # Name points by HDS
+        .x_rough$qdgc <- over(.x_rough, QDS_grid)[, "qdgc"]
+        .x_rough$hdgc <- qdgc2hdgc(as.character(.x_rough$qdgc))
+        .x_rough$qdgc <- NULL
+
+        # Also get absolute values at same scale -------------------------------
+
+        .x %<>%
+          aggregate(fact = 0.50 / 0.05) %>%
+          rasterToPoints() %>%
+          as_tibble()
+        colnames(.x)[[3]] <- "value"
+        .x <- SpatialPointsDataFrame(
+          coords = .x[, c("x", "y")],
+          data = .x[, "value"],
+          proj4string = CRS(std_CRS)
+        )
+        .x$qdgc <- over(.x, QDS_grid)[, "qdgc"]
+        .x$hdgc <- qdgc2hdgc(as.character(.x$qdgc))
+        .x$qdgc <- NULL
+
+        # Merge absolute and roughness into 1 spatial points data frame --------
+
+        final_hdgcs <- .x_rough$hdgc
+        .x <- .x[.x$hdgc %in% final_hdgcs, ]
+        .x$roughness <- .x_rough$roughness
+        .x
+
+      }
+    )
+
+    # Combine all vars into 1 SpatialPointsDataFrame ---------------------------
+
+    # Start with elevation:
+    .x_2 <- .x$Elevation
+    names(.x_2)[c(1, 3)] <- c("Elevation", "rough_Elevation")
+
+    for (i in 2:length(.x)) {
+
+      # Get the layer and the next layer to the same HDS -----------------------
+
+      # Find the HDS common to a layer and the next layer
+      final_hdgcs <- intersect(
+        .x_2$hdgc,
+        .x[[i]]$hdgc
+      )
+
+      # Subset the layer and the next layer to that set of HDS
+      .x_2 <- .x_2[
+        .x_2$hdgc %in% final_hdgcs,
+      ]
+      .x[[i]] <- .x[[i]][
+        .x[[i]]$hdgc %in% final_hdgcs,
+      ]
+
+      # Add the next layer's data ----------------------------------------------
+
+      # Init empty columns in the layer for the next layer's data
+      .x_2$new_var <- NULL
+      .x_2$new_var_roughness <- NULL
+
+      # Add it
+      .x_2$new_var <- .x[[i]]$value
+      .x_2$new_roughness <- .x[[i]]$roughness
+
+      # Rename it
+      names(.x_2)[names(.x_2) == "new_var"] <-
+        var_names[[i]]
+      names(.x_2)[names(.x_2) == "new_roughness"] <-
+        paste0("rough_", var_names[[i]])
+
+    }
+
+    .x_2
+
+  }
+)
+names(all_variables_HDS) <- c("Cape", "SWA")
+
 
 GCFR_variables_
 
