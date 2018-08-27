@@ -5,45 +5,11 @@
 # Setup ------------------------------------------------------------------------
 
 source(here::here("setup.R"))
-source(here::here("data/import-environmental-data.R"))
+source(here::here("analyses/generate-roughness.R"))
 
 output_path <- here::here("outputs/roughness")
 
-# Compute roughness data -------------------------------------------------------
-
-GCFR_roughness <- map(
-  .x = GCFR_variables,
-  .f = ~ get_roughness_values(.x)
-)
-GCFR_roughness_QDS <- map(
-  .x = GCFR_variables,
-  .f = ~ get_roughness_values(.x, resolution = 0.25)
-)
-GCFR_roughness_HDS <- map(
-  .x = GCFR_variables,
-  .f = ~ get_roughness_values(.x, resolution = 0.50)
-)
-GCFR_roughness_3QDS <- map(
-  .x = GCFR_variables,
-  .f = ~ get_roughness_values(.x, resolution = 0.75)
-)
-
-SWAFR_roughness <- map(
-  .x = SWAFR_variables,
-  .f = ~ get_roughness_values(.x)
-)
-SWAFR_roughness_QDS <- map(
-  .x = SWAFR_variables,
-  .f = ~ get_roughness_values(.x, resolution = 0.25)
-)
-SWAFR_roughness_HDS <- map(
-  .x = SWAFR_variables,
-  .f = ~ get_roughness_values(.x, resolution = 0.50)
-)
-SWAFR_roughness_3QDS <- map(
-  .x = SWAFR_variables,
-  .f = ~ get_roughness_values(.x, resolution = 0.75)
-)
+# Collarye roughness data ------------------------------------------------------
 
 GCFR_roughness_data <- list(
   "0.05º" = GCFR_roughness,
@@ -87,6 +53,8 @@ U_CLES_results <- map2_df(
     .x = .x, .y = .y,
     .id = "variable",
     .f = function(.x, .y) {
+      .x %<>% getValues()
+      .y %<>% getValues()
       # Compare with a Mann-Whitney U-test (called wilcox.test in R),
       U_p_value <- tidy(wilcox.test(.x, .y, alternative = "two.sided"))$p.value
       # and describe with CLES

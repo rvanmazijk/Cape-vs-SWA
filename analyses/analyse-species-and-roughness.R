@@ -7,9 +7,9 @@
 
 source(here::here("setup.R"))
 source(here::here("data/import-environmental-data.R"))
-#source(here::here("analyses/analyse-turnover.R"))
-#GCFR_species
-#SWAFR_species
+source(here::here("analyses/generate-roughness.R"))
+source(here::here("analyses/generate-turnover.R"))
+
 richness_turnover_data <- read_csv(here::here(
   "outputs/turnover/richness_turnover_data.csv"
 ))
