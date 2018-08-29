@@ -54,9 +54,9 @@ capture.output(
   sessionInfo(),
   file =
     if (is_macos()) {
-      here::here("outputs/sessionInfo_macos.txt")
+      here("outputs/sessionInfo_macos.txt")
     } else if (is_windows()) {
-      here::here("outputs/sessionInfo_windows.txt")
+      here("outputs/sessionInfo_windows.txt")
     }
 )
 
@@ -64,7 +64,7 @@ capture.output(
 
 # Import all functions in R-scripts in functions/
 my_functions <- list.files(
-  here::here("functions"),
+  here("R/functions"),
   pattern = ".R",
   recursive = TRUE,
   full.names = TRUE
