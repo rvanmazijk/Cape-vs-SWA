@@ -28,16 +28,21 @@ This work is funded by the South African Department of Science and Technology (D
   <img src="logos/SAAB-logo.png" width=100/>
 </p>
 
-## Technical details
+## Reproducing the analyses
+
+### Introduction
+
+All data processing and analyses were performed using R (see `R/`).
+
+First, environmental and species occurrence data are processed (see `R/01_data-processing/`). Second the analyses are performed (`R/02_analyses/`). Lastly, figures are produced using outputs from the analyses and the processed data (`R/03_figure-scripts/`).
+
+All scripts in `R/` call on `setup.R`, and scripts in `functions/` as needed.
+
+### The analyses
+
+<!--TODO-->
+
+## The manuscript
 
 This manuscript was written using [`bookdown`](https://bookdown.org/), an open-source package for technical writing using R, RMarkdown and pandoc.
 
-All analyses were carried out in R. The workflow used to write this paper was roughly as follows (illustrated using [GraphViz](https://www.graphviz.org/)), outlining the roles of the various sub-directories of this repository:
-
-![](docs/repo-structure.svg)
-
-Raw-data is processed and analysed. Data-processing, analyses and figure production use R packages and bespoke code, loaded by `setup.R`. Derived data and analyses' outputs are used to produce figures. Analyses' outputs, figures and manuscript components are compiled using `bookdown`.
-
-A more detailed layout of the relationships between this repository's components is described [here](https://rvanmazijk.github.io/Cape-vs-SWA/docs/repo-structure-detailed.svg), also using [GraphViz](https://www.graphviz.org/).
-
-<!--In order to reproduce the analyses and manuscript, simply run the command `make` in the command line (e.g. Bash) in this directory.-->
