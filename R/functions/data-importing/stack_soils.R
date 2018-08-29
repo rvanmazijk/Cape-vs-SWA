@@ -1,5 +1,3 @@
-# Create a RasterStack of all the soil variables together, after processing
-# (used when importing environmental data)
 stack_soils <- function(region = c("GCFR", "SWAFR"),
                         variables = c("CECSOL",
                                       "BLDFIE",
@@ -9,13 +7,14 @@ stack_soils <- function(region = c("GCFR", "SWAFR"),
                                       "PHIKCL",
                                       "SLTPPT",
                                       "SNDPPT")) {
-  soils <- raster::stack()
+  # Create a RasterStack of all the soil variables together, after processing
+  soils <- stack()
   for (variable in variables) {
-    x <- raster::raster(here::here(
+    x <- raster(here(
       "data/derived-data/soils/",
       glue("{region}_{region}_{variable}_M_250m_std_CRS_0.05_0.05.tif")
     ))
-    soils <- raster::stack(soils, x)
+    soils %<>% stack(x)
   }
   soils
 }
