@@ -4,10 +4,11 @@
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("setup.R"))
+library(here)
+source(here("R/setup.R"))
 
-U_CLES_results <- read_csv(here::here("outputs/roughness/U_CLES_results.csv"))
-roughness_data <- read_csv(here::here("outputs/roughness/roughness_data.csv"))
+U_CLES_results <- read_csv(here("outputs/roughness/U_CLES_results.csv"))
+roughness_data <- read_csv(here("outputs/roughness/roughness_data.csv"))
 
 var_shapes <- c(
   17,  # triangle      for elevation
