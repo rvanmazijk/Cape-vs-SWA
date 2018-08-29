@@ -4,9 +4,10 @@
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("setup.R"))
+library(here)
+source(here("R/setup.R"))
 
-output_path <- here::here("outputs/turnover")
+output_path <- here("outputs/turnover")
 
 turnover_results <- read_csv(glue(
   "{output_path}/turnover_results.csv"
@@ -107,5 +108,4 @@ ggsave(
   dpi = 300
 )
 
-# Again, but with only HDS where no. QDS = 4?
-# TODO ?
+# TODO: Again, but with only HDS where no. QDS = 4?
