@@ -1,5 +1,5 @@
-# Implement our roughness function (equation in manuscript)
 roughness <- function(x, ...) {
+  # Implement our roughness function (equation in manuscript)
   focal(
     x = x,
     w = matrix(1, nrow = 3, ncol = 3),
@@ -23,9 +23,9 @@ roughness <- function(x, ...) {
   )
 }
 
-# Aggregates a layer to the specified resolution (assuming base res is 0.05º)
-# and calculates the roughness layer of that
 get_roughness <- function(x, resolution = unique(res(x))) {
+  # Aggregates a layer to the specified resolution (assuming base res is 0.05º)
+  # and calculates the roughness layer of that
   print(glue(
     "Aggregating from {resolution} to {resolution / 0.05}"
   ))
@@ -34,8 +34,8 @@ get_roughness <- function(x, resolution = unique(res(x))) {
     roughness()
 }
 
-# Use get_roughness, and then return a vector of non-NA roughness values
 get_roughness_values <- function(x, resolution = unique(res(x))) {
+  # Use get_roughness, and then return a vector of non-NA roughness values
   x %<>%
     get_roughness(resolution) %>%
     getValues()
