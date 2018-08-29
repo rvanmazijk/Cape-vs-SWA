@@ -85,7 +85,7 @@ GCFR_roughness_data %<>% map_df(
   .f = ~ map_df(
     .x = .x,
     .id = "variable",
-    .f = ~ data.frame(roughness = .x)
+    .f = ~ data.frame(roughness = getValues(.x))
   )
 )
 SWAFR_roughness_data %<>% map_df(
@@ -93,7 +93,7 @@ SWAFR_roughness_data %<>% map_df(
   .f = ~ map_df(
     .x = .x,
     .id = "variable",
-    .f = ~ data.frame(roughness = .x)
+    .f = ~ data.frame(roughness = getValues(.x))
   )
 )
 roughness_data <- rbind(
