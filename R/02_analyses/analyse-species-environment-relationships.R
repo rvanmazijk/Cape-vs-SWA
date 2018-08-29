@@ -12,4 +12,6 @@ source(here("R/02_analyses/generate-turnover.R"))
 
 output_path <- here("outputs/species-environment-relationships")
 
+# Combine all data -------------------------------------------------------------
+
 # TODO: cont. from here w/ BRTs
