@@ -43,3 +43,5 @@ SWAFR_roughness_3QDS <- map(
   .x = SWAFR_variables,
   .f = ~ get_roughness(.x, resolution = 0.75)
 )
+
+# TODO: save these rasters to disc?
