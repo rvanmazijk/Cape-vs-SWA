@@ -1,13 +1,14 @@
-# Analyse environmental roughness how varies across spatial scales
+# Analyse how environmental roughness varies across spatial scales
 # Cape vs SWA publication
 # Ruan van Mazijk
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("setup.R"))
-source(here::here("analyses/generate-roughness.R"))
+library(here)
+source(here("R/setup.R"))
+source(here("R/02_analyses/generate-roughness.R"))
 
-output_path <- here::here("outputs/roughness")
+output_path <- here("outputs/roughness")
 
 # Collarye roughness data ------------------------------------------------------
 
@@ -53,8 +54,8 @@ U_CLES_results <- map2_df(
     .x = .x, .y = .y,
     .id = "variable",
     .f = function(.x, .y) {
-      .x %<>% getValues()
-      .y %<>% getValues()
+      .x <- .x[!is.na(.x)]
+      .y <- .y[!is.na(.y)]
       # Compare with a Mann-Whitney U-test (called wilcox.test in R),
       U_p_value <- tidy(wilcox.test(.x, .y, alternative = "two.sided"))$p.value
       # and describe with CLES

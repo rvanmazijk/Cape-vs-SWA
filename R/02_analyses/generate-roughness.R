@@ -1,15 +1,12 @@
-# Generate environmental roughness data
+# Generate environmental roughness rasters
 # Cape vs SWA publication
 # Ruan van Mazijk
 
 # Setup ------------------------------------------------------------------------
 
-output_path <- here::here("outputs/roughness")
-
-# ... --------------------------------------------------------------------------
-
-source(here::here("setup.R"))
-source(here::here("data/import-environmental-data.R"))
+library(here)
+source(here("R/setup.R"))
+import_environmental_data()
 
 # Compute roughness data -------------------------------------------------------
 
