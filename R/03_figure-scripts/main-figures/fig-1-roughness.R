@@ -105,7 +105,8 @@ z_dbn_plot_data <- roughness_data %>%
       "NDVI",
       "Soil e.g. CEC"
     ))
-  )
+  ) %>%
+  na.exclude()
 
 z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
   geom_histogram(position = "dodge", bins = 20) +
@@ -146,7 +147,7 @@ final_plot <- plot_grid(
 )
 
 ggsave(
-  here::here("figures/fig-1-roughness.png"),
+  here("figures/fig-1-roughness.png"),
   final_plot,
   width = 9, height = 6,
   dpi = 300
