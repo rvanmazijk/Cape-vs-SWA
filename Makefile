@@ -1,40 +1,32 @@
-# Inputs -----------------------------------------------------------------------
-
-# Find all function scripts, output CSVs
-FUNCTIONS = $(wildcard functions/*.R)
-OUTPUTS = $(wildcard outputs/*/*.csv)
-
-# Find all figure scripts
-FIGURES_R = $(wildcard figures/fig-*.R)
-# And assume figures have their names, but .R -> .png
-FIGURES_PNG = $(FIGURES_R:.R=.png)
-
-# Find all numbered ms .Rmd fils
+INDEX = manuscript/index.Rmd
 BODY = $(wildcard manuscript/*_*.Rmd)
+AFTER_BODY_RMD = manuscript/_after-body.Rmd
+META = \
+	manuscript/_bookdown.yml \
+	manuscript/_output.yml \
+	manuscript/Cape-vs-SWA.bib \
+	manuscript/journal-of-biogeography.csl
+FIGURES_R = $(wildcard R/figures/fig-*.R)
+OUTPUTS = $(wildcard outputs/*/*.csv)
+FUNCTIONS = $(wildcard R/functions/*.R)
 
-# Outputs ----------------------------------------------------------------------
+FIGURES_PNG = $(wildcard figures/fig-*.R)
+AFTER_BODY_TEX = $(AFTER_BODY_TEX:.Rmd=.tex)
+PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
+ß
+$(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
+	Rscript -e "\
+	setwd('manuscript'); \
+	library(bookdown); \
+	render_book('$<', 'bookdown::pdf_document2')"
 
-# PDF output depends on
-# 	- index.Rmd,
-#		- the ms body,
-#		- the rendered after-body,
-# 	- ms meta-files,
-# 	- analyses' outputs
-#		- some functions (used in ms body and after-body)
-manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf: manuscript/index.Rmd $(BODY) manuscript/_after-body.tex manuscript/_bookdown.yml manuscript/_output.yml manuscript/Cape-vs-SWA.bib manuscript/journal-of-biogeography.csl $(OUTPUTS) $(FUNCTIONS)
-	Rscript -e "setwd('manuscript'); library(bookdown); render_book('$<', 'bookdown::pdf_document2')"
-
-# The rendered after-body depends on:
-# 	- its source .Rmd file,
-# 	- the rendered figures,
-#  	- analyses' outputs
-#		- some functions
-manuscript/_after-body.tex: manuscript/_after-body.Rmd $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
-	Rscript -e "library(rmarkdown); render('$<', 'latex_fragment')"
+$(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
+	Rscript -e "\
+	library(rmarkdown); \
+	render('$<', 'latex_fragment')"
 	# NOTE: setwd("manuscript") not needed for fragments
 
-# Remake any figures if their source scripts change
-figures/fig-%.png: figures/fig-%.R
+figures/fig-%.png: R/figures/fig-%.R
 	Rscript -e "source('$<')"
 
 # Outputs that are needed by the ms and figures are re-generated
