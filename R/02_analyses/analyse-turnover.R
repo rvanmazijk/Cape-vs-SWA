@@ -4,10 +4,11 @@
 
 # Setup ------------------------------------------------------------------------
 
-source(here::here("setup.R"))
-source(here::here("analyses/generate-turnover.R"))
+library(here)
+source(here("R/setup.R"))
+source(here("R/02_analyses/generate-turnover.R"))
 
-output_path <- here::here("outputs/turnover")
+output_path <- here("outputs/turnover")
 
 # Collate richness and turnover data -------------------------------------------
 

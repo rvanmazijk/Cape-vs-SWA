@@ -13,14 +13,14 @@ attached base packages:
 [1] grid      parallel  stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggspatial_1.0.1      rasterVis_0.45       latticeExtra_0.6-28  RColorBrewer_1.1-2   scales_0.5.0        
- [6] cowplot_0.9.3        gridExtra_2.3        spgwr_0.6-32         spData_0.2.9.0       canprot_0.1.1       
-[11] broom_0.4.4          quantreg_5.36        SparseM_1.77         reshape2_1.4.3       forcats_0.3.0       
-[16] dplyr_0.7.5          purrr_0.2.5          readr_1.1.1          tidyr_0.8.1          tibble_1.4.2        
-[21] ggplot2_3.0.0        tidyverse_1.2.1      vegan_2.5-2          lattice_0.20-35      permute_0.9-4       
-[26] taxize_0.9.4         maptools_0.9-3       raster_2.6-7         rgdal_1.3-3          sp_1.3-1            
-[31] microbenchmark_1.4-4 xfun_0.2             foreach_1.4.4        stringr_1.3.1        glue_1.2.0          
-[36] magrittr_1.5         here_0.1            
+ [1] bindrcpp_0.2.2       ggspatial_1.0.1      rasterVis_0.45       latticeExtra_0.6-28  RColorBrewer_1.1-2  
+ [6] scales_0.5.0         cowplot_0.9.3        gridExtra_2.3        spgwr_0.6-32         spData_0.2.9.0      
+[11] canprot_0.1.1        broom_0.4.4          quantreg_5.36        SparseM_1.77         reshape2_1.4.3      
+[16] forcats_0.3.0        dplyr_0.7.5          purrr_0.2.5          readr_1.1.1          tidyr_0.8.1         
+[21] tibble_1.4.2         ggplot2_3.0.0        tidyverse_1.2.1      vegan_2.5-2          lattice_0.20-35     
+[26] permute_0.9-4        taxize_0.9.4         maptools_0.9-3       raster_2.6-7         rgdal_1.3-3         
+[31] sp_1.3-1             microbenchmark_1.4-4 xfun_0.2             foreach_1.4.4        stringr_1.3.1       
+[36] glue_1.2.0           magrittr_1.5         here_0.1            
 
 loaded via a namespace (and not attached):
  [1] nlme_3.1-137       sf_0.6-3           bold_0.5.0         lubridate_1.7.4    httr_1.3.1        
@@ -35,4 +35,4 @@ loaded via a namespace (and not attached):
 [46] pillar_1.2.3       codetools_0.2-15   crul_0.6.0         packrat_0.4.9-3    data.table_1.11.4 
 [51] modelr_0.1.2       MatrixModels_0.4-1 cellranger_1.1.0   gtable_0.2.0       reshape_0.8.7     
 [56] assertthat_0.2.0   xtable_1.8-2       e1071_1.7-0        class_7.3-14       viridisLite_0.3.0 
-[61] iterators_1.0.10   units_0.6-0        bindrcpp_0.2.2     cluster_2.0.7-1   
+[61] iterators_1.0.10   units_0.6-0        cluster_2.0.7-1   

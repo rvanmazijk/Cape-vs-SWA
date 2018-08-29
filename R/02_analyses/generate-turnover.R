@@ -4,7 +4,9 @@
 
 # Setup ------------------------------------------------------------------------
 
-output_path <- here::here("outputs/turnover")
+library(here)
+source(here("R/setup.R"))
+output_path <- here("outputs/turnover")
 
 # Compute HDS richness, mean QDS richness and turnover -------------------------
 
@@ -20,7 +22,7 @@ SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
 #SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
 
 if (!file.exists(GCFR_species_path)) {
-  source(here::here("setup.R"))
+  source(here("R/setup.R"))
   # Read in processed GBIF occurence data as SpatialPointsDataFrames
   trimmed_GCFR_clean_flora_spdf_species <- read_rds(here::here(
     "data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_species"
@@ -36,11 +38,11 @@ if (!file.exists(GCFR_species_path)) {
 }
 
 if (!file.exists(SWAFR_species_path)) {
-  source(here::here("setup.R"))
+  source(here("R/setup.R"))
   trimmed_SWAFR_clean_flora_spdf_species <- read_rds(here::here(
     "data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_species"
   ))
-  DWAFR_species <- calc_richness_turnover(
+  SWAFR_species <- calc_richness_turnover(
     flora_points = trimmed_SWAFR_clean_flora_spdf_species,
     QDS_polygon = SWAFR_QDS,
     output_path = output_path,
