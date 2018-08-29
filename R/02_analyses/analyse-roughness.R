@@ -56,6 +56,11 @@ U_CLES_results <- map2_df(
     .f = function(.x, .y) {
       .x <- .x[!is.na(.x)]
       .y <- .y[!is.na(.y)]
+      if (min(c(length(.x), length(.y))) > 5000) {
+        .x %<>% sample(5000)
+        .y %<>% sample(5000)
+        # Because wilcox.test() is very memory heavy---often crashes
+      }
       # Compare with a Mann-Whitney U-test (called wilcox.test in R),
       U_p_value <- tidy(wilcox.test(.x, .y, alternative = "two.sided"))$p.value
       # and describe with CLES
