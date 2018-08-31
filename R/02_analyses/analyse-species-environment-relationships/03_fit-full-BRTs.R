@@ -53,38 +53,34 @@ predictor_names_simp <- map(gbm_steps, map, simplify_predictors)
 
 # Refitting models with simplified predictor sets ------------------------------
 
-gbm_steps_simp_richness <- pmap(
-  # For each region:
+gbm_steps_simp <- pmap(
+  # For both richness and turnover as reponses:
   .l = list(
-    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
-    predictor_names = list(GCFR_predictor_names_simp, SWAFR_predictor_names_simp)
+    .response_name = list("HDS_richness", "mean_QDS_turnover"),
+    .log_response = list(TRUE, FALSE),
+    .predictor_names = predictor_names_simp
   ),
-  .f = function(variables, predictor_names) {
-    fit_gbm_step(
-      variables, predictor_names,
-      response_name = "HDS_richness", log_response = TRUE,
-      tc = tc, lr = lr, nt = nt
+  .f = function(.response_name, .log_response, .predictor_names) {
+    pmap(
+      # For each region:
+      .l = list(
+        .variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+        .predictor_names = .predictor_names
+      ),
+      .f = function(.variables, .predictor_names) {
+        fit_gbm_step(
+          variables = .variables, predictor_names = .predictor_names,
+          response_name = .response_name, log_response = .log_response,
+          tc = tc, lr = lr, nt = nt
+        )
+      }
     )
   }
 )
-names(gbm_steps_simp_richness) <- c("Cape", "SWA")
-
-gbm_steps_simp_turnover <- pmap(
-  # For each region:
-  .l = list(
-    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
-    predictor_names = list(GCFR_predictor_names_simp, SWAFR_predictor_names_simp)
-  ),
-  .f = function(variables, predictor_names) {
-    fit_gbm_step(
-      variables, predictor_names,
-      response_name = "mean_QDS_turnover", log_response = FALSE,
-      tc = tc, lr = lr, nt = nt
-    )
-  }
-)
-names(gbm_steps_simp_turnover) <- c("Cape", "SWA")
+names(gbm_steps_simp) <- c("HDS_richness_BRT", "mean_QDS_turnover_BRT")
+for (i in seq_along(gbm_steps)) {
+  names(gbm_steps_simp[[i]]) <- c("Cape", "SWA")
+}
 
 # Explore results
-map(gbm_steps_simp_richness, my_BRT_summary)
-map(gbm_steps_simp_turnover, my_BRT_summary)
+map(gbm_steps_simp, map, my_BRT_summary)
