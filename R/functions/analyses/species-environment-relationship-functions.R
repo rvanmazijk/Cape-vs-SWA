@@ -1,11 +1,3 @@
-pseudo_r2 <- function(x) {
-  # Get the pseudo-R^2 of a gbm model
-  stopifnot(class(x) == "gbm")
-  x %$% {
-    1 - (cv.statistics$deviance.mean / self.statistics$mean.null)
-  }
-}
-
 fit_gbm_step <- function(variables, predictor_names,
                          response_name, log_response = TRUE,
                          tc, lr, nt) {
@@ -32,10 +24,31 @@ fit_gbm_step <- function(variables, predictor_names,
   )
 }
 
+simplify_predictors <- function(x) {
+  # Convenience function for gbm.simplify()
+  stopifnot(class(x) == "gbm")
+  gbm_simp <- gbm.simplify(x)
+  # Drop as many variables as can if multiple nos. of drops are optimal
+  # (hence (max(which(mean == min(mean)))))
+  optimal_no_drops <- gbm_simp %$%
+    deviance.summary %$%
+    which(mean == min(mean)) %>%
+    max()
+  gbm_simp$pred.list[[optimal_no_drops]]
+}
+
+pseudo_r2 <- function(x) {
+  # Get the pseudo-R^2 of a gbm model
+  stopifnot(class(x) == "gbm")
+  x %$% {
+    1 - (cv.statistics$deviance.mean / self.statistics$mean.null)
+  }
+}
+
 my_BRT_summary <- function(x) {
   list(
     nt = x$n.trees,
     pseudo_r2 = pseudo_r2(x),
-    contribs = summary(SWAFR_gbm_step_turnover)
+    contribs = summary(x)
   )
 }
