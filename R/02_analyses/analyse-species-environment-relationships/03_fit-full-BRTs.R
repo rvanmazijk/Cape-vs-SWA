@@ -15,7 +15,7 @@ lr <- 0.002
 
 # Initial model fitting: gbm.step(richness ~ ...) ------------------------------
 
-gbm_steps <- pmap(
+gbm_steps_richness <- pmap(
   # For each region:
   .l = list(
     variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
@@ -29,37 +29,61 @@ gbm_steps <- pmap(
     )
   }
 )
+names(gbm_steps_richness) <- c("Cape", "SWA")
+
+gbm_steps_turnover <- pmap(
+  # For each region:
+  .l = list(
+    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+    predictor_names = list(GCFR_predictor_names, SWAFR_predictor_names)
+  ),
+  .f = function(variables, predictor_names) {
+    fit_gbm_step(
+      variables, predictor_names,
+      response_name = "mean_QDS_turnover", log_response = FALSE,
+      tc = tc, lr = lr, nt = nt
+    )
+  }
+)
+names(gbm_steps_turnover) <- c("Cape", "SWA")
 
 # Explore results
-
-GCFR_gbm_step <- gbm_steps[[1]]
-SWAFR_gbm_step <- gbm_steps[[2]]
-
-pseudo_r2(GCFR_gbm_step)
-GCFR_gbm_step$n.trees
-GCFR_gbm_step$contributions
-summary(GCFR_gbm_step)
-
-pseudo_r2(SWAFR_gbm_step)
-SWAFR_gbm_step$n.trees
-SWAFR_gbm_step$contributions
-summary(SWAFR_gbm_step)
+map(gbm_steps_richness, my_BRT_summary)
+map(gbm_steps_turnover, my_BRT_summary)
 
 # Model simplification: gbm.simplify(...) --------------------------------------
 
-GCFR_gbm_simp <- gbm.simplify(GCFR_gbm_step)
-optimal_no_drops <- GCFR_gbm_simp$deviance.summary %$%
+GCFR_gbm_simp_richness <- gbm.simplify(GCFR_gbm_step_richness)
+optimal_no_drops <- GCFR_gbm_simp_richness$deviance.summary %$%
   which(mean == min(mean))
-GCFR_predictor_names_simp <- GCFR_gbm_simp$pred.list[[optimal_no_drops]]
+GCFR_richness_predictor_names_simp <-
+  GCFR_gbm_simp_richness$pred.list[[optimal_no_drops]]
 
-SWAFR_gbm_simp <- gbm.simplify(SWAFR_gbm_step)
-optimal_no_drops <- SWAFR_gbm_simp$deviance.summary %$%
+SWAFR_gbm_simp_richness <- gbm.simplify(SWAFR_gbm_step_richness)
+optimal_no_drops <- SWAFR_gbm_simp_richness$deviance.summary %$%
   which(mean == min(mean))
-SWAFR_predictor_names_simp <- SWAFR_gbm_simp$pred.list[[optimal_no_drops]]
+SWAFR_richness_predictor_names_simp <-
+  SWAFR_gbm_simp_richness$pred.list[[optimal_no_drops]]
+
+GCFR_gbm_simp_turnover <- gbm.simplify(GCFR_gbm_step_turnover)
+optimal_no_drops <- GCFR_gbm_simp_turnover$deviance.summary %$%
+  which(mean == min(mean))
+GCFR_turnover_predictor_names_simp <-
+  GCFR_gbm_simp_turnover$pred.list[[optimal_no_drops]]
+# FIXME: need to manually choose a predictor set,
+#   as multiple sets of predictors with same number of drops
+
+SWAFR_gbm_simp_turnover <- gbm.simplify(SWAFR_gbm_step_turnover)
+optimal_no_drops <- SWAFR_gbm_simp_turnover$deviance.summary %$%
+  which(mean == min(mean))
+SWAFR_turnover_predictor_names_simp <-
+  SWAFR_gbm_simp_turnover$pred.list[[optimal_no_drops]]
+# FIXME: need to manually choose a predictor set,
+#   as multiple sets of predictors with same number of drops
 
 # Refitting models with simplified predictor sets ------------------------------
 
-gbm_steps_simp <- pmap(
+gbm_steps_simp_richness <- pmap(
   # For each region:
   .l = list(
     variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
@@ -73,18 +97,24 @@ gbm_steps_simp <- pmap(
     )
   }
 )
+names(gbm_steps_simp_richness) <- c("Cape", "SWA")
+
+gbm_steps_simp_turnover <- pmap(
+  # For each region:
+  .l = list(
+    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+    predictor_names = list(GCFR_predictor_names_simp, SWAFR_predictor_names_simp)
+  ),
+  .f = function(variables, predictor_names) {
+    fit_gbm_step(
+      variables, predictor_names,
+      response_name = "mean_QDS_turnover", log_response = FALSE,
+      tc = tc, lr = lr, nt = nt
+    )
+  }
+)
+names(gbm_steps_simp_turnover) <- c("Cape", "SWA")
 
 # Explore results
-
-GCFR_gbm_step_simp <- gbm_steps_simp[[1]]
-SWAFR_gbm_step_simp <- gbm_steps_simp[[2]]
-
-pseudo_r2(GCFR_gbm_step_simp)
-GCFR_gbm_step_simp$n.trees
-GCFR_gbm_step_simp$contributions
-summary(GCFR_gbm_step_simp)
-
-pseudo_r2(SWAFR_gbm_step_simp)
-SWAFR_gbm_step_simp$n.trees
-SWAFR_gbm_step_simp$contributions
-summary(SWAFR_gbm_step_simp)
+map(gbm_steps_simp_richness, my_BRT_summary)
+map(gbm_steps_simp_turnover, my_BRT_summary)

@@ -31,3 +31,11 @@ fit_gbm_step <- function(variables, predictor_names,
     family = "gaussian"
   )
 }
+
+my_BRT_summary <- function(x) {
+  list(
+    nt = x$n.trees,
+    pseudo_r2 = pseudo_r2(x),
+    contribs = summary(SWAFR_gbm_step_turnover)
+  )
+}
