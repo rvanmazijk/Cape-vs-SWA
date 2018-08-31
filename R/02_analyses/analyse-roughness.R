@@ -10,7 +10,7 @@ source(here("R/02_analyses/generate-roughness.R"))
 
 output_path <- here("outputs/roughness")
 
-# Collarye roughness data ------------------------------------------------------
+# Collate roughness data -------------------------------------------------------
 
 GCFR_roughness_data <- list(
   "0.05º" = GCFR_roughness,
