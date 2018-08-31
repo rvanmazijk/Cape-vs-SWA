@@ -31,91 +31,54 @@ names(SWAFR_species) <- c(
   "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
 )
 
-# .... GCFR --------------------------------------------------------------------
-
-# Generate absolute environmental values at HDS-scale
-GCFR_variables_HDS <- map(GCFR_variables, aggregate, fact = 0.50 / 0.05)
-
-# Add roughnes layers to data list
-names(GCFR_roughness_HDS) %<>% paste0("rough_", .)
-GCFR_variables_HDS2 <- c(
-  GCFR_variables_HDS,
-  GCFR_roughness_HDS
-)
-
-# Convert NA-turnover to nonsensicle value (rasterize() can't handles NAs)
-GCFR_species$mn_QDS_t[is.na(GCFR_species$mn_QDS_t)] <- 9999
-
-# Add raster of HDS richness and mean QDS turnover to data list
-GCFR_species_rasters <- list(
-  HDS_richness = rasterize(
-    GCFR_species,
-    GCFR_variables_HDS$Elevation,
-    field = "HDS_rch"
+variables_HDS_stacks <- pmap(
+  # For each region:
+  .l = list(
+    vars = list(GCFR_variables, SWAFR_variables),
+    rough_vars = list(GCFR_roughness_HDS, SWAFR_roughness_HDS),
+    species = list(GCFR_species, SWAFR_species)
   ),
-  mean_QDS_turnover = rasterize(
-    GCFR_species,
-    GCFR_variables_HDS$Elevation,
-    field = "mn_QDS_t"
-  )
+  .f = function(vars, rough_vars, species) {
+
+    # Generate absolute environmental values at HDS-scale
+    vars %<>% map(aggregate, fact = 0.50 / 0.05)
+
+    # Add roughnes layers to data list
+    names(rough_vars) %<>% paste0("rough_", .)
+    vars %<>% c(rough_vars)
+
+    # Convert NA-turnover to nonsensicle value (rasterize() can't handles NAs)
+    species$mean_QDS_turnover[is.na(species$mean_QDS_turnover)] <- 9999
+
+    # Add raster of HDS richness and mean QDS turnover to data list
+    species_rasters <- list(
+      HDS_richness = rasterize(
+        species,
+        vars$Elevation,
+        field = "HDS_richness"
+      ),
+      mean_QDS_turnover = rasterize(
+        species,
+        vars$Elevation,
+        field = "mean_QDS_turnover"
+      )
+    )
+
+    # Convert nonsense back to NAs
+    nonsense <- species_rasters$mean_QDS_turnover == 9999
+    species_rasters$mean_QDS_turnover[nonsense] <- NA
+
+    # Add richness and turnover to data list
+    vars <- c(species_rasters, vars)
+
+    # And make it all a RasterStack
+    stack(vars)
+
+  }
 )
 
-# Convert nonsense back to NAs
-nonsense <- GCFR_species_rasters$mean_QDS_turnover == 9999
-GCFR_species_rasters$mean_QDS_turnover[nonsense] <- NA
-
-GCFR_variables_HDS2 <- c(
-  GCFR_species_rasters,
-  GCFR_variables_HDS2
-)
-
-GCFR_variables_HDS_df <- GCFR_variables_HDS2 %>%
-  map_df(getValues) %>%
-  na.exclude()
-GCFR_variables_HDS_stack <- stack(GCFR_variables_HDS2)
-
-# .... SWAFR --------------------------------------------------------------------
-
-# Generate absolute environmental values at HDS-scale
-SWAFR_variables_HDS <- map(SWAFR_variables, aggregate, fact = 0.50 / 0.05)
-
-# Add roughnes layers to data list
-names(SWAFR_roughness_HDS) %<>% paste0("rough_", .)
-SWAFR_variables_HDS2 <- c(
-  SWAFR_variables_HDS,
-  SWAFR_roughness_HDS
-)
-
-# Convert NA-turnover to nonsensicle value (rasterize() can't handles NAs)
-SWAFR_species$mn_QDS_t[is.na(SWAFR_species$mn_QDS_t)] <- 9999
-
-# Add raster of HDS richness and mean QDS turnover to data list
-SWAFR_species_rasters <- list(
-  HDS_richness = rasterize(
-    SWAFR_species,
-    SWAFR_variables_HDS$Elevation,
-    field = "HDS_rch"
-  ),
-  mean_QDS_turnover = rasterize(
-    SWAFR_species,
-    SWAFR_variables_HDS$Elevation,
-    field = "mn_QDS_t"
-  )
-)
-
-# Convert nonsense back to NAs
-nonsense <- SWAFR_species_rasters$mean_QDS_turnover == 9999
-SWAFR_species_rasters$mean_QDS_turnover[nonsense] <- NA
-
-SWAFR_variables_HDS2 <- c(
-  SWAFR_species_rasters,
-  SWAFR_variables_HDS2
-)
-
-SWAFR_variables_HDS_df <- SWAFR_variables_HDS2 %>%
-  map_df(getValues) %>%
-  na.exclude()
-SWAFR_variables_HDS_stack <- stack(SWAFR_variables_HDS2)
+GCFR_variables_HDS_stack <- variables_HDS_stacks[[1]]
+SWAFR_variables_HDS_stack <- variables_HDS_stacks[[2]]
 
 # Collinearity checks ----------------------------------------------------------
 
@@ -158,9 +121,9 @@ SWAFR_predictor_names <- map_chr(SWAFR_collinearity, 1)
 # TODO properly
 
 # Thumbsucks for now:
-nt <- 5000
+nt <- 10000
 tc <- 5  # No more than 5-way interactions
-lr <- 0.01
+lr <- 0.002
 
 # .... Initial model fitting: gbm.step(richness ~ ...) -------------------------
 
