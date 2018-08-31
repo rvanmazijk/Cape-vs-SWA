@@ -172,6 +172,7 @@ GCFR_gbm_step <- GCFR_variables_HDS_stack %>%
   )
 
 # Explore results
+pseudo_r2(GCFR_gbm_step)
 GCFR_gbm_step$n.trees
 GCFR_gbm_step$contributions
 summary(GCFR_gbm_step)
@@ -194,6 +195,7 @@ SWAFR_gbm_step <- SWAFR_variables_HDS_stack %>%
   )
 
 # Explore results
+pseudo_r2(SWAFR_gbm_step)
 SWAFR_gbm_step$n.trees
 SWAFR_gbm_step$contributions
 summary(SWAFR_gbm_step)
@@ -238,6 +240,7 @@ GCFR_gbm_step_simp <- GCFR_variables_HDS_stack %>%
   )
 
 # Explore results
+pseudo_r2(GCFR_gbm_step_simp)
 GCFR_gbm_step_simp$n.trees
 GCFR_gbm_step_simp$contributions
 summary(GCFR_gbm_step_simp)
@@ -260,6 +263,7 @@ SWAFR_gbm_step_simp <- SWAFR_variables_HDS_stack %>%
   )
 
 # Explore results
+pseudo_r2(SWAFR_gbm_step_simp)
 SWAFR_gbm_step_simp$n.trees
 SWAFR_gbm_step_simp$contributions
 summary(SWAFR_gbm_step_simp)
