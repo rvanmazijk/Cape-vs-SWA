@@ -132,7 +132,130 @@ removeCollinearity(
 )
 dev.off()
 
+# Take first variable in each collinear cluster
+GCFR_predictor_names <- map_chr(GCFR_collinearity, 1)
+SWAFR_predictor_names <- map_chr(SWAFR_collinearity, 1)
 
 plot(GCFR_variables_HDS_stack)
+# BRTs -------------------------------------------------------------------------
 
-# TODO: cont. from here w/ BRTs
+# .... nt, tc, lr --------------------------------------------------------------
+
+# TODO properly
+
+# Thumbsucks for now:
+nt <- 5000
+tc <- 5  # No more than 5-way interactions
+lr <- 0.01
+
+# .... Initial model fitting: gbm.step(richness ~ ...) -------------------------
+
+# ........ GCFR ----------------------------------------------------------------
+
+set.seed(1234)
+
+GCFR_gbm_step <- GCFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  mutate(log_HDS_richness = log(HDS_richness)) %>%
+  gbm.step(
+    gbm.x = GCFR_predictor_names,
+    gbm.y = "log_HDS_richness",
+    tree.complexity = tc,
+    learning.rate = lr,
+    max.trees = nt,
+    family = "gaussian"
+  )
+
+# Explore results
+GCFR_gbm_step$n.trees
+GCFR_gbm_step$contributions
+summary(GCFR_gbm_step)
+
+# ........ SWAFR ---------------------------------------------------------------
+
+set.seed(1234)
+
+SWAFR_gbm_step <- SWAFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  mutate(log_HDS_richness = log(HDS_richness)) %>%
+  gbm.step(
+    gbm.x = SWAFR_predictor_names,
+    gbm.y = "log_HDS_richness",
+    tree.complexity = tc,
+    learning.rate = lr,
+    max.trees = nt,
+    family = "gaussian"
+  )
+
+# Explore results
+SWAFR_gbm_step$n.trees
+SWAFR_gbm_step$contributions
+summary(SWAFR_gbm_step)
+
+# .... Model simplification: gbm.simplify(...) ---------------------------------
+
+# ........ GCFR ----------------------------------------------------------------
+
+GCFR_gbm_simp <- gbm.simplify(GCFR_gbm_step)
+
+optimal_no_drops <- GCFR_gbm_simp$deviance.summary %$%
+  which(mean == min(mean))
+
+GCFR_predictor_names_simp <- GCFR_gbm_simp$pred.list[[optimal_no_drops]]
+
+# ........ SWAFR ----------------------------------------------------------------
+
+SWAFR_gbm_simp <- gbm.simplify(SWAFR_gbm_step)
+
+optimal_no_drops <- SWAFR_gbm_simp$deviance.summary %$%
+  which(mean == min(mean))
+
+SWAFR_predictor_names_simp <- SWAFR_gbm_simp$pred.list[[optimal_no_drops]]
+
+# .... Refitting models with simplified predictor set --------------------------
+
+# ........ GCFR ----------------------------------------------------------------
+
+set.seed(1234)
+
+GCFR_gbm_step_simp <- GCFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  mutate(log_HDS_richness = log(HDS_richness)) %>%
+  gbm.step(
+    gbm.x = GCFR_predictor_names_simp,
+    gbm.y = "log_HDS_richness",
+    tree.complexity = tc,
+    learning.rate = lr,
+    max.trees = nt,
+    family = "gaussian"
+  )
+
+# Explore results
+GCFR_gbm_step_simp$n.trees
+GCFR_gbm_step_simp$contributions
+summary(GCFR_gbm_step_simp)
+
+# ........ SWAFR ----------------------------------------------------------------
+
+set.seed(1234)
+
+SWAFR_gbm_step_simp <- SWAFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  mutate(log_HDS_richness = log(HDS_richness)) %>%
+  gbm.step(
+    gbm.x = SWAFR_predictor_names_simp,
+    gbm.y = "log_HDS_richness",
+    tree.complexity = tc,
+    learning.rate = lr,
+    max.trees = nt,
+    family = "gaussian"
+  )
+
+# Explore results
+SWAFR_gbm_step_simp$n.trees
+SWAFR_gbm_step_simp$contributions
+summary(SWAFR_gbm_step_simp)
