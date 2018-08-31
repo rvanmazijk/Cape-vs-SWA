@@ -32,6 +32,8 @@ SWAFR_collinearity <- removeCollinearity(
 )
 dev.off()
 
+# Select final predictor variables ---------------------------------------------
+
 # Take first variable in each collinear cluster
 GCFR_predictor_names <- map_chr(GCFR_collinearity, 1)
 SWAFR_predictor_names <- map_chr(SWAFR_collinearity, 1)
