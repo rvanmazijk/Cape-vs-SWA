@@ -19,7 +19,17 @@ library(virtualspecies)
 
 # Combine all data -------------------------------------------------------------
 
-# TODO: update names(<region>_species) after SpatialPointsDataFrame import
+# Tidy names(<region>_species) after SpatialPointsDataFrame import
+names(GCFR_species) <- c(
+  "family", "genus", "species",
+  "qdgc", "hdgc",
+  "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
+)
+names(SWAFR_species) <- c(
+  "family", "genus", "species",
+  "qdgc", "hdgc",
+  "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
+)
 
 # .... GCFR --------------------------------------------------------------------
 
