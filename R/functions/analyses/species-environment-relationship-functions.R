@@ -6,7 +6,6 @@ fit_gbm_step <- function(variables, predictor_names,
     class(variables) == "RasterStack"
     is.character(predictor_names)
   })
-  set.seed(1234)
   variables %<>%
     as.data.frame() %>%
     na.exclude()

@@ -4,9 +4,9 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-# Choose nt, tc, lr ------------------------------------------------------------
+set.seed(1234)
 
-# TODO properly
+# Choose nt, tc, lr ------------------------------------------------------------
 
 # Thumbsucks for now:
 nt <- 10000
