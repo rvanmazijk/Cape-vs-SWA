@@ -19,6 +19,8 @@ library(virtualspecies)
 
 # Combine all data -------------------------------------------------------------
 
+# TODO: update names(<region>_species) after SpatialPointsDataFrame import
+
 # .... GCFR --------------------------------------------------------------------
 
 # Generate absolute environmental values at HDS-scale
@@ -105,14 +107,15 @@ SWAFR_variables_HDS_df <- SWAFR_variables_HDS2 %>%
   na.exclude()
 SWAFR_variables_HDS_stack <- stack(SWAFR_variables_HDS2)
 
-
 # Collinearity checks ----------------------------------------------------------
+
+# .... GCFR --------------------------------------------------------------------
 
 png(
   filename = glue("{output_path}/Cape_collinearity-check_0.8-cutoff_HDS.png"),
   width = 17, height = 15, units = "cm", res = 100
 )
-removeCollinearity(
+GCFR_collinearity <- removeCollinearity(
   raster.stack = GCFR_variables_HDS_stack[[-c(1, 2)]],  # without richness (the response)
   select.variables = FALSE,  # To do manually
   multicollinearity.cutoff = 0.8,  # My thumb-suck
@@ -120,11 +123,13 @@ removeCollinearity(
 )
 dev.off()
 
+# .... SWAFR -------------------------------------------------------------------
+
 png(
   filename = glue("{output_path}/SWA_collinearity-check_0.8-cutoff_HDS.png"),
   width = 17, height = 15, units = "cm", res = 100
 )
-removeCollinearity(
+SWAFR_collinearity <- removeCollinearity(
   raster.stack = SWAFR_variables_HDS_stack[[-c(1, 2)]],  # without richness (the response)
   select.variables = FALSE,  # To do manually
   multicollinearity.cutoff = 0.8,  # My thumb-suck
@@ -136,7 +141,6 @@ dev.off()
 GCFR_predictor_names <- map_chr(GCFR_collinearity, 1)
 SWAFR_predictor_names <- map_chr(SWAFR_collinearity, 1)
 
-plot(GCFR_variables_HDS_stack)
 # BRTs -------------------------------------------------------------------------
 
 # .... nt, tc, lr --------------------------------------------------------------
