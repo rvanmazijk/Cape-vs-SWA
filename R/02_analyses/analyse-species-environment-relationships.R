@@ -130,23 +130,15 @@ lr <- 0.002
 gbm_steps <- pmap(
   # For each region:
   .l = list(
-    vars = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
     predictor_names = list(GCFR_predictor_names, SWAFR_predictor_names)
   ),
-  .f = function(vars, predictor_names) {
-    set.seed(1234)
-    vars %>%
-      as.data.frame() %>%
-      na.exclude() %>%
-      mutate(log_HDS_richness = log(HDS_richness)) %>%
-      gbm.step(
-        gbm.x = predictor_names,
-        gbm.y = "log_HDS_richness",
-        tree.complexity = tc,
-        learning.rate = lr,
-        max.trees = nt,
-        family = "gaussian"
-      )
+  .f = function(variables, predictor_names) {
+    fit_gbm_step(
+      variables, predictor_names,
+      response_name = "HDS_richness", log_response = TRUE,
+      tc = tc, lr = lr, nt = nt
+    )
   }
 )
 
