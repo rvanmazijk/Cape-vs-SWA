@@ -1,6 +1,6 @@
 # Analyse value of environmental & heterogeneity variables for predicting
 #   vascular plant species richness and turnover---using BRTs
-# Part 4: Explore BRT models' predicted vs observed richness
+# Part 4: Explore BRT models' predicted vs observed
 # Cape vs SWA publication
 # Ruan van Mazijk
 
