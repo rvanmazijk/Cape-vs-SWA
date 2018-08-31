@@ -169,49 +169,33 @@ optimal_no_drops <- SWAFR_gbm_simp$deviance.summary %$%
   which(mean == min(mean))
 SWAFR_predictor_names_simp <- SWAFR_gbm_simp$pred.list[[optimal_no_drops]]
 
-# .... Refitting models with simplified predictor set --------------------------
+# .... Refitting models with simplified predictor sets -------------------------
 
-# ........ GCFR ----------------------------------------------------------------
-
-set.seed(1234)
-
-GCFR_gbm_step_simp <- GCFR_variables_HDS_stack %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  mutate(log_HDS_richness = log(HDS_richness)) %>%
-  gbm.step(
-    gbm.x = GCFR_predictor_names_simp,
-    gbm.y = "log_HDS_richness",
-    tree.complexity = tc,
-    learning.rate = lr,
-    max.trees = nt,
-    family = "gaussian"
-  )
+gbm_steps_simp <- pmap(
+  # For each region:
+  .l = list(
+    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+    predictor_names = list(GCFR_predictor_names_simp, SWAFR_predictor_names_simp)
+  ),
+  .f = function(variables, predictor_names) {
+    fit_gbm_step(
+      variables, predictor_names,
+      response_name = "HDS_richness", log_response = TRUE,
+      tc = tc, lr = lr, nt = nt
+    )
+  }
+)
 
 # Explore results
+
+GCFR_gbm_step_simp <- gbm_steps_simp[[1]]
+SWAFR_gbm_step_simp <- gbm_steps_simp[[2]]
+
 pseudo_r2(GCFR_gbm_step_simp)
 GCFR_gbm_step_simp$n.trees
 GCFR_gbm_step_simp$contributions
 summary(GCFR_gbm_step_simp)
 
-# ........ SWAFR ----------------------------------------------------------------
-
-set.seed(1234)
-
-SWAFR_gbm_step_simp <- SWAFR_variables_HDS_stack %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  mutate(log_HDS_richness = log(HDS_richness)) %>%
-  gbm.step(
-    gbm.x = SWAFR_predictor_names_simp,
-    gbm.y = "log_HDS_richness",
-    tree.complexity = tc,
-    learning.rate = lr,
-    max.trees = nt,
-    family = "gaussian"
-  )
-
-# Explore results
 pseudo_r2(SWAFR_gbm_step_simp)
 SWAFR_gbm_step_simp$n.trees
 SWAFR_gbm_step_simp$contributions
