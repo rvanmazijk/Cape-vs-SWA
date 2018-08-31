@@ -48,33 +48,8 @@ map(gbm_steps, map, my_BRT_summary)
 
 # Model simplification: gbm.simplify(...) --------------------------------------
 
-GCFR_gbm_simp_richness <- gbm.simplify(GCFR_gbm_step_richness)
-optimal_no_drops <- GCFR_gbm_simp_richness$deviance.summary %$%
-  which(mean == min(mean))
-GCFR_richness_predictor_names_simp <-
-  GCFR_gbm_simp_richness$pred.list[[optimal_no_drops]]
-
-SWAFR_gbm_simp_richness <- gbm.simplify(SWAFR_gbm_step_richness)
-optimal_no_drops <- SWAFR_gbm_simp_richness$deviance.summary %$%
-  which(mean == min(mean))
-SWAFR_richness_predictor_names_simp <-
-  SWAFR_gbm_simp_richness$pred.list[[optimal_no_drops]]
-
-GCFR_gbm_simp_turnover <- gbm.simplify(GCFR_gbm_step_turnover)
-optimal_no_drops <- GCFR_gbm_simp_turnover$deviance.summary %$%
-  which(mean == min(mean))
-GCFR_turnover_predictor_names_simp <-
-  GCFR_gbm_simp_turnover$pred.list[[optimal_no_drops]]
-# FIXME: need to manually choose a predictor set,
-#   as multiple sets of predictors with same number of drops
-
-SWAFR_gbm_simp_turnover <- gbm.simplify(SWAFR_gbm_step_turnover)
-optimal_no_drops <- SWAFR_gbm_simp_turnover$deviance.summary %$%
-  which(mean == min(mean))
-SWAFR_turnover_predictor_names_simp <-
-  SWAFR_gbm_simp_turnover$pred.list[[optimal_no_drops]]
-# FIXME: need to manually choose a predictor set,
-#   as multiple sets of predictors with same number of drops
+# For both richness and turnover as reponses, foor each region:
+predictor_names_simp <- map(gbm_steps, map, simplify_predictors)
 
 # Refitting models with simplified predictor sets ------------------------------
 
