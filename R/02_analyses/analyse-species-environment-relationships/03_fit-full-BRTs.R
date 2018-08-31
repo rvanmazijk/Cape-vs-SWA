@@ -15,41 +15,36 @@ lr <- 0.002
 
 # Initial model fitting: gbm.step(richness ~ ...) ------------------------------
 
-gbm_steps_richness <- pmap(
-  # For each region:
+gbm_steps <- pmap(
+  # For both richness and turnover as reponses:
   .l = list(
-    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
-    predictor_names = list(GCFR_predictor_names, SWAFR_predictor_names)
+    .response_name = list("HDS_richness", "mean_QDS_turnover"),
+    .log_response = list(TRUE, FALSE)
   ),
-  .f = function(variables, predictor_names) {
-    fit_gbm_step(
-      variables, predictor_names,
-      response_name = "HDS_richness", log_response = TRUE,
-      tc = tc, lr = lr, nt = nt
+  .f = function(.response_name, .log_response) {
+    pmap(
+      # For each region:
+      .l = list(
+        .variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+        .predictor_names = list(GCFR_predictor_names, SWAFR_predictor_names)
+      ),
+      .f = function(.variables, .predictor_names) {
+        fit_gbm_step(
+          variables = .variables, predictor_names = .predictor_names,
+          response_name = .response_name, log_response = .log_response,
+          tc = tc, lr = lr, nt = nt
+        )
+      }
     )
   }
 )
-names(gbm_steps_richness) <- c("Cape", "SWA")
-
-gbm_steps_turnover <- pmap(
-  # For each region:
-  .l = list(
-    variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
-    predictor_names = list(GCFR_predictor_names, SWAFR_predictor_names)
-  ),
-  .f = function(variables, predictor_names) {
-    fit_gbm_step(
-      variables, predictor_names,
-      response_name = "mean_QDS_turnover", log_response = FALSE,
-      tc = tc, lr = lr, nt = nt
-    )
-  }
-)
-names(gbm_steps_turnover) <- c("Cape", "SWA")
+names(gbm_steps) <- c("HDS_richness_BRT", "mean_QDS_turnover_BRT")
+for (i in seq_along(gbm_steps)) {
+  names(gbm_steps[[i]]) <- c("Cape", "SWA")
+}
 
 # Explore results
-map(gbm_steps_richness, my_BRT_summary)
-map(gbm_steps_turnover, my_BRT_summary)
+map(gbm_steps, map, my_BRT_summary)
 
 # Model simplification: gbm.simplify(...) --------------------------------------
 
