@@ -1,5 +1,6 @@
 fit_gbm_step <- function(variables, predictor_names,
-                         response_name, log_response = TRUE,
+                         response_name,
+                         log_response = TRUE, permuted_BRT = FALSE,
                          tc, lr, nt) {
   # Convenience function to fit and/or refit a BRT model
   stopifnot(exprs = {
@@ -9,6 +10,9 @@ fit_gbm_step <- function(variables, predictor_names,
   variables %<>%
     as.data.frame() %>%
     na.exclude()
+  if (permuted_BRT) {
+    variables %<>% permute_response(response_name)
+  }
   if (log_response) {
     variables[[response_name]] %<>% log()
   }
@@ -45,9 +49,16 @@ pseudo_r2 <- function(x) {
 }
 
 my_BRT_summary <- function(x) {
+  stopifnot(class(x) == "gbm")
   list(
     nt = x$n.trees,
     pseudo_r2 = pseudo_r2(x),
     contribs = summary(x)
   )
+}
+
+permute_response <- function(x, response_name) {
+  stopifnot(is.data.frame(x))
+  x[[response_name]] <- x[[response_name]][sample(nrow(x))]
+  x
 }
