@@ -1,0 +1,314 @@
+Fitting HDS_richness (logged) 
+with tc = 1, lr = 5e-04, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 100 observations and 12 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  1.8288 
+tolerance is fixed at  0.0018 
+ntrees resid. dev. 
+50    1.8511 
+now adding trees... 
+restart model with a smaller learning rate or smaller step size...Fitting HDS_richness (logged) 
+with tc = 1, lr = 5e-04, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 14 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  1.6022 
+tolerance is fixed at  0.0016 
+ntrees resid. dev. 
+50    1.6213 
+now adding trees... 
+restart model with a smaller learning rate or smaller step size...Fitting mean_QDS_turnover (unlogged) 
+with tc = 1, lr = 5e-04, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 100 observations and 12 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0057 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.0059 
+now adding trees... 
+100   0.0059 
+restart model with a smaller learning rate or smaller step size...Fitting mean_QDS_turnover (unlogged) 
+with tc = 1, lr = 5e-04, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 14 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0098 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.0099 
+now adding trees... 
+100   0.0099 
+150   0.0098 
+200   0.0098 
+250   0.0098 
+300   0.0098 
+350   0.0098 
+400   0.0098 
+450   0.0098 
+500   0.0098 
+550   0.0098 
+600   0.0098 
+650   0.0098 
+700   0.0098 
+750   0.0098 
+800   0.0098 
+850   0.0098 
+900   0.0098 
+950   0.0098 
+1000   0.0098 
+1050   0.0098 
+1100   0.0098 
+1150   0.0098 
+1200   0.0098 
+1250   0.0098 
+1300   0.0098 
+1350   0.0098 
+1400   0.0098 
+1450   0.0098 
+1500   0.0098 
+1550   0.0098 
+1600   0.0098 
+1650   0.0098 
+1700   0.0098 
+1750   0.0098 
+1800   0.0098 
+1850   0.0098 
+1900   0.0098 
+1950   0.0098 
+2000   0.0098 
+2050   0.0098 
+2100   0.0098 
+2150   0.0098 
+2200   0.0098 
+2250   0.0097 
+2300   0.0097 
+2350   0.0097 
+2400   0.0097 
+2450   0.0097 
+2500   0.0097 
+
+mean total deviance = 0.01 
+mean residual deviance = 0.009 
+ 
+estimated cv deviance = 0.01 ; se = 0.001 
+ 
+training data correlation = 0.474 
+cv correlation =  0.154 ; se = 0.061 
+ 
+elapsed time -  0.11 minutes 
+Fitting mean_QDS_turnover (unlogged) 
+with tc = 1, lr = 5e-04, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 3 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0098 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.01 
+now adding trees... 
+100   0.01 
+150   0.0099 
+200   0.0099 
+250   0.0099 
+300   0.0099 
+350   0.0099 
+400   0.0099 
+450   0.0099 
+500   0.0099 
+550   0.0099 
+600   0.0099 
+650   0.0098 
+700   0.0098 
+750   0.0098 
+800   0.0098 
+850   0.0098 
+900   0.0098 
+950   0.0098 
+1000   0.0098 
+1050   0.0098 
+1100   0.0098 
+1150   0.0098 
+1200   0.0098 
+1250   0.0097 
+1300   0.0097 
+1350   0.0097 
+1400   0.0097 
+1450   0.0097 
+1500   0.0097 
+1550   0.0097 
+1600   0.0097 
+1650   0.0097 
+1700   0.0097 
+1750   0.0097 
+1800   0.0097 
+1850   0.0097 
+1900   0.0096 
+1950   0.0096 
+2000   0.0096 
+2050   0.0096 
+2100   0.0096 
+2150   0.0096 
+2200   0.0096 
+2250   0.0096 
+2300   0.0096 
+2350   0.0096 
+2400   0.0096 
+2450   0.0096 
+2500   0.0096 
+2550   0.0096 
+2600   0.0096 
+2650   0.0095 
+2700   0.0095 
+2750   0.0095 
+2800   0.0095 
+2850   0.0095 
+2900   0.0095 
+2950   0.0095 
+3000   0.0095 
+3050   0.0095 
+3100   0.0095 
+3150   0.0095 
+3200   0.0095 
+3250   0.0095 
+3300   0.0095 
+3350   0.0095 
+3400   0.0095 
+3450   0.0095 
+3500   0.0095 
+3550   0.0094 
+3600   0.0094 
+3650   0.0094 
+3700   0.0094 
+3750   0.0094 
+3800   0.0094 
+3850   0.0094 
+3900   0.0094 
+3950   0.0094 
+4000   0.0094 
+4050   0.0094 
+4100   0.0094 
+4150   0.0094 
+4200   0.0094 
+4250   0.0094 
+4300   0.0094 
+4350   0.0094 
+4400   0.0094 
+4450   0.0094 
+4500   0.0094 
+4550   0.0094 
+4600   0.0094 
+4650   0.0094 
+4700   0.0094 
+4750   0.0094 
+4800   0.0094 
+4850   0.0094 
+4900   0.0094 
+4950   0.0094 
+5000   0.0093 
+5050   0.0093 
+5100   0.0093 
+5150   0.0093 
+5200   0.0093 
+5250   0.0093 
+5300   0.0093 
+5350   0.0093 
+5400   0.0093 
+5450   0.0093 
+5500   0.0093 
+5550   0.0093 
+5600   0.0093 
+5650   0.0093 
+5700   0.0093 
+5750   0.0093 
+5800   0.0093 
+5850   0.0093 
+5900   0.0093 
+5950   0.0093 
+6000   0.0093 
+6050   0.0093 
+6100   0.0093 
+6150   0.0093 
+6200   0.0093 
+6250   0.0093 
+6300   0.0093 
+6350   0.0093 
+6400   0.0093 
+6450   0.0093 
+6500   0.0093 
+6550   0.0093 
+6600   0.0093 
+6650   0.0093 
+6700   0.0093 
+6750   0.0093 
+6800   0.0093 
+6850   0.0093 
+6900   0.0093 
+
+mean total deviance = 0.01 
+mean residual deviance = 0.008 
+ 
+estimated cv deviance = 0.009 ; se = 0.001 
+ 
+training data correlation = 0.471 
+cv correlation =  0.23 ; se = 0.089 
+ 
+elapsed time -  0.17 minutes 
+$HDS_richness_BRT
+$HDS_richness_BRT$Cape
+[1] "failed"
+
+$HDS_richness_BRT$SWA
+[1] "failed"
+
+
+$mean_QDS_turnover_BRT
+$mean_QDS_turnover_BRT$Cape
+[1] "failed"
+
+$mean_QDS_turnover_BRT$SWA
+gbm::gbm(formula = y.data ~ ., distribution = as.character(family), 
+    data = x.data, weights = site.weights, var.monotone = var.monotone, 
+    n.trees = target.trees, interaction.depth = tree.complexity, 
+    shrinkage = learning.rate, bag.fraction = bag.fraction, verbose = FALSE)
+A gradient boosted model with gaussian loss function.
+6850 iterations were performed.
+There were 3 predictors of which 3 had non-zero influence.
+
+
