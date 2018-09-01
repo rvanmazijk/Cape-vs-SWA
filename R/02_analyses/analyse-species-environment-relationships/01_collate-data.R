@@ -74,7 +74,6 @@ variables_HDS_stacks <- pmap(
 
     # And make it all a RasterStack
     stack(vars)
-
   }
 )
 
