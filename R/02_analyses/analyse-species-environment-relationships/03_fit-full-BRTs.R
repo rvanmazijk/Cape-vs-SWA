@@ -11,7 +11,7 @@ set.seed(1234)
 # Thumbsucks for now:
 tc <- 5  # No more than 5-way interactions
 lr <- 0.002
-nt <- 10000
+nt <- 10000  # Maximum no. trees allowed in a BRT-model
 
 # Initial model fitting: gbm.step(richness ~ ...) ------------------------------
 
@@ -26,6 +26,7 @@ gbm_steps <- pmap(
       # For each region:
       .l = list(
         .variables = list(GCFR_variables_HDS_stack, SWAFR_variables_HDS_stack),
+        # Use initial predictor sets from after checking for collinearity
         .predictor_names = list(GCFR_predictor_names, SWAFR_predictor_names)
       ),
       .f = function(.variables, .predictor_names) {
