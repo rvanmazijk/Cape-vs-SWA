@@ -9,9 +9,9 @@ set.seed(1234)
 # Choose nt, tc, lr ------------------------------------------------------------
 
 # Thumbsucks for now:
-nt <- 10000
 tc <- 5  # No more than 5-way interactions
 lr <- 0.002
+nt <- 10000
 
 # Initial model fitting: gbm.step(richness ~ ...) ------------------------------
 
