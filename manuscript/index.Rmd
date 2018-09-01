@@ -13,6 +13,9 @@ header-includes:  # for PDF
   - \raggedright  # Un-justify all text
 ---
 
+<!--TODO: add citation links in text-->
+<!--TODO: make line spacing 1.5pt, font 12pt Times New Roman-->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   eval = TRUE,
