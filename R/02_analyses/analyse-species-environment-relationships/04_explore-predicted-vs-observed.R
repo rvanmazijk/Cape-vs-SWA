@@ -53,28 +53,58 @@ BRT_pred_vs_obs_r2 <- map(
 
 # Generate visreg ggplots ------------------------------------------------------
 
-BRT_pred_vs_obs_plots <- map(
-  # For each response:
-  .x = BRT_pred_vs_obs_models,
-  .f = ~ map(
-    # For each region:
-    .x = .x,
-    .f = ~ map(
-      # For the log and linear models:
-      .x = .x,
-      .f = function(.x) {
-        visreg(.x, gg = TRUE) +
-          geom_abline(intercept = 0, slope = 1, linetype = "dashed")# +
-          annotate(
-            "text",
-            x = 0.25 * max(.x$model[[2]]),
-            y = 0.75 * max(.x$model[[1]]),
-            label = .x %>%
-              glance() %>%
-              select(r.squared)
-          )
-      }
+choose_label_pos <- function(x, prop) {
+  stopifnot(exprs = {
+    is.numeric(x)
+    is.numeric(prop)
+  })
+  print(glue(
+    "Variable extends to {max(x)} \
+    Thus choosing co-ord = {min(x) + (prop * (max(x) - min(x)))}"
+  ))
+  min(x) + (prop * (max(x) - min(x)))
+}
+
+get_r2_label <- function(x) {
+  stopifnot(class(x) == "lm")
+  x %>%
+    glance() %>%
+    select(r.squared) %>%
+    #as_vector() %>%
+    round(digits = 4) %>%
+    format(nsmall = 2) %>%
+    paste0("italic(R)^2 ==", .)
+}
+
+get_slope_label <- function(x) {
+  stopifnot(class(x) == "lm")
+  x %>%
+    tidy() %>%
+    select(estimate) %>%
+    slice(2) %>%
+    round(digits = 4) %>%
+    format(nsmall = 2) %>%
+    paste0("italic(beta)[1] ==", .)
+}
+
+plot_pred_obs <- function(x) {
+  stopifnot(class(x) == "lm")
+  visreg(x, gg = TRUE) +
+    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+    annotate("text",
+      x = choose_label_pos(x$model[[2]], 0.15),
+      y = choose_label_pos(x$model[[1]], 0.85),
+      label = get_r2_label(x),
+      parse = TRUE
+    ) +
+    annotate("text",
+      x = choose_label_pos(x$model[[2]], 0.15),
+      y = choose_label_pos(x$model[[1]], 0.95),
+      label = get_slope_label(x),
+      parse = TRUE
     )
-  )
-)
+}
+
+# For each response, for each region, for both the log and linear models:
+BRT_pred_vs_obs_plots <- map(BRT_pred_vs_obs_models, map, map, plot_pred_obs)
 
