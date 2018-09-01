@@ -49,6 +49,7 @@ pseudo_r2 <- function(x) {
 }
 
 my_BRT_summary <- function(x) {
+  # Gives the nt, pseudo-R^2 and variables' contributions for a BRT
   stopifnot(class(x) == "gbm")
   list(
     nt = x$n.trees,
@@ -57,8 +58,14 @@ my_BRT_summary <- function(x) {
   )
 }
 
-permute_response <- function(x, response_name) {
-  stopifnot(is.data.frame(x))
-  x[[response_name]] <- x[[response_name]][sample(nrow(x))]
+permute_vector <- function(x) {
+  # Shuffles positions of values in vector
+  x[sample(length(x))]
+}
+
+permute_wo_nas <- function(x) {
+  # Shuffles positions of values in vector,
+  # but keeps NAs in their starting positions
+  x[!is.na(x)] %<>% permute_vector()
   x
 }
