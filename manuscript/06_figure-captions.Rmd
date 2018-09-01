@@ -11,6 +11,8 @@ Histograms were constructed using 20 breaks.
 In the lower row of panels, these distributions of roughness values were compared between the Cape and SWA at each of the four spatial scales, not just 0.05º and 3QDS, using non-parametric Mann-Whitney $U$-tests to test for differences.
 The "common language effect size" ($CLES$, see text) describes these differences (b).
 $U$-tests for almost all environmental variables yielded significant differences ($P < 0.05$) between Cape and SWA values (NS, non-significant differences).
+CLES for 0.05 res. is for 5000 random cells in each region, as the Mann-Whitney $U$-test cannot handle more than a few thousand values per sample when comparing.
+<!--TODO: reword-->
 
 (ref:roughness)
 
