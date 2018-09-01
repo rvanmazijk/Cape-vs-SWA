@@ -41,5 +41,4 @@ import_region_polygons <- function(borders_dir = here("data/derived-data/borders
 
   # FIXME: Why are these shapefile imports throwing non-fatal errors/warnings?
   # TODO: Add GIS-std-checkers here too
-
 }

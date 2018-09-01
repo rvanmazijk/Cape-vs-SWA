@@ -5,7 +5,6 @@ qdgc2hdgc <- function(x) {
 
 calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
                                    region_name = NULL, date = NULL) {
-
   stopifnot(exprs = {
     class(flora_points) == "SpatialPointsDataFrame"
     class(QDS_polygon) == "SpatialPolygonsDataFrame"
@@ -107,7 +106,5 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
     )
   }
 
-  # Return anyway
   flora_points
-
 }

@@ -111,5 +111,4 @@ import_environmental_data <- function(data_dir = here("data/derived-data")) {
   # Return by assigning final lists of variables to global environment
   assign_global(GCFR_variables)
   assign_global(SWAFR_variables)
-
 }
