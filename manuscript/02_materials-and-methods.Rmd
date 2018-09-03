@@ -1,7 +1,15 @@
 # Materials and methods
 
 ```{r}
-richness <- readr::read_rds(here::here("outputs/richness.RDS"))
+# FIXME
+#richness <- readr::read_rds(here::here("outputs/richness.RDS"))
+# For now:
+fixme <- list(GCFR = "FIXME", SWAFR = "FIXME")
+richness <- list(
+  n_before_checks = fixme,
+  n_bad_names = fixme,
+  n_final = fixme
+)
 ```
 
 ## Overview
