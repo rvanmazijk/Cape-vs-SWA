@@ -11,7 +11,7 @@ OUTPUTS = $(wildcard outputs/*/*.csv)
 FUNCTIONS = $(wildcard R/functions/*.R)
 
 FIGURES_PNG = $(wildcard figures/fig-*.R)
-AFTER_BODY_TEX = $(AFTER_BODY_TEX:.Rmd=.tex)
+AFTER_BODY_TEX = $(AFTER_BODY_RMD:.Rmd=.tex)
 PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
 
 $(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
