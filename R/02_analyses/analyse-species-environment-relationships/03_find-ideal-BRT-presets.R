@@ -145,6 +145,9 @@ all_tc_lr_gbm_steps_simp <- foreach(preset = presets) %dopar% {
     ),
     append = FALSE
   )
-  gbm_steps_simp
+  readr::write_rds(
+    gbm_steps_simp,
+    here("outputs/species-environment-relationships/all-tc-lr-BRTs.RDS")
+  )
 }
 stopCluster(cluster)
