@@ -98,3 +98,17 @@ NOTE:
   - "Resource/support" ideas by richness ~ E
   - "Enviro filtering" ideas by turnover ~ EH
 -->
+
+<!--From BIO3013F Protea-SDMs project intro-->
+
+...
+
+Species distribution models (SDMs), or environmental niche models, are sets of empirical methods that relate observed species presences (or similar data) to environmental and spatial variables, often correlatively (Guisan & Thuiller, 2005). As SDMs rely chiefly on correlating observed species ranges with the conditions thereof, they provide only a model of the realised niche of a species (Raes, 2012), which can cause issues when attempting to predict responses of species to changing climate. Other assumptions of typical SDMs include that the range of species considered is in equilibrium with the environment (Altwegg et al., 2014; Guisan & Thuiller, 2005; Hannah et al., 2005), thus limiting the efficacy of these models on dynamically ranged or highly vagile species (Hannah et al., 2007). Regardless, given the dynamic nature of biotic ranges under climate change, SDMs are a valuable tool in identifying the contemporary risks posed to global and regional biodiversity.
+
+The GCFR is a megadiverse terrestrial biogeographic region, with high levels of endemism. Midgley et al. (2003) investigated the responses the now defunct Cape Floristic Region (CFR) flora to climate change. Using bioclimatic envelope models (a form of SDM), they modelled the Fynbos Biome’s distribution as a whole, and select Cape-endemic Proteaceae species’ distributions, under current and future climate (climate scenario HadCM2), and again with the impact of land use change. Their Fynbos model was an indicator of regional priority for species level modelling efforts, showing a general southwards contraction of the biome. Their specific Proteaceae models yielded various results: complete extinctions for some species, range contractions for most, improbable range shifts in some, and range expansions in few. The range shifts predicted therein were acknowledged to be improbable, due to the unmodelled limitations of plant dispersal and edaphic dependence. Midgley et al. (2003) concluded that climate change is likely to have severely negative for the CFR flora. However, as will be outlined below, their methods may be overpredicting losses due to climate change.
+
+...
+
+The last 20 years have seen much ecological research interest in and development of SDMs, using many statistical and machine-learning-based methodologies (Altwegg et al., 2014; Elith et al., 2008, 2011; Guisan & Thuiller, 2005). Machine-learning-based methods in SDMs include MaxEnt (Elith et al., 2011), genetic algorithms, and adaptive neural networks (Hannah et al., 2005). The use of more advances statistics (e.g. Bayesian frameworks, ordination methods (Hannah et al., 2005)) is also seen. These two avenues of research have intersected in the development of boosted regression trees (BRTs) (originally “gradient boosting machine”; Friedman, 1999) a system of recursively generated, non-linear regression trees, as outlined by Elith et al. (2008). BRTs have been used as SDMs in southern Africa before (e.g. Thuiller et al., 2006), sometimes for conservation purposes (e.g. Coetzee et al., 2009), but BRTs have yet to be used specifically to assess the responses of the regional flora to climate change. BRTs have more flexibility in their predictions than more traditional methods (e.g. GAMs), as they are non-linear and machine-learning-based (Elith et al., 2008).
+
+...
