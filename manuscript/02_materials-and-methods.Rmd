@@ -120,15 +120,9 @@ This allowed us to assess prediction (i).
 To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we repeated this analysis at all four spatial scales.
 Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
 
-### Predicting richness and turnover with environmental heterogeneity
-
-<!--Preamble-->
+### Quantifying species turnover
 
 Regarding prediction (iii), we wished to compare the general degree of species turnover in each region.
-For (iv) and (v) we modelled species richness ($S$) and turnover as a function of various combinations of environmental and environmental heterogeneity variables in both regions.
-
-<!--Turnover comparisons-->
-
 To compare the extent of species turnover between the Cape and SWA, we determined two metrics of species turnover.
 The first, computes the mean species turnover as Jaccard distance [@R-vegan] between each pair of QDS within each HDS ($\overline{J}_{QDS}$, based on HDS with $2 \leq n \leq 4$ QDS) in both regions.
 The second is defined in terms of Whittaker's additive definition of $\beta$-diversity [@ref], where
@@ -143,9 +137,16 @@ Intuitively, the species richness of an area is the result of the richness of si
 Thus, we use here an additively defined residual turnover ($T_{HDS}$; i.e. $\beta = \alpha - \gamma$) as the proportion of $S_{HDS}$ unexplained by the mean species richness of HDS' constituent QDS ($\overline{S}_{QDS}$).
 We compare the distributions of $\overline{J}_{QDS}$ and $T_{HDS}$ using non-parametric Mann-Whitney $U$-tests, in order to guard against non-normality.
 
-#### Boosted regression trees modelling
+### Predicting richness and turnover with environmental heterogeneity
 
-##### From BIO3013F Protea-SDMs project methods
+<!--Preamble-->
+
+Regarding prediction (iii), we wished to compare the general degree of species turnover in each region.
+For (iv) and (v) we modelled species richness ($S$) and turnover as a function of various combinations of environmental and environmental heterogeneity variables in both regions.
+
+<!--Boosted regression trees modelling-->
+
+#### From BIO3013F Protea-SDMs project methods
 
 To explore which axes of environmental heterogeneity have most influence on vascular plant species richness, and differences in the importance of difference axes between the Cape and SWA, we employed boosted regression tree (BRT) modelling techniques.
 BRTs provide a machine learning-based model of response variables and do so without involving normal null-hypothesis significance testing. Here, two sets of BRT models were developed from the Protea Atlas occurrence records: BRTs for each of the 203 species of Proteaceae (i.e. SDMs) for which the results thereof were averaged by genus, and BRTs for each of the 13 genera directly, wherein occurrence data was used to create genus-level models. The latter can be thought of as genus distribution models, or GDMs hereafter.
@@ -154,7 +155,7 @@ BRT model construction was performed, as detailed by Elith et al. (2008) in R (v
 Following iterative parameter optimisation for learning rate and tree complexity, Gaussian BRT models were constructed with tree complexity = 5 (number of nodes of each tree, i.e. the maximum interaction depth the model is permitted to fit), learning rate = 0.005 (shrinkage factor controlling the contribution of each tree to the final model), bagging fraction = 0.7 (proportion of training data randomly chosen to generate each tree) and cross-fold validation = 10 (i.e. use 10 different randomly selected training data sets).
 The total explained deviance was calculated as the difference between total and cross-validated deviance divided by the total deviance. The models were developed with all variables (those retained, above) and then simplified using the protocol suggested by Elith et al. (2008) to retain the minimum number of variables contributing to the models of each species or genus.
 
-##### From Hons thesis methods
+#### From Hons thesis methods
 
 Boosted regression trees are a flexible machine-learning modelling technique [@Elith2008], that allow testing for relationships between a response and a set of predictors without the use of null-hypothesis significance testing [@Elith2008]. BRTs have been employed previously to model species richness [see @Mouchet2015; @Thuiller2006; @Cramer2016] as macro-ecological models. BRTs were implemented here to predict vascular plant species richness in each cell, as a function of environmental variables roughness-values in those cells, as a Gaussian response. BRT-models were developed for the GCFR, SWAFR, and for a merged dataset of both regions' data. This combined model included a discrete term for the region. These three regional-scopes were modelled with datasets at the QDS, HDS, and 3QDS resolutions derived from the original environmental data using bilinear resampling [@Hijmans2016]. The $log(x + 1)$-transform of species richness was used, in order to satisfy the assumptions of a Gaussian response. Note, this is not strictly because BRTs have any parametric assumptions concerning the distribution of the response variable, but rather to aid in applying the Gaussian-family of BRT algorithms to the richness data available.
 

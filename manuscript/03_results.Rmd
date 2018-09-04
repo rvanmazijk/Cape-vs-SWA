@@ -23,10 +23,12 @@ Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape
 
 Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)).
 
-Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at coarser scales, particularly in terms of CEC and Soil C (Figure \@ref(fig:roughness)b)
+Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at coarser scales, particularly in terms of CEC and Soil C (Figure \@ref(fig:roughness)b).
 
-## Species richness, turnover and environmental heterogeneity
+## Comparing species turnover in the two regions
 
 Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover is defined (Figure \@ref(fig:turnover)).
+
+## Predicting richness and turnover with environmental heterogeneity
 
 Species richness and turnover data were related to BRT-models ...
