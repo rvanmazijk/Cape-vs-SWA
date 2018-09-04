@@ -109,7 +109,8 @@ Using the R package "raster" [@Hijmans2016], we used a modified version of the "
   (\#eq:roughness)
 \end{equation}
 
-Note, in order to use as much data from within regions' borders as possible, roughnes swas computed if a focal cell had at least one neighbour cell---that is, roughness is defined where $n_{x_{focal}} \geq 1$.
+This value, notionally the standard deviation of values relative to the focal value, is ascribed to the focal cell.
+Note, in order to use as much data from within regions' borders as possible, roughness was computed if a focal cell had at least one neighbour cell---that is, roughness is defined where $n_{x_{focal}} \geq 1$.
 Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity.
 We compared the distributions of roughness values in each variable in each region with non-parametric Mann-Whitney $U$-tests, as almost all variables could not be normalised by log-transformations.
 We also compare the effect size of the Cape vs SWA using the "common language effect size" ($CLES$), using the R package "canprot".
