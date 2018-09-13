@@ -114,10 +114,16 @@ rm(tc, lr)  # Avoids clashes when running run_BRTs()
 
 # Run run_BRTs() in parallel for all presets of tc and lr ----------------------
 
-cluster <- makeCluster(detectCores() - 1)
-registerDoParallel(cluster)
-all_tc_lr_gbm_steps_simp <- foreach(preset = presets) %dopar% {
+# Get the current session's pkg library for access in each worker
+#my_lib <- .Library
 
+if (is_linux()) {
+  registerDoParallel(cores = detectCores() - 1)
+} else {
+  cluster <- makeCluster(detectCores() - 1)
+  registerDoParallel(cl = cluster)
+}
+foreach(preset = presets) %dopar% {
   # Load packages --------------------------------------------------------------
   # doParallel:: and parallel:: don't have access to the global environment's
   # loaded packages, so reload packages as needed here.
@@ -132,22 +138,35 @@ all_tc_lr_gbm_steps_simp <- foreach(preset = presets) %dopar% {
   # Run run_BRTs() -------------------------------------------------------------
   # Capturing each worker-core's outputs in separate text files
 
+  model_code <- glue(
+    "worker-{Sys.getpid()}_\\
+    tc-{preset$tc}_\\
+    lr-{preset$lr}_\\
+    {Sys.Date()}"
+  )
+
   capture.output(
     gbm_steps_simp <- run_initial_BRTs(preset),  # To allow BRT outputs to return
-    file = glue(
-      "{here(
-        'outputs',
-        'species-environment-relationships/',
-        'parallel-core-worker-logs/',
-        'all-tc-lr-BRTs/'
-      )}\\
-      worker-{Sys.getpid()}-tc-{preset$tc}-lr-{preset$lr}-log_{Sys.Date()}.txt"
+    file = here(
+      "outputs",
+      "species-environment-relationships",
+      "parallel-core-worker-logs",
+      "all-tc-lr-BRTs",
+      glue("{model_code}_log.txt")
     ),
     append = FALSE
   )
   readr::write_rds(
     gbm_steps_simp,
-    here("outputs/species-environment-relationships/all-tc-lr-BRTs.RDS")
+    here(
+      "outputs",
+      "species-environment-relationships",
+      "saved-BRT-RDSs",
+      "all-tc-lr-BRTs",
+      glue("{model_code}_BRTs.RDS")
+    )
   )
 }
-stopCluster(cluster)
+if (!is_linux()) {
+  stopCluster(cluster)
+}
