@@ -22,12 +22,14 @@ library(virtualspecies)
 
 # Tidy names(<region>_species) after SpatialPointsDataFrame import
 names(GCFR_species) <- c(
-  "family", "genus", "species",
+  #"family", "genus", "species",
+  "species", "cell_nos",
   "qdgc", "hdgc",
   "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
 )
 names(SWAFR_species) <- c(
-  "family", "genus", "species",
+  #"family", "genus", "species",
+  "species", "cell_nos",
   "qdgc", "hdgc",
   "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
 )
