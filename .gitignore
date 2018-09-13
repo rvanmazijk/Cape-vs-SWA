@@ -9,5 +9,7 @@ outputs/turnover/GCFR_spp_2018-08-10/
 outputs/turnover/SWAFR_spp_2018-08-10/
 outputs/turnover/GCFR_spp_2018-08-14/
 outputs/turnover/SWAFR_spp_2018-08-14/
+outputs/turnover/GCFR_species_2018-08-14/
+outputs/turnover/SWAFR_species_2018-08-14/
 outputs/species-and-roughness/*.RDS
 *_cache
