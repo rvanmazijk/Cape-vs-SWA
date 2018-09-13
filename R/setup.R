@@ -23,7 +23,7 @@ library(sp)
 library(maptools)
 
 # Taxonomy and species name cleaning
-#library(taxize)
+library(taxize)
 
 # Pairwise Jaccard distance calculations
 library(vegan)
@@ -45,8 +45,8 @@ library(grid)
 library(gridExtra)
 library(cowplot)
 library(scales)
-#library(rasterVis)
-#library(ggspatial)
+library(rasterVis)
+library(ggspatial)
 
 # Record session information ---------------------------------------------------
 
