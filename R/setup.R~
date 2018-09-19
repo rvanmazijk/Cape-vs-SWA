@@ -9,15 +9,15 @@ library(magrittr)
 library(here)
 library(glue)
 library(stringr)
-library(foreach)
 library(xfun)
 
 # Parallel processing
 library(parallel)
+library(foreach)
 library(microbenchmark)
 
 # GIS
-library(rgdal)
+#library(rgdal)
 library(raster)
 library(sp)
 library(maptools)
@@ -34,10 +34,9 @@ library(reshape2)
 library(readr)
 
 # Statistics and modelling
-library(quantreg)
+#library(quantreg)
 library(broom)
-library(canprot)
-library(spgwr)
+#library(canprot)
 
 # Visualisations
 library(ggplot2)
@@ -45,7 +44,7 @@ library(grid)
 library(gridExtra)
 library(cowplot)
 library(scales)
-library(rasterVis)
+#library(rasterVis)
 library(ggspatial)
 
 # Record session information ---------------------------------------------------

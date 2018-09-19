@@ -1,6 +1,6 @@
 # Analyse value of environmental & heterogeneity variables for predicting
 #   vascular plant species richness and turnover---using BRTs
-# Part 5: Fitting BRT models to randomly permuted datasets
+# Part 3: Finding the ideal learning rate and tree complexity parameters
 # Cape vs SWA publication
 # Ruan van Mazijk
 
