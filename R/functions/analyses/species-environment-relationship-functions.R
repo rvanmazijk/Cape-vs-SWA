@@ -48,12 +48,52 @@ pseudo_r2 <- function(x) {
   }
 }
 
+get_pred_obs <- function(x) {
+  stopifnot(class(x) == "gbm")
+  x %$%
+    tibble(
+      pred = fitted,
+      obs = data$y
+    ) %>%
+    mutate(
+      exp_pred = exp(pred),
+      exp_obs = exp(obs)
+    )
+}
+
+model_pred_obs <- function(x) {
+  stopifnot(is.data.frame(x))
+  pred_obs_m <- lm(pred ~ obs, data = x)
+  pred_obs_m_exp <- lm(exp_pred ~ exp_obs, data = x)
+  list(
+    pred_obs_m = pred_obs_m,
+    pred_obs_m_exp = pred_obs_m_exp
+  )
+}
+
+r2 <- function(m) {
+  stopifnot(class(m) == "lm")
+  m %>%
+    glance() %>%
+    select(r.squared) %>%
+    as_vector()
+}
+
+pred_obs_r2 <- function(x) {
+  stopifnot(class(x) == "gbm")
+  x %>%
+    get_pred_obs() %>%
+    model_pred_obs() %>%
+    map(r2)  # For the log and exp models
+}
+
 my_BRT_summary <- function(x) {
   # Gives the nt, pseudo-R^2 and variables' contributions for a BRT
   stopifnot(class(x) == "gbm")
   list(
     nt = x$n.trees,
     pseudo_r2 = pseudo_r2(x),
+    pred_obs_r2 = pred_obs_r2(x),
     contribs = summary(x)
   )
 }
