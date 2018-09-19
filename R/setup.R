@@ -23,10 +23,10 @@ library(sp)
 library(maptools)
 
 # Taxonomy and species name cleaning
-library(taxize)
+#library(taxize)
 
 # Pairwise Jaccard distance calculations
-library(vegan)
+#library(vegan)
 
 # Tabular data-manipulation
 library(tidyverse)

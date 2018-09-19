@@ -123,7 +123,12 @@ permuted_gbm_steps_simp <- foreach(i = as.list(1:100)) %dopar% {
   capture.output(
     gbm_steps_simp <- run_permuted_BRTs(), # To allow BRT outputs to return
     file = glue(
-      "{here('outputs/species-environment-relationships/permuted-BRTs_')}\\
+      "{here(
+        'outputs',
+        'species-environment-relationships/',
+        'parallel-core-worker-logs/',
+        'permuted-BRTs/'
+      )}\\
       worker-{Sys.getpid()}-{i}-log_{Sys.Date()}.txt"
     ),
     append = TRUE

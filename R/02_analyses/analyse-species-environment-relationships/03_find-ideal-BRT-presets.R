@@ -1,6 +1,6 @@
 # Analyse value of environmental & heterogeneity variables for predicting
 #   vascular plant species richness and turnover---using BRTs
-# Part 5: Fitting BRT models to randomly permuted datasets
+# Part 3: Finding the ideal learning rate and tree complexity parameters
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -135,11 +135,19 @@ all_tc_lr_gbm_steps_simp <- foreach(preset = presets) %dopar% {
   capture.output(
     gbm_steps_simp <- run_initial_BRTs(preset),  # To allow BRT outputs to return
     file = glue(
-      "{here('outputs/species-environment-relationships/all-tc-lr-BRTs_')}\\
+      "{here(
+        'outputs',
+        'species-environment-relationships/',
+        'parallel-core-worker-logs/',
+        'all-tc-lr-BRTs/'
+      )}\\
       worker-{Sys.getpid()}-tc-{preset$tc}-lr-{preset$lr}-log_{Sys.Date()}.txt"
     ),
     append = FALSE
   )
-  gbm_steps_simp
+  readr::write_rds(
+    gbm_steps_simp,
+    here("outputs/species-environment-relationships/all-tc-lr-BRTs.RDS")
+  )
 }
 stopCluster(cluster)

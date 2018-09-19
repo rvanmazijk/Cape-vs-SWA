@@ -1,5 +1,5 @@
 # Manual package installation
-#   Useful if lack permissions to use packrat (e.g. on a guest PC)  
+#   Useful if lack permissions to use packrat (e.g. on a guest PC)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -49,6 +49,5 @@ install.packages(dependencies = TRUE, c(
   "scales",
   "rasterVis",
   "ggspatial"
-  
-))
 
+))

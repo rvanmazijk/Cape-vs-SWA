@@ -13,7 +13,7 @@ FUNCTIONS = $(wildcard R/functions/*.R)
 FIGURES_PNG = $(wildcard figures/fig-*.R)
 AFTER_BODY_TEX = $(AFTER_BODY_TEX:.Rmd=.tex)
 PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
-ß
+
 $(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
 	Rscript -e "\
 	setwd('manuscript'); \
