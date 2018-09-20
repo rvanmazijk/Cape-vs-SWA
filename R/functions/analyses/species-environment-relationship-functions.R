@@ -84,17 +84,18 @@ pred_obs_r2 <- function(x) {
   x %>%
     get_pred_obs() %>%
     model_pred_obs() %>%
-    map(r2) %>%  # For the log and exp models
-    as_vector()
+    map(r2) # For the log and exp models
 }
 
 my_BRT_summary <- function(x) {
   # Gives the nt, pseudo-R^2 and variables' contributions for a BRT
   stopifnot(class(x) == "gbm")
+  pred_obs_r2s <- pred_obs_r2(x)
   tibble(
     nt = x$n.trees,
     pseudo_r2 = pseudo_r2(x),
-    pred_obs_r2 = pred_obs_r2(x),
+    pred_obs_r2 = pred_obs_r2s$pred_obs_m,
+    pred_obs_r2_exp = pred_obs_r2s$pred_obs_m_exp,
     contribs = list(summary(x))
   )
 }
