@@ -71,17 +71,31 @@ all_model_summaries <- saved_BRT_paths %>%
       factor(levels = c("1e-04", "5e-04", "0.001", "0.005", "0.01"))
   )
 
-if (nrow(all_model_summaries) == length(saved_BRT_paths) * 4) {
-  print(glue(
-    "All {length(saved_BRT_paths)} * 4 = {length(saved_BRT_paths) * 4} \\
-    models summarised"
-  ))
-}
+# Check correct no. models imported --------------------------------------------
+
+all_model_summaries %>%
+  nrow() %>%
+  equals(length(saved_BRT_paths) * 4) %>%
+  ifelse(
+    yes = glue(
+      "All {length(saved_BRT_paths)} * 4 = {length(saved_BRT_paths) * 4} \\
+      models summarised :)"
+    ),
+    no = ":("
+  )
+
+all_model_summaries %>%
+  group_by(model_type, region, tc, lr) %>%
+  summarise(n = n()) %>%
+  filter(n > 1)
+# These models ran twice
+# Which ones?
+# FIXME: rerun OR remove one of the doubles
 
 # Plot summary -----------------------------------------------------------------
 
 all_model_summaries %>%
-  #filter(richness_or_turnover == "HDS_richness_BRT") %>%
+  filter(model_type == "HDS_richness_BRT") %>%
   mutate(nt = nt / 10000) %>%
   gather(
     diagnostic, value,
