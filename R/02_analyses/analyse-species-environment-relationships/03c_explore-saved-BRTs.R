@@ -1,8 +1,14 @@
+# Setup ------------------------------------------------------------------------
+
 library(here)
 source(here("R/setup.R"))
+
 saved_BRT_paths <- list.files(full.names = TRUE, here(
   "outputs/species-environment-relationships/saved-BRT-RDSs/all-tc-lr-BRTs"
 ))
+
+# Define functions to summarise all saved BRT-models ---------------------------
+
 read_BRT_set <- function(path, max.level = 2, verbose = TRUE) {
   stopifnot(is.character(path))
   saved_BRT_set <- read_rds(path)
@@ -10,6 +16,7 @@ read_BRT_set <- function(path, max.level = 2, verbose = TRUE) {
     class(saved_BRT_set) <- "gbm.object"
   }
   if (verbose) {
+    # Check that we have Cape and SWA HDS-richness and QDS-turnover models
     str(saved_BRT_set, max.level = max.level)
   }
   saved_BRT_set
@@ -48,6 +55,9 @@ my_BRT_set_summary <- function(paths) {
   }
   as_tibble(all_model_summaries)
 }
+
+# Summarise all BRT-models together --------------------------------------------
+
 all_model_summaries <- saved_BRT_paths %>%
   my_BRT_set_summary() %>%
   mutate(
@@ -60,12 +70,16 @@ all_model_summaries <- saved_BRT_paths %>%
       str_remove("lr-") %>%
       factor(levels = c("1e-04", "5e-04", "0.001", "0.005", "0.01"))
   )
+
 if (nrow(all_model_summaries) == length(saved_BRT_paths) * 4) {
   print(glue(
     "All {length(saved_BRT_paths)} * 4 = {length(saved_BRT_paths) * 4} \\
     models summarised"
   ))
 }
+
+# Plot summary -----------------------------------------------------------------
+
 all_model_summaries %>%
   #filter(richness_or_turnover == "HDS_richness_BRT") %>%
   mutate(nt = nt / 10000) %>%
