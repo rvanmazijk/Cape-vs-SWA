@@ -19,7 +19,7 @@ get_model_code <- function(path, model_code_pattern = NULL) {
     model_code_pattern <-
       "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}_\\d{4}-\\d{2}-\\d{2}_BRTs\\.RDS$"
   }
-  saved_BRT_path %>%
+  path %>%
     str_extract(model_code_pattern) %>%
     as_vector()
 }
@@ -66,4 +66,14 @@ if (nrow(all_model_summaries) == length(saved_BRT_paths) * 4) {
     models summarised"
   ))
 }
-
+all_model_summaries %>%
+  #filter(richness_or_turnover == "HDS_richness_BRT") %>%
+  mutate(nt = nt / 10000) %>%
+  gather(
+    diagnostic, value,
+    nt, pseudo_r2, pred_obs_r2, pred_obs_r2_exp
+  ) %>%
+  ggplot(aes(tc, lr, fill = value)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  facet_grid(diagnostic ~ region)
