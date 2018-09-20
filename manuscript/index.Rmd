@@ -75,7 +75,7 @@ biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region
 This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
 
 <!--
-Abbreviations {-}
+Abbreviations:
 - Greater Cape Floristic Region (GCFR) (= "Cape")
 - Southwest Australia Floristic Region (SWAFR)  (= "SWA")
 - TODO: fiver percent degree square (i.e. 0.05º x 0.05º) (FPDS)?
@@ -85,3 +85,23 @@ Abbreviations {-}
 - environmental heterogeneity (EH)
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 -->
+
+<!--
+CRediT breakdown:
+(see <https://casrai.org/credit/>)
+1. Conceptualisation: GAV, MDC
+2. Data curation: RVM
+3. Formal analysis: RVM
+4. Funding acquisition: RVM
+5. Investigation: RVM
+6. Methodology: GAV, MDC, RVM
+7. Project administration: GAV, MDC, RVM
+8. Resources: RVM
+9. Software: RVM
+10. Supervision: GAV, MDC
+11. Validation: RVM
+12. Visualisation: RVM
+13. Writing - original draft: RVM
+14. Writing - review & editing: GAV, MDC
+-->
+
