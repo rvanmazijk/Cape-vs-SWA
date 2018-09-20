@@ -24,13 +24,14 @@ get_model_code <- function(path, model_code_pattern = NULL) {
     as_vector()
 }
 my_BRT_set_summary <- function(paths) {
+  all_model_summaries <- tibble()
   for (path in paths) {
     saved_BRT_set <- read_BRT_set(path)
     model_code <- get_model_code(path)
-    model_summaries <- tibble()
+    a_tc_lr_settings_summaries <- tibble()
     for (i in seq_along(saved_BRT_set)) {
       model_type <- names(saved_BRT_set)[[i]]
-      a_types_summary <- tibble()
+      a_types_summaries <- tibble()
       for (j in seq_along(saved_BRT_set[[i]])) {
         region <- names(saved_BRT_set[[i]])[[j]]
         a_regions_summary <- cbind(
@@ -39,12 +40,13 @@ my_BRT_set_summary <- function(paths) {
           region,
           my_BRT_summary(saved_BRT_set[[i]][[j]])
         )
-        a_types_summary %<>% rbind(a_regions_summary)
+        a_types_summaries %<>% rbind(a_regions_summary)
       }
-      model_summaries %<>% rbind(a_types_summary)
+      a_tc_lr_settings_summaries %<>% rbind(a_types_summaries)
     }
+    all_model_summaries %<>% rbind(a_tc_lr_settings_summaries)
   }
-  model_summaries
+  as_tibble(all_model_summaries)
 }
 all_model_summaries <- saved_BRT_paths %>%
   my_BRT_set_summary() %>%
@@ -58,5 +60,10 @@ all_model_summaries <- saved_BRT_paths %>%
       str_remove("lr-") %>%
       factor(levels = c("1e-04", "5e-04", "0.001", "0.005", "0.01"))
   )
-
+if (nrow(all_model_summaries) == length(saved_BRT_paths) * 4) {
+  print(glue(
+    "All {length(saved_BRT_paths)} * 4 = {length(saved_BRT_paths) * 4} \\
+    models summarised"
+  ))
+}
 
