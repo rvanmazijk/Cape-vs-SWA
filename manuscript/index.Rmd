@@ -72,7 +72,9 @@ biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). <!--Computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team: <hpc.uct.ac.za>.-->
+
+<!--TODO: Notify these acknowledged parties of publication too-->
 
 <!--
 Abbreviations:
@@ -104,4 +106,3 @@ CRediT breakdown:
 13. Writing - original draft: RVM
 14. Writing - review & editing: GAV, MDC
 -->
-
