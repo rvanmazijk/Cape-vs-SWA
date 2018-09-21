@@ -59,9 +59,7 @@ _Keywords:_ biodiversity, environmental heterogeneity, fynbos, Greater Cape Flor
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). <!--Computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team: <hpc.uct.ac.za>.-->
-
-<!--TODO: Notify these acknowledged parties of publication too-->
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for GIS-data storage. <!--Computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team: <hpc.uct.ac.za>.--> <!--TODO: Notify these acknowledged parties of publication too-->
 
 <!--
 Abbreviations:
@@ -75,21 +73,4 @@ Abbreviations:
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 -->
 
-<!--
-CRediT breakdown:
-(see <https://casrai.org/credit/>)
-1. Conceptualisation: GAV, MDC
-2. Data curation: RVM
-3. Formal analysis: RVM
-4. Funding acquisition: RVM
-5. Investigation: RVM
-6. Methodology: GAV, MDC, RVM
-7. Project administration: GAV, MDC, RVM
-8. Resources: RVM
-9. Software: RVM
-10. Supervision: GAV, MDC
-11. Validation: RVM
-12. Visualisation: RVM
-13. Writing - original draft: RVM
-14. Writing - review & editing: GAV, MDC
--->
+<!--[CRediT](https://casrai.org/credit/) breakdown: GAV and MDC conceptualised the study and methodology, and supervised RVM in carrying out the work as part of his BSc Hons project. RVM curated the data, developed and performed the analyses, implemented in R, and produced the figures documenting the results. RVM wrote the original manuscript, and GAV and MDC reviewed and edited subsequent drafts with RVM.-->
