@@ -1,7 +1,7 @@
 # Materials and methods
 
 ```{r}
-# FIXME
+# FIXME: get richness numbers in text
 #richness <- readr::read_rds(here::here("outputs/richness.RDS"))
 # For now:
 fixme <- list(GCFR = "FIXME", SWAFR = "FIXME")
@@ -14,22 +14,15 @@ richness <- list(
 
 ## Overview
 
-These analyses required definitions of the boundaries of the two regions, environmental data for each, and geospatially-explicit vascular plant occurrence records, all based on publicly available data.
-The environmental variables chosen (Table \@ref(tab:data-sources)) for this study were intended to cover a reasonable spread of climatic, edaphic, and ecologically relevant environmental axes, and are not intended to be exhaustive.
-We selected variables describing topography (elevation), productivity (NDVI), soil status, and climate and climatic seasonality.
+Our analyses required definitions of the boundaries of the two regions, environmental data for each, and geospatially-explicit vascular plant occurrence records, all based on publicly available data. The environmental variables chosen (Table \@ref(tab:data-sources)) for this study were intended to cover a reasonable spread of climatic, edaphic, and ecologically relevant environmental axes, and are not intended to be exhaustive. We selected variables describing topography (elevation), productivity (NDVI), soil status, and climate and climatic seasonality.
 
-We carried out this investigation using four principal spatial scales: 0.05º x 0.05º squares (the finest common resolution among the environmental data sources used), quarter degree squares (QDS) [@Larsen2009], half degree squares (HDS) [@Larsen2009] and three-quarter degree squares (3QDS).
-Note, at least for the Cape, most plant occurrence records are only accurate to QDS level.
-Thus, any analysis involving species data was necessary limited to scales above and including QDS.
-Analyses were performed in R v3.5.0 [@RCoreTeam2018].
-Version-numbers of specific R packages used are presented in the bibliography, or in text where applicable.
+We carried out this investigation at four principal spatial scales: 0.05º x 0.05º squares (the finest common resolution among the environmental data sources used), quarter degree squares (QDS) [@Larsen2009], half degree squares (HDS) [@Larsen2009] and three-quarter degree squares (3QDS). For the Cape, most plant occurrence records are only accurate to QDS level. Thus, any analysis involving species data was necessary limited to scales above and including QDS.
+
+Analyses were performed in R v3.5.0 [@RCoreTeam2018]. Version-numbers of specific R packages used are presented in the bibliography.
 
 ## Environmental data sources
 
-Geospatially-explicit raster layers were acquired for a selection of environmental variables (Table \@ref(tab:data-sources)), for the regions of interest.
-Here, the GCFR was treated as the areas occupied by the Succulent Karoo and Fynbos biomes in the current delineation of South Africa's biome boundaries [@Mucina2006].
-The SWAFR was treated as the areas occupied by the Southwest Australia savanna, Swan Coastal Plain Scrub and Woodlands, Jarrah-Karri forest and shrublands, Southwest Australia woodlands, Esperance mallee, and Coolgardie woodlands in the World Wildlife Fund Terrestrial Ecoregions dataset [@Olson2001] in order to closely match the currently delineated SWAFR [@Gioia2017, @Hopper2004].
-For the sake of readability, we shall refer to the GCFR and SWAFR simply as the Cape and SWA from hereon.
+Geospatially-explicit raster layers were acquired for a selection of environmental variables (Table \@ref(tab:data-sources)), for the regions of interest. Here, the GCFR was treated as the areas occupied by the Succulent Karoo and Fynbos biomes in the current delineation of South Africa's biome boundaries [@Mucina2006]. The SWAFR was treated as the areas occupied by the Southwest Australia savanna, Swan Coastal Plain Scrub and Woodlands, Jarrah-Karri forest and shrublands, Southwest Australia woodlands, Esperance mallee, and Coolgardie woodlands in the World Wildlife Fund Terrestrial Ecoregions dataset [@Olson2001] in order to closely match the currently delineated SWAFR [@Gioia2017, @Hopper2004]. For the sake of readability, we shall refer to the GCFR and SWAFR simply as the Cape and SWA from hereon.
 
 Raster data were re-projected to a common coordinate reference: WGS84 [@WGS84], using the "rgdal" [@Bivand2017] package in R [@RCoreTeam2018].
 All data were re-sampled to 0.05º resolution using the "resample" function in the R package "raster" [@Hijmans2016], with the "bilinear" method.
