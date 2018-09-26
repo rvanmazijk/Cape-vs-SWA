@@ -37,3 +37,13 @@ dev.off()
 # Take first variable in each collinear cluster
 GCFR_predictor_names <- map_chr(GCFR_collinearity, 1)
 SWAFR_predictor_names <- map_chr(SWAFR_collinearity, 1)
+
+# For bare-minimum BRT work on UCT HPC:
+write.csv(
+  GCFR_predictor_names,
+  here("bare-minimum-BRTs-for-HPC/GCFR_predictor_names.csv")
+)
+write.csv(
+  SWAFR_predictor_names,
+  here("bare-minimum-BRTs-for-HPC/SWAFR_predictor_names.csv")
+)

@@ -81,3 +81,14 @@ variables_HDS_stacks <- pmap(
 
 GCFR_variables_HDS_stack <- variables_HDS_stacks[[1]]
 SWAFR_variables_HDS_stack <- variables_HDS_stacks[[2]]
+
+# For bare-minimum BRT work on UCT HPC:
+GCFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  write.csv(here("bare-minimum-BRTs-for-HPC/GCFR_variables_HDS.csv"))
+SWAFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  write.csv(here("bare-minimum-BRTs-for-HPC/SWAFR_variables_HDS.csv"))
+
