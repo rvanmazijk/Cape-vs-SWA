@@ -92,11 +92,11 @@ foreach(preset = presets) %dopar% {
     "worker-", Sys.getpid(),
     "_tc-", preset$tc,
     "_lr-", preset$lr,
-    Sys.Date()
+    "_", Sys.Date()
   )
   capture.output(
     gbm_steps_simp <- run_initial_BRTs(preset),  # To allow BRT outputs to return
-    file = paste0("all-tc-lr-BRTs", model_code, "_log.txt"),
+    file = paste0("all-tc-lr-BRTs_", model_code, "_log.txt"),
     append = FALSE
   )
   saveRDS(
