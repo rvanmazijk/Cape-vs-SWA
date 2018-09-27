@@ -4,4 +4,4 @@
 
 module load software/R-3.5.1
 
-Rscript 'bare-minimum-BRTs-for-HPC/01_find-ideal-BRT-presets.R'
+Rscript '01_find-ideal-BRT-presets.R'

@@ -5,7 +5,7 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-source("bare-minimum-BRTs-for-HPC/setup.R")
+source("setup.R")
 
 # Define what's going to be run in each parallel branch ------------------------
 
@@ -96,23 +96,12 @@ foreach(preset = presets) %dopar% {
   )
   capture.output(
     gbm_steps_simp <- run_initial_BRTs(preset),  # To allow BRT outputs to return
-    file = paste0(
-      "outputs/",
-      "species-environment-relationships/",
-      "parallel-core-worker-logs/",
-      "all-tc-lr-BRTs",
-      model_code, "_log.txt"
-    ),
+    file = paste0("all-tc-lr-BRTs", model_code, "_log.txt"),
     append = FALSE
   )
   saveRDS(
     gbm_steps_simp,
-    paste0(
-      "outputs/",
-      "species-environment-relationships/",
-      "parallel-core-worker-logs/",
-      "all-tc-lr-BRTs",
-      model_code, "_BRTs.RDS"
-    )
+    paste0("all-tc-lr-BRTs", model_code, "_BRTs.RDS")
   )
 }
+

@@ -1,5 +1,5 @@
 ---
-title: Notes on how to run my Cape vs SWA publication BRT-models using UCT's HPC
+title: Notes on **how** to run my Cape vs SWA publication BRT-models using UCT's HPC
 author: Ruan van Mazijk
 date: '`r Sys.Date()`'
 output: pdf_document
