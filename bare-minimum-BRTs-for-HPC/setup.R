@@ -5,6 +5,12 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Load packages into memory ----------------------------------------------------
+
+library(dismo)
+library(gbm)
+library(foreach)
+
 # Import data ------------------------------------------------------------------
 
 # Import enviro + roughness + richness + turnover datasets
