@@ -21,6 +21,10 @@ SWAFR_variables_HDS <- read.csv("SWAFR_variables_HDS.csv")[, -1]
 GCFR_predictor_names <- read.csv("GCFR_predictor_names.csv", stringsAsFactors = FALSE)[[2]]
 SWAFR_predictor_names <- read.csv("SWAFR_predictor_names.csv", stringsAsFactors = FALSE)[[2]]
 
+# Maximum no. trees allowed = 10,000 (global variable) -------------------------
+
+nt <- 10000
+
 # Define functions -------------------------------------------------------------
 
 fit_gbm_step <- function(variables, predictor_names, response_name,
