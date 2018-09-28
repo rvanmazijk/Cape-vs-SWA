@@ -3,7 +3,7 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-source("bare-minimum-BRTs-for-HPC/01_find-ideal-BRT-presets.R")
+source("setup.R")
 set.seed(1234)
 
 model_code <- paste0(
