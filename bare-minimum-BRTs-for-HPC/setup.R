@@ -38,7 +38,7 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
   if (log_response) {
     variables[[response_name]] <- log(variables[[response_name]])
   }
-  print(paste(
+  message(paste(
     "Fitting", response_name,
     ifelse(log_response, "(logged)", "(unlogged)"),
     "with tc =", tc, ", lr = ", lr, ", max.trees = ", nt
@@ -53,7 +53,7 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
     family = "gaussian",
     silent = TRUE
   )
-  print("Done (fit_gbm_step())")
+  message("Done (fit_gbm_step())")
 }
 simplify_predictors <- function(x) {
   # Convenience function for gbm.simplify()
@@ -114,7 +114,7 @@ run_initial_BRTs <- function(preset,
     names(gbm_steps_simp[[i]]) <- c("Cape", "SWA")
   }
   gbm_steps_simp
-  print("Done (run_initial_BRTs())")
+  message("Done (run_initial_BRTs())")
 }
 
 
