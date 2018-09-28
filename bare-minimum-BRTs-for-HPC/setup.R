@@ -57,7 +57,6 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
 }
 simplify_predictors <- function(x) {
   # Convenience function for gbm.simplify()
-  stopifnot(class(x) == "gbm")
   gbm_simp <- dismo::gbm.simplify(x)
   # Drop as many variables as can if multiple nos. of drops are optimal
   # (hence (max(which(mean == min(mean)))))
