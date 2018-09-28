@@ -101,7 +101,7 @@ foreach(preset = presets) %dopar% {
   )
   saveRDS(
     gbm_steps_simp,
-    paste0("all-tc-lr-BRTs", model_code, "_BRTs.RDS")
+    paste0("all-tc-lr-BRTs_", model_code, "_BRTs.RDS")
   )
 }
 
