@@ -103,3 +103,4 @@ job_checking_table %>%
   )
 
 filter(job_checking_table, is.na(both_regions_ran))
+# Only the mean QDS turnover BRT-models fail...
