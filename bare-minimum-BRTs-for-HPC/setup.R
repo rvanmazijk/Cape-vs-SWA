@@ -53,7 +53,7 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
     family = "gaussian",
     silent = TRUE
   )
-  print("Done")
+  print("Done (fit_gbm_step())")
 }
 simplify_predictors <- function(x) {
   # Convenience function for gbm.simplify()
@@ -115,6 +115,7 @@ run_initial_BRTs <- function(preset,
     names(gbm_steps_simp[[i]]) <- c("Cape", "SWA")
   }
   gbm_steps_simp
+  print("Done (run_initial_BRTs())")
 }
 
 
