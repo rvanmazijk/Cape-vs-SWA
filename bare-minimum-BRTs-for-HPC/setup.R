@@ -50,7 +50,8 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
     tree.complexity = tc,
     learning.rate = lr,
     max.trees = nt,
-    family = "gaussian"
+    family = "gaussian",
+    silent = TRUE
   )
 }
 simplify_predictors <- function(x) {
