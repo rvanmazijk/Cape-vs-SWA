@@ -53,6 +53,7 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
     family = "gaussian",
     silent = TRUE
   )
+  print("Done")
 }
 simplify_predictors <- function(x) {
   # Convenience function for gbm.simplify()
