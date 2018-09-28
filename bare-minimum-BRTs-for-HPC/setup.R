@@ -54,4 +54,55 @@ simplify_predictors <- function(x) {
   ))
   gbm_simp$pred.list[[optimal_no_drops]]
 }
+run_initial_BRTs <- function(preset,
+                             response_names = list("HDS_richness",
+                                                   "mean_QDS_turnover"),
+                             log_response_options = list(TRUE, FALSE),
+                             regions_variables = list(GCFR_variables_HDS,
+                                                      SWAFR_variables_HDS),
+                             regions_predictor_names = list(GCFR_predictor_names,
+                                                            SWAFR_predictor_names)) {
+  # Analyse value of environmental & heterogeneity variables for predicting
+  #   vascular plant species richness and turnover---
+  #   using bare-minimum BRTs on the UCT HPC
+  # Part 1:
+  #   Fitting BRT models with different tc and lr settings:
+  #     Define what's going to be run in each parallel branch
+  stopifnot(is.list(preset))
+  gbm_steps_simp <- foreach(response_name = response_names,
+                            log_response = log_response_options) %do% {
+    foreach(variables = regions_variables,
+            predictor_names = regions_predictor_names) %do% {
+      # Initial model fitting: gbm.step(richness ~ ...)
+      gbm_step <- fit_gbm_step(
+        variables = variables, predictor_names = predictor_names,
+        response_name = response_name, log_response = log_response,
+        tc = preset$tc, lr = preset$lr, nt = nt
+      )
+      if (is.null(gbm_step)) {
+        # Catch when BRT cannot fit because lr or step-size too fast
+        # or inappropriate
+        return("failed")
+      } else {
+        # Continue on to simplify and refit BRT-models
+        message("Inital BRT-model fit")
+        predictor_names_simp <- simplify_predictors(gbm_step)
+        message("Simpler predictor set found")
+        gbm_step_simp <- fit_gbm_step(
+          variables = variables, predictor_names = predictor_names_simp,
+          response_name = response_name, log_response = log_response,
+          tc = preset$tc, lr = preset$lr, nt = nt
+        )
+        message("Inital BRT-model re-fit to simplified predictor set")
+        return(gbm_step_simp)
+      }
+    }
+  }
+  names(gbm_steps_simp) <- c("HDS_richness_BRT", "mean_QDS_turnover_BRT")
+  for (i in seq_along(gbm_steps_simp)) {
+    names(gbm_steps_simp[[i]]) <- c("Cape", "SWA")
+  }
+  gbm_steps_simp
+}
+
 
