@@ -43,7 +43,7 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
     ifelse(log_response, "(logged)", "(unlogged)"),
     "with tc =", tc, ", lr = ", lr, ", max.trees = ", nt
   ))
-  dismo::gbm.step(
+  gbm_step <- dismo::gbm.step(
     data = variables,
     gbm.x = predictor_names,
     gbm.y = response_name,
@@ -54,6 +54,7 @@ fit_gbm_step <- function(variables, predictor_names, response_name,
     silent = TRUE
   )
   message("Done (fit_gbm_step())")
+  gbm_step
 }
 simplify_predictors <- function(x) {
   # Convenience function for gbm.simplify()
@@ -113,8 +114,8 @@ run_initial_BRTs <- function(preset,
   for (i in seq_along(gbm_steps_simp)) {
     names(gbm_steps_simp[[i]]) <- c("Cape", "SWA")
   }
-  gbm_steps_simp
   message("Done (run_initial_BRTs())")
+  gbm_steps_simp
 }
 
 
