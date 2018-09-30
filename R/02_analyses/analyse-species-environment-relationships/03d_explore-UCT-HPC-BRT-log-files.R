@@ -8,43 +8,23 @@
 library(here)
 source(here("R/setup.R"))
 
-# Job 2117157 ------------------------------------------------------------------
-
-# .... Read in all the job's *_log.txt files
-job_2117157_logs_paths <- list.files(full.names = TRUE, here(
-  "outputs",
-  "species-environment-relationships",
-  "parallel-core-worker-logs",
-  "all-tc-lr-BRTs",
-  "from-UCT-HPC",
-  "job-2117157-worker-logs"
-))
-job_2117157_logs <- job_2117157_logs_paths %>%
-  map(readLines) %>%
-  map(paste, collapse = "\n") %>%
-  as_vector()
-model_codes <- str_extract(
-  job_2117157_logs_paths,
-  "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}\\d{4}-\\d{2}-\\d{2}_log.txt$"
-)
-# (Note the lack of underscores in places...
-#   My bad. In early version of code I forgot to include those in
-#   writeRDS() file argument)
-
-# .... Define some functions to help -------------------------------------------
-
+# Define some functions to help
 get_tc <- function(model_code) {
   model_code %>%
     str_extract("tc-\\d{1}") %>%
     str_remove("tc-") %>%
     as.numeric()
 }
-get_lr <- function(model_code) {
-  model_code %>%
+get_lr <- function(model_code, trim = c("date", "ext")) {
+  lr <- model_code %>%
     str_extract("lr-[^_]{1,}") %>%
-    str_remove("lr-") %>%
-    str_remove("\\d{4}-\\d{2}-\\d{2}$") %>%  # Trim dates (see note above)
-    as.numeric()
+    str_remove("lr-")
+  if (trim == "date") {
+    lr %<>% str_remove("\\d{4}-\\d{2}-\\d{2}$")  # Trim dates (see note above)
+  } else if (trim == "ext") {
+    lr %<>% sans_ext()  # Trim .e and .o
+  }
+  as.numeric(lr)
 }
 get_print_statements <- function(raw_log) {
   raw_log %>%
@@ -68,6 +48,30 @@ get_model_type <- function(print_statements) {
   )
 }
 
+# Job 2117157 ------------------------------------------------------------------
+
+# .... Read in all the job's *_log.txt files -----------------------------------
+
+job_2117157_logs_paths <- list.files(full.names = TRUE, here(
+  "outputs",
+  "species-environment-relationships",
+  "parallel-core-worker-logs",
+  "all-tc-lr-BRTs",
+  "from-UCT-HPC",
+  "job-2117157-worker-logs"
+))
+job_2117157_logs <- job_2117157_logs_paths %>%
+  map(readLines) %>%
+  map(paste, collapse = "\n") %>%
+  as_vector()
+model_codes <- str_extract(
+  job_2117157_logs_paths,
+  "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}\\d{4}-\\d{2}-\\d{2}_log.txt$"
+)
+# (Note the lack of underscores in places...
+#   My bad. In early version of code I forgot to include those in
+#   writeRDS() file argument)
+
 # .... Check which model-sets failed part way ----------------------------------
 
 job_checking_table <-
@@ -77,7 +81,7 @@ job_checking_table <-
   ) %>%
   mutate(
     tc = get_tc(model_code),
-    lr = get_lr(model_code),
+    lr = get_lr(model_code, trim = "date"),
     # Ascertain whether a specific model ran by searching the raw logs for clues
     print_statements = get_print_statements(raw_log)
   ) %>%
@@ -104,3 +108,34 @@ job_checking_table %>%
 
 filter(job_checking_table, is.na(both_regions_ran))
 # Only the mean QDS turnover BRT-models fail...
+
+# Jobs 2117578 to 2117602 ------------------------------------------------------
+
+# .... Read in all the jobs' .e and .o files -----------------------------------
+# (Didn't write capture.output() *_log.txt files for these)
+
+jobs_e_o_files <-
+  tibble(path = list.files(full.names = TRUE, here(
+    "outputs",
+    "species-environment-relationships",
+    "parallel-core-worker-logs",
+    "all-tc-lr-BRTs",
+    "from-UCT-HPC",
+    "jobs-2117578-to-2117602-e-o-files"
+  ))) %>%
+  mutate(
+    path = str_extract(path, "outputs/.+$"),
+    model_code = str_extract(path, "tc-\\d_lr-[^_]{1,}\\.(e|o)\\d{7}$"),
+    tc = get_tc(model_code),
+    lr = get_lr(model_code, trim = "ext"),
+    e_o = path %>%
+      str_extract("\\.(e|o)\\d{7}$") %>%
+      str_remove("^\\.") %>%
+      str_remove("\\d{7}$"),
+    contents = map(here(path), read_file),
+    print_statements = get_print_statements(contents)
+  ) %>%
+  spread()
+
+jobs_e_o_files %>%
+  filter(map(print_statements, length) > 0)
