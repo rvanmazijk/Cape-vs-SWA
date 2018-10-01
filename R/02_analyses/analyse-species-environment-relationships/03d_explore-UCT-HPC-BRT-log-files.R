@@ -134,8 +134,39 @@ jobs_e_o_files <-
       str_remove("\\d{7}$"),
     contents = map(here(path), read_file),
     print_statements = get_print_statements(contents)
-  ) %>%
-  spread()
+  )
 
+# The .e files have the gbm.step() etc. messages
 jobs_e_o_files %>%
-  filter(map(print_statements, length) > 0)
+  filter(e_o == "e") %>%
+  select(print_statements)  # All length = 0
+jobs_e_o_files %>%
+  filter(e_o == "e") %>%
+  select(contents) %>%
+  unnest()
+
+# Print statements all went to .o files
+jobs_e_o_files %>%
+  filter(e_o == "o") %>%
+  select(print_statements)
+jobs_e_o_files %>%
+  filter(e_o == "o") %>%
+  select(contents) %>%
+  unnest()
+
+# Let's tidy up the dataframe accordingly
+jobs_e_o_files %>%
+  select(-contents, -print_statements) %>%
+  mutate(
+    output_ext = file_ext(path),
+    path = sans_ext(path),
+    model_code = sans_ext(model_code)
+  ) %>%
+  spread(e_o, path) %>%
+  mutate(
+    e_path = with_ext(e, output_ext),
+    o_path = with_ext(o, output_ext)
+  ) %>%
+  select(-output_ext, -e, -o) %>%
+  mutate(e_path = lag(e_path)) %>%
+  na.omit()
