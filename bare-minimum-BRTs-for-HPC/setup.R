@@ -120,4 +120,3 @@ run_initial_BRTs <- function(preset,
 # Create an alias for that function
 # TODO: remove this
 run_BRT_set <- run_initial_BRTs
-
