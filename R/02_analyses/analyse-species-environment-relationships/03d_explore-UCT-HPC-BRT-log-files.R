@@ -90,7 +90,7 @@ job_checking_table <-
   ) %>%
   unnest() %>%
   mutate(
-    logged = is_logged(print_statements),
+    logged = is_logged(print_statements),  # To double check
     model_type = ifelse(logged,
       paste0("log_", get_model_type(print_statements)),
       get_model_type(print_statements)
