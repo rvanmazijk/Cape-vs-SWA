@@ -66,6 +66,7 @@ simplify_predictors <- function(x) {
   ))
   gbm_simp$pred.list[[optimal_no_drops]]
 }
+
 run_initial_BRTs <- function(preset,
                              response_names = list("HDS_richness",
                                                    "mean_QDS_turnover"),
@@ -117,6 +118,7 @@ run_initial_BRTs <- function(preset,
   message("Done (run_initial_BRTs())")
   gbm_steps_simp
 }
+
 run_final_BRTs <- function(preset) {
   # Analyse value of environmental & heterogeneity variables for predicting
   #   vascular plant species richness and turnover---
@@ -124,6 +126,9 @@ run_final_BRTs <- function(preset) {
   # Part 2:
   #   Fitting final BRT models with ideal tc and lr settings
   stopifnot(is.list(preset))
+
+  # Describe all 4 models ------------------------------------------------------
+
   model_configs <- list(
     GCFR_richness = list(
       response_name = "HDS_richness",
@@ -150,6 +155,9 @@ run_final_BRTs <- function(preset) {
       predictor_names = SWAFR_predictor_names
     )
   )
+
+  # Run those 4 in parallel ----------------------------------------------------
+
   registerDoParallel(detectCores())
   gbm_steps_simp <- foreach(model_config = model_configs) %dopar% {
     gbm_step <- fit_gbm_step(
@@ -176,10 +184,132 @@ run_final_BRTs <- function(preset) {
     message("Inital BRT-model re-fit to simplified predictor set")
     gbm_step_simp
   }
-  names(gbm_steps_simp) <- c("HDS_richness_BRT", "mean_QDS_turnover_BRT")
-  for (i in seq_along(gbm_steps_simp)) {
-    names(gbm_steps_simp[[i]]) <- c("Cape", "SWA")
-  }
-  message("Done (run_initial_BRTs())")
+  names(gbm_steps_simp) <- names(model_configs)
+  message("Done (run_final_BRTs())")
   gbm_steps_simp
+}
+
+# Describe all 4 models outside of function body for use in run_permuted_BRTs()
+model_configs <- list(
+  GCFR_richness = list(
+    response_name = "HDS_richness",
+    log_response = TRUE,
+    variables = GCFR_variables_HDS,
+    predictor_names = "..."  # TODO:
+  ),
+  GCFR_turnover = list(
+    response_name = "mean_QDS_turnover",
+    log_response = FALSE,
+   variables = GCFR_variables_HDS,
+   predictor_names = "..."
+  ),
+  SWAFR_richness = list(
+    response_name = "HDS_richness",
+    log_response = TRUE,
+    variables = SWAFR_variables_HDS,
+    predictor_names = "..."
+  ),
+  SWAFR_turnover = list(
+    response_name = "mean_QDS_turnover",
+    log_response = FALSE,
+    variables = GCFR_variables_HDS,
+    predictor_names = "..."
+  )
+)
+permute_vector <- function(x) {
+  # Shuffles positions of values in vector
+  x[sample(length(x))]
+}
+permute_wo_nas <- function(x) {
+  # Shuffles positions of values in vector,
+  # but keeps NAs in their starting positions
+  x[!is.na(x)] <- permute_vector(x[!is.na(x)])
+  x
+}
+run_permuted_BRTs <- function(preset, model_config, model_config_name) {
+  # Analyse value of environmental & heterogeneity variables for predicting
+  #   vascular plant species richness and turnover---
+  #   using bare-minimum BRTs on the UCT HPC
+  # Part 3:
+  #   Fitting BRT models to randomly permuted data,
+  #   with ideal tc and lr settings
+  stopifnot(exprs = {
+    is.list(preset)
+    is.list(model_config)
+    is.character(model_config_name)
+  })
+  registerDoParallel(detectCores())
+  foreach(i = 1:1000) %dopar% {
+    model_code <- paste0(
+      "permutation-", i,
+      "_worker-", Sys.getpid(),
+      "_tc", preset$tc,
+      "_lr-", preset$lr,
+      "_", Sys.Date()
+    )
+    message(paste(
+      i, "- Permuting", model_config$response_name, "column (without NAs)"
+    ))
+    set.seed(i)
+    model_config$variables[[model_config$response_name]] <- permute_wo_nas(
+      model_config$variables[[model_config$response_name]]
+    )
+    message(paste(
+      i, "-", model_config$response_name, "column permuted (without NAs)"
+    ))
+    message(paste(
+      i, "- Writing permuted data CSV to disc"
+    ))
+    write.csv(
+      model_config$variables,
+      paste0("data_", model_code, ".csv")
+    )
+    message(paste(
+      i, "- Permuted data CSV written to disc"
+    ))
+    message(paste(
+      i, "- Fitting inital BRT-model for", model_config_name
+    ))
+    gbm_step <- fit_gbm_step(
+      variables = model_config$variables,
+      predictor_names = model_config$predictor_names,
+      response_name = model_config$response_name,
+      log_response = model_config$log_response,
+      tc = preset$tc,
+      lr = preset$lr,
+      nt = nt
+    )
+    message(paste(
+      i, "- Inital BRT-model fit for", model_config_name
+    ))
+    predictor_names_simp <- simplify_predictors(gbm_step)
+    message(paste(
+      i, "- Simpler predictor set found"
+    ))
+    message(paste(
+      i, "- Re-fitting to simplified predictor set for", model_config_name
+    ))
+    gbm_step_simp <- fit_gbm_step(
+      variables = model_config$variables,
+      predictor_names = predictor_names_simp,
+      response_name = model_config$response_name,
+      log_response = model_config$log_response,
+      tc = preset$tc,
+      lr = preset$lr,
+      nt = nt
+    )
+    message(paste(
+      i, "- Re-fit to simplified predictor set for", model_config_name
+    ))
+    message(paste(
+      i, "- Writing", model_config_name, "BRT RDS to disc"
+    ))
+    saveRDS(
+      gbm_step_simp,
+      paste0("BRT_", model_code, ".RDS")
+    )
+    message(paste(
+      i, "-", model_config_name, "BRT RDS written to disc"
+    ))
+  }
 }
