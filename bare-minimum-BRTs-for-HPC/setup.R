@@ -117,5 +117,7 @@ run_initial_BRTs <- function(preset,
   message("Done (run_initial_BRTs())")
   gbm_steps_simp
 }
-
+# Create an alias for that function
+# TODO: remove this
+run_BRT_set <- run_initial_BRTs
 
