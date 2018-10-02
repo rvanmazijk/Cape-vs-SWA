@@ -18,7 +18,7 @@ Our analyses required definitions of the boundaries of the two regions, environm
 
 We carried out this investigation at four principal spatial scales: 0.05º x 0.05º squares (the finest common resolution among the environmental data sources used), quarter degree squares (QDS) [@Larsen2009], half degree squares (HDS) [@Larsen2009] and three-quarter degree squares (3QDS). For the Cape, most plant occurrence records are only accurate to QDS level. Thus, any analysis involving species data was necessary limited to scales above and including QDS.
 
-Analyses were performed in R v3.5.0 [@RCoreTeam2018]<!--TODO: v3.5.1?-->. Version-numbers of specific R packages used are presented in the bibliography.
+Analyses were performed in R v3.4.0--3.5.1 [@RCoreTeam2018]. Version-numbers of specific R packages used are presented in the bibliography.
 
 ## Environmental data sources
 
