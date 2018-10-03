@@ -29,6 +29,8 @@ data_sources <- read_csv(here("manuscript/data-sources.csv"))
 
 MDC and GAV conceived the study question, which RVM investigated under their supervision for his BSc Hons project. The analyses and programming work were largely devised by RVM, with input from the other authors, and was carried out by RVM. RVM wrote the first draft of the manuscript and all authors contributed equally thereafter.
 
+<!--[CRediT](https://casrai.org/credit/) breakdown: GAV and MDC conceptualised the study and methodology, and supervised RVM in carrying out the work as part of his BSc Hons project. RVM curated the data, developed and performed the analyses, implemented in R, and produced the figures documenting the results. RVM wrote the original manuscript, and GAV and MDC reviewed and edited subsequent drafts with RVM.-->
+
 \break
 
 # Tables {-}
@@ -46,6 +48,8 @@ data_sources %>%
   kableExtra::group_rows("Soil variables", 7, 10) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
+
+
 
 \break
 

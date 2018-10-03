@@ -72,5 +72,3 @@ Abbreviations:
 - environmental heterogeneity (EH)
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 -->
-
-<!--[CRediT](https://casrai.org/credit/) breakdown: GAV and MDC conceptualised the study and methodology, and supervised RVM in carrying out the work as part of his BSc Hons project. RVM curated the data, developed and performed the analyses, implemented in R, and produced the figures documenting the results. RVM wrote the original manuscript, and GAV and MDC reviewed and edited subsequent drafts with RVM.-->
