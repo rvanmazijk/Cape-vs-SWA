@@ -10,6 +10,7 @@
 library(dismo)
 library(gbm)
 library(foreach)
+library(doParallel)
 
 # Import data ------------------------------------------------------------------
 
