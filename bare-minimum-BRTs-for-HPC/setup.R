@@ -62,9 +62,12 @@ simplify_predictors <- function(x) {
   gbm_simp <- dismo::gbm.simplify(x)
   # Drop as many variables as can if multiple nos. of drops are optimal
   # (hence (max(which(mean == min(mean)))))
-  optimal_no_drops <- max(which(
+  one_too_many_drops <- max(which(
     gbm_simp$deviance.summary$mean == min(gbm_simp$deviance.summary$mean)
   ))
+  optimal_no_drops <- one_too_many_drops - 1
+  message(paste("Optimal no. drops =", optimal_no_drops))
+  message(paste("Final predictor list =", gbm_simp$pred.list))
   gbm_simp$pred.list[[optimal_no_drops]]
 }
 
