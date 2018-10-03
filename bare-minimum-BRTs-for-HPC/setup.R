@@ -120,17 +120,20 @@ run_initial_BRTs <- function(preset,
   gbm_steps_simp
 }
 
-run_final_BRTs <- function(preset) {
+run_final_BRTs <- function(preset, model) {
   # Analyse value of environmental & heterogeneity variables for predicting
   #   vascular plant species richness and turnover---
   #   using bare-minimum BRTs on the UCT HPC
   # Part 2:
   #   Fitting final BRT models with ideal tc and lr settings
-  stopifnot(is.list(preset))
+  stopifnot(exprs = {
+    is.list(preset)
+    is.character(model)
+  })
 
   # Describe all 4 models ------------------------------------------------------
 
-  model_configs <- list(
+  models <- list(
     GCFR_richness = list(
       response_name = "HDS_richness",
       log_response = TRUE,
@@ -157,37 +160,45 @@ run_final_BRTs <- function(preset) {
     )
   )
 
-  # Run those 4 in parallel ----------------------------------------------------
+  model_code <- paste0(
+    "final_", model,
+    "_worker-", Sys.getpid(),
+    "_tc", preset$tc,
+    "_lr-", preset$lr,
+    "_", Sys.Date()
+  )
 
-  registerDoParallel(detectCores())
-  gbm_steps_simp <- foreach(model_config = model_configs) %dopar% {
-    gbm_step <- fit_gbm_step(
-      variables = model_config$variables,
-      predictor_names = model_config$predictor_names,
-      response_name = model_config$response_name,
-      log_response = model_config$log_response,
-      tc = preset$tc,
-      lr = preset$lr,
-      nt = nt
-    )
-    message("Inital BRT-model fit")
-    predictor_names_simp <- simplify_predictors(gbm_step)
-    message("Simpler predictor set found")
-    gbm_step_simp <- fit_gbm_step(
-      variables = model_config$variables,
-      predictor_names = predictor_names_simp,
-      response_name = model_config$response_name,
-      log_response = model_config$log_response,
-      tc = preset$tc,
-      lr = preset$lr,
-      nt = nt
-    )
-    message("Inital BRT-model re-fit to simplified predictor set")
-    gbm_step_simp
-  }
-  names(gbm_steps_simp) <- names(model_configs)
-  message("Done (run_final_BRTs())")
-  gbm_steps_simp
+  # Run the specified model ----------------------------------------------------
+
+  message(paste("Fitting inital BRT-model for", model))
+  gbm_step <- fit_gbm_step(
+    variables = models[[model]]$variables,
+    predictor_names = models[[model]]$predictor_names,
+    response_name = models[[model]]$response_name,
+    log_response = models[[model]]$log_response,
+    tc = preset$tc,
+    lr = preset$lr,
+    nt = nt
+  )
+  message(paste("Inital BRT-model fit for", model))
+
+  predictor_names_simp <- simplify_predictors(gbm_step)
+  message(paste("Simpler predictor set found for", model))
+
+  message(paste("Re-fitting to simplified predictor set for", model))
+  gbm_step_simp <- fit_gbm_step(
+    variables = models[[model]]$variables,
+    predictor_names = predictor_names_simp,
+    response_name = models[[model]]$response_name,
+    log_response = models[[model]]$log_response,
+    tc = preset$tc,
+    lr = preset$lr,
+    nt = nt
+  )
+  message(paste("Re-fit to simplified predictor set for", model))
+
+  message(paste("Done (run_final_BRTs()) for", model))
+  gbm_step_simp
 }
 
 # Describe all 4 models outside of function body for use in run_permuted_BRTs()
@@ -196,25 +207,25 @@ model_configs <- list(
     response_name = "HDS_richness",
     log_response = TRUE,
     variables = GCFR_variables_HDS,
-    predictor_names = "..."  # TODO:
+    predictor_names = GCFR_predictor_names
   ),
   GCFR_turnover = list(
     response_name = "mean_QDS_turnover",
     log_response = FALSE,
    variables = GCFR_variables_HDS,
-   predictor_names = "..."
+   predictor_names = GCFR_predictor_names
   ),
   SWAFR_richness = list(
     response_name = "HDS_richness",
     log_response = TRUE,
     variables = SWAFR_variables_HDS,
-    predictor_names = "..."
+    predictor_names = SWAFR_predictor_names
   ),
   SWAFR_turnover = list(
     response_name = "mean_QDS_turnover",
     log_response = FALSE,
     variables = GCFR_variables_HDS,
-    predictor_names = "..."
+    predictor_names = SWAFR_predictor_names
   )
 )
 permute_vector <- function(x) {
