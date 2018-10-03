@@ -174,6 +174,8 @@ jobs_e_o_files %<>%
 jobs_e_o_files %>%
   select(-my_print_statements) %>%
   unnest() %>%
-  filter(!str_detect(gbm_messages, "Load")) %>%
-  filter(!str_detect(gbm_messages, "Load")) %>%
-  filter(!str_detect(gbm_messages, "Load")) %>%
+  filter(str_detect(gbm_messages, "Error"))
+jobs_e_o_files %>%
+  select(-gbm_messages) %>%
+  unnest() %>%
+  mutate()

@@ -4,7 +4,11 @@ library(here)
 source(here("R/setup.R"))
 
 saved_BRT_paths <- list.files(full.names = TRUE, here(
-  "outputs/species-environment-relationships/saved-BRT-RDSs/all-tc-lr-BRTs"
+  "outputs",
+  "species-environment-relationships",
+  "saved-BRT-RDS",
+  "all-tc-lr-BRTs",
+  "from-local-machine"
 ))
 
 # Define functions to summarise all saved BRT-models ---------------------------
