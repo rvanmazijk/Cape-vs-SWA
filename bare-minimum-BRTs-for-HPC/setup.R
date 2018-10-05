@@ -67,8 +67,13 @@ simplify_predictors <- function(x) {
   ))
   optimal_no_drops <- one_too_many_drops - 1
   message(paste("Optimal no. drops =", optimal_no_drops))
-  message(paste("Final predictor list =", gbm_simp$pred.list))
-  gbm_simp$pred.list[[optimal_no_drops]]
+  if (optimal_no_drops == 0) {
+    message(paste("Final predictor list = original"))
+    return("original")
+  } else {
+    message(paste("Final predictor list =", gbm_simp$pred.list))
+    return(gbm_simp$pred.list[[optimal_no_drops]])
+  }
 }
 
 run_initial_BRTs <- function(preset,
@@ -104,14 +109,19 @@ run_initial_BRTs <- function(preset,
         # Continue on to simplify and refit BRT-models
         message("Inital BRT-model fit")
         predictor_names_simp <- simplify_predictors(gbm_step)
-        message("Simpler predictor set found")
-        gbm_step_simp <- fit_gbm_step(
-          variables = variables, predictor_names = predictor_names_simp,
-          response_name = response_name, log_response = log_response,
-          tc = preset$tc, lr = preset$lr, nt = nt
-        )
-        message("Inital BRT-model re-fit to simplified predictor set")
-        return(gbm_step_simp)
+        if (predictor_names_simp == "original") {
+          message("No simpler predictor set found")
+          return(gbm_step)
+        } else {
+          message("Simpler predictor set found")
+          gbm_step_simp <- fit_gbm_step(
+            variables = variables, predictor_names = predictor_names_simp,
+            response_name = response_name, log_response = log_response,
+            tc = preset$tc, lr = preset$lr, nt = nt
+          )
+          message("Inital BRT-model re-fit to simplified predictor set")
+          return(gbm_step_simp)
+        }
       }
     }
   }
