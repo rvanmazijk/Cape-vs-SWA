@@ -193,25 +193,35 @@ run_final_BRTs <- function(preset, model) {
     lr = preset$lr,
     nt = nt
   )
-  message(paste("Inital BRT-model fit for", model))
+  if (is.null(gbm_step)) {
+    message(paste("Failed inital BRT-model fit for", model))
+    return("failed")
+  } else {
+    message(paste("Inital BRT-model fit for", model))
 
-  predictor_names_simp <- simplify_predictors(gbm_step)
-  message(paste("Simpler predictor set found for", model))
+    predictor_names_simp <- simplify_predictors(gbm_step)
+    if (predictor_names_simp == "original") {
+      message("No simpler predictor set found")
+      return(gbm_step)
+    } else {
+      message(paste("Simpler predictor set found for", model))
 
-  message(paste("Re-fitting to simplified predictor set for", model))
-  gbm_step_simp <- fit_gbm_step(
-    variables = models[[model]]$variables,
-    predictor_names = predictor_names_simp,
-    response_name = models[[model]]$response_name,
-    log_response = models[[model]]$log_response,
-    tc = preset$tc,
-    lr = preset$lr,
-    nt = nt
-  )
-  message(paste("Re-fit to simplified predictor set for", model))
+      message(paste("Re-fitting to simplified predictor set for", model))
+      gbm_step_simp <- fit_gbm_step(
+        variables = models[[model]]$variables,
+        predictor_names = predictor_names_simp,
+        response_name = models[[model]]$response_name,
+        log_response = models[[model]]$log_response,
+        tc = preset$tc,
+        lr = preset$lr,
+        nt = nt
+      )
+      message(paste("Re-fit to simplified predictor set for", model))
 
-  message(paste("Done (run_final_BRTs()) for", model))
-  gbm_step_simp
+      message(paste("Done (run_final_BRTs()) for", model))
+      return(gbm_step_simp)
+    }
+  }
 }
 
 # Describe all 4 models outside of function body for use in run_permuted_BRTs()
@@ -263,6 +273,10 @@ run_permuted_BRTs <- function(preset, model_config, model_config_name) {
     is.list(model_config)
     is.character(model_config_name)
   })
+  msg_i <- function(...) {
+    stopifnot(exists("i"))
+    message(paste(i, "-", ...))
+  }
   registerDoParallel(detectCores())
   foreach(i = 1:1000) %dopar% {
     model_code <- paste0(
@@ -274,29 +288,21 @@ run_permuted_BRTs <- function(preset, model_config, model_config_name) {
       "_", Sys.Date()
     )
     capture.output(file = paste0(model_code, "_log.txt"), append = FALSE, {
-      message(paste(
-        i, "- Permuting", model_config$response_name, "column (without NAs)"
-      ))
+
+      msg_i("Permuting", model_config$response_name, "column (without NAs)")
       set.seed(i)
       model_config$variables[[model_config$response_name]] <- permute_wo_nas(
         model_config$variables[[model_config$response_name]]
       )
-      message(paste(
-        i, "-", model_config$response_name, "column permuted (without NAs)"
-      ))
-      message(paste(
-        i, "- Writing permuted data CSV to disc"
-      ))
+      msg_i(model_config$response_name, "column permuted (without NAs)")
+      msg_i("Writing permuted data CSV to disc")
       write.csv(
         model_config$variables,
         paste0("data_", model_code, ".csv")
       )
-      message(paste(
-        i, "- Permuted data CSV written to disc"
-      ))
-      message(paste(
-        i, "- Fitting inital BRT-model for", model_config_name
-      ))
+      msg_i("Permuted data CSV written to disc")
+
+      msg_i("Fitting inital BRT-model for", model_config_name)
       gbm_step <- fit_gbm_step(
         variables = model_config$variables,
         predictor_names = model_config$predictor_names,
@@ -306,38 +312,40 @@ run_permuted_BRTs <- function(preset, model_config, model_config_name) {
         lr = preset$lr,
         nt = nt
       )
-      message(paste(
-        i, "- Inital BRT-model fit for", model_config_name
-      ))
-      predictor_names_simp <- simplify_predictors(gbm_step)
-      message(paste(
-        i, "- Simpler predictor set found"
-      ))
-      message(paste(
-        i, "- Re-fitting to simplified predictor set for", model_config_name
-      ))
-      gbm_step_simp <- fit_gbm_step(
-        variables = model_config$variables,
-        predictor_names = predictor_names_simp,
-        response_name = model_config$response_name,
-        log_response = model_config$log_response,
-        tc = preset$tc,
-        lr = preset$lr,
-        nt = nt
-      )
-      message(paste(
-        i, "- Re-fit to simplified predictor set for", model_config_name
-      ))
-      message(paste(
-        i, "- Writing", model_config_name, "BRT RDS to disc"
-      ))
+      if (is.null(gbm_step)) {
+        msg_i("Failed inital BRT-model fit for", model_config_name)
+        out <- "failed"
+      } else {
+        msg_i("Inital BRT-model fit for", model_config_name)
+
+        predictor_names_simp <- simplify_predictors(gbm_step)
+        if (predictor_names_simp == "original") {
+          msg_i("No simpler predictor set found")
+          out <- gbm_step
+        } else {
+          msg_i("Simpler predictor set found")
+
+          msg_i("Re-fitting to simplified predictor set for", model_config_name)
+          gbm_step_simp <- fit_gbm_step(
+            variables = model_config$variables,
+            predictor_names = predictor_names_simp,
+            response_name = model_config$response_name,
+            log_response = model_config$log_response,
+            tc = preset$tc,
+            lr = preset$lr,
+            nt = nt
+          )
+          msg_i("Re-fit to simplified predictor set for", model_config_name)
+          out <- gbm_step_simp
+        }
+      }
+
+      msg_i("Writing", model_config_name, "BRT RDS to disc")
       saveRDS(
-        gbm_step_simp,
+        out,
         paste0("BRT_", model_code, ".RDS")
       )
-      message(paste(
-        i, "-", model_config_name, "BRT RDS written to disc"
-      ))
+      msg_i(model_config_name, "BRT RDS written to disc")
     })
   }
 }
