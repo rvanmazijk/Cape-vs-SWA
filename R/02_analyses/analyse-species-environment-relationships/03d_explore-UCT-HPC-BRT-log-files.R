@@ -301,20 +301,21 @@ saved_brt_summaries <- imap_dfr(brt_paths, function(.x, .y) {
   message(glue("================================="))
   model_summaries
 })
-saved_brt_summary_plots <- foreach(region_ = c("Cape", "SWA")) %do% {
-  foreach(response_ = c("HDS_richness_BRT", "mean_QDS_turnover_BRT")) %do% {
-    foreach(diagnostic_ = c("nt", "pseudo_r2", "pred_obs_r2")) %do% {
-      saved_brt_summaries %>%
-        filter(region == region_, response == response_) %>%
-        mutate(lr = as.factor(lr)) %>%
-        ggplot(aes_string("tc", "lr", fill = diagnostic_)) +
-        geom_tile() +
-        scale_fill_viridis_c(limits = case_when(
-          diagnostic_ == "nt" ~ c(0, 10000),
-          diagnostic_ == "pseudo_r2" ~ c(0, 1),
-          diagnostic_ == "pred_obs_r2" ~ c(0, 1)
-        )) +
-        ggtitle(glue("{region_}, {richness_or_turnover_}"))
-    }
-  }
+saved_brt_summaries %>%
+  group_by(tc, lr, region, response) %>%
+  summarise(n = n()) %$%
+  all(n == 1)
+foreach(response_ = c("HDS_richness_BRT", "mean_QDS_turnover_BRT")) %do% {
+  saved_brt_summaries %>%
+    filter(response == response_) %>%
+    mutate(nt = nt / 10000, lr = as.factor(lr)) %>%
+    gather(
+      diagnostic, value,
+      nt, pseudo_r2, pred_obs_r2
+    ) %>%
+    ggplot(aes(tc, lr, fill = value)) +
+    geom_tile() +
+    scale_fill_viridis_c() +
+    facet_grid(diagnostic ~ region)
 }
+
