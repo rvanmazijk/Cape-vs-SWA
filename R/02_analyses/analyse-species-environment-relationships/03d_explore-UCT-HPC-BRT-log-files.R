@@ -257,3 +257,64 @@ jobs_e_o_files <-
 
 View(jobs_e_o_files)
 
+# .... Plots -------------------------------------------------------------------
+
+brt_paths <- list.files(full.names = TRUE, here(
+  "outputs",
+  "species-environment-relationships",
+  "from-UCT-HPC",
+  "all-tc-lr-BRTs",
+  "saved-BRT-RDS",
+  "jobs-2130463-to-2130487-RDS"
+))
+saved_brt_summaries <- imap_dfr(brt_paths, function(.x, .y) {
+  saved_brt <- read_rds(.x)
+  print(map(saved_brt, summary))
+  message(glue("{.y}/25 BRT-sets read into memory"))
+  model_summaries <-
+    map_df(saved_brt, .id = "response", function(.x) {
+      map_df(.x, .id = "region", function(.x) {
+        if (is.null(.x)) {
+          return(tibble(
+            nt = NA,
+            pseudo_r2 = NA,
+            pred_obs_r2 = NA,
+            pred_obs_r2_exp = NA,
+            contribs = NA
+          ))
+        } else {
+          class(.x) <- "gbm"
+          return(my_BRT_summary(.x))
+        }
+      })
+    }) %>%
+    cbind(path = .x, .) %>%
+    as_tibble() %>%
+    mutate(
+      tc = get_tc(path),
+      lr = path %>%
+        str_extract("tc-\\d_.+$") %>%
+        str_remove("_BRTs\\.RDS$") %>%
+        get_lr(trim = "date")
+    )
+  message(glue("{.y}/25 BRT-sets summarised"))
+  message(glue("================================="))
+  model_summaries
+})
+saved_brt_summary_plots <- foreach(region_ = c("Cape", "SWA")) %do% {
+  foreach(response_ = c("HDS_richness_BRT", "mean_QDS_turnover_BRT")) %do% {
+    foreach(diagnostic_ = c("nt", "pseudo_r2", "pred_obs_r2")) %do% {
+      saved_brt_summaries %>%
+        filter(region == region_, response == response_) %>%
+        mutate(lr = as.factor(lr)) %>%
+        ggplot(aes_string("tc", "lr", fill = diagnostic_)) +
+        geom_tile() +
+        scale_fill_viridis_c(limits = case_when(
+          diagnostic_ == "nt" ~ c(0, 10000),
+          diagnostic_ == "pseudo_r2" ~ c(0, 1),
+          diagnostic_ == "pred_obs_r2" ~ c(0, 1)
+        )) +
+        ggtitle(glue("{region_}, {richness_or_turnover_}"))
+    }
+  }
+}

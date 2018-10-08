@@ -96,7 +96,7 @@ my_BRT_summary <- function(x) {
     pseudo_r2 = pseudo_r2(x),
     pred_obs_r2 = pred_obs_r2s$pred_obs_m,
     pred_obs_r2_exp = pred_obs_r2s$pred_obs_m_exp,
-    contribs = list(summary(x))
+    contribs = list(x$contributions)
   )
 }
 
