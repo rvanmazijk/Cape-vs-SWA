@@ -2,24 +2,15 @@
 
 ## Describing environmental heterogeneity across scales
 
-Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cells ($CLES > 0.50$, Mann-Whitney $U$-test: $P < 0.05$, Figure \@ref(fig:roughness)).
-The Cape is thus more environmentally heterogeneous than SWA overall, but the degree to which it is more heterogeneous varies between environmental variables.
-These effects also vary somewhat with the spatial scale concerned.
-In some variables, the differentiation between Cape and SWA heterogeneity lessens at coarser scales (Figure \@ref(fig:roughness)b).
-Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney $U$ tests, $P > 0.05$, Figure \@ref(fig:roughness)b).
+Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cells ($CLES > 0.50$, Mann-Whitney $U$-test: $P < 0.05$, Figure \@ref(fig:roughness)). The Cape is thus more environmentally heterogeneous than SWA overall, but the degree to which it is more heterogeneous varies between environmental variables. These effects also vary somewhat with the spatial scale concerned. In some variables, the differentiation between Cape and SWA heterogeneity lessens at coarser scales (Figure \@ref(fig:roughness)b). Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney $U$ tests, $P > 0.05$, Figure \@ref(fig:roughness)b).
 
-Most obviously, and as expected, topographic heterogeneity is greatest in the Cape (Figure \@ref(fig:roughness)).
-Though SWA has a slightly wider distribution of elevational roughness values at coarse scales (e.g. 3QDS) compared to fine scales (0.05º), so does the Cape.
-As such, the relative difference between the two regions seems invariant with spatial scale ($CLES \approx 0.95$, Figure \@ref(fig:roughness)b).
-This concurs with our expectations, as the Cape is mountainous and known to have steep elevational gradients [@ref], while SWA is much more topographically uniform.
+Most obviously, and as expected, topographic heterogeneity is greatest in the Cape (Figure \@ref(fig:roughness)). Though SWA has a slightly wider distribution of elevational roughness values at coarse scales (e.g. 3QDS) compared to fine scales (0.05º), so does the Cape. As such, the relative difference between the two regions seems invariant with spatial scale ($CLES \approx 0.95$, Figure \@ref(fig:roughness)b). This concurs with our expectations, as the Cape is mountainous and known to have steep elevational gradients [@ref], while SWA is much more topographically uniform.
+
 <!--
-Intuitively, then, elevation serves as a "benchmark test" for our comparisons of EH here, as it is well known and expected that the Cape should be more elevationally heterogeneous than SWA.
-Additionally, we can conclude that although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA.
+Intuitively, then, elevation serves as a "benchmark test" for our comparisons of EH here, as it is well known and expected that the Cape should be more elevationally heterogeneous than SWA. Additionally, we can conclude that although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA.
 -->
 
-Climatic heterogeneity presents less differentiation between the Cape and SWA than elevational roughness (Figure \@ref(fig:roughness)a), though still the Cape predominates (Figure \@ref(fig:roughess)b).
-Notably, the difference between Cape and SWA mean annual rainfall and land surface temperature heterogeneity lessens when considered at coarse spatial scales (3QDS scale, Figure \@ref(roughness)b).
-Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape across all spatial scales considered.
+Climatic heterogeneity presents less differentiation between the Cape and SWA than elevational roughness (Figure \@ref(fig:roughness)a), though still the Cape predominates (Figure \@ref(fig:roughess)b). Notably, the difference between Cape and SWA mean annual rainfall and land surface temperature heterogeneity lessens when considered at coarse spatial scales (3QDS scale, Figure \@ref(roughness)b). Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape across all spatial scales considered.
 
 Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)).
 
