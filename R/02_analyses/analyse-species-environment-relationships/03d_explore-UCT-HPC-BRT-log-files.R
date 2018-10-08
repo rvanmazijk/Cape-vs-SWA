@@ -66,7 +66,7 @@ job_2117157_logs_paths <- list.files(full.names = TRUE, here(
 job_2117157_logs <- job_2117157_logs_paths %>%
   map(readLines) %>%
   map(paste, collapse = "\n") %>%
-  as_vector()
+  as_vector()2128806
 model_codes <- str_extract(
   job_2117157_logs_paths,
   "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}\\d{4}-\\d{2}-\\d{2}_log.txt$"
@@ -219,4 +219,41 @@ jobs_e_o_files <-
 View(jobs_e_o_files)
 # I found some runs with no simpler predictor sets found by gbm.simplify()...
 # They bombed out
-# Back tot he drawing board!
+# Back to the drawing board!
+
+# Jobs 2130463 to 2130487 ------------------------------------------------------
+
+# .... Read in all the jobs' .e and .o files -----------------------------------
+# (Didn't write capture.output() *_log.txt files for these)
+
+jobs_e_o_files <-
+  tibble(path = list.files(full.names = TRUE, here(
+    "outputs",
+    "species-environment-relationships",
+    "from-UCT-HPC",
+    "all-tc-lr-BRTs",
+    "worker-logs",
+    "jobs-2130463-to-2130487-e-o-files"
+  ))) %>%
+  mutate(
+    path = str_extract(path, "outputs/.+$"),
+    output_ext = file_ext(path),
+    model_code = path %>%
+      str_extract("tc-\\d_lr-[^_]{1,}\\.(e|o)\\d{7}$"),
+    tc = get_tc(model_code),
+    lr = get_lr(model_code, trim = "ext"),
+    e_o = path %>%
+      str_extract("\\.(e|o)\\d{7}$") %>%
+      str_remove("^\\.") %>%
+      str_remove("\\d{7}$"),
+    contents = map(here(path), read_file)
+  ) %>%
+  filter(str_detect(contents, "")) %>%  # Removes empty .o files
+  select(-path, -output_ext, -model_code, -e_o) %>%
+  mutate(contents = str_split(contents, "\n")) %>%
+  unnest()
+
+# .... Check which model-sets failed part way ----------------------------------
+
+View(jobs_e_o_files)
+
