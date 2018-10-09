@@ -1,17 +1,30 @@
-# Exploring UCT HPC job output files, for debugging all-tc-lr runs
-#   to find ideal BRT tc and lr presets
-# Cape vs SWA publication
-# Ruan van Mazijk
+---
+title: Exploring UCT HPC job output files, for debugging all-tc-lr runs to find ideal BRT tc and lr presets
+subtitle: Cape vs SWA publication
+author: Ruan van Mazijk
+date: '`r Sys.Date()`'
+output: html_notebook
+---
 
-# Setup ------------------------------------------------------------------------
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
 
+```{r my-setup}
 library(here)
 source(here("R/setup.R"))
+```
 
-# Job 2117157 ------------------------------------------------------------------
+# Job 2117157
 
-# .... Read in all the job's *_log.txt files -----------------------------------
+Read in all the job's `_log.txt` files
 
+```{r}
 job_2117157_logs_paths <- list.files(full.names = TRUE, here(
   "outputs",
   "species-environment-relationships",
@@ -28,12 +41,13 @@ model_codes <- str_extract(
   job_2117157_logs_paths,
   "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}\\d{4}-\\d{2}-\\d{2}_log.txt$"
 )
-# (Note the lack of underscores in places...
-#   My bad. In early version of code I forgot to include those in
-#   writeRDS() file argument)
+```
 
-# .... Check which model-sets failed part way ----------------------------------
+(Note the lack of underscores in places... My bad. In early version of code I forgot to include those in `writeRDS()` file argument.)
 
+Check which model-sets failed part way
+
+```{r}
 job_checking_table <-
   tibble(
     model_code = model_codes,
@@ -65,15 +79,15 @@ job_checking_table %>%
     "All model presets were at least started/attempted, for both regions",
     NULL
   )
-
 filter(job_checking_table, is.na(both_regions_ran))
-# Only the mean QDS turnover BRT-models fail...
+```
+Only the mean QDS turnover BRT-models failed.
 
-# Jobs 2117578 to 2117602 ------------------------------------------------------
+# Jobs 2117578 to 2117602
 
-# .... Read in all the jobs' .e and .o files -----------------------------------
-# (Didn't write capture.output() *_log.txt files for these)
+Read in all the jobs' `.e` and `.o` files (I didn't write `capture.output()`-style `_log.txt` files for these).
 
+```{r}
 jobs_e_o_files <-
   tibble(path = list.files(full.names = TRUE, here(
     "outputs",
@@ -97,10 +111,13 @@ jobs_e_o_files <-
     contents = map(here(path), read_file),
     my_print_statements = get_print_statements(contents)
   )
+```
 
-# .... Check which model-sets failed part way ----------------------------------
+Check which model-sets failed part way
 
-# The .e files have the gbm.step() etc. messages
+The `.e` files have the `gbm.step()` etc. messages:
+
+```{r}
 jobs_e_o_files %>%
   filter(e_o == "e") %>%
   select(my_print_statements)  # All length = 0
@@ -108,8 +125,11 @@ jobs_e_o_files %>%
   filter(e_o == "e") %>%
   select(contents) %>%
   unnest()
+```
 
-# Print statements all went to .o files
+Print-statements all went to `.o` files:
+
+```{r}
 jobs_e_o_files %>%
   filter(e_o == "o") %>%
   select(my_print_statements)
@@ -117,8 +137,11 @@ jobs_e_o_files %>%
   filter(e_o == "o") %>%
   select(contents) %>%
   unnest()
+```
 
-# Let's tidy up the dataframe accordingly
+Let's tidy up the dataframe accordingly:
+
+```{r}
 jobs_e_o_files %<>%
   select(-path, -output_ext, -model_code, -e_o) %>%
   rename(gbm_messages = contents) %>%
@@ -129,7 +152,6 @@ jobs_e_o_files %<>%
   ) %>%
   filter(map(my_print_statements, length) > 0)
 
-# Let's have a look now
 jobs_e_o_files %>%
   select(-my_print_statements) %>%
   unnest() %>%
@@ -138,12 +160,13 @@ jobs_e_o_files %>%
   select(-gbm_messages) %>%
   unnest() %>%
   mutate()
+```
 
-# Jobs 2128782 to 2128806 ------------------------------------------------------
+# Jobs 2128782 to 2128806
 
-# .... Read in all the jobs' .e and .o files -----------------------------------
-# (Didn't write capture.output() *_log.txt files for these)
+Read in all the jobs' `.e` and `.o` files (I didn't write `capture.output()`-style `_log.txt` files for these).
 
+```{r}
 jobs_e_o_files <-
   tibble(path = list.files(full.names = TRUE, here(
     "outputs",
@@ -170,19 +193,21 @@ jobs_e_o_files <-
   select(-path, -output_ext, -model_code, -e_o) %>%
   mutate(contents = str_split(contents, "\n")) %>%
   unnest()
+```
 
-# .... Check which model-sets failed part way ----------------------------------
+Check which model-sets failed part way
 
+```{r, eval=FALSE}
 View(jobs_e_o_files)
-# I found some runs with no simpler predictor sets found by gbm.simplify()...
-# They bombed out
-# Back to the drawing board!
+```
 
-# Jobs 2130463 to 2130487 ------------------------------------------------------
+I found some runs with no simpler predictor sets found by `gbm.simplify()`... They bombed out. Back to the drawing board!
 
-# .... Read in all the jobs' .e and .o files -----------------------------------
-# (Didn't write capture.output() *_log.txt files for these)
+# Jobs 2130463 to 2130487
 
+Read in all the jobs' `.e` and `.o` files (I didn't write `capture.output()`-style `_log.txt` files for these).
+
+```{r}
 jobs_e_o_files <-
   tibble(path = list.files(full.names = TRUE, here(
     "outputs",
@@ -209,13 +234,17 @@ jobs_e_o_files <-
   select(-path, -output_ext, -model_code, -e_o) %>%
   mutate(contents = str_split(contents, "\n")) %>%
   unnest()
+```
 
-# .... Check which model-sets failed part way ----------------------------------
+Check which model-sets failed part way
 
+```{r, eval=FALSE}
 View(jobs_e_o_files)
+```
 
-# .... Plots -------------------------------------------------------------------
+## Plots
 
+```{r}
 brt_paths <- list.files(full.names = TRUE, here(
   "outputs",
   "species-environment-relationships",
@@ -275,4 +304,4 @@ foreach(response_ = c("HDS_richness_BRT", "mean_QDS_turnover_BRT")) %do% {
     scale_fill_viridis_c() +
     facet_grid(diagnostic ~ region)
 }
-
+```
