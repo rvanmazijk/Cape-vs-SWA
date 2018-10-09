@@ -1,9 +1,13 @@
 ---
-title: Exploring UCT HPC job output files, for debugging all-tc-lr runs to find ideal BRT tc and lr presets
+title: |
+  Exploring UCT HPC job output files,
+  for debugging all-tc-lr runs to find ideal BRT tc and lr presets
 subtitle: Cape vs SWA publication
 author: Ruan van Mazijk
-date: '`r Sys.Date()`'
-output: html_notebook
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +23,10 @@ knitr::opts_chunk$set(
 library(here)
 source(here("R/setup.R"))
 ```
+
+# Preamble
+
+After running many, many (often repeated) jobs on UCT's HPC, I explore the outputs here. Some of the outputs are my own log files written by `capture.output()`, and others from the HPC's built in `.e` and `.o` files.
 
 # Job 2117157
 
@@ -36,7 +44,7 @@ job_2117157_logs_paths <- list.files(full.names = TRUE, here(
 job_2117157_logs <- job_2117157_logs_paths %>%
   map(readLines) %>%
   map(paste, collapse = "\n") %>%
-  as_vector()2128806
+  as_vector()
 model_codes <- str_extract(
   job_2117157_logs_paths,
   "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}\\d{4}-\\d{2}-\\d{2}_log.txt$"
@@ -81,6 +89,7 @@ job_checking_table %>%
   )
 filter(job_checking_table, is.na(both_regions_ran))
 ```
+
 Only the mean QDS turnover BRT-models failed.
 
 # Jobs 2117578 to 2117602
@@ -242,7 +251,9 @@ Check which model-sets failed part way
 View(jobs_e_o_files)
 ```
 
-## Plots
+None did, except for Cape $\overline{J}_QDS$ with $tc=4$, $lr=0.01$. Will Re-run this one manually.
+
+So, let's plot the results!
 
 ```{r}
 brt_paths <- list.files(full.names = TRUE, here(
@@ -274,7 +285,7 @@ saved_brt_summaries <- imap_dfr(brt_paths, function(.x, .y) {
         }
       })
     }) %>%
-    cbind(path = .x, .) %>%
+    cbind(path = .x, .) %>%#
     as_tibble() %>%
     mutate(
       tc = get_tc(path),
@@ -305,3 +316,40 @@ foreach(response_ = c("HDS_richness_BRT", "mean_QDS_turnover_BRT")) %do% {
     facet_grid(diagnostic ~ region)
 }
 ```
+
+```{r}
+foreach(diagnostic = c("nt", "pseudo_r2", "pred_obs_r2")) %do% {
+  tc_lr_effects <- map_dfr(.x = c("HDS_richness_BRT", "mean_QDS_turnover_BRT"), ~
+    map2_dfr(.x = c("Cape", "SWA"), .y = .x, ~
+      saved_brt_summaries %>%
+        filter(response == .y, region == .x) %>%
+        lm(glue("{diagnostic} ~ lr * tc"), .) %>%
+        tidy(conf.int = TRUE) %>%
+        filter(term %in% c("lr", "tc", "lr:tc")) %>%
+        select(term, estimate, conf.low, conf.high, p.value) %>%
+        mutate(sig = case_when(
+          p.value <= 0.005 ~ "***",
+          p.value <= 0.01  ~ "**",
+          p.value <= 0.05  ~ "*",
+          TRUE             ~ ""
+        )) %>%
+        mutate(term = factor(term, levels = c("lr", "tc", "lr:tc"))) %>%
+        cbind(response = .y, region = .x, .)
+    )
+  )
+  ggplot(tc_lr_effects, aes(term, estimate)) +
+    geom_point() +
+    geom_hline(yintercept = 0, linetype = "dashed", col = "grey50") +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0) +
+    geom_text(aes(label = sig), y = 25e4) +
+    facet_grid(response ~ region)
+}
+```
+
+# Conclusion
+
+_Same results as in Honours project._
+
+$lr$ severely and significantly increases $nt$, i.e. the models hit the ceiling and bomb. Thus, intermediate $lr$ best.
+
+$tc$ no effect on quality. Thus, set to 3 (or 5?).
