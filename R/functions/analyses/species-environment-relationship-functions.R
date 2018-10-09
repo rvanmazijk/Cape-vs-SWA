@@ -1,3 +1,5 @@
+# Fitting BRT-models -----------------------------------------------------------
+
 fit_gbm_step <- function(variables, predictor_names,
                          response_name, log_response = TRUE,
                          tc, lr, nt) {
@@ -39,6 +41,57 @@ simplify_predictors <- function(x) {
     max()
   gbm_simp$pred.list[[optimal_no_drops]]
 }
+
+# Tidy-functions for extracting model details from text ------------------------
+
+get_tc <- function(model_code) {
+  model_code %>%
+    str_extract("tc-\\d{1}") %>%
+    str_remove("tc-") %>%
+    as.numeric()
+}
+
+get_lr <- function(model_code, trim = c("date", "ext")) {
+  lr <- model_code %>%
+    str_extract("lr-[^_]{1,}") %>%
+    str_remove("lr-")
+  if (trim == "date") {
+    lr %<>% str_remove("\\d{4}-\\d{2}-\\d{2}$")  # Trim dates (see note above)
+  } else if (trim == "ext") {
+    lr %<>% sans_ext()  # Trim .e and .o
+  }
+  as.numeric(lr)
+}
+
+get_print_statements <- function(raw_log) {
+  raw_log %>%
+    # Get all lines that announce that a new BRT-model (one!) is being fit
+    str_extract_all("\\[\\d\\]\ \\\"Fitting.+\n") %>%
+    # Trim the "[1] \" stuff at the front of the print statement,
+    map(str_remove_all, "\\[\\d\\]\ \\\"") %>%
+    # and the \n at the back.
+    map(str_remove_all, "\\\"\n")
+}
+
+rm_print_statements <- function(raw_log) {
+  str_remove_all(raw_log, "Fitting.+\n")
+}
+
+is_logged <- function(print_statements) {
+  str_detect(
+    print_statements,
+    "\\(logged\\)"
+  )
+}
+
+get_model_type <- function(print_statements) {
+  str_extract(
+    print_statements,
+    "(HDS_richness|mean_QDS_turnover)"
+  )
+}
+
+# BRT-model summary statistics -------------------------------------------------
 
 pseudo_r2 <- function(x) {
   # Get the pseudo-R^2 of a gbm model
@@ -99,6 +152,8 @@ my_BRT_summary <- function(x) {
     contribs = list(x$contributions)
   )
 }
+
+# Permuting response columns for randomised BRT-models -------------------------
 
 permute_vector <- function(x) {
   # Shuffles positions of values in vector

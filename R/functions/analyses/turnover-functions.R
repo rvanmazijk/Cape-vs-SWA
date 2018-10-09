@@ -5,6 +5,8 @@ qdgc2hdgc <- function(x) {
 
 calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
                                    region_name = NULL, date = NULL) {
+  # Master function to calculate richness and turnover metrics in grid cells
+  # using a SpatialPointsDataFrame of species occurrences
   stopifnot(exprs = {
     class(flora_points) == "SpatialPointsDataFrame"
     class(QDS_polygon) == "SpatialPolygonsDataFrame"
