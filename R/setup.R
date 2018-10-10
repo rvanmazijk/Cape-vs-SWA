@@ -80,6 +80,13 @@ my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
   "#307aa5"   # SWA (SWAFR) blue
 )
+var_colours <- c(
+  # <https://colourco.de/>
+  "grey50",   # grey   for elevation
+  "#507CC5",  # blue   for climate
+  "#37A541",  # greeen for NDVI
+  "#BA793E"   # brown  for soils
+)
 my_theme <-
   theme_bw() +
   theme(

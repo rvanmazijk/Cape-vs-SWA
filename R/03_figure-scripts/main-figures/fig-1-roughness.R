@@ -21,13 +21,6 @@ var_shapes <- c(
   1,   # open circle   for soil C
   15   # square        for pH
 )
-var_colours <- c(
-  # <https://colourco.de/>
-  "grey50",   # grey   for elevation
-  "#507CC5",  # blue   for climate
-  "#37A541",  # greeen for NDVI
-  "#BA793E"   # brown  for soils
-)
 
 roughness_analysis_data <- U_CLES_results %>%
   mutate(
