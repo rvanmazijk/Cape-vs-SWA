@@ -20,103 +20,7 @@ models <- list(
   swa_turnover  = read_rds(glue("{output_path}/final-BRT_SWAFR_turnover_BRTs.RDS"))
 )
 
-# Screeplots v1 ----------------------------------------------------------------
-
-plot_grid(plotlist = imap(models, ~ .x$contributions %>%
-  arrange(desc(rel.inf)) %>%
-  mutate(var = factor(var, levels = var)) %>%
-  mutate(
-    var_type = ifelse(str_detect(var, "rough_"),
-      "rough",
-      "abs"
-    ),
-    var_class =
-      case_when(
-        str_detect(var, "Elevation")              ~ "Elevation",
-        str_detect(var, "(MAP|PDQ|Surface\\.T)")  ~ "Climate",
-        str_detect(var, "NDVI")                   ~ "NDVI",
-        str_detect(var, "(CEC|Clay|Soil\\.C|pH)") ~ "Soil"
-      ) %>%
-      factor(levels = c("Elevation", "Climate", "NDVI", "Soil"))
-  ) %>%
-  ggplot(aes(var, rel.inf, fill = var_class)) +
-    geom_col() +
-    labs(
-      x = "Environmental variable",
-      y = "Relative influence",
-      title = case_when(  # purrr::imap() sets the names of a list to .y
-        .y == "cape_richness" ~ "Cape richness",
-        .y == "swa_richness" ~ "SWA richness",
-        .y == "cape_turnover" ~ "Cape turnover",
-        .y == "swa_turnover" ~ "SWA turnover"
-      ),
-      subtitle = glue(
-        "pseudo-R2 = {.x %>%
-          pseudo_r2() %>%
-          round(digits = 2)
-        }, \\
-        pred-obs-R2 = {.y %>%
-          str_detect('richness') %>%
-          ifelse(
-            pred_obs_r2(.x)$pred_obs_m_exp,
-            pred_obs_r2(.x)$pred_obs_m
-          ) %>%
-          round(digits = 2)
-        }"
-      )
-    ) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-))
-
-# Heatmap v1 -------------------------------------------------------------------
-
-models %>%
-  map("contributions") %>%
-  map_df(.id = "model", map_df, as.character) %>%
-  mutate(
-    rel.inf = as.numeric(rel.inf),
-    region = str_extract(model, "(cape|swa)"),
-    response = str_extract(model, "(richness|turnover)"),
-    var_type = ifelse(str_detect(var, "rough_"),
-      "rough",
-      "abs"
-    )
-  ) %>%
-  ggplot(aes(var, model, fill = rel.inf)) +
-    geom_tile() +
-    scale_fill_distiller(palette = "Spectral") +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# Piecharts v1 -----------------------------------------------------------------
-
-models %>%
-  map("contributions") %>%
-  map_df(.id = "model", map_df, as.character) %>%
-  mutate(
-    rel.inf = as.numeric(rel.inf),
-    region = str_extract(model, "(cape|swa)"),
-    response = str_extract(model, "(richness|turnover)"),
-    var_type = ifelse(str_detect(var, "rough_"),
-      "rough",
-      "abs"
-    )
-  ) %>%
-  ggplot(aes("", rel.inf, fill = reorder(var_type, rel.inf))) +
-    geom_col(col = "black") +
-    coord_polar("y", start = 0) +
-    facet_grid(response ~ region) +
-    scale_fill_manual(values = c("white", "grey50")) +
-    theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      axis.ticks = element_blank(),
-      panel.border = element_blank(),
-      legend.title = element_blank()
-    )
-
-# Screeplot + piecharts --------------------------------------------------------
-
-# .... Wrangle data ------------------------------------------------------------
+# Wrangle data -----------------------------------------------------------------
 
 model_quality <- imap_dfr(models, ~ tibble(
   model_name = .y,
@@ -187,7 +91,11 @@ model_contributions %<>% mutate(
     factor()
 )
 
-# .... Plot screeplots of variable class contributions -------------------------
+# Define screeplot dimensions (for later)
+screeplot_width <- length(unique(model_contributions$var)) + 2
+screeplot_height <- 62
+
+# Plot screeplots of variable class contributions ------------------------------
 
 screeplots <- foreach(model_name_ = names(models)) %do% {
   screeplot_ <- model_contributions %>%
@@ -208,6 +116,38 @@ screeplots <- foreach(model_name_ = names(models)) %do% {
           model_name_ == "cape_turnover" ~ "(c) Cape turnover",
           model_name_ == "swa_turnover"  ~ "(d) SWA turnover"
         )
+      ) +
+      annotate("text",
+        x = 0.9 * screeplot_width,
+        y = 0.5 * screeplot_height,
+        hjust = 1, size = 3,
+        label = glue(
+          "italic(R)[Ps]^2 == {model_quality %>%
+            filter(model_name == model_name_) %>%
+            select(pseudo_r2) %>%
+            as_vector() %>%
+            round(digits = 2) %>%
+            format(nsmall = 2) %>%
+            as.character()
+          }"
+        ),
+        parse = TRUE
+      ) +
+      annotate("text",
+        x = 0.9 * screeplot_width,
+        y = 0.4 * screeplot_height,
+        hjust = 1, size = 3,
+        label = glue(
+          "italic(R)[PO]^2 == {model_quality %>%
+            filter(model_name == model_name_) %>%
+            select(pred_obs_r2) %>%
+            as_vector() %>%
+            round(digits = 2) %>%
+            format(nsmall = 2) %>%
+            as.character()
+          }"
+        ),
+        parse = TRUE
       ) +
       scale_fill_manual(values = var_colours) +
       theme(
@@ -232,8 +172,7 @@ screeplots <- foreach(model_name_ = names(models)) %do% {
 var_class_legend <- get_legend(screeplots[[1]])
 screeplots[[1]] <- screeplots[[1]] + theme(legend.position = "none")
 
-
-# .... Plot piecharts of roughness vs absolute contributions -------------------
+# Plot piecharts of roughness vs absolute contributions ------------------------
 # (variable _type_)
 
 transparent <- element_rect(colour = "transparent", fill = "transparent")
@@ -264,15 +203,13 @@ piecharts <- foreach(model_name_ = names(models)) %do% {
 var_type_legend <- get_legend(piecharts[[1]])
 piecharts[[1]] <- piecharts[[1]] + theme(legend.position = "none")
 
-# .... Inset the piecharts in the screeplots -----------------------------------
+# Inset the piecharts in the screeplots ----------------------------------------
 
-plot_width <- length(unique(model_contributions$var)) + 2
-plot_height <- 62
 screepieplots <- foreach(screeplot_ = screeplots, piechart_ = piecharts) %do% {
   screeplot_ + annotation_custom(
     ggplotGrob(piechart_),
-    xmin = 0.5 * plot_width, xmax = plot_width,
-    ymin = 0.5 * plot_height, ymax = plot_height
+    xmin = 0.5 * screeplot_width,  xmax = screeplot_width,
+    ymin = 0.5 * screeplot_height, ymax = screeplot_height
   )
 }
 screepieplots <- plot_grid(
@@ -281,21 +218,20 @@ screepieplots <- plot_grid(
   rel_heights = c(0.95, 1), rel_widths = c(1, 0.9)
 )
 
-# .... Add legends x2 ----------------------------------------------------------
+# Add legends x2 ---------------------------------------------------------------
 
 var_legend <- plot_grid(
   var_type_legend, var_class_legend, grid.rect(gp = gpar(col = "white")),
   nrow = 3,
   rel_heights = c(1, 1, 0.25)
 )
-
 screepieplots <- plot_grid(
   screepieplots, var_legend,
   nrow = 1,
   rel_widths = c(1, 0.2)
 )
 
-# .... Save to disc ------------------------------------------------------------
+# Save to disc -----------------------------------------------------------------
 
 ggsave(
   here("figures/fig-3-species-environment-relationships.png"),
@@ -303,4 +239,3 @@ ggsave(
   width = 6, height = 6,
   dpi = 300
 )
-
