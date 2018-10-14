@@ -1,5 +1,5 @@
 # Fitting final BRT sets: GCFR richness model
-#   (tc=3, lr=0.001)
+#   (tc=5, lr=0.001)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
