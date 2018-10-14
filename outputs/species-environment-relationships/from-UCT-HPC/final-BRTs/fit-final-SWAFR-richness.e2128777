@@ -1,0 +1,34 @@
+Loading required package: raster
+Loading required package: sp
+Loaded gbm 2.1.4
+Loading required package: iterators
+Loading required package: parallel
+Fitting inital BRT-model for SWAFR_richness
+Fitting HDS_richness (logged) with tc = 3 , lr =  0.001 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit for SWAFR_richness
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4905(0.0611)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-rough_Surface.T
+2-rough_CEC
+3-Clay
+4-Surface.T
+5-rough_PDQ
+6-pH
+7-rough_Soil.C
+8-PDQ
+9-Elevation
+10-rough_NDVI
+Optimal no. drops = 7
+Final predictor list = c("Elevation", "MAP", "PDQ", "Surface.T", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "Surface.T", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "Surface.T", "CEC", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "pH", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI")Final predictor list = c("Elevation", "MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI")Final predictor list = c("MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI")Final predictor list = c("MAP", "CEC", "rough_Elevation", "rough_MAP")
+Simpler predictor set found for SWAFR_richness
+Re-fitting to simplified predictor set for SWAFR_richness
+Fitting HDS_richness (logged) with tc = 3 , lr =  0.001 , max.trees =  10000
+Done (fit_gbm_step())
+Re-fit to simplified predictor set for SWAFR_richness
+Done (run_final_BRTs()) for SWAFR_richness

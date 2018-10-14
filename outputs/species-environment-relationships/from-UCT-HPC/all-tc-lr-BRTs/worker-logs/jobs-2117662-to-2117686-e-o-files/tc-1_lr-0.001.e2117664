@@ -1,0 +1,11 @@
+Loading required package: raster
+Loading required package: sp
+Loaded gbm 2.1.4
+Inital BRT-model fit
+Inital BRT-model fit
+Inital BRT-model fit
+Inital BRT-model fit
+Error in { : 
+  task 1 failed - "task 1 failed - "$ operator is invalid for atomic vectors""
+Calls: run_initial_BRTs -> %do% -> <Anonymous>
+Execution halted

@@ -1,0 +1,108 @@
+Loading required package: raster
+Loading required package: sp
+Loaded gbm 2.1.4
+Loading required package: iterators
+Loading required package: parallel
+Fitting HDS_richness (logged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0223(0.1279)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8
+processing final dropping of variables with full data
+1-CEC
+2-pH
+3-PDQ
+4-Clay
+5-Elevation
+6-rough_Clay
+7-rough_MAP
+8-MAP
+Optimal no. drops = 1
+Final predictor list = c("Elevation", "MAP", "PDQ", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "Clay", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "Clay", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("MAP", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("MAP", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Soil.C")Final predictor list = c("MAP", "rough_Elevation", "rough_Surface.T", "rough_CEC", "rough_Soil.C")Final predictor list = c("rough_Elevation", "rough_Surface.T", "rough_CEC", "rough_Soil.C")
+Simpler predictor set found
+Fitting HDS_richness (logged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model re-fit to simplified predictor set
+Fitting HDS_richness (logged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4742(0.0799)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-rough_Surface.T
+2-rough_CEC
+3-Surface.T
+4-pH
+5-Clay
+6-rough_PDQ
+7-PDQ
+8-rough_Soil.C
+9-Elevation
+10-rough_NDVI
+Optimal no. drops = 7
+Final predictor list = c("Elevation", "MAP", "PDQ", "Surface.T", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "Surface.T", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "Clay", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "rough_Elevation", "rough_MAP", "rough_PDQ", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI")Final predictor list = c("MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI")Final predictor list = c("MAP", "CEC", "rough_Elevation", "rough_MAP")
+Simpler predictor set found
+Fitting HDS_richness (logged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model re-fit to simplified predictor set
+Fitting mean_QDS_turnover (unlogged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0049(0.0012)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-pH
+2-CEC
+3-Clay
+4-rough_Clay
+5-PDQ
+6-rough_Soil.C
+7-MAP
+8-rough_CEC
+9-rough_MAP
+10-rough_Surface.T
+Optimal no. drops = 10
+Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "Clay", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "Clay", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Clay", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC")Final predictor list = c("Elevation", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_CEC")Final predictor list = c("Elevation", "rough_Elevation", "rough_MAP", "rough_Surface.T")Final predictor list = c("Elevation", "rough_Elevation", "rough_Surface.T")Final predictor list = c("Elevation", "rough_Elevation")
+Simpler predictor set found
+Fitting mean_QDS_turnover (unlogged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model re-fit to simplified predictor set
+Fitting mean_QDS_turnover (unlogged) with tc = 3 , lr =  0.005 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0051(5e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10 11
+processing final dropping of variables with full data
+1-rough_PDQ
+2-Surface.T
+3-Clay
+4-rough_Surface.T
+5-pH
+6-PDQ
+7-rough_NDVI
+8-rough_CEC
+9-Elevation
+10-rough_Soil.C
+11-rough_MAP
+Optimal no. drops = 0
+Final predictor list = c("Elevation", "MAP", "PDQ", "Surface.T", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "Clay", "pH", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "pH", "rough_Elevation", "rough_MAP", "rough_Surface.T", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "pH", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "PDQ", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_NDVI", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_CEC", "rough_Soil.C")Final predictor list = c("Elevation", "MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_Soil.C")Final predictor list = c("MAP", "CEC", "rough_Elevation", "rough_MAP", "rough_Soil.C")Final predictor list = c("MAP", "CEC", "rough_Elevation", "rough_MAP")Final predictor list = c("MAP", "CEC", "rough_Elevation")
+Error in { : 
+  task 2 failed - "task 2 failed - "attempt to select less than one element in get1index <real>""
+Calls: run_initial_BRTs -> %do% -> <Anonymous>
+Execution halted
