@@ -47,14 +47,6 @@ model_contributions <-
       map(2) %>%
       as_vector()
   )
-get_zero_contrib_vars <- function(region_, response_) {
-  all_vars <- unique(model_contributions$var)
-  some_vars <- model_contributions %>%
-    filter(region == region_, response == response_) %>%
-    select(var) %>%
-    as_vector()
-  all_vars[!(all_vars %in% some_vars)]
-}
 zero_contrib_vars <- map_dfr(
   .x = list(
     list(region = "Cape", response = "richness"),
