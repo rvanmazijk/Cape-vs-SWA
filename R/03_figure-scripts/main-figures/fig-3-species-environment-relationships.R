@@ -7,22 +7,6 @@
 library(here)
 source(here("R/setup.R"))
 
-# Import final BRTs ------------------------------------------------------------
-
-brt_output_path <- here(
-  "outputs/species-environment-relationships/",
-  "from-UCT-HPC/final-BRTs"
-)
-models <-
-  list(
-    cape_richness = "{brt_output_path}/final-BRT_GCFR_richness_BRTs.RDS",
-    swa_richness  = "{brt_output_path}/final-BRT_SWAFR_richness_BRTs.RDS",
-    cape_turnover = "{brt_output_path}/final-BRT_GCFR_turnover_BRTs.RDS",
-    swa_turnover  = "{brt_output_path}/final-BRT_SWAFR_turnover_BRTs.RDS"
-  ) %>%
-  map(glue) %>%
-  map(read_rds)
-
 # Import BRT summary statistics ------------------------------------------------
 
 summary_output_path <- here(
@@ -43,7 +27,7 @@ model_contributions <- read_csv(glue(
 screeplot_width <- length(unique(model_contributions$var)) + 2
 screeplot_height <- 62
 
-screeplots <- foreach(model_name_ = names(models)) %do% {
+screeplots <- foreach(model_name_ = unique(model_contributions$model_name)) %do% {
   # Make the actual screeplot
   screeplot_ <- model_contributions %>%
     filter(model_name == model_name_) %>%
@@ -131,7 +115,7 @@ screeplots[[1]] <- screeplots[[1]] + theme(legend.position = "none")
 
 transparent <- element_rect(colour = "transparent", fill = "transparent")
 
-piecharts <- foreach(model_name_ = names(models)) %do% {
+piecharts <- foreach(model_name_ = nique(model_contributions$model_name)) %do% {
   model_contributions %>%
     filter(model_name == model_name_) %>%
     mutate(var = reorder(var_type, desc(rel.inf))) %>%

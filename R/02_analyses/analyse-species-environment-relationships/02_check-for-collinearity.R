@@ -4,6 +4,8 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+output_path <- here("outputs/species-environment-relationships")
+
 # GCFR -------------------------------------------------------------------------
 
 png(
@@ -39,11 +41,15 @@ GCFR_predictor_names <- map_chr(GCFR_collinearity, 1)
 SWAFR_predictor_names <- map_chr(SWAFR_collinearity, 1)
 
 # For bare-minimum BRT work on UCT HPC:
+output_path <- here(
+  "R/02_analyses/",
+  "analyse-species-environment-relationships/run-on-UCT-HPC/"
+)
 write.csv(
   GCFR_predictor_names,
-  here("bare-minimum-BRTs-for-HPC/GCFR_predictor_names.csv")
+  glue("{output_path}/GCFR_predictor_names.csv")
 )
 write.csv(
   SWAFR_predictor_names,
-  here("bare-minimum-BRTs-for-HPC/SWAFR_predictor_names.csv")
+  glue("{output_path}/SWAFR_predictor_names.csv")
 )

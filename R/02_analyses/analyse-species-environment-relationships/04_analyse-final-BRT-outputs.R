@@ -14,6 +14,22 @@ output_path <- here(
   "from-local-machines"
 )
 
+# Import final BRTs ------------------------------------------------------------
+
+brt_output_path <- here(
+  "outputs/species-environment-relationships/",
+  "from-UCT-HPC/final-BRTs"
+)
+models <-
+  list(
+    cape_richness = "{brt_output_path}/final-BRT_GCFR_richness_BRTs.RDS",
+    swa_richness  = "{brt_output_path}/final-BRT_SWAFR_richness_BRTs.RDS",
+    cape_turnover = "{brt_output_path}/final-BRT_GCFR_turnover_BRTs.RDS",
+    swa_turnover  = "{brt_output_path}/final-BRT_SWAFR_turnover_BRTs.RDS"
+  ) %>%
+  map(glue) %>%
+  map(read_rds)
+
 # Describe model quality -------------------------------------------------------
 
 model_quality <- imap_dfr(models, ~ tibble(

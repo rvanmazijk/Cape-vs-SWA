@@ -11,7 +11,10 @@ source(here("R/setup.R"))
 source(here("R/02_analyses/generate-roughness.R"))
 source(here("R/02_analyses/generate-turnover.R"))
 
-output_path <- here("outputs/species-environment-relationships")
+output_path <- here(
+  "R/02_analyses/",
+  "analyse-species-environment-relationships/run-on-UCT-HPC"
+)
 
 library(dismo)
 library(virtualspecies)
@@ -86,9 +89,8 @@ SWAFR_variables_HDS_stack <- variables_HDS_stacks[[2]]
 GCFR_variables_HDS_stack %>%
   as.data.frame() %>%
   na.exclude() %>%
-  write.csv(here("bare-minimum-BRTs-for-HPC/GCFR_variables_HDS.csv"))
+  write.csv(glue("{output_path}/GCFR_variables_HDS.csv"))
 SWAFR_variables_HDS_stack %>%
   as.data.frame() %>%
   na.exclude() %>%
-  write.csv(here("bare-minimum-BRTs-for-HPC/SWAFR_variables_HDS.csv"))
-
+  write.csv(glue("{output_path}/SWAFR_variables_HDS.csv"))
