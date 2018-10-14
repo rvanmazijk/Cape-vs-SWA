@@ -10,25 +10,6 @@ source(here("R/setup.R"))
 U_CLES_results <- read_csv(here("outputs/roughness/U_CLES_results.csv"))
 roughness_data <- read_csv(here("outputs/roughness/roughness_data.csv"))
 
-var_shapes <- c(
-  17,  # triangle      for elevation
-  16,  # filled circle for MAP
-  1,   # open circle   for PDQ
-  15,  # square        for surfact T
-  4,   # x             for NDVI,
-  17,  # triangle      for CEC
-  16,  # filled circle for clay
-  1,   # open circle   for soil C
-  15   # square        for pH
-)
-var_colours <- c(
-  # <https://colourco.de/>
-  "grey50",   # grey   for elevation
-  "#507CC5",  # blue   for climate
-  "#37A541",  # greeen for NDVI
-  "#BA793E"   # brown  for soils
-)
-
 roughness_analysis_data <- U_CLES_results %>%
   mutate(
     U_sig = ifelse(U_p_value < 0.05, "", "NS"),
@@ -131,7 +112,7 @@ legends <- plot_grid(
 )
 CLES_plot <- plot_grid(
   CLES_plot + theme(legend.position = "none"),
-  grid.rect(gp = gpar(col = "white")),
+  white_rect,
   nrow = 1, rel_widths = c(4, 0.1)
 )
 final_plot <- plot_grid(

@@ -1,0 +1,355 @@
+---
+title: |
+  Exploring UCT HPC job output files,
+  for debugging all-tc-lr runs to find ideal BRT tc and lr presets
+subtitle: Cape vs SWA publication
+author: Ruan van Mazijk
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r my-setup}
+library(here)
+source(here("R/setup.R"))
+```
+
+# Preamble
+
+After running many, many (often repeated) jobs on UCT's HPC, I explore the outputs here. Some of the outputs are my own log files written by `capture.output()`, and others from the HPC's built in `.e` and `.o` files.
+
+# Job 2117157
+
+Read in all the job's `_log.txt` files
+
+```{r}
+job_2117157_logs_paths <- list.files(full.names = TRUE, here(
+  "outputs",
+  "species-environment-relationships",
+  "from-UCT-HPC",
+  "all-tc-lr-BRTs",
+  "worker-logs",
+  "job-2117157-worker-logs"
+))
+job_2117157_logs <- job_2117157_logs_paths %>%
+  map(readLines) %>%
+  map(paste, collapse = "\n") %>%
+  as_vector()
+model_codes <- str_extract(
+  job_2117157_logs_paths,
+  "worker-\\d{1,}_tc-\\d_lr-[^_]{1,}\\d{4}-\\d{2}-\\d{2}_log.txt$"
+)
+```
+
+(Note the lack of underscores in places... My bad. In early version of code I forgot to include those in `writeRDS()` file argument.)
+
+Check which model-sets failed part way
+
+```{r}
+job_checking_table <-
+  tibble(
+    model_code = model_codes,
+    raw_log = job_2117157_logs
+  ) %>%
+  mutate(
+    tc = get_tc(model_code),
+    lr = get_lr(model_code, trim = "date"),
+    # Ascertain whether a specific model ran by searching the raw logs for clues
+    print_statements = get_print_statements(raw_log)
+  ) %>%
+  unnest() %>%
+  mutate(
+    logged = is_logged(print_statements),  # To double check
+    model_type = ifelse(logged,
+      paste0("log_", get_model_type(print_statements)),
+      get_model_type(print_statements)
+    )
+  ) %>%
+  group_by(tc, lr, model_type) %>%
+  summarise(n = n()) %>%
+  mutate(both_regions_ran = ifelse(n == 4, TRUE, NA)) %>%
+  as.data.frame()
+
+job_checking_table %>%
+  group_by(tc, lr) %>%
+  summarise(n = n()) %$%
+  ifelse(all(n == 2),
+    "All model presets were at least started/attempted, for both regions",
+    NULL
+  )
+filter(job_checking_table, is.na(both_regions_ran))
+```
+
+Only the mean QDS turnover BRT-models failed.
+
+# Jobs 2117578 to 2117602
+
+Read in all the jobs' `.e` and `.o` files (I didn't write `capture.output()`-style `_log.txt` files for these).
+
+```{r}
+jobs_e_o_files <-
+  tibble(path = list.files(full.names = TRUE, here(
+    "outputs",
+    "species-environment-relationships",
+    "from-UCT-HPC",
+    "all-tc-lr-BRTs",
+    "worker-logs",
+    "jobs-2117578-to-2117602-e-o-files"
+  ))) %>%
+  mutate(
+    path = str_extract(path, "outputs/.+$"),
+    output_ext = file_ext(path),
+    model_code = path %>%
+      str_extract("tc-\\d_lr-[^_]{1,}\\.(e|o)\\d{7}$"),
+    tc = get_tc(model_code),
+    lr = get_lr(model_code, trim = "ext"),
+    e_o = path %>%
+      str_extract("\\.(e|o)\\d{7}$") %>%
+      str_remove("^\\.") %>%
+      str_remove("\\d{7}$"),
+    contents = map(here(path), read_file),
+    my_print_statements = get_print_statements(contents)
+  )
+```
+
+Check which model-sets failed part way
+
+The `.e` files have the `gbm.step()` etc. messages:
+
+```{r}
+jobs_e_o_files %>%
+  filter(e_o == "e") %>%
+  select(my_print_statements)  # All length = 0
+jobs_e_o_files %>%
+  filter(e_o == "e") %>%
+  select(contents) %>%
+  unnest()
+```
+
+Print-statements all went to `.o` files:
+
+```{r}
+jobs_e_o_files %>%
+  filter(e_o == "o") %>%
+  select(my_print_statements)
+jobs_e_o_files %>%
+  filter(e_o == "o") %>%
+  select(contents) %>%
+  unnest()
+```
+
+Let's tidy up the dataframe accordingly:
+
+```{r}
+jobs_e_o_files %<>%
+  select(-path, -output_ext, -model_code, -e_o) %>%
+  rename(gbm_messages = contents) %>%
+  mutate(gbm_messages = gbm_messages %>%
+    lag() %>%
+    map(rm_print_statements) %>%
+    str_split("\n")
+  ) %>%
+  filter(map(my_print_statements, length) > 0)
+
+jobs_e_o_files %>%
+  select(-my_print_statements) %>%
+  unnest() %>%
+  filter(str_detect(gbm_messages, "Error"))
+jobs_e_o_files %>%
+  select(-gbm_messages) %>%
+  unnest() %>%
+  mutate()
+```
+
+# Jobs 2128782 to 2128806
+
+Read in all the jobs' `.e` and `.o` files (I didn't write `capture.output()`-style `_log.txt` files for these).
+
+```{r}
+jobs_e_o_files <-
+  tibble(path = list.files(full.names = TRUE, here(
+    "outputs",
+    "species-environment-relationships",
+    "from-UCT-HPC",
+    "all-tc-lr-BRTs",
+    "worker-logs",
+    "jobs-2128782-to-2128806-e-o-files"
+  ))) %>%
+  mutate(
+    path = str_extract(path, "outputs/.+$"),
+    output_ext = file_ext(path),
+    model_code = path %>%
+      str_extract("tc-\\d_lr-[^_]{1,}\\.(e|o)\\d{7}$"),
+    tc = get_tc(model_code),
+    lr = get_lr(model_code, trim = "ext"),
+    e_o = path %>%
+      str_extract("\\.(e|o)\\d{7}$") %>%
+      str_remove("^\\.") %>%
+      str_remove("\\d{7}$"),
+    contents = map(here(path), read_file)
+  ) %>%
+  filter(str_detect(contents, "")) %>%  # Removes empty .o files
+  select(-path, -output_ext, -model_code, -e_o) %>%
+  mutate(contents = str_split(contents, "\n")) %>%
+  unnest()
+```
+
+Check which model-sets failed part way
+
+```{r, eval=FALSE}
+View(jobs_e_o_files)
+```
+
+I found some runs with no simpler predictor sets found by `gbm.simplify()`... They bombed out. Back to the drawing board!
+
+# Jobs 2130463 to 2130487
+
+Read in all the jobs' `.e` and `.o` files (I didn't write `capture.output()`-style `_log.txt` files for these).
+
+```{r}
+jobs_e_o_files <-
+  tibble(path = list.files(full.names = TRUE, here(
+    "outputs",
+    "species-environment-relationships",
+    "from-UCT-HPC",
+    "all-tc-lr-BRTs",
+    "worker-logs",
+    "jobs-2130463-to-2130487-e-o-files"
+  ))) %>%
+  mutate(
+    path = str_extract(path, "outputs/.+$"),
+    output_ext = file_ext(path),
+    model_code = path %>%
+      str_extract("tc-\\d_lr-[^_]{1,}\\.(e|o)\\d{7}$"),
+    tc = get_tc(model_code),
+    lr = get_lr(model_code, trim = "ext"),
+    e_o = path %>%
+      str_extract("\\.(e|o)\\d{7}$") %>%
+      str_remove("^\\.") %>%
+      str_remove("\\d{7}$"),
+    contents = map(here(path), read_file)
+  ) %>%
+  filter(str_detect(contents, "")) %>%  # Removes empty .o files
+  select(-path, -output_ext, -model_code, -e_o) %>%
+  mutate(contents = str_split(contents, "\n")) %>%
+  unnest()
+```
+
+Check which model-sets failed part way
+
+```{r, eval=FALSE}
+View(jobs_e_o_files)
+```
+
+None did, except for Cape $\overline{J}_QDS$ with $tc=4$, $lr=0.01$. Will Re-run this one manually.
+
+So, let's plot the results!
+
+```{r}
+brt_paths <- list.files(full.names = TRUE, here(
+  "outputs",
+  "species-environment-relationships",
+  "from-UCT-HPC",
+  "all-tc-lr-BRTs",
+  "saved-BRT-RDS",
+  "jobs-2130463-to-2130487-RDS"
+))
+saved_brt_summaries <- imap_dfr(brt_paths, function(.x, .y) {
+  saved_brt <- read_rds(.x)
+  print(map(saved_brt, summary))
+  message(glue("{.y}/25 BRT-sets read into memory"))
+  model_summaries <-
+    map_df(saved_brt, .id = "response", function(.x) {
+      map_df(.x, .id = "region", function(.x) {
+        if (is.null(.x)) {
+          return(tibble(
+            nt = NA,
+            pseudo_r2 = NA,
+            pred_obs_r2 = NA,
+            pred_obs_r2_exp = NA,
+            contribs = NA
+          ))
+        } else {
+          class(.x) <- "gbm"
+          return(my_BRT_summary(.x))
+        }
+      })
+    }) %>%
+    cbind(path = .x, .) %>%#
+    as_tibble() %>%
+    mutate(
+      tc = get_tc(path),
+      lr = path %>%
+        str_extract("tc-\\d_.+$") %>%
+        str_remove("_BRTs\\.RDS$") %>%
+        get_lr(trim = "date")
+    )
+  message(glue("{.y}/25 BRT-sets summarised"))
+  message(glue("================================="))
+  model_summaries
+})
+saved_brt_summaries %>%
+  group_by(tc, lr, region, response) %>%
+  summarise(n = n()) %$%
+  all(n == 1)
+foreach(response_ = c("HDS_richness_BRT", "mean_QDS_turnover_BRT")) %do% {
+  saved_brt_summaries %>%
+    filter(response == response_) %>%
+    mutate(nt = nt / 10000, lr = as.factor(lr)) %>%
+    gather(
+      diagnostic, value,
+      nt, pseudo_r2, pred_obs_r2
+    ) %>%
+    ggplot(aes(tc, lr, fill = value)) +
+    geom_tile() +
+    scale_fill_viridis_c() +
+    facet_grid(diagnostic ~ region)
+}
+```
+
+```{r}
+foreach(diagnostic = c("nt", "pseudo_r2", "pred_obs_r2")) %do% {
+  tc_lr_effects <- map_dfr(.x = c("HDS_richness_BRT", "mean_QDS_turnover_BRT"), ~
+    map2_dfr(.x = c("Cape", "SWA"), .y = .x, ~
+      saved_brt_summaries %>%
+        filter(response == .y, region == .x) %>%
+        lm(glue("{diagnostic} ~ lr * tc"), .) %>%
+        tidy(conf.int = TRUE) %>%
+        filter(term %in% c("lr", "tc", "lr:tc")) %>%
+        select(term, estimate, conf.low, conf.high, p.value) %>%
+        mutate(sig = case_when(
+          p.value <= 0.005 ~ "***",
+          p.value <= 0.01  ~ "**",
+          p.value <= 0.05  ~ "*",
+          TRUE             ~ ""
+        )) %>%
+        mutate(term = factor(term, levels = c("lr", "tc", "lr:tc"))) %>%
+        cbind(response = .y, region = .x, .)
+    )
+  )
+  ggplot(tc_lr_effects, aes(term, estimate)) +
+    geom_point() +
+    geom_hline(yintercept = 0, linetype = "dashed", col = "grey50") +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0) +
+    geom_text(aes(label = sig), y = 25e4) +
+    facet_grid(response ~ region)
+}
+```
+
+# Conclusion
+
+_Same results as in Honours project._
+
+$lr$ severely and significantly increases $nt$, i.e. the models hit the ceiling and bomb. Thus, intermediate $lr$ best.
+
+$tc$ no effect on quality. Thus, set to 3 (or 5?).
