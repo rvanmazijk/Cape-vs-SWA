@@ -14,8 +14,8 @@ output_path <- here("outputs/turnover")
 # (I re-ran this script many times, and wanted to avoid repeating
 # the heavy computations.)
 
-GCFR_species_path <- glue("{output_path}/GCFR_spp_2018-08-14")
-SWAFR_species_path <- glue("{output_path}/SWAFR_spp_2018-08-14")
+GCFR_species_path <- glue("{output_path}/GCFR_species_2018-08-14/")
+SWAFR_species_path <- glue("{output_path}/SWAFR_species_2018-08-14")
 
 # TODO: try computing again, to check reproducible
 #GCFR_species_path <- glue("{output_path}/GCFR_spp_2018-08-14")

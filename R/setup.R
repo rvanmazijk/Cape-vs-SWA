@@ -23,7 +23,7 @@ library(sp)
 library(maptools)
 
 # Taxonomy and species name cleaning
-library(taxize)
+#library(taxize)
 
 # Pairwise Jaccard distance calculations
 library(vegan)
@@ -45,8 +45,8 @@ library(grid)
 library(gridExtra)
 library(cowplot)
 library(scales)
-library(rasterVis)
-library(ggspatial)
+#library(rasterVis)
+#library(ggspatial)
 
 # Record session information ---------------------------------------------------
 
@@ -60,9 +60,8 @@ capture.output(
     }
 )
 
-# Custom settings and functions for this project -------------------------------
+# Import all custom functions in R-scripts in R/functions/ ---------------------
 
-# Import all functions in R-scripts in functions/
 my_functions <- list.files(
   here("R/functions"),
   pattern = ".R",
@@ -72,14 +71,12 @@ my_functions <- list.files(
 map(my_functions, source)
 rm(my_functions)
 
-# Global GIS variables
+# Global GIS variables ---------------------------------------------------------
+
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
-# Global ggplot2 theme settings
-my_palette <- c(
-  "#E69F00",  # Cape (GCFR) orange
-  "#307aa5"   # SWA (SWAFR) blue
-)
+# Global ggplot2-theme settings ------------------------------------------------
+
 my_theme <-
   theme_bw() +
   theme(
@@ -88,8 +85,33 @@ my_theme <-
   )
 theme_set(my_theme)
 
-# Environmental variable names in nice order
+# Global graphics objects ------------------------------------------------------
+
+my_palette <- c(
+  "#E69F00",  # Cape (GCFR) orange
+  "#307aa5"   # SWA (SWAFR) blue
+)
+var_colours <- c(
+  # <https://colourco.de/>
+  "grey50",   # grey   for elevation
+  "#507CC5",  # blue   for climate
+  "#37A541",  # greeen for NDVI
+  "#BA793E"   # brown  for soils
+)
+var_shapes <- c(
+  17,  # triangle      for elevation
+  16,  # filled circle for MAP
+  1,   # open circle   for PDQ
+  15,  # square        for surfact T
+  4,   # x             for NDVI,
+  17,  # triangle      for CEC
+  16,  # filled circle for clay
+  1,   # open circle   for soil C
+  15   # square        for pH
+)
+
 var_names <- c(
+  # Environmental variable names in nice order
   "Elevation",
   "MAP",
   "PDQ",
@@ -100,3 +122,6 @@ var_names <- c(
   "Soil C",
   "pH"
 )
+
+white_rect <- grid.rect(gp = gpar(col = "white"))
+# Useful when arranging panels

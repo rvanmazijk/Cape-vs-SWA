@@ -1,0 +1,102 @@
+Loading required package: raster
+Loading required package: sp
+Loaded gbm 2.1.4
+Fitting HDS_richness (logged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.1786(0.1731)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-PDQ
+2-pH
+3-CEC
+4-rough_Clay
+5-Clay
+6-Elevation
+7-MAP
+8-rough_CEC
+9-rough_Soil.C
+10-rough_Elevation
+Simpler predictor set found
+Fitting HDS_richness (logged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model re-fit to simplified predictor set
+Fitting HDS_richness (logged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.6245(0.1592)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10 11 12
+processing final dropping of variables with full data
+1-rough_CEC
+2-Clay
+3-rough_Surface.T
+4-Surface.T
+5-rough_PDQ
+6-rough_Soil.C
+7-PDQ
+8-pH
+9-Elevation
+10-rough_NDVI
+11-rough_Elevation
+12-rough_MAP
+Simpler predictor set found
+Fitting HDS_richness (logged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model re-fit to simplified predictor set
+Fitting mean_QDS_turnover (unlogged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-pH
+2-PDQ
+3-Clay
+4-rough_Clay
+5-CEC
+6-MAP
+7-rough_Soil.C
+8-rough_CEC
+9-rough_MAP
+10-Elevation
+Fitting mean_QDS_turnover (unlogged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.006(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10 11 12
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+3-pH
+4-rough_PDQ
+5-rough_Soil.C
+6-Elevation
+7-rough_Surface.T
+8-rough_CEC
+9-rough_NDVI
+10-PDQ
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+Fitting mean_QDS_turnover (unlogged) with tc = 5 , lr =  1e-04 , max.trees =  10000
+Done (fit_gbm_step())
+Inital BRT-model re-fit to simplified predictor set
+Error in { : task 2 failed - "task 1 failed - "subscript out of bounds""
+Calls: run_initial_BRTs -> %do% -> <Anonymous>
+Execution halted

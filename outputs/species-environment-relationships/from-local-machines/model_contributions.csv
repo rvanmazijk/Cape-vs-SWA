@@ -1,0 +1,53 @@
+model_name,var,rel.inf,region,response,var_type,var_class
+cape_richness,Rough Surface T,18.617409317686125,Cape,richness,Rough,Climate
+cape_richness,Rough Elevation,14.858002999140613,Cape,richness,Rough,Elevation
+cape_richness,Rough CEC,12.307435341505778,Cape,richness,Rough,Soil
+cape_richness,Rough MAP,11.744459173733555,Cape,richness,Rough,Climate
+cape_richness,MAP,10.980875179715518,Cape,richness,Absolute,Climate
+cape_richness,Rough Soil C,9.22436669436014,Cape,richness,Rough,Soil
+cape_richness,Rough Clay,5.768445325405865,Cape,richness,Rough,Soil
+cape_richness,Elevation,5.529222454836382,Cape,richness,Absolute,Elevation
+cape_richness,Clay,5.1190290950459385,Cape,richness,Absolute,Soil
+cape_richness,pH,3.0928463272916797,Cape,richness,Absolute,Soil
+cape_richness,PDQ,2.7579080912784106,Cape,richness,Absolute,Climate
+swa_richness,MAP,41.824058211577245,SWA,richness,Absolute,Climate
+swa_richness,CEC,13.861663038535804,SWA,richness,Absolute,Soil
+swa_richness,Rough Elevation,11.59225626603489,SWA,richness,Rough,Elevation
+swa_richness,Elevation,9.79694236180539,SWA,richness,Absolute,Elevation
+swa_richness,PDQ,8.9874129609105,SWA,richness,Absolute,Climate
+swa_richness,Rough NDVI,8.037497319793122,SWA,richness,Rough,NDVI
+swa_richness,Rough MAP,5.900169841343047,SWA,richness,Rough,Climate
+cape_turnover,Rough Elevation,24.43952071737878,Cape,turnover,Rough,Elevation
+cape_turnover,Rough MAP,21.00276731272475,Cape,turnover,Rough,Climate
+cape_turnover,Rough Surface T,20.66887882408899,Cape,turnover,Rough,Climate
+cape_turnover,Elevation,18.97596012268248,Cape,turnover,Absolute,Elevation
+cape_turnover,Rough CEC,14.912873023125002,Cape,turnover,Rough,Soil
+swa_turnover,Rough Elevation,52.153641268282485,SWA,turnover,Rough,Elevation
+swa_turnover,Rough Surface T,47.84635873171751,SWA,turnover,Rough,Climate
+cape_richness,CEC,0,Cape,richness,Absolute,Soil
+cape_richness,Rough NDVI,0,Cape,richness,Rough,NDVI
+cape_turnover,MAP,0,Cape,turnover,Absolute,Climate
+cape_turnover,Rough Soil C,0,Cape,turnover,Rough,Soil
+cape_turnover,Rough Clay,0,Cape,turnover,Rough,Soil
+cape_turnover,Clay,0,Cape,turnover,Absolute,Soil
+cape_turnover,pH,0,Cape,turnover,Absolute,Soil
+cape_turnover,PDQ,0,Cape,turnover,Absolute,Climate
+cape_turnover,CEC,0,Cape,turnover,Absolute,Soil
+cape_turnover,Rough NDVI,0,Cape,turnover,Rough,NDVI
+swa_richness,Rough Surface T,0,SWA,richness,Rough,Climate
+swa_richness,Rough CEC,0,SWA,richness,Rough,Soil
+swa_richness,Rough Soil C,0,SWA,richness,Rough,Soil
+swa_richness,Rough Clay,0,SWA,richness,Rough,Soil
+swa_richness,Clay,0,SWA,richness,Absolute,Soil
+swa_richness,pH,0,SWA,richness,Absolute,Soil
+swa_turnover,Rough CEC,0,SWA,turnover,Rough,Soil
+swa_turnover,Rough MAP,0,SWA,turnover,Rough,Climate
+swa_turnover,MAP,0,SWA,turnover,Absolute,Climate
+swa_turnover,Rough Soil C,0,SWA,turnover,Rough,Soil
+swa_turnover,Rough Clay,0,SWA,turnover,Rough,Soil
+swa_turnover,Elevation,0,SWA,turnover,Absolute,Elevation
+swa_turnover,Clay,0,SWA,turnover,Absolute,Soil
+swa_turnover,pH,0,SWA,turnover,Absolute,Soil
+swa_turnover,PDQ,0,SWA,turnover,Absolute,Climate
+swa_turnover,CEC,0,SWA,turnover,Absolute,Soil
+swa_turnover,Rough NDVI,0,SWA,turnover,Rough,NDVI
