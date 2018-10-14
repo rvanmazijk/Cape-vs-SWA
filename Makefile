@@ -27,7 +27,7 @@ $(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(TABLES) $(FIGURES_PNG) $(OUTPUTS) $(FUNCT
 	render('$<', 'latex_fragment')"
 	# NOTE: setwd("manuscript") not needed for fragments
 
-figures/fig-%.png: R/figures/fig-%.R
+$(FIGURES_PNG): $(FIGURES_R)
 	Rscript -e "source('$<')"
 
 # Outputs that are needed by the ms and figures are re-generated

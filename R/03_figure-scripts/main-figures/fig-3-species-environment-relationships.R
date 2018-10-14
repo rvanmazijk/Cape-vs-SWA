@@ -17,8 +17,15 @@ summary_output_path <- here(
 model_quality <- read_csv(glue(
   "{summary_output_path}/model_quality.csv"
 ))
+
 model_contributions <- read_csv(glue(
   "{summary_output_path}/model_contributions.csv"
+))
+model_contributions$var_class %<>% factor(levels = c(
+  "Elevation",
+  "Climate",
+  "NDVI",
+  "Soil"
 ))
 
 # Plot screeplots of variable class contributions ------------------------------
@@ -115,7 +122,7 @@ screeplots[[1]] <- screeplots[[1]] + theme(legend.position = "none")
 
 transparent <- element_rect(colour = "transparent", fill = "transparent")
 
-piecharts <- foreach(model_name_ = nique(model_contributions$model_name)) %do% {
+piecharts <- foreach(model_name_ = unique(model_contributions$model_name)) %do% {
   model_contributions %>%
     filter(model_name == model_name_) %>%
     mutate(var = reorder(var_type, desc(rel.inf))) %>%

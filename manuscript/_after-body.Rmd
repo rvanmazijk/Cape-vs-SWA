@@ -49,8 +49,6 @@ data_sources %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-
-
 \break
 
 # Figures {-}
@@ -61,4 +59,8 @@ knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
 
 ```{r turnover, fig.pos="H", out.width="12cm", fig.cap="(ref:turnover)"}
 knitr::include_graphics(here::here("figures/fig-2-turnover.png"))
+```
+
+```{r species-environment-relationships, fig.pos="H", out.width="14cm", fig.cap="(ref:species-environment-relationships)"}
+knitr::include_graphics(here::here("figures/fig-3-species-environment-relationships.png"))
 ```
