@@ -116,13 +116,13 @@ screeplots <- foreach(model_name_ = names(models)) %do% {
 
   # Add annotations + statistics
   panel_number <- annotate("text",
-  x = 1, y = 60, hjust = 0,
-  label = case_when(
-    model_name_ == "cape_richness" ~ "(a) Cape richness",
-    model_name_ == "swa_richness"  ~ "(b) SWA richness",
-    model_name_ == "cape_turnover" ~ "(c) Cape turnover",
-    model_name_ == "swa_turnover"  ~ "(d) SWA turnover"
-  )
+    x = 1, y = 60, hjust = 0,
+    label = case_when(
+      model_name_ == "cape_richness" ~ "(a) Cape richness",
+      model_name_ == "swa_richness"  ~ "(b) SWA richness",
+      model_name_ == "cape_turnover" ~ "(c) Cape turnover",
+      model_name_ == "swa_turnover"  ~ "(d) SWA turnover"
+    )
   )
   panel_pseudo_r2 <- model_quality %>%
     filter(model_name == model_name_) %>%
