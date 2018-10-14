@@ -1,0 +1,2198 @@
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: parallel
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+Loading required namespace: gbm
+fitting final gbm model with a fixed number of 1000 trees for NA
+fitting final gbm model with a fixed number of 650 trees for NA
+fitting final gbm model with a fixed number of 400 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0253(0.135)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0512(0.1484)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0234(0.1404)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 400 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0126(0.1335)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 400 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0153(0.1344)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 1300 trees for NA
+fitting final gbm model with a fixed number of 850 trees for NA
+fitting final gbm model with a fixed number of 850 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0279(0.1351)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 1250 trees for NA
+fitting final gbm model with a fixed number of 2100 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0379(0.1321)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0388(0.1319)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0223(0.1279)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0565(0.1476)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1dropping predictor: 1dropping predictor: 1 2 2 2 2 3dropping predictor: 1dropping predictor: 1 3 3dropping predictor: 1 2 4dropping predictor: 1 3 4 4 5 2 2dropping predictor: 1 5 5 4 3 6 6 2 6 7 5 7 3 2 7 3 4 8 8 8 6
+processing final dropping of variables with full data
+1-CEC
+2-pH
+3-PDQ
+4-rough_Clay
+
+processing final dropping of variables with full data
+1-pH
+5-Clay
+2-CEC
+6-Elevation
+
+processing final dropping of variables with full data
+1-pH
+fitting final gbm model with a fixed number of 4400 trees for NA
+3-PDQ
+7-rough_MAP
+ 28-rough_CEC
+2-CEC
+4-rough_Clay
+Simpler predictor set found
+5-Clay
+3-PDQ
+ 3 4 46-Elevation
+4-rough_Clay
+ 57-rough_MAP
+5-Clay
+8-rough_CEC
+6-Elevation
+Simpler predictor set found
+fitting final gbm model with a fixed number of 4450 trees for NA
+7-rough_MAP
+ 78-rough_CEC
+Simpler predictor set found
+fitting final gbm model with a fixed number of 6300 trees for NA
+ 3Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.035(0.1308)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 5550 trees for NA
+fitting final gbm model with a fixed number of 400 trees for NA
+
+processing final dropping of variables with full data
+1-CEC
+Inital BRT-model re-fit to simplified predictor set
+ 52-pH
+ 5fitting final gbm model with a fixed number of 400 trees for NA
+ 6Inital BRT-model re-fit to simplified predictor set
+3-PDQ
+Inital BRT-model fit
+4-Clay
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0367(0.1307)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0331(0.1359)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 400 trees for NA
+5-rough_Clay
+Inital BRT-model re-fit to simplified predictor set
+6-rough_MAP
+7-Elevation
+ 4Simpler predictor set found
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0265(0.1282)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 4 7 3 6 6fitting final gbm model with a fixed number of 750 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 550 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5066(0.1245)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 9250 trees for NA
+ 5fitting final gbm model with a fixed number of 550 trees for NA
+ 8 7 7Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4841(0.0738)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 500 trees for NA
+ 5fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4881(0.0734)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0591(0.1501)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 600 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4927(0.084)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+
+processing final dropping of variables with full data
+1-CEC
+ 8 82-PDQ
+dropping predictor: 1 43-pH
+ 64-Clay
+5-rough_Clay
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.333(0.194)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+6-Elevation
+dropping predictor: 17-rough_MAP
+ 28-rough_CEC
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.1044(0.1654)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1Simpler predictor set found
+ 6
+processing final dropping of variables with full data
+1-CEC
+
+processing final dropping of variables with full data
+1-CEC
+2-pH
+2-pH
+ 23-PDQ
+3-PDQ
+4-Clay
+4-rough_Clay
+5-rough_Clay
+5-Clay
+ 36-Elevation
+ 26-Elevation
+ 77-rough_MAP
+7-rough_MAP
+ 28-rough_CEC
+8-MAP
+fitting final gbm model with a fixed number of 950 trees for NA
+Simpler predictor set found
+Simpler predictor set found
+Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 10000 trees for NA
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 7 5 3dropping predictor: 1 4 3 3fitting final gbm model with a fixed number of 700 trees for NA
+fitting final gbm model with a fixed number of 600 trees for NA
+dropping predictor: 1Inital BRT-model re-fit to simplified predictor set
+ 8Inital BRT-model re-fit to simplified predictor set
+ 5 4Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.231(0.1828)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 4fitting final gbm model with a fixed number of 1700 trees for NA
+fitting final gbm model with a fixed number of 9400 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0372(0.1422)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 4Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5684(0.11)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 8 6 5fitting final gbm model with a fixed number of 8750 trees for NA
+ 5fitting final gbm model with a fixed number of 9000 trees for NA
+ 6 5
+processing final dropping of variables with full data
+1-CEC
+dropping predictor: 1fitting final gbm model with a fixed number of 10000 trees for NA
+dropping predictor: 12-pH
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0299(0.1326)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+3-PDQ
+ 74-Clay
+ 6 65-Elevation
+
+processing final dropping of variables with full data
+1-CEC
+6-rough_Clay
+fitting final gbm model with a fixed number of 850 trees for NA
+ 62-pH
+7-rough_MAP
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5123(0.0763)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+3-PDQ
+8-MAP
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0343(0.1296)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 84-Clay
+Simpler predictor set found
+dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0379(0.131)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 75-Elevation
+ 76-rough_Clay
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.19(0.1756)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+7-rough_MAP
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 78-MAP
+ 9Simpler predictor set found
+fitting final gbm model with a fixed number of 1400 trees for NA
+ 8 7 8Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4659(0.1094)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 1100 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 8 10dropping predictor: 1 9 9Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.1791(0.1731)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 2fitting final gbm model with a fixed number of 1150 trees for NA
+ 9 11Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 2 10 10
+processing final dropping of variables with full data
+1-rough_Surface.T
+ 102-rough_CEC
+3-Clay
+ 2 24-Surface.T
+ 11
+processing final dropping of variables with full data
+1-CEC
+5-rough_PDQ
+6-pH
+7-PDQ
+2-pH
+ 118-rough_Soil.C
+9-Elevation
+ 113-PDQ
+10-rough_NDVI
+11-rough_MAP
+Simpler predictor set found
+4-Clay
+dropping predictor: 1dropping predictor: 1
+processing final dropping of variables with full data
+1-rough_CEC
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.1786(0.1731)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+2-pH
+5-rough_Clay
+3-Clay
+ 34-rough_Surface.T
+
+processing final dropping of variables with full data
+1-rough_Surface.T
+5-Surface.T
+
+processing final dropping of variables with full data
+1-rough_CEC
+6-Elevation
+2-rough_CEC
+6-rough_PDQ
+2-Clay
+3-Clay
+fitting final gbm model with a fixed number of 950 trees for NA
+3-Surface.T
+7-rough_MAP
+4-Surface.T
+7-PDQ
+4-rough_PDQ
+5-rough_PDQ
+ 3Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4936(0.0689)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+8-rough_Soil.C
+fitting final gbm model with a fixed number of 2400 trees for NA
+5-PDQ
+6-pH
+9-rough_MAP
+Simpler predictor set found
+6-pH
+7-rough_Soil.C
+10-rough_Elevation
+fitting final gbm model with a fixed number of 550 trees for NA
+7-rough_Surface.T
+8-PDQ
+11-rough_NDVI
+Inital BRT-model re-fit to simplified predictor set
+Simpler predictor set found
+8-rough_Soil.C
+9-Elevation
+9-rough_Elevation
+10-rough_NDVI
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4914(0.0626)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+10-rough_MAP
+11-rough_Elevation
+11-Elevation
+Simpler predictor set found
+Simpler predictor set found
+dropping predictor: 1dropping predictor: 1fitting final gbm model with a fixed number of 350 trees for NA
+ 2Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0049(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 4 4dropping predictor: 1fitting final gbm model with a fixed number of 2000 trees for NA
+fitting final gbm model with a fixed number of 700 trees for NA
+fitting final gbm model with a fixed number of 1350 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model re-fit to simplified predictor set
+ 2Inital BRT-model re-fit to simplified predictor set
+ 2dropping predictor: 1fitting final gbm model with a fixed number of 400 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 2fitting final gbm model with a fixed number of 450 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0047(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 5fitting final gbm model with a fixed number of 250 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0048(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 2 3dropping predictor: 1fitting final gbm model with a fixed number of 400 trees for NA
+dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0049(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 3 4 5 2fitting final gbm model with a fixed number of 1850 trees for NA
+ 2dropping predictor: 1 3 5Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.6355(0.2003)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 3 6dropping predictor: 1 3 6 4 3 3 2dropping predictor: 1 5 7 4dropping predictor: 1 6 3 8 6 7 5 7 9 8 4 4 6 10 9dropping predictor: 1 10 5
+processing final dropping of variables with full data
+1-pH
+2-PDQ
+ 73-CEC
+4-Clay
+dropping predictor: 15-rough_Soil.C
+
+processing final dropping of variables with full data
+1-pH
+6-MAP
+ 82-PDQ
+7-rough_Clay
+3-CEC
+8-rough_CEC
+4-rough_Clay
+9-rough_MAP
+5-Clay
+10-rough_Surface.T
+6-rough_Soil.C
+7-MAP
+dropping predictor: 1 68-rough_CEC
+9-Elevation
+10-rough_Surface.T
+ 4Simpler predictor set found
+ 8 2Inital BRT-model re-fit to simplified predictor set
+ 7dropping predictor: 1 7 5 9 8 9 10 3 9fitting final gbm model with a fixed number of 500 trees for NA
+ 2Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(6e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+
+processing final dropping of variables with full data
+1-CEC
+dropping predictor: 12-pH
+3-PDQ
+4-Clay
+5-rough_Soil.C
+ 26-rough_Clay
+ 4fitting final gbm model with a fixed number of 350 trees for NA
+ 107-MAP
+ 6Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0055(0.001)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+8-rough_CEC
+9-rough_Surface.T
+10-rough_MAP
+ 3 10 8
+processing final dropping of variables with full data
+1-pH
+2-rough_Clay
+ 53-Clay
+dropping predictor: 1 44-CEC
+5-rough_Soil.C
+6-MAP
+7-PDQ
+dropping predictor: 18-rough_CEC
+9-rough_Surface.T
+10-rough_MAP
+
+processing final dropping of variables with full data
+1-rough_CEC
+ 7 2 22-Clay
+fitting final gbm model with a fixed number of 550 trees for NA
+3-Surface.T
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0052(6e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 3dropping predictor: 1 34-rough_PDQ
+5-rough_Surface.T
+6-rough_Soil.C
+ 9 37-pH
+ 38-PDQ
+ 29-Elevation
+dropping predictor: 110-rough_MAP
+ 8Simpler predictor set found
+fitting final gbm model with a fixed number of 300 trees for NA
+ 4Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0051(5e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 6 4 2 2 5dropping predictor: 1dropping predictor: 1 5 10 6 9 4 2 3fitting final gbm model with a fixed number of 950 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 7 6 3 4 8 4 5 7 10 7 4fitting final gbm model with a fixed number of 500 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0051(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 9 11 5 5 4 5 5 8 10dropping predictor: 1
+processing final dropping of variables with full data
+1-rough_Surface.T
+ 62-rough_CEC
+ 63-Clay
+ 9 114-Surface.T
+5-rough_PDQ
+ 7 26-pH
+ 127-PDQ
+ 8 78-rough_Soil.C
+ 10 4 89-rough_MAP
+ 2
+processing final dropping of variables with full data
+1-Clay
+10-rough_Elevation
+
+processing final dropping of variables with full data
+1-Clay
+ 2 32-pH
+Simpler predictor set found
+2-Surface.T
+3-Surface.T
+ 54-rough_PDQ
+5-rough_Surface.T
+3-rough_CEC
+ 96-Elevation
+ 8 67-rough_NDVI
+8-PDQ
+9-rough_CEC
+4-pH
+10-rough_Soil.C
+ 1111-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+5-PDQ
+ 4
+processing final dropping of variables with full data
+1-Clay
+2-rough_PDQ
+6-rough_Soil.C
+3-pH
+4-Surface.T
+5-rough_Surface.T
+7-rough_PDQ
+6-rough_Soil.C
+7-PDQ
+ 128-rough_CEC
+ 99-Elevation
+8-rough_Elevation
+Simpler predictor set found
+ 59-rough_Surface.T
+10-rough_MAP
+ 2 9 2
+processing final dropping of variables with full data
+1-Surface.T
+11-rough_NDVI
+2-rough_PDQ
+ 10fitting final gbm model with a fixed number of 1200 trees for NA
+3-Clay
+4-rough_Surface.T
+Simpler predictor set found
+ 6 35-pH
+Inital BRT-model re-fit to simplified predictor set
+6-rough_NDVI
+fitting final gbm model with a fixed number of 350 trees for NA
+7-PDQ
+Inital BRT-model re-fit to simplified predictor set
+8-rough_CEC
+ 2 79-Elevation
+10-rough_Soil.C
+11-rough_MAP
+ 1112-rough_Elevation
+ 7Simpler predictor set found
+ 6fitting final gbm model with a fixed number of 450 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 1050 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 12 8fitting final gbm model with a fixed number of 350 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 6fitting final gbm model with a fixed number of 650 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0049(6e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 10 6
+processing final dropping of variables with full data
+1-rough_PDQ
+ 9fitting final gbm model with a fixed number of 750 trees for NA
+2-Surface.T
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0047(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+3-Clay
+4-PDQ
+5-pH
+6-rough_Surface.T
+7-rough_NDVI
+8-rough_CEC
+ 10dropping predictor: 1 89-rough_Soil.C
+ 210-Elevation
+11-rough_MAP
+12-rough_Elevation
+
+processing final dropping of variables with full data
+1-pH
+ 3dropping predictor: 1 52-rough_Clay
+3-Clay
+4-CEC
+5-PDQ
+ 26-rough_Soil.C
+7-MAP
+8-rough_CEC
+9-rough_MAP
+10-Elevation
+Simpler predictor set found
+ 11 2 3 3fitting final gbm model with a fixed number of 550 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 7 9 3 5 2 4 4
+processing final dropping of variables with full data
+1-rough_CEC
+ 5 72-Surface.T
+3-Clay
+ 5 104-rough_PDQ
+fitting final gbm model with a fixed number of 700 trees for NA
+ 6Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+5-rough_Surface.T
+6-pH
+ 7 6 27-PDQ
+ 8 78-rough_Soil.C
+9-Elevation
+ 710-rough_NDVI
+dropping predictor: 111-rough_Elevation
+ 8Simpler predictor set found
+ 11 8 9 2 9 6 3 4 3fitting final gbm model with a fixed number of 900 trees for NA
+
+processing final dropping of variables with full data
+1-pH
+2-CEC
+Inital BRT-model re-fit to simplified predictor set
+3-Clay
+4-PDQ
+5-rough_Clay
+ 106-rough_Soil.C
+ 127-MAP
+ 98-rough_CEC
+9-rough_MAP
+ 3Simpler predictor set found
+ 3fitting final gbm model with a fixed number of 200 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0054(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+
+processing final dropping of variables with full data
+1-CEC
+ 82-pH
+3-Clay
+4-rough_Soil.C
+ 35-rough_Clay
+dropping predictor: 16-rough_CEC
+7-MAP
+8-PDQ
+9-rough_Surface.T
+ 4 210-Elevation
+fitting final gbm model with a fixed number of 1600 trees for NA
+ 3 8Inital BRT-model re-fit to simplified predictor set
+ 6 3
+processing final dropping of variables with full data
+1-Surface.T
+ 42-rough_CEC
+3-Clay
+ 54-pH
+ 5 6 105-PDQ
+fitting final gbm model with a fixed number of 1050 trees for NA
+ 4 76-rough_Soil.C
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(6e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+7-rough_Elevation
+ 88-rough_Surface.T
+fitting final gbm model with a fixed number of 750 trees for NA
+ 99-rough_PDQ
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 6 1010-rough_NDVI
+11-rough_MAP
+
+processing final dropping of variables with full data
+1-pH
+ 42-rough_Clay
+3-PDQ
+4-CEC
+5-Clay
+12-Elevation
+6-MAP
+7-rough_Soil.C
+8-rough_CEC
+dropping predictor: 19-Elevation
+10-rough_MAP
+Simpler predictor set found
+Simpler predictor set found
+ 3 7fitting final gbm model with a fixed number of 300 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+dropping predictor: 1 11 7 2
+processing final dropping of variables with full data
+1-PDQ
+ 8 22-pH
+fitting final gbm model with a fixed number of 2050 trees for NA
+
+processing final dropping of variables with full data
+1-PDQ
+Inital BRT-model re-fit to simplified predictor set
+ 3 93-CEC
+2-pH
+ 3fitting final gbm model with a fixed number of 650 trees for NA
+4-Clay
+ 3Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(4e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+3-CEC
+ 105-rough_Clay
+
+processing final dropping of variables with full data
+1-rough_Surface.T
+ 44-Clay
+2-rough_CEC
+fitting final gbm model with a fixed number of 1950 trees for NA
+ 76-Elevation
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0048(6e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 43-Surface.T
+ 5dropping predictor: 1 115-rough_Clay
+7-MAP
+4-Clay
+ 56-Elevation
+5-pH
+8-rough_MAP
+ 3 56-PDQ
+ 127-rough_MAP
+ 27-rough_PDQ
+Simpler predictor set found
+8-rough_Soil.C
+8-rough_CEC
+ 4dropping predictor: 19-rough_NDVI
+ 6
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+ 4 610-rough_Elevation
+Simpler predictor set found
+3-rough_PDQ
+4-pH
+ 45-rough_Surface.T
+11-rough_MAP
+ 36-rough_Soil.C
+7-PDQ
+Simpler predictor set found
+8-rough_NDVI
+9-Elevation
+ 810-rough_CEC
+11-rough_MAP
+ 712-rough_Elevation
+ 7Simpler predictor set found
+ 4 4 4 2fitting final gbm model with a fixed number of 1000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 8 8 5 5fitting final gbm model with a fixed number of 600 trees for NA
+fitting final gbm model with a fixed number of 700 trees for NA
+fitting final gbm model with a fixed number of 3050 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0048(0.001)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 9 9Inital BRT-model re-fit to simplified predictor set
+ 3 5 6dropping predictor: 1fitting final gbm model with a fixed number of 3050 trees for NA
+ 10 10 8Inital BRT-model re-fit to simplified predictor set
+ 2 11 7 11 3 4
+processing final dropping of variables with full data
+1-rough_PDQ
+ 42-Clay
+ 83-Surface.T
+4-pH
+5-rough_Surface.T
+ 46-rough_Soil.C
+7-rough_CEC
+
+processing final dropping of variables with full data
+1-PDQ
+8-PDQ
+2-Surface.T
+9-rough_NDVI
+3-rough_CEC
+10-Elevation
+11-rough_MAP
+
+processing final dropping of variables with full data
+1-CEC
+4-rough_PDQ
+
+processing final dropping of variables with full data
+1-Clay
+Simpler predictor set found
+5-rough_Surface.T
+2-rough_PDQ
+6-Clay
+ 6 53-Surface.T
+7-rough_Soil.C
+4-pH
+8-Elevation
+5-rough_Soil.C
+9-pH
+6-rough_Surface.T
+2-pH
+10-rough_MAP
+ 57-PDQ
+11-rough_NDVI
+8-rough_CEC
+Simpler predictor set found
+Simpler predictor set found
+ 63-PDQ
+ 7 4fitting final gbm model with a fixed number of 800 trees for NA
+4-Clay
+Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 1600 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 85-rough_Clay
+ 6fitting final gbm model with a fixed number of 650 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+6-Elevation
+ 9 5 57-rough_MAP
+
+processing final dropping of variables with full data
+1-CEC
+ 4 5 108-MAP
+2-pH
+
+processing final dropping of variables with full data
+1-CEC
+
+processing final dropping of variables with full data
+1-pH
+2-CEC
+2-pH
+3-PDQ
+3-Clay
+Simpler predictor set found
+4-Clay
+5-rough_Clay
+ 64-PDQ
+6-MAP
+ 53-PDQ
+7-rough_Soil.C
+8-rough_CEC
+ 55-rough_Soil.C
+9-rough_MAP
+fitting final gbm model with a fixed number of 4850 trees for NA
+10-rough_Elevation
+6-MAP
+Simpler predictor set found
+4-Clay
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5143(0.151)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+5-rough_Clay
+fitting final gbm model with a fixed number of 1400 trees for NA
+ 6Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 4500 trees for NA
+6-Elevation
+fitting final gbm model with a fixed number of 1350 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0052(5e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+7-rough_MAP
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4873(0.0899)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+8-rough_CEC
+fitting final gbm model with a fixed number of 2150 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0054(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Simpler predictor set found
+ 7dropping predictor: 1fitting final gbm model with a fixed number of 4250 trees for NA
+ 5Inital BRT-model re-fit to simplified predictor set
+ 2dropping predictor: 1 3 5 6 2 6fitting final gbm model with a fixed number of 5600 trees for NA
+dropping predictor: 1 7 6 4Inital BRT-model re-fit to simplified predictor set
+ 5 6 6 3 5dropping predictor: 1 7fitting final gbm model with a fixed number of 4100 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5258(0.1087)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 6 8 4 7 5 6 8 2 9fitting final gbm model with a fixed number of 5750 trees for NA
+ 7 6dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4922(0.0942)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 8 7 10 2 6 7 7 7 7 11 6 8
+processing final dropping of variables with full data
+1-CEC
+ 12 82-pH
+
+processing final dropping of variables with full data
+1-rough_PDQ
+2-Clay
+3-PDQ
+3-Surface.T
+4-PDQ
+5-rough_Surface.T
+6-pH
+7-rough_CEC
+4-Clay
+8-rough_NDVI
+ 29-rough_Soil.C
+ 910-Elevation
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+ 35-rough_Clay
+dropping predictor: 16-Elevation
+ 7 107-rough_MAP
+ 8 3fitting final gbm model with a fixed number of 2100 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+8-rough_Soil.C
+ 9Simpler predictor set found
+ 11 8
+processing final dropping of variables with full data
+1-PDQ
+
+processing final dropping of variables with full data
+1-CEC
+ 32-pH
+ 8
+processing final dropping of variables with full data
+1-CEC
+ 122-pH
+ 73-CEC
+2-pH
+3-PDQ
+ 7 44-Clay
+3-PDQ
+
+processing final dropping of variables with full data
+1-rough_Surface.T
+2-PDQ
+ 23-Surface.T
+4-Clay
+4-rough_CEC
+5-rough_Clay
+5-rough_PDQ
+6-Clay
+4-rough_Clay
+7-rough_Soil.C
+ 48-Elevation
+5-rough_Clay
+9-pH
+6-Elevation
+10-rough_NDVI
+5-Clay
+11-rough_Elevation
+12-rough_MAP
+Simpler predictor set found
+6-Elevation
+
+processing final dropping of variables with full data
+1-PDQ
+ 46-Elevation
+7-rough_MAP
+7-rough_MAP
+ 87-rough_MAP
+ 102-pH
+Simpler predictor set found
+fitting final gbm model with a fixed number of 3000 trees for NA
+Simpler predictor set found
+8-rough_CEC
+Inital BRT-model re-fit to simplified predictor set
+3-CEC
+fitting final gbm model with a fixed number of 10000 trees for NA
+Simpler predictor set found
+ 94-Clay
+ 5Inital BRT-model re-fit to simplified predictor set
+5-rough_Clay
+ 3
+processing final dropping of variables with full data
+1-CEC
+6-Elevation
+ 5 52-pH
+ 87-rough_MAP
+fitting final gbm model with a fixed number of 5300 trees for NA
+ 83-PDQ
+8-rough_CEC
+Inital BRT-model re-fit to simplified predictor set
+Simpler predictor set found
+4-Clay
+5-rough_Clay
+
+processing final dropping of variables with full data
+1-CEC
+fitting final gbm model with a fixed number of 7400 trees for NA
+6-Elevation
+ 6 6 92-rough_Clay
+Inital BRT-model re-fit to simplified predictor set
+7-rough_MAP
+ 43-PDQ
+ 6 108-rough_CEC
+4-pH
+fitting final gbm model with a fixed number of 10000 trees for NA
+Simpler predictor set found
+5-Clay
+Inital BRT-model re-fit to simplified predictor set
+6-Elevation
+fitting final gbm model with a fixed number of 9300 trees for NA
+7-rough_CEC
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5893(0.1277)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 6300 trees for NA
+ 78-MAP
+ 9Inital BRT-model re-fit to simplified predictor set
+ 79-rough_Soil.C
+ 910-rough_Elevation
+ 5 7Simpler predictor set found
+ 10 8
+processing final dropping of variables with full data
+1-CEC
+2-pH
+ 83-PDQ
+fitting final gbm model with a fixed number of 8100 trees for NA
+4-rough_Clay
+ 6 8Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4978(0.1007)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 95-Clay
+fitting final gbm model with a fixed number of 10000 trees for NA
+dropping predictor: 1fitting final gbm model with a fixed number of 8650 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 106-Elevation
+ 10Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5977(0.1434)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5068(0.1113)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+7-MAP
+Inital BRT-model re-fit to simplified predictor set
+8-rough_CEC
+
+processing final dropping of variables with full data
+1-PDQ
+ 99-rough_Soil.C
+ 1010-rough_Elevation
+2-pH
+ 9fitting final gbm model with a fixed number of 7000 trees for NA
+ 7Simpler predictor set found
+3-CEC
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5468(0.1395)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+4-rough_Clay
+5-Clay
+ 116-Elevation
+ 10 27-MAP
+
+processing final dropping of variables with full data
+1-PDQ
+
+processing final dropping of variables with full data
+1-PDQ
+ 108-rough_CEC
+dropping predictor: 12-pH
+ 82-pH
+dropping predictor: 19-rough_Soil.C
+3-CEC
+ 1210-rough_Elevation
+3-CEC
+fitting final gbm model with a fixed number of 10000 trees for NA
+dropping predictor: 1Simpler predictor set found
+4-rough_Clay
+4-rough_Clay
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.7475(0.186)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 115-Clay
+5-Clay
+fitting final gbm model with a fixed number of 10000 trees for NA
+
+processing final dropping of variables with full data
+1-rough_CEC
+fitting final gbm model with a fixed number of 10000 trees for NA
+6-Elevation
+6-Elevation
+Inital BRT-model re-fit to simplified predictor set
+2-Clay
+
+processing final dropping of variables with full data
+1-rough_Surface.T
+7-MAP
+7-MAP
+ 93-Surface.T
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.5308(0.132)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+2-rough_CEC
+4-rough_Surface.T
+8-rough_CEC
+3-Clay
+dropping predictor: 18-rough_CEC
+5-rough_PDQ
+4-Surface.T
+ 35-pH
+6-pH
+9-rough_Soil.C
+9-rough_Soil.C
+6-rough_PDQ
+ 127-PDQ
+7-rough_Soil.C
+10-rough_Elevation
+10-rough_Elevation
+8-rough_Soil.C
+8-PDQ
+9-Elevation
+Simpler predictor set found
+Simpler predictor set found
+9-Elevation
+10-rough_NDVI
+ 210-rough_NDVI
+11-rough_Elevation
+Simpler predictor set found
+12-rough_MAP
+Simpler predictor set found
+ 10 2dropping predictor: 1fitting final gbm model with a fixed number of 10000 trees for NA
+
+processing final dropping of variables with full data
+1-rough_Surface.T
+ 2Inital BRT-model re-fit to simplified predictor set
+2-rough_CEC
+3-Clay
+4-Surface.T
+5-rough_PDQ
+ 46-pH
+ 117-PDQ
+dropping predictor: 18-rough_Soil.C
+ 2fitting final gbm model with a fixed number of 6350 trees for NA
+9-Elevation
+fitting final gbm model with a fixed number of 10000 trees for NA
+10-rough_NDVI
+Inital BRT-model re-fit to simplified predictor set
+11-rough_Elevation
+ 3Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.7029(0.177)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+12-rough_MAP
+fitting final gbm model with a fixed number of 6650 trees for NA
+Simpler predictor set found
+Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 2650 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0049(0.0012)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 10000 trees for NA
+fitting final gbm model with a fixed number of 10000 trees for NA
+
+processing final dropping of variables with full data
+1-rough_CEC
+ 22-Clay
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model re-fit to simplified predictor set
+3-Surface.T
+ 3fitting final gbm model with a fixed number of 2350 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(0.0012)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+4-rough_Surface.T
+ 3dropping predictor: 15-pH
+ 56-rough_PDQ
+7-PDQ
+8-rough_Soil.C
+dropping predictor: 19-Elevation
+ 210-rough_NDVI
+fitting final gbm model with a fixed number of 4750 trees for NA
+11-rough_Elevation
+ 3Inital BRT-model re-fit to simplified predictor set
+Simpler predictor set found
+ 4 2 2fitting final gbm model with a fixed number of 1300 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0053(0.0011)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 3fitting final gbm model with a fixed number of 10000 trees for NA
+ 3dropping predictor: 1 3dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.6549(0.167)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+fitting final gbm model with a fixed number of 4950 trees for NA
+ 4 2Inital BRT-model re-fit to simplified predictor set
+ 6 4 3 4 4 5 4 5fitting final gbm model with a fixed number of 4000 trees for NA
+ 5Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(0.001)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 6 6 5 4 6 7 3 7 8dropping predictor: 1 7 4 7 9 8 8 2 10fitting final gbm model with a fixed number of 10000 trees for NA
+
+processing final dropping of variables with full data
+1-pH
+2-PDQ
+3-CEC
+ 24-Clay
+5-rough_Clay
+dropping predictor: 16-MAP
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 97-rough_Soil.C
+ 58-rough_CEC
+ 59-rough_Surface.T
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.6313(0.1606)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+10-Elevation
+ 9Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.6245(0.1592)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 10 6 10 5 3
+processing final dropping of variables with full data
+1-pH
+2-CEC
+ 53-PDQ
+4-Clay
+
+processing final dropping of variables with full data
+1-pH
+5-rough_Clay
+2-CEC
+6-rough_Soil.C
+ 8fitting final gbm model with a fixed number of 3250 trees for NA
+3-PDQ
+7-MAP
+8-rough_CEC
+4-Clay
+ 49-rough_MAP
+5-rough_Soil.C
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+10-rough_Surface.T
+6-rough_Clay
+7-MAP
+8-rough_CEC
+ 49-rough_Surface.T
+10-rough_MAP
+ 3 6 6 5dropping predictor: 1fitting final gbm model with a fixed number of 2950 trees for NA
+ 7Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0054(0.001)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 6 2 9 6fitting final gbm model with a fixed number of 4750 trees for NA
+ 6Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0052(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2dropping predictor: 1 5dropping predictor: 1 7 4 3 7 7 8dropping predictor: 1 2 8 7 10 7 4 9 3 3 2 6 10 5 9 8 2 4 8 11 5 8 8
+processing final dropping of variables with full data
+1-CEC
+2-pH
+3-Clay
+4-rough_Clay
+ 6 35-rough_Soil.C
+ 26-PDQ
+7-MAP
+ 58-rough_CEC
+9-rough_MAP
+10-rough_Surface.T
+ 7 4 12 7 6 10 4 9 9 9 9 6 8fitting final gbm model with a fixed number of 5100 trees for NA
+ 7Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0053(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 3 5 9 8
+processing final dropping of variables with full data
+1-Surface.T
+2-rough_CEC
+ 10 113-Clay
+dropping predictor: 1 8 104-pH
+ 10 10 3 10 55-PDQ
+ 9 66-rough_Soil.C
+7-rough_Surface.T
+ 78-rough_Elevation
+ 119-rough_PDQ
+ 1010-rough_NDVI
+ 211-rough_MAP
+ 1112-Elevation
+ 12 12 7Simpler predictor set found
+ 11 11
+processing final dropping of variables with full data
+1-rough_Surface.T
+ 11 92-rough_CEC
+ 4
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+ 12 33-rough_PDQ
+3-Clay
+4-pH
+5-rough_Surface.T
+4-Surface.T
+6-rough_Soil.C
+ 8 6fitting final gbm model with a fixed number of 6250 trees for NA
+7-rough_CEC
+ 88-PDQ
+5-pH
+Inital BRT-model re-fit to simplified predictor set
+9-rough_NDVI
+
+processing final dropping of variables with full data
+1-Clay
+ 1210-Elevation
+2-Surface.T
+11-rough_MAP
+6-rough_PDQ
+12-rough_Elevation
+3-rough_PDQ
+Simpler predictor set found
+ 44-pH
+
+processing final dropping of variables with full data
+1-Surface.T
+7-rough_Soil.C
+5-rough_Surface.T
+6-rough_Soil.C
+2-rough_CEC
+7-rough_CEC
+8-PDQ
+
+processing final dropping of variables with full data
+1-rough_Surface.T
+ 48-PDQ
+ 123-Clay
+9-rough_NDVI
+ 99-Elevation
+10-Elevation
+2-rough_CEC
+11-rough_MAP
+fitting final gbm model with a fixed number of 6200 trees for NA
+4-pH
+12-rough_Elevation
+10-rough_NDVI
+Simpler predictor set found
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0048(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+5-PDQ
+3-Clay
+ 10Simpler predictor set found
+fitting final gbm model with a fixed number of 3800 trees for NA
+6-rough_Soil.C
+Inital BRT-model re-fit to simplified predictor set
+4-Surface.T
+
+processing final dropping of variables with full data
+1-rough_CEC
+7-rough_Elevation
+5-pH
+8-rough_Surface.T
+2-Clay
+ 56-rough_PDQ
+ 10 99-rough_PDQ
+3-Surface.T
+ 5fitting final gbm model with a fixed number of 3400 trees for NA
+7-PDQ
+dropping predictor: 1 710-rough_NDVI
+Inital BRT-model re-fit to simplified predictor set
+4-rough_Surface.T
+8-rough_Soil.C
+11-rough_MAP
+5-pH
+9-Elevation
+
+processing final dropping of variables with full data
+1-rough_CEC
+12-Elevation
+6-rough_PDQ
+10-rough_NDVI
+Simpler predictor set found
+2-pH
+11-rough_Elevation
+7-PDQ
+ 113-Clay
+ 6Simpler predictor set found
+8-rough_Soil.C
+4-Surface.T
+fitting final gbm model with a fixed number of 7150 trees for NA
+ 119-Elevation
+5-PDQ
+ 5 2Inital BRT-model re-fit to simplified predictor set
+10-rough_NDVI
+6-rough_Surface.T
+11-rough_Elevation
+7-rough_Elevation
+12-rough_MAP
+8-rough_PDQ
+Simpler predictor set found
+ 12 109-rough_Soil.C
+ 710-Elevation
+fitting final gbm model with a fixed number of 3950 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.005(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+11-CEC
+ 3fitting final gbm model with a fixed number of 10000 trees for NA
+ 812-rough_NDVI
+Inital BRT-model re-fit to simplified predictor set
+
+processing final dropping of variables with full data
+1-rough_PDQ
+Simpler predictor set found
+ 62-Surface.T
+3-Clay
+ 84-pH
+dropping predictor: 1 125-rough_Surface.T
+6-PDQ
+7-rough_CEC
+ 48-rough_Soil.C
+fitting final gbm model with a fixed number of 10000 trees for NA
+9-rough_NDVI
+10-Elevation
+ 1111-rough_MAP
+Inital BRT-model re-fit to simplified predictor set
+12-rough_Elevation
+ 2 9Simpler predictor set found
+ 6fitting final gbm model with a fixed number of 10000 trees for NA
+fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0047(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 5 9fitting final gbm model with a fixed number of 8800 trees for NA
+ 3Inital BRT-model re-fit to simplified predictor set
+
+processing final dropping of variables with full data
+1-rough_CEC
+ 102-Clay
+ 73-Surface.T
+fitting final gbm model with a fixed number of 7100 trees for NA
+fitting final gbm model with a fixed number of 5550 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0051(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 4 64-rough_Surface.T
+ 12Inital BRT-model re-fit to simplified predictor set
+5-pH
+ 11fitting final gbm model with a fixed number of 10000 trees for NA
+6-rough_Soil.C
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0053(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 17-rough_PDQ
+ 5fitting final gbm model with a fixed number of 6450 trees for NA
+8-PDQ
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0049(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 7 109-rough_MAP
+ 710-rough_Elevation
+ 1211-rough_NDVI
+dropping predictor: 1 612-Elevation
+
+processing final dropping of variables with full data
+1-rough_CEC
+Simpler predictor set found
+2-Clay
+ 8
+processing final dropping of variables with full data
+1-rough_PDQ
+3-rough_Surface.T
+ 8 7dropping predictor: 12-Surface.T
+dropping predictor: 1 23-Clay
+4-PDQ
+4-rough_Surface.T
+5-PDQ
+5-rough_PDQ
+6-rough_CEC
+7-pH
+6-Surface.T
+ 28-rough_Soil.C
+ 8 9 119-Elevation
+7-rough_Soil.C
+10-rough_NDVI
+11-rough_MAP
+8-pH
+12-rough_Elevation
+9-Elevation
+10-rough_NDVI
+ 8 2 911-rough_Elevation
+ 212-CEC
+
+processing final dropping of variables with full data
+1-CEC
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 32-pH
+Simpler predictor set found
+3-Clay
+Inital BRT-model re-fit to simplified predictor set
+ 34-rough_Clay
+5-rough_Soil.C
+ 10 96-MAP
+7-PDQ
+8-rough_CEC
+9-rough_Surface.T
+Simpler predictor set found
+ 3 12
+processing final dropping of variables with full data
+1-pH
+2-PDQ
+3-CEC
+4-Clay
+5-rough_Clay
+ 36-MAP
+ 47-rough_Soil.C
+ 48-rough_CEC
+9-rough_MAP
+fitting final gbm model with a fixed number of 8500 trees for NA
+10-Elevation
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0047(8e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 9fitting final gbm model with a fixed number of 8000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 4fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 10
+processing final dropping of variables with full data
+1-rough_CEC
+ 52-Clay
+ 43-rough_Surface.T
+ 5 54-Surface.T
+dropping predictor: 15-rough_PDQ
+6-rough_Soil.C
+fitting final gbm model with a fixed number of 6300 trees for NA
+7-PDQ
+fitting final gbm model with a fixed number of 9250 trees for NA
+ 6Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0055(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0056(0.001)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 108-pH
+fitting final gbm model with a fixed number of 10000 trees for NA
+9-Elevation
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 6 510-rough_NDVI
+ 1111-rough_Elevation
+ 612-rough_MAP
+ 2Simpler predictor set found
+ 7 7dropping predictor: 1dropping predictor: 1 6 11dropping predictor: 1 7 3 8 12 8fitting final gbm model with a fixed number of 10000 trees for NA
+ 2Inital BRT-model re-fit to simplified predictor set
+ 2 9 7 9 8 4 2 12
+processing final dropping of variables with full data
+1-rough_CEC
+2-Clay
+ 10 103-rough_Surface.T
+ 3 8 34-Surface.T
+ 5 95-rough_PDQ
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 36-rough_Soil.C
+
+processing final dropping of variables with full data
+1-pH
+
+processing final dropping of variables with full data
+1-pH
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+2-CEC
+2-CEC
+7-PDQ
+3-Clay
+
+processing final dropping of variables with full data
+1-rough_CEC
+3-PDQ
+4-PDQ
+4-Clay
+8-pH
+5-rough_Soil.C
+2-Clay
+5-rough_Clay
+6-rough_Clay
+9-Elevation
+6-MAP
+7-MAP
+ 97-rough_Soil.C
+3-rough_Surface.T
+10-rough_NDVI
+8-rough_CEC
+8-rough_CEC
+9-rough_MAP
+ 4 6 411-rough_Elevation
+9-rough_MAP
+10-rough_Surface.T
+4-Surface.T
+ 10Simpler predictor set found
+10-rough_Surface.T
+12-rough_MAP
+Simpler predictor set found
+5-rough_PDQ
+Simpler predictor set found
+ 46-rough_Soil.C
+7-PDQ
+fitting final gbm model with a fixed number of 4000 trees for NA
+dropping predictor: 1Inital BRT-model re-fit to simplified predictor set
+8-pH
+ 109-Elevation
+ 7 5fitting final gbm model with a fixed number of 6350 trees for NA
+ 510-rough_NDVI
+
+processing final dropping of variables with full data
+1-CEC
+Inital BRT-model re-fit to simplified predictor set
+2-pH
+11-rough_Elevation
+3-Clay
+12-rough_MAP
+4-PDQ
+Simpler predictor set found
+5-rough_Soil.C
+ 56-MAP
+7-rough_Clay
+8-rough_CEC
+
+processing final dropping of variables with full data
+1-CEC
+ 89-rough_Surface.T
+2-pH
+ 210-Elevation
+3-Clay
+ 6 6Simpler predictor set found
+4-rough_Clay
+fitting final gbm model with a fixed number of 10000 trees for NA
+5-PDQ
+fitting final gbm model with a fixed number of 6700 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+6-MAP
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0052(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+7-rough_Soil.C
+8-rough_CEC
+ 69-Elevation
+fitting final gbm model with a fixed number of 8300 trees for NA
+10-rough_Surface.T
+ 9Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0051(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 7 7fitting final gbm model with a fixed number of 10000 trees for NA
+ 3Inital BRT-model re-fit to simplified predictor set
+fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 10 7dropping predictor: 1 8fitting final gbm model with a fixed number of 10000 trees for NA
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 8Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0072(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 4
+processing final dropping of variables with full data
+1-CEC
+fitting final gbm model with a fixed number of 10000 trees for NA
+2-pH
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0057(6e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+3-Clay
+ 84-rough_Clay
+ 9 25-rough_Soil.C
+6-PDQ
+7-MAP
+ 98-rough_CEC
+9-rough_MAP
+fitting final gbm model with a fixed number of 10000 trees for NA
+10-rough_Surface.T
+dropping predictor: 1 2Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(9e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 5dropping predictor: 1 10 9dropping predictor: 1 3 10 2 11 6 3dropping predictor: 1 2 10 2 11fitting final gbm model with a fixed number of 9700 trees for NA
+ 4 12Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0051(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 3 7
+processing final dropping of variables with full data
+1-CEC
+ 4 22-pH
+ 3 12
+processing final dropping of variables with full data
+1-Clay
+3-Clay
+ 34-PDQ
+2-Surface.T
+5-rough_Clay
+3-rough_PDQ
+ 56-MAP
+4-pH
+7-rough_Soil.C
+5-rough_Surface.T
+8-rough_CEC
+6-rough_Soil.C
+dropping predictor: 17-Elevation
+ 49-rough_MAP
+ 810-Elevation
+8-PDQ
+9-rough_CEC
+
+processing final dropping of variables with full data
+1-PDQ
+10-rough_NDVI
+ 52-Surface.T
+11-rough_MAP
+12-rough_Elevation
+ 3 43-rough_Surface.T
+ 4Simpler predictor set found
+4-rough_PDQ
+5-rough_CEC
+ 66-Clay
+7-rough_Soil.C
+8-Elevation
+ 59-pH
+ 910-rough_NDVI
+ 211-rough_Elevation
+12-rough_MAP
+ 6Simpler predictor set found
+ 5 4 5 7fitting final gbm model with a fixed number of 10000 trees for NA
+fitting final gbm model with a fixed number of 7600 trees for NA
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0067(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+Inital BRT-model re-fit to simplified predictor set
+ 6fitting final gbm model with a fixed number of 8050 trees for NA
+ 10Inital BRT-model re-fit to simplified predictor set
+ 3 7 6 5 8 6
+processing final dropping of variables with full data
+1-pH
+ 72-PDQ
+dropping predictor: 13-Clay
+4-rough_Clay
+ 85-CEC
+ 7 96-MAP
+ 4 67-rough_Soil.C
+ 78-rough_CEC
+9-rough_MAP
+10-Elevation
+ 8 10 9 2 8 7 5 8 9 11 10 9 3 8 9 6fitting final gbm model with a fixed number of 10000 trees for NA
+ 10 12Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0063(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 11 10 9 10
+processing final dropping of variables with full data
+1-Clay
+ 42-Surface.T
+ 73-rough_PDQ
+ 11 124-pH
+5-rough_Surface.T
+ 116-rough_Soil.C
+7-PDQ
+dropping predictor: 18-rough_CEC
+9-Elevation
+
+processing final dropping of variables with full data
+1-pH
+ 1010-rough_NDVI
+2-PDQ
+11-rough_MAP
+3-Clay
+
+processing final dropping of variables with full data
+1-rough_PDQ
+12-rough_Elevation
+ 5 84-rough_Clay
+Simpler predictor set found
+ 122-Clay
+5-CEC
+3-Surface.T
+ 126-MAP
+4-pH
+7-rough_Soil.C
+5-rough_Surface.T
+8-rough_CEC
+6-PDQ
+
+processing final dropping of variables with full data
+1-pH
+9-rough_MAP
+7-rough_CEC
+10-Elevation
+8-rough_Soil.C
+2-PDQ
+9-rough_NDVI
+3-Clay
+ 210-Elevation
+4-rough_Clay
+ 911-rough_MAP
+
+processing final dropping of variables with full data
+1-rough_CEC
+5-CEC
+12-rough_Elevation
+
+processing final dropping of variables with full data
+1-rough_CEC
+ 62-pH
+6-MAP
+Simpler predictor set found
+2-Surface.T
+fitting final gbm model with a fixed number of 6050 trees for NA
+3-Clay
+7-rough_Soil.C
+3-PDQ
+4-PDQ
+8-rough_CEC
+Inital BRT-model re-fit to simplified predictor set
+4-rough_PDQ
+5-Elevation
+9-rough_MAP
+5-pH
+10-Elevation
+6-rough_PDQ
+6-rough_Surface.T
+7-Surface.T
+7-Clay
+8-rough_Soil.C
+8-rough_Soil.C
+9-rough_Surface.T
+fitting final gbm model with a fixed number of 6800 trees for NA
+9-Elevation
+Inital BRT-model re-fit to simplified predictor set
+10-CEC
+10-rough_NDVI
+11-rough_NDVI
+ 1011-rough_Elevation
+12-rough_Elevation
+12-rough_MAP
+ 3 7Simpler predictor set found
+Simpler predictor set found
+fitting final gbm model with a fixed number of 10000 trees for NA
+ 11Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0062(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 8fitting final gbm model with a fixed number of 10000 trees for NA
+fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model re-fit to simplified predictor set
+ 4fitting final gbm model with a fixed number of 10000 trees for NA
+ 12Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.006(7e-04)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+ 9dropping predictor: 1 5
+processing final dropping of variables with full data
+1-rough_PDQ
+2-Surface.T
+3-Clay
+4-rough_Surface.T
+ 105-PDQ
+6-rough_CEC
+7-pH
+8-rough_Soil.C
+dropping predictor: 19-Elevation
+10-rough_NDVI
+ 611-rough_MAP
+ 212-rough_Elevation
+ 11 7 12 2 3
+processing final dropping of variables with full data
+1-Clay
+ 82-rough_PDQ
+3-Surface.T
+4-Elevation
+5-rough_Soil.C
+6-pH
+ 37-rough_CEC
+ 48-PDQ
+9-rough_Surface.T
+10-rough_NDVI
+11-CEC
+12-rough_Elevation
+ 9Simpler predictor set found
+ 5 4 10fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 11 6 5 12 7 6
+processing final dropping of variables with full data
+1-rough_PDQ
+2-Clay
+3-Surface.T
+4-pH
+5-rough_Soil.C
+6-Elevation
+ 87-rough_CEC
+8-rough_Surface.T
+9-rough_NDVI
+ 710-PDQ
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+ 9 8fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+ 10 9 11 10 12 11
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+3-rough_PDQ
+4-pH
+5-rough_Soil.C
+6-Elevation
+ 127-rough_CEC
+8-rough_Surface.T
+9-rough_NDVI
+10-PDQ
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+3-pH
+4-rough_PDQ
+5-rough_Soil.C
+6-Elevation
+7-rough_Surface.T
+8-rough_CEC
+9-rough_NDVI
+fitting final gbm model with a fixed number of 10000 trees for NA
+10-PDQ
+Inital BRT-model re-fit to simplified predictor set
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+Error in { : 
+  task 1 failed - "task 2 failed - "task 1 failed - "subscript out of bounds"""
+Calls: %dopar% -> <Anonymous>
+Execution halted

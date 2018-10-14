@@ -11,7 +11,10 @@ source(here("R/setup.R"))
 source(here("R/02_analyses/generate-roughness.R"))
 source(here("R/02_analyses/generate-turnover.R"))
 
-output_path <- here("outputs/species-environment-relationships")
+output_path <- here(
+  "R/02_analyses/",
+  "analyse-species-environment-relationships/run-on-UCT-HPC"
+)
 
 library(dismo)
 library(virtualspecies)
@@ -22,12 +25,14 @@ library(virtualspecies)
 
 # Tidy names(<region>_species) after SpatialPointsDataFrame import
 names(GCFR_species) <- c(
-  "family", "genus", "species",
+  #"family", "genus", "species",
+  "species", "cell_nos",
   "qdgc", "hdgc",
   "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
 )
 names(SWAFR_species) <- c(
-  "family", "genus", "species",
+  #"family", "genus", "species",
+  "species", "cell_nos",
   "qdgc", "hdgc",
   "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
 )
@@ -79,3 +84,13 @@ variables_HDS_stacks <- pmap(
 
 GCFR_variables_HDS_stack <- variables_HDS_stacks[[1]]
 SWAFR_variables_HDS_stack <- variables_HDS_stacks[[2]]
+
+# For bare-minimum BRT work on UCT HPC:
+GCFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  write.csv(glue("{output_path}/GCFR_variables_HDS.csv"))
+SWAFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude() %>%
+  write.csv(glue("{output_path}/SWAFR_variables_HDS.csv"))

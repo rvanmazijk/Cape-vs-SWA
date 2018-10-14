@@ -5,6 +5,8 @@ qdgc2hdgc <- function(x) {
 
 calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
                                    region_name = NULL, date = NULL) {
+  # Master function to calculate richness and turnover metrics in grid cells
+  # using a SpatialPointsDataFrame of species occurrences
   stopifnot(exprs = {
     class(flora_points) == "SpatialPointsDataFrame"
     class(QDS_polygon) == "SpatialPolygonsDataFrame"
@@ -13,7 +15,12 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
   # Get the QDS and HDS geocodes -----------------------------------------------
 
   flora_points@data$qdgc <- over(flora_points, QDS_polygon[, "qdgc"])[[1]]
-  flora_points@data$hdgc <- map_chr(flora_points@data$qdgc, qdgc2hdgc)
+  flora_points@data$hdgc <- map_chr(
+    .x = flora_points@data$qdgc,
+    .f = ~ .x %>%
+      as.character() %>%
+      qdgc2hdgc()
+  )
 
   # Calculate average Jaccard distance betw QDS in each HDS --------------------
 

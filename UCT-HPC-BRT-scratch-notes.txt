@@ -1,0 +1,71 @@
+Job 2116987 on the UCT HPC
+Cape vs SWA publication: BRT model fitting: Finding ideal BRT tc & lr presets
+2018-09-27
+Ruan van Mazijk
+
+This was the first one to actually run properly for a while, after just putting all my files in /home/vmzrua001, instead of in sub-directories.
+
+This job crashed. 
+
+All BRT-sets at least had begun to run and each generated my single-worker-core log files:
+
+```
+vmzrua001@srvslshpc001:~> ls *log.txt | wc -l
+25
+```
+
+Only the following BRT-sets, however, completed and were saved as .RDS-files:
+
+```
+vmzrua001@srvslshpc001:~> ls -lhS *.RDS
+-rw------- 1 vmzrua001 botany  70M Sep 27 17:12 all-tc-lr-BRTsworker-5464_tc-5_lr-5e-042018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany  55M Sep 27 17:13 all-tc-lr-BRTsworker-5462_tc-3_lr-5e-042018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany  30M Sep 27 17:14 all-tc-lr-BRTsworker-5460_tc-1_lr-5e-042018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany  25M Sep 27 17:07 all-tc-lr-BRTsworker-5455_tc-1_lr-0.0012018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany  14M Sep 27 16:38 all-tc-lr-BRTsworker-5454_tc-5_lr-0.0052018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany  13M Sep 27 16:38 all-tc-lr-BRTsworker-5452_tc-3_lr-0.0052018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany  13M Sep 27 16:37 all-tc-lr-BRTsworker-5453_tc-4_lr-0.0052018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany 8.4M Sep 27 16:40 all-tc-lr-BRTsworker-5450_tc-1_lr-0.0052018-09-27_BRTs.RDS
+-rw------- 1 vmzrua001 botany 7.7M Sep 27 16:36 all-tc-lr-BRTsworker-5448_tc-4_lr-0.012018-09-27_BRTs.RDS
+```
+
+I.e.:
+
+.        | tc=1 | tc=2 | tc=3 | tc=4 | tc=5
+---------|------|------|------|------|------
+lr=0.01  |      |      |      | x    |
+lr=0.005 | x    |      | x    | x    | x
+lr=0.001 |      |      |      | x    |
+lr=5e-04 | x    |      | x    |      | x
+lr=1e-04 |      |      |      |      |
+
+Inspecting the final several lines of the error log find-ideal-BRT-presets.e2116987 (bearing in mind that, as I was running models in parallel, the output is a mish-mash of many worker-cores):
+
+```
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+3-pH
+4-rough_PDQ
+5-rough_Soil.C
+6-Elevation
+7-rough_Surface.T
+8-rough_CEC
+9-rough_NDVI
+fitting final gbm model with a fixed number of 10000 trees for NA
+10-PDQ
+Inital BRT-model re-fit to simplified predictor set
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+fitting final gbm model with a fixed number of 10000 trees for NA
+Inital BRT-model re-fit to simplified predictor set
+Error in { : 
+  task 1 failed - "task 2 failed - "task 1 failed - "subscript out of bounds"""
+Calls: %dopar% -> <Anonymous>
+```
+
+Investigating my *log.txt files for the models that didn't manage to complete:
+
+
+

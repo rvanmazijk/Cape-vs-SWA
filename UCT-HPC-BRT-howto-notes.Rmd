@@ -1,0 +1,97 @@
+---
+title: Notes on **how** to run my Cape vs SWA publication BRT-models using UCT's HPC
+author: Ruan van Mazijk
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+# Connecting to the UCT HPC
+
+In local home directory,
+
+```{sh}
+$ ssh vmzrua001@hex.uct.ac.za
+```
+
+and enter password. One can change password when on this node with `passwd`.
+
+Should now be live on that node, as such:
+
+```{sh}
+vmzrua001@srvslshpc001:~> 
+```
+
+# Moving files to the active node
+
+In local home directory, open another shell instance and
+
+```{sh}
+vmzrua001@srvslshpc001:~> scp myfile.txt vmzrua001@hexdata.uct.ac.za:/home/vmzrua001/
+```
+
+to move files onto the node. Note: `hexdata.uct.ac.za` a.o.t. `hex.uct.ac.za`
+
+Also, to move whole folders use `scp -r`.
+
+# Running jobs
+
+To execute a PBS-style job (see below):
+
+```{sh}
+vmzrua001@srvslshpc001:~> qsub myjob.sh
+```
+
+Diagnose errors with `cat myjob.e210993` to view error logs (have long numeric identifiers like that).
+
+To execute code live from the command-line on node:
+
+```{sh}
+vmzrua001@srvslshpc001:~> qsub -I -l nodes=1:ppn=64:series600
+```
+
+(See below for details on `-l`.)
+
+## PBS headers in job `.sh`-files
+
+E.g.
+
+```{sh}
+#PBS -q UCTlong
+#PBS -l nodes=1:ppn=64:series600
+#PBS -N my-computations
+module load software/R-3.5.1
+Rscript my-computations.R
+```
+
+- `#PBS`-headers:
+  - `-q` denotes which computing protocol (??technical??) to use (`UCTlong` is default)
+  - `-l` denotes:
+    - no. of `nodes` to use (1 is default; need special permission to use > 1)
+    - no. partitions per node (`ppn`) (max 64; try to keep to ca. 1/2 RAM requirement in GB)
+    - the `series` (??technical??)
+  - `-N` denotes the job name to show up on the UCT HPC cluster Dashboard
+- `module load` to load in software needed
+- And then your code
+
+# Installing R-packages on the node
+
+Good to do this in interactive session (`qsub -I -l ...`). Log into the R CLI,
+
+```{sh}
+vmzrua001@srvslshpc001:~> module load software/R-3.5.1
+vmzrua001@srvslshpc001:~> R
+```
+
+and install packages to a custom library path on the node (e.g. `~/R-3.5.1/lib/`) that you have made beforehand on the node (e.g. `mkdir R-3.5.1/lib/`)
+
+```{r}
+> install.packages(pkgs = "fooPkg", lib = "~/R-3.5.1/lib/", dep = TRUE)
+```
+
+(May require a lot of interactive debugging.)
+
+Note, when/if prompted to choose a CRAN mirror, Austria (no. 7) works (so far).
