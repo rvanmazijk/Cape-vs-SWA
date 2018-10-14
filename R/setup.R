@@ -60,9 +60,8 @@ capture.output(
     }
 )
 
-# Custom settings and functions for this project -------------------------------
+# Import all custom functions in R-scripts in R/functions/ ---------------------
 
-# Import all functions in R-scripts in functions/
 my_functions <- list.files(
   here("R/functions"),
   pattern = ".R",
@@ -72,10 +71,22 @@ my_functions <- list.files(
 map(my_functions, source)
 rm(my_functions)
 
-# Global GIS variables
+# Global GIS variables ---------------------------------------------------------
+
 std_CRS <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
-# Global ggplot2 theme settings
+# Global ggplot2-theme settings ------------------------------------------------
+
+my_theme <-
+  theme_bw() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid = element_blank()
+  )
+theme_set(my_theme)
+
+# Global graphics objects ------------------------------------------------------
+
 my_palette <- c(
   "#E69F00",  # Cape (GCFR) orange
   "#307aa5"   # SWA (SWAFR) blue
@@ -87,16 +98,20 @@ var_colours <- c(
   "#37A541",  # greeen for NDVI
   "#BA793E"   # brown  for soils
 )
-my_theme <-
-  theme_bw() +
-  theme(
-    strip.background = element_blank(),
-    panel.grid = element_blank()
-  )
-theme_set(my_theme)
+var_shapes <- c(
+  17,  # triangle      for elevation
+  16,  # filled circle for MAP
+  1,   # open circle   for PDQ
+  15,  # square        for surfact T
+  4,   # x             for NDVI,
+  17,  # triangle      for CEC
+  16,  # filled circle for clay
+  1,   # open circle   for soil C
+  15   # square        for pH
+)
 
-# Environmental variable names in nice order
 var_names <- c(
+  # Environmental variable names in nice order
   "Elevation",
   "MAP",
   "PDQ",
@@ -107,3 +122,6 @@ var_names <- c(
   "Soil C",
   "pH"
 )
+
+white_rect <- grid.rect(gp = gpar(col = "white"))
+# Useful when arranging panels
