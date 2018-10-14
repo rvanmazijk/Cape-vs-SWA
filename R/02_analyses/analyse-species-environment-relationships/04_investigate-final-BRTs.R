@@ -86,11 +86,11 @@ model_contributions %<>% mutate(
     factor()
 )
 
+# Plot screeplots of variable class contributions ------------------------------
+
 # Define screeplot dimensions (for later)
 screeplot_width <- length(unique(model_contributions$var)) + 2
 screeplot_height <- 62
-
-# Plot screeplots of variable class contributions ------------------------------
 
 screeplots <- foreach(model_name_ = names(models)) %do% {
   # Make the actual screeplot
@@ -124,36 +124,24 @@ screeplots <- foreach(model_name_ = names(models)) %do% {
       model_name_ == "swa_turnover"  ~ "(d) SWA turnover"
     )
   )
-  panel_pseudo_r2 <- model_quality %>%
-    filter(model_name == model_name_) %>%
-    select(pseudo_r2) %>%
-    as_vector() %>%
-    round(digits = 2) %>%
-    format(nsmall = 2) %>%
-    as.character() %>%
-    glue("italic(R)[Ps]^2 == {.}") %>%
-    annotate("text",
-      x = 0.9 * screeplot_width,
-      y = 0.5 * screeplot_height,
-      hjust = 1, size = 3,
-      label = .,
-      parse = TRUE
-    )
-  panel_pred_obs_r2 <- model_quality %>%
-    filter(model_name == model_name_) %>%
-    select(pred_obs_r2) %>%
-    as_vector() %>%
-    round(digits = 2) %>%
-    format(nsmall = 2) %>%
-    as.character() %>%
-    glue("italic(R)[PO]^2 == {.}")
-    annotate("text",
-      x = 0.9 * screeplot_width,
-      y = 0.4 * screeplot_height,
-      hjust = 1, size = 3,
-      label = .,
-      parse = TRUE
-    )
+  panel_pseudo_r2 <- annotate("text",
+    x = 0.85 * screeplot_width,
+    y = 0.5 * screeplot_height,
+    hjust = 1, size = 3,
+    label = model_quality %>%
+      r2_label(model_name_, "pseudo_r2") %>%
+      paste("italic(R)[pseudo]^2 ==", "'", ., "'"),  # "'" to get trailing zeroes to render
+    parse = TRUE
+  )
+  panel_pred_obs_r2 <- annotate("text",
+    x = 0.85 * screeplot_width,
+    y = 0.4 * screeplot_height,
+    hjust = 1, size = 3,
+    label = model_quality %>%
+      r2_label(model_name_, "pred_obs_r2") %>%
+      paste("italic(R)[O-E]^2 ==", "'", ., "'"),
+    parse = TRUE
+  )
   screeplot_ <- screeplot_ +
     panel_number +
     panel_pseudo_r2 +

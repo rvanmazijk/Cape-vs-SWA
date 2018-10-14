@@ -140,6 +140,14 @@ pred_obs_r2 <- function(x) {
     map(r2) # For the log and exp models
 }
 
+r2_label <- function(x, model_name_, kind = c("pseudo_r2", "pred_obs_r2")) {
+  x[x$model_name == model_name_, kind] %>%
+    as_vector() %>%
+    round(digits = 2) %>%
+    format(nsmall = 2) %>%
+    as.character()
+}
+
 my_BRT_summary <- function(x) {
   # Gives the nt, pseudo-R^2 and variables' contributions for a BRT
   stopifnot(class(x) == "gbm")
