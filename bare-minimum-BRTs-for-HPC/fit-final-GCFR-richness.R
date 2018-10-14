@@ -6,7 +6,7 @@
 source("setup.R")
 set.seed(1234)
 
-gbm_steps_simp <- run_final_BRTs(preset = list(tc = 3, lr = 0.001), model = "GCFR_richness")
+gbm_steps_simp <- run_final_BRTs(preset = list(tc = 5, lr = 0.001), model = "GCFR_richness")
 saveRDS(
   gbm_steps_simp,
   paste0("final-BRT_GCFR_richness_BRTs.RDS")
