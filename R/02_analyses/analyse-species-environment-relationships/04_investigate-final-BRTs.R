@@ -13,12 +13,15 @@ output_path <- here("outputs/species-environment-relationships/from-UCT-HPC/fina
 
 # Import final BRTs ------------------------------------------------------------
 
-models <- list(
-  cape_richness = read_rds(glue("{output_path}/final-BRT_GCFR_richness_BRTs.RDS")),
-  swa_richness  = read_rds(glue("{output_path}/final-BRT_SWAFR_richness_BRTs.RDS")),
-  cape_turnover = read_rds(glue("{output_path}/final-BRT_GCFR_turnover_BRTs.RDS")),
-  swa_turnover  = read_rds(glue("{output_path}/final-BRT_SWAFR_turnover_BRTs.RDS"))
-)
+models <-
+  list(
+    cape_richness = "{output_path}/final-BRT_GCFR_richness_BRTs.RDS",
+    swa_richness  = "{output_path}/final-BRT_SWAFR_richness_BRTs.RDS",
+    cape_turnover = "{output_path}/final-BRT_GCFR_turnover_BRTs.RDS",
+    swa_turnover  = "{output_path}/final-BRT_SWAFR_turnover_BRTs.RDS"
+  ) %>%
+  map(glue) %>%
+  map(read_rds)
 
 # Wrangle data -----------------------------------------------------------------
 
@@ -90,6 +93,7 @@ screeplot_height <- 62
 # Plot screeplots of variable class contributions ------------------------------
 
 screeplots <- foreach(model_name_ = names(models)) %do% {
+  # Make the actual screeplot
   screeplot_ <- model_contributions %>%
     filter(model_name == model_name_) %>%
     mutate(var = reorder(var, desc(rel.inf))) %>%
@@ -100,47 +104,6 @@ screeplots <- foreach(model_name_ = names(models)) %do% {
         x = "Environmental variable",
         y = "Relative influence (%)"
       ) +
-      annotate("text",
-        x = 1, y = 60, hjust = 0,
-        label = case_when(
-          model_name_ == "cape_richness" ~ "(a) Cape richness",
-          model_name_ == "swa_richness"  ~ "(b) SWA richness",
-          model_name_ == "cape_turnover" ~ "(c) Cape turnover",
-          model_name_ == "swa_turnover"  ~ "(d) SWA turnover"
-        )
-      ) +
-      annotate("text",
-        x = 0.9 * screeplot_width,
-        y = 0.5 * screeplot_height,
-        hjust = 1, size = 3,
-        label = glue(
-          "italic(R)[Ps]^2 == {model_quality %>%
-            filter(model_name == model_name_) %>%
-            select(pseudo_r2) %>%
-            as_vector() %>%
-            round(digits = 2) %>%
-            format(nsmall = 2) %>%
-            as.character()
-          }"
-        ),
-        parse = TRUE
-      ) +
-      annotate("text",
-        x = 0.9 * screeplot_width,
-        y = 0.4 * screeplot_height,
-        hjust = 1, size = 3,
-        label = glue(
-          "italic(R)[PO]^2 == {model_quality %>%
-            filter(model_name == model_name_) %>%
-            select(pred_obs_r2) %>%
-            as_vector() %>%
-            round(digits = 2) %>%
-            format(nsmall = 2) %>%
-            as.character()
-          }"
-        ),
-        parse = TRUE
-      ) +
       scale_fill_manual(values = var_colours) +
       theme(
         axis.text.x = element_text(angle = 90, hjust = 1),
@@ -150,15 +113,65 @@ screeplots <- foreach(model_name_ = names(models)) %do% {
           "none"
         )
       )
+
+  # Add annotations + statistics
+  panel_number <- annotate("text",
+  x = 1, y = 60, hjust = 0,
+  label = case_when(
+    model_name_ == "cape_richness" ~ "(a) Cape richness",
+    model_name_ == "swa_richness"  ~ "(b) SWA richness",
+    model_name_ == "cape_turnover" ~ "(c) Cape turnover",
+    model_name_ == "swa_turnover"  ~ "(d) SWA turnover"
+  )
+  )
+  panel_pseudo_r2 <- model_quality %>%
+    filter(model_name == model_name_) %>%
+    select(pseudo_r2) %>%
+    as_vector() %>%
+    round(digits = 2) %>%
+    format(nsmall = 2) %>%
+    as.character() %>%
+    glue("italic(R)[Ps]^2 == {.}") %>%
+    annotate("text",
+      x = 0.9 * screeplot_width,
+      y = 0.5 * screeplot_height,
+      hjust = 1, size = 3,
+      label = .,
+      parse = TRUE
+    )
+  panel_pred_obs_r2 <- model_quality %>%
+    filter(model_name == model_name_) %>%
+    select(pred_obs_r2) %>%
+    as_vector() %>%
+    round(digits = 2) %>%
+    format(nsmall = 2) %>%
+    as.character() %>%
+    glue("italic(R)[PO]^2 == {.}")
+    annotate("text",
+      x = 0.9 * screeplot_width,
+      y = 0.4 * screeplot_height,
+      hjust = 1, size = 3,
+      label = .,
+      parse = TRUE
+    )
+  screeplot_ <- screeplot_ +
+    panel_number +
+    panel_pseudo_r2 +
+    panel_pred_obs_r2
+
+  # Remove x-axis title if making a panel on top row
   if (str_detect(model_name_, "richness")) {
     screeplot_ <- screeplot_ + theme(axis.title.x = element_blank())
   }
+
+  # Remove y-axis title + numbers if making a panel on right
   if (str_detect(model_name_, "swa")) {
     screeplot_ <- screeplot_ + theme(
       axis.title.y = element_blank(),
       axis.text.y = element_blank()
     )
   }
+
   screeplot_
 }
 var_class_legend <- get_legend(screeplots[[1]])
@@ -213,7 +226,7 @@ screepieplots <- plot_grid(
 # Add legends x2 ---------------------------------------------------------------
 
 var_legend <- plot_grid(
-  var_type_legend, var_class_legend, grid.rect(gp = gpar(col = "white")),
+  var_type_legend, var_class_legend, white_rect,
   nrow = 3,
   rel_heights = c(1, 1, 0.25)
 )
