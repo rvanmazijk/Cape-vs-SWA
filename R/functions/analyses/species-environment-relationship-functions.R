@@ -140,11 +140,12 @@ pred_obs_r2 <- function(x) {
     map(r2) # For the log and exp models
 }
 
-r2_label <- function(x, model_name_, kind = c("pseudo_r2", "pred_obs_r2")) {
+quality_label <- function(x, model_name_, kind) {
+  stopifnot(kind %in% c("pseudo_r2", "pred_obs_r2", "nt"))
   x[x$model_name == model_name_, kind] %>%
     as_vector() %>%
     round(digits = 2) %>%
-    format(nsmall = 2) %>%
+    format(nsmall = if (kind == "nt") 0 else 2) %>%
     as.character()
 }
 
