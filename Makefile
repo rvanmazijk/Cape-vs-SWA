@@ -6,12 +6,13 @@ META = \
 	manuscript/_output.yml \
 	manuscript/Cape-vs-SWA.bib \
 	manuscript/journal-of-biogeography.csl
+TABLES = $(wildcard manuscript/*.csv)
 FIGURES_R = $(wildcard R/figures/fig-*.R)
 OUTPUTS = $(wildcard outputs/*/*.csv)
 FUNCTIONS = $(wildcard R/functions/*.R)
 
-FIGURES_PNG = $(wildcard figures/fig-*.R)
-AFTER_BODY_TEX = $(AFTER_BODY_TEX:.Rmd=.tex)
+FIGURES_PNG = $(wildcard figures/fig-*.png)
+AFTER_BODY_TEX = $(AFTER_BODY_RMD:.Rmd=.tex)
 PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
 
 $(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
@@ -20,7 +21,7 @@ $(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
 	library(bookdown); \
 	render_book('$<', 'bookdown::pdf_document2')"
 
-$(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
+$(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(TABLES) $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
 	Rscript -e "\
 	library(rmarkdown); \
 	render('$<', 'latex_fragment')"

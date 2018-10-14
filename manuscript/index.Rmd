@@ -3,18 +3,22 @@ title: "**Environmental heterogeneity patterns plant species richness and turnov
 subtitle: "**Running title:** Environmental heterogeneity and plant species richness"
 author: Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom
 bibliography: Cape-vs-SWA.bib
+link-citations: true
 csl: journal-of-biogeography.csl
 toc: false
-header-includes:  # for PDF
+# Setting for PDF
+mainfont: "Times New Roman"
+header-includes:
+  - \usepackage[fontsize=11pt]{scrextend}  # bc `fontsize:` doesn't work w/ custom `mainfont:`
   - \usepackage{float}  # so _after-body.Rmd can "hold" tables and figures
-  - \usepackage{lineno}  # for line-numbering in PDF
+  - \usepackage[modulo]{lineno}  # for every-5th-line-numbering
   - \def\linenumberfont{\normalfont\footnotesize\rmfamily}  # Make line-numbering bigger
-  - \linenumbers
-  - \raggedright  # Un-justify all text
+  - \raggedright  # un-justify all text
+  - \renewcommand{\baselinestretch}{1.5} # 1.5pt line spacing
+  - \setlength{\parskip}{1em}  # increase betwe-para spacing
 ---
 
 <!--TODO: add citation links in text-->
-<!--TODO: make line spacing 1.5pt, font 12pt Times New Roman-->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -29,45 +33,36 @@ Department of Biological Sciences, University of Cape Town, Rondebosch, South Af
 
 Corresponding author: RVM (ruanvmazijk@gmail.com, +27 21 650 3684)
 
-ORCID nos.:
-RVM: 0000-0003-2659-6909,
-MDC: 0000-0003-0989-3266,
-GAV: 0000-0002-1363-9781<!--?-->
+ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1363-9781<!--?-->
+
+<!--Start line-numbering after title-matter-->
+
+\linenumbers
 
 # Abstract {-}
 
 <!--J Biogeog: 300 word abstract-->
 
-**Aim:** <!--from ResearchGate project-->
-To quantify the explanatory power of heterogeneity in predicting plant species richness and turnover here in the Greater Cape Floristic Region and in the Southwest Australia Floristic Region. 
-We compare the environmental heterogeneity in each region, how species richness and turnover interact in each region to produce the observed patterns of richness, and what different forms of environmental heterogeneity better predict richness in each region. 
-We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. 
-We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in SW Australia.
+**Aim:** <!--from ResearchGate project--> To quantify the explanatory power of heterogeneity in predicting plant species richness and turnover here in the Greater Cape Floristic Region and in the Southwest Australia Floristic Region. We compare the environmental heterogeneity in each region, how species richness and turnover interact in each region to produce the observed patterns of richness, and what different forms of environmental heterogeneity better predict richness in each region. We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in SW Australia.
   
-**Location:**
-The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australia Floristic Region (SWAFR)
+**Location:** The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australia Floristic Region (SWAFR)
 
-**Taxon:**
-Vascular plants
+**Taxon:** Vascular plants
   
-**Methods:**
-Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics
+**Methods:** Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics
   
-**Results:**
-<!--TODO-->
+**Results:** <!--TODO-->
   
-**Main conclusions:**
-<!--TODO-->
+**Main conclusions:** <!--TODO-->
 
-_Keywords:_
-biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region, kwongan, macroecology, species richness, species turnover, vascular plants, Southwest Australia Floristic Region
+_Keywords:_ biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region, kwongan, macroecology, species richness, species turnover, vascular plants, Southwest Australia Floristic Region
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM).
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for GIS-data storage. <!--Computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team: <hpc.uct.ac.za>.--> <!--TODO: Notify these acknowledged parties of publication too-->
 
 <!--
-Abbreviations {-}
+Abbreviations:
 - Greater Cape Floristic Region (GCFR) (= "Cape")
 - Southwest Australia Floristic Region (SWAFR)  (= "SWA")
 - TODO: fiver percent degree square (i.e. 0.05º x 0.05º) (FPDS)?

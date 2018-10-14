@@ -1,42 +1,7 @@
 # Table captions {-}
 
-```{r setup-table3, include=FALSE}
-# Make Table 3 here, in addition to in _after-body.Rmd, to get AIC in-text
-source(here::here("setup.R"))
-import_objects(
-  here::here("outputs/species-turnover-and-richness/")
-)
-tidy_terms <- c(
-  "Intercept",
-  "$log(\\overline{S_{QDS}} + 1)$",
-  "$\\overline{J_{QDS}}$",
-  "SWA",
-  "$log(\\overline{S_{QDS}} + 1) \\times$ SWA",
-  "$\\overline{J_{QDS}} \\times$ SWA"
-)
-species_model_table <- my_model_table(
-  model = species_turnover_richness_HDS_m,
-  tidy_terms = tidy_terms,
-  AIC_table = species_HDS_AIC_table
-)
-```
-
 Captions are also repeated alongside their respective tables for readability.
 
-## Table \@ref(tab:data-sources) {-}
+(ref:data-sources) Georeferenced vascular plant species occurence and environmental data sources used in this study. The temporal extent of data used is described where applicable. Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity.
 
-(ref:data-sources)
-Georeferenced vascular plant species occurence and environmental data sources used in this study.
-Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity.
-
-(ref:data-sources)
-
-## Table \@ref(tab:species-roughness-AICc) {-}
-
-(ref:species-roughness-AICc)
-Comparisons of Akaike information criterion values (small sample-size-corrected, $AICc$) of various geographically weighted regressions (GWR) of $log$-transformed species richness as a function of various sets of environmental variables.
-Models were fit for the Cape and SWA richness and environmental data both separately and together.
-GWR methods preclude the need for a categorical predictor for the Cape vs SWA, as the longitudinal (and to a lesser extent latitudinal) differences between the regions allows local regression coefficients in each region to differ.
-<!--TODO: complete/expand: Models fit for each of the three geographic extents: null ($S_{ij} \sim \beta_{0}_{ij} + \beta_{1}_{ij} Lon_{ij} + \beta_{2}_{ij} Lat_{ij} + \beta\epsilon_{ij}$), ...-->
-
-(ref:species-roughness-AICc)
+Table \@ref(tab:data-sources): (ref:data-sources)

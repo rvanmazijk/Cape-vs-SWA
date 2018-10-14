@@ -2,8 +2,6 @@
 
 Captions are also repeated alongside their respective figures for readability.
 
-## Figure \@ref(fig:roughness) {-}
-
 (ref:roughness) Types of environmental heterogeneity, compared between the the Cape and SWA---namely for (a) elevation, (b) climatic variables, (c) NDVI and (d) soil variables---in each panel consisting of three sub-panels per variable type.
 The upper row of panels shows example distributions of roughness values (Equation \@ref(eq:roughness)), showing the different extremes in environmental heterogeneity observed in each region when compared at fine (0.05º) and coarse (3QDS) scales.
 Each distribution has under it area 1.
@@ -14,10 +12,8 @@ $U$-tests for almost all environmental variables yielded significant differences
 CLES for 0.05 res. is for 5000 random cells in each region, as the Mann-Whitney $U$-test cannot handle more than a few thousand values per sample when comparing.
 <!--TODO: reword-->
 
-(ref:roughness)
-
-## Figure \@ref(fig:turnover) {-}
+Figure \@ref(fig:roughness): (ref:roughness)
 
 (ref:turnover) Species turnover, described in two forms ((a) mean Jaccard distance between QDS in each HDS ($\overline{J}_{QDS}$), (b) additively defined turnover ($T_{HDS}$, see Equation \@ref(eq:whittaker)) as a proportion of HDS richness ($S_{HDS}$)), compared between the Cape and SWA. Mann-Whitney $U$-tests between the Cape and SWA distributions of $\overline{J}_{QDS}$ and $T_{HDS}$ yielded significant differences.
 
-(ref:turnover)
+Figure \@ref(fig:turnover): (ref:turnover)
