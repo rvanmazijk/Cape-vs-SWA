@@ -18,8 +18,11 @@ Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at co
 
 ## Comparing species turnover in the two regions
 
-Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover is defined (Figure \@ref(fig:turnover)).
+Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover is defined ($P < 0.0001$, Figure \@ref(fig:turnover)a,b).
 
 ## Predicting richness and turnover with environmental heterogeneity
 
-Species richness and turnover data were related to BRT-models ...
+Vascular plant species richness and turnover are both predicted at least in-part, if not primarly, by environmental heterogeneity in both regions (Figure \@ref(fig:species-environment-relationships)). BRT-models of species richness in each region performed better than the turnover models (e.g. Cape richness vs turnover: $R_[pseudo]^2 = 0.30$ vs $0.19$, $R_[O-E]^2 = 0.74$ vs $0.71$, respectively; Figure \@ref(fig:species-environment-relationships)).
+
+
+
