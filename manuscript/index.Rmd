@@ -46,11 +46,11 @@ ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1
   
 **Location:** The Greater Cape Floristic Region (GCFR) in southwest Africa, and the Southwest Australia Floristic Region (SWAFR)
 
-**Taxon:** Vascular plants
+**Taxon:** <!--Tracheophyta-->Vascular plants
   
-**Methods:** Geospatial data, floral occurrence data $\rightarrow$ regression analyses, non-parametric statistics
+**Methods:** Geospatially explicit floral and environmental data, non-parametric statistics, boosted regression tree modelling
   
-**Results:** <!--TODO-->
+**Results:** The Cape is more environmentally heterogeneous and has higher levels of vascualr plant species turnover than SWA. We find that environmental heterogeneity is the main predictor of species richness in the Cape, and somewhat less so for SWA. Species turnover is best predicted by environmental heterogeneity in both regions.
   
 **Main conclusions:** <!--TODO-->
 

@@ -19,7 +19,7 @@ data_sources <- read_csv(here("manuscript/data-sources.csv"))
 
 # Biosketches {-}
 
-**Ruan van Mazijk** is a Masters student broadly interested in comparative biology and ...<!--TODO: finish-->
+**Ruan van Mazijk** is currently a Masters student at the University of Cape Town, interested in phylogenetic systematics, macroecology, community and functional ecology.
 
 **Michael D. Cramer** <!--TODO-->
 
