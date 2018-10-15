@@ -6,8 +6,8 @@ bibliography: Cape-vs-SWA.bib
 link-citations: true
 csl: journal-of-biogeography.csl
 toc: false
-# Setting for PDF
-mainfont: "Times New Roman"
+# Settings for PDF
+mainfont: Times New Roman
 header-includes:
   - \usepackage[fontsize=11pt]{scrextend}  # bc `fontsize:` doesn't work w/ custom `mainfont:`
   - \usepackage{float}  # so _after-body.Rmd can "hold" tables and figures
@@ -17,8 +17,6 @@ header-includes:
   - \renewcommand{\baselinestretch}{1.5} # 1.5pt line spacing
   - \setlength{\parskip}{1em}  # increase betwe-para spacing
 ---
-
-<!--TODO: add citation links in text-->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -59,7 +57,9 @@ _Keywords:_ biodiversity, environmental heterogeneity, fynbos, Greater Cape Flor
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for GIS-data storage. <!--Computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team: <hpc.uct.ac.za>.--> <!--TODO: Notify these acknowledged parties of publication too-->
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (hpc.uct.ac.za).
+
+<!--TODO: Notify these acknowledged parties of publication too-->
 
 <!--
 Abbreviations:

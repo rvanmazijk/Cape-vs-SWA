@@ -1,4 +1,5 @@
 bookdown::pdf_document2:
+  latex_engine: xelatex
   pandoc_args: [
     "--include-after-body", "_after-body.tex"
   ]
