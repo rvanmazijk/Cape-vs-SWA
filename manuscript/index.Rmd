@@ -11,7 +11,8 @@ mainfont: Times New Roman
 header-includes:
   - \usepackage[fontsize=11pt]{scrextend}  # bc `fontsize:` doesn't work w/ custom `mainfont:`
   - \usepackage{float}  # so _after-body.Rmd can "hold" tables and figures
-  - \usepackage[modulo]{lineno}  # for every-5th-line-numbering
+  - \usepackage{hanging}  # for bibliography
+  - \usepackage{lineno}  # for every-5th-line-numbering
   - \def\linenumberfont{\normalfont\footnotesize\rmfamily}  # Make line-numbering bigger
   - \raggedright  # un-justify all text
   - \renewcommand{\baselinestretch}{1.5} # 1.5pt line spacing
