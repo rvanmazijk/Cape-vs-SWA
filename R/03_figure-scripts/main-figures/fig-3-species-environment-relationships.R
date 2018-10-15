@@ -28,6 +28,35 @@ model_contributions$var_class %<>% factor(levels = c(
   "Soil"
 ))
 
+# APPENDIX PLOT: Cape minus SWA rel.inf on richness ----------------------------
+
+foo <- model_contributions %>%
+  filter(response == "richness") %>%
+  select(-model_name) %>%
+  spread(region, rel.inf) %>%
+  mutate(diff = Cape - SWA) %>%
+  mutate(var = reorder(var, desc(diff))) %>%
+  ggplot(aes(var, diff, fill = var_class)) +
+    geom_hline(yintercept = 5, linetype = "dashed", col = "grey75") +
+    geom_hline(yintercept = -5, linetype = "dashed", col = "grey75") +
+    geom_col() +
+    labs(
+      x = "Environmental variable",
+      y = "∆ Relative influence (%)\n(Cape - SWA)"
+    ) +
+    scale_fill_manual(values = var_colours) +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1),
+      legend.title = element_blank()
+    )
+ggsave(
+  here("figures/fig-XX-Cape-minus-SWA.png"),
+  foo,
+  width = 4, height = 3,
+  dpi = 300
+)
+
+
 # Plot screeplots of variable class contributions ------------------------------
 
 # Define screeplot dimensions (for later)
@@ -90,7 +119,7 @@ screeplots <- foreach(model_name_ = unique(model_contributions$model_name)) %do%
     hjust = 1, size = 3,
     label = model_quality %>%
       quality_label(model_name_, "nt") %>%
-      paste("nt ==", "'", ., "'"),  # "'" to get trailing zeroes to render
+      paste("italic(nt) ==", "'", ., "'"),  # "'" to get trailing zeroes to render
     parse = TRUE
   )
   screeplot_ <- screeplot_ +
