@@ -5,7 +5,7 @@
 "Surface temperature","MODIS (MOD11C3)","Feb. 2000 to Apr. 2017","\ref{MOD11C3}"
 "MAP","CHIRPS v2.0","Jan. 1981 to Feb. 2017","\ref{Funk2015}"
 "PDQ","CHIRPS v2.0","Jan. 1981 to Feb. 2017","\ref{Funk2015}"
-"CEC","SoilGrids250m (CECSOL M 250m)","TODO",\ref{Hengl2017}"
+"CEC","SoilGrids250m (CECSOL M 250m)",,"\ref{Hengl2017}"
 "Clay","SoilGrids250m (CLYPPT M 250m)",,
 "Soil C","SoilGrids250m (OCDENS M 250m)",,
 "pH","SoilGrids250m (PHIKCL M 250m)",,
