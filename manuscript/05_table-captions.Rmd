@@ -2,6 +2,6 @@
 
 Captions are also repeated alongside their respective tables for readability.
 
-(ref:data-sources) Georeferenced vascular plant species occurence and environmental data sources used in this study. The temporal extent of data used is described where applicable. Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity.
+(ref:data-sources) Georeferenced vascular plant species occurence and environmental data sources used in this study. Data were acquired for the Cape and SWA regions, with the temporal extent of data products used described where applicable. Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity.
 
 Table \@ref(tab:data-sources): (ref:data-sources)
