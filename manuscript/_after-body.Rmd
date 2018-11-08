@@ -15,7 +15,7 @@ source(here("R/setup.R"))
 data_sources <- read_csv(here("manuscript/data-sources.csv"))
 ```
 
-\break
+\normalsize \break
 
 # Biosketches {-}
 
