@@ -55,6 +55,7 @@ data_sources %>%
 
 ```{r roughness, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
 knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
+# TODO: italicise "CLES" in y-axis label
 ```
 
 ```{r turnover, fig.pos="H", out.width="12cm", fig.cap="(ref:turnover)"}
