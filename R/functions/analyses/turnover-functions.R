@@ -2,6 +2,15 @@ qdgc2hdgc <- function(x) {
   # QDS -> HDS by dropping the last letter
   substr(x, 1, nchar(x) - 1)
 }
+get_geocodes <- function(flora_points, QDS_polygon) {
+  flora_points@data$qdgc <- over(flora_points, QDS_polygon)[[1]]
+  flora_points@data$hdgc <- map_chr(flora_points@data$qdgc, ~
+    .x %>%
+      as.character() %>%
+      qdgc2hdgc()
+  )
+  flora_points
+}
 
 calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
                                    region_name = NULL, date = NULL) {
@@ -14,13 +23,7 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
 
   # Get the QDS and HDS geocodes -----------------------------------------------
 
-  flora_points@data$qdgc <- over(flora_points, QDS_polygon[, "qdgc"])[[1]]
-  flora_points@data$hdgc <- map_chr(
-    .x = flora_points@data$qdgc,
-    .f = ~ .x %>%
-      as.character() %>%
-      qdgc2hdgc()
-  )
+  flora_points %<>% get_geocodes(QDS_polygon[, "qdgc"])
 
   # Calculate average Jaccard distance betw QDS in each HDS --------------------
 
