@@ -33,11 +33,12 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
   flora_points@data$mean_QDS_richness <- NA
   flora_points@data$mean_QDS_turnover <- NA
 
-  pb <- txtProgressBar(0, length(levels(factor(flora_points$hdgc))))
-  for (i in seq_along(levels(factor(flora_points$hdgc)))) {
+  HDS_cells <- levels(factor(flora_points$hdgc))
+  pb <- txtProgressBar(0, length(HDS_cells))
+  for (i in seq_along(HDS_cells)) {
 
     # Current HDS geocode name
-    current_HDS <- levels(factor(flora_points$hdgc))[[i]]
+    current_HDS <- HDS_cells[[i]]
 
     # Filter to only those QDS w/i the current HDS
     spp_in_hdgc_by_qdgc <- flora_points@data %>%
