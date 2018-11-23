@@ -49,7 +49,7 @@ variables_HDS_stacks <- pmap(
     # Generate absolute environmental values at HDS-scale
     vars %<>% map(aggregate, fact = 0.50 / 0.05)
 
-    # Add roughnes layers to data list
+    # Add roughness layers to data list
     names(rough_vars) %<>% paste0("rough_", .)
     vars %<>% c(rough_vars)
 
