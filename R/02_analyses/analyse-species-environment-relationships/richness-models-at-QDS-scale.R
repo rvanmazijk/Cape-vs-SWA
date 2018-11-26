@@ -96,20 +96,24 @@ SWAFR_data_QDS <- SWAFR_data_QDS_stack %>%
 names(GCFR_data_QDS)
 names(SWAFR_data_QDS)
 
-# Re-check for collinearity at QDS_scale ---------------------------------------
+# Check for collinearity at QDS_scale ------------------------------------------
 
-removeCollinearity(
+GCFR_predictor_names_QDS <- removeCollinearity(
   raster.stack = GCFR_data_QDS_stack[[-1]],  # exclude responses
   select.variables = FALSE,  # To do manually
   multicollinearity.cutoff = 0.8,  # My thumb-suck. TODO: try 0.7?
   plot = TRUE
 )
-removeCollinearity(
+# Choose the first variable alphabetcically/manually in each collinear cluster
+GCFR_predictor_names_QDS %<>% map_chr(1)
+
+SWAFR_predictor_names_QDS <- removeCollinearity(
   raster.stack = SWAFR_data_QDS_stack[[-1]],
   select.variables = FALSE,
   multicollinearity.cutoff = 0.8,
   plot = TRUE
 )
+SWAFR_predictor_names_QDS %<>% map_chr(1)
 
 merge(GCFR_data_QDS_stack$QDS_richness, SWAFR_data_QDS_stack$QDS_richness)
 origin(GCFR_data_QDS_stack)
