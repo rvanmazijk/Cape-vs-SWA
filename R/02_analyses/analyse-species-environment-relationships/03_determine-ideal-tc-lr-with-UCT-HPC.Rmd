@@ -26,6 +26,8 @@ source(here("R/setup.R"))
 
 # Preamble
 
+_Based on BRT-work with HDS-scale data on the UCT HPC._
+
 After running many, many (often repeated) jobs on UCT's HPC, I explore the outputs here. Some of the outputs are my own log files written by `capture.output()`, and others from the HPC's built in `.e` and `.o` files.
 
 # Job 2117157
