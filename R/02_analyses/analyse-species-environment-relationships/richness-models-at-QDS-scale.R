@@ -121,28 +121,27 @@ origin(SWAFR_data_QDS_stack)
 
 # Explore data visually --------------------------------------------------------
 
-GCFR_biplots <- foreach(variable_ = GCFR_predictor_names) %do% {
+GCFR_biplots <- foreach(variable_ = GCFR_predictor_names_QDS) %do% {
   ggplot(GCFR_data_QDS, aes_string(variable_, "QDS_richness")) +
     geom_point() +
     scale_y_continuous(trans = "log")
 }
-names(GCFR_biplots) <- GCFR_predictor_names
+names(GCFR_biplots) <- GCFR_predictor_names_QDS
 GCFR_biplots$rough_Elevation
 
-SWAFR_biplots <- foreach(variable_ = SWAFR_predictor_names) %do% {
+SWAFR_biplots <- foreach(variable_ = SWAFR_predictor_names_QDS) %do% {
   ggplot(SWAFR_data_QDS, aes_string(variable_, "QDS_richness")) +
     geom_point() +
     scale_y_continuous(trans = "log")
 }
-names(SWAFR_biplots) <- SWAFR_predictor_names
+names(SWAFR_biplots) <- SWAFR_predictor_names_QDS
 SWAFR_biplots$rough_Elevation
 
 # Try BRTs ---------------------------------------------------------------------
 
-set.seed(Sys.time())
 GCFR_model <- gbm.step(
   data = GCFR_data_QDS,
-  gbm.x = GCFR_predictor_names,
+  gbm.x = GCFR_predictor_names_QDS,
   gbm.y = "log_QDS_richness",
   tree.complexity = 3,
   learning.rate = 0.001,
@@ -150,9 +149,12 @@ GCFR_model <- gbm.step(
   family = "gaussian",
   plot.main = TRUE
 )
+my_BRT_summary(GCFR_model)
+my_BRT_summary(GCFR_model)$contribs
+
 SWAFR_model <- gbm.step(
   data = SWAFR_data_QDS,
-  gbm.x = SWAFR_predictor_names,
+  gbm.x = SWAFR_predictor_names_QDS,
   gbm.y = "log_QDS_richness",
   tree.complexity = 3,
   learning.rate = 0.001,
@@ -160,13 +162,7 @@ SWAFR_model <- gbm.step(
   family = "gaussian",
   plot.main = TRUE
 )
-
-pseudo_r2(GCFR_model)
-pseudo_r2(SWAFR_model)
-pred_obs_r2(GCFR_model)
-pred_obs_r2(SWAFR_model)
-
-my_BRT_summary(GCFR_model)$contribs
+my_BRT_summary(SWAFR_model)
 my_BRT_summary(SWAFR_model)$contribs
 
 GCFR_model %$%
@@ -175,10 +171,13 @@ GCFR_model %$%
     geom_smooth(method = lm) +
     geom_abline(intercept = 0, slope = 1, lty = "dashed") +
     geom_point()
-SWAFR_model %$% plot(fitted ~ data$y)
-abline(0, 1, lty = "dashed")
+SWAFR_model %$%
+  tibble(fit_log_richness = fitted, obs_log_richness = data$y) %>%
+  ggplot(aes(obs_log_richness, fit_log_richness)) +
+    geom_smooth(method = lm) +
+    geom_abline(intercept = 0, slope = 1, lty = "dashed") +
+    geom_point()
 
 summary(GCFR_model)
-summary(SWAFR_model)
 
 
