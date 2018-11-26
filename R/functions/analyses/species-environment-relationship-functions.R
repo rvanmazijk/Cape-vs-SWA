@@ -152,13 +152,18 @@ quality_label <- function(x, model_name_, kind) {
 my_BRT_summary <- function(x) {
   # Gives the nt, pseudo-R^2 and variables' contributions for a BRT
   stopifnot(class(x) == "gbm")
+  nt <- x$n.trees
+  pseudo_r2 <- pseudo_r2(x)
   pred_obs_r2s <- pred_obs_r2(x)
+  pred_obs_r2 <- pred_obs_r2s$pred_obs_m
+  pred_obs_r2_exp <- pred_obs_r2s$pred_obs_m_exp
+  contribs <- list(x$contributions)
   tibble(
-    nt = x$n.trees,
-    pseudo_r2 = pseudo_r2(x),
-    pred_obs_r2 = pred_obs_r2s$pred_obs_m,
-    pred_obs_r2_exp = pred_obs_r2s$pred_obs_m_exp,
-    contribs = list(x$contributions)
+    nt,
+    pseudo_r2,
+    pred_obs_r2,
+    pred_obs_r2_exp,
+    contribs
   )
 }
 
