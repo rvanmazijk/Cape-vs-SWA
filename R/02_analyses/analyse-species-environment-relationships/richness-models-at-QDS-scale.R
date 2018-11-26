@@ -115,10 +115,6 @@ SWAFR_predictor_names_QDS <- removeCollinearity(
 )
 SWAFR_predictor_names_QDS %<>% map_chr(1)
 
-merge(GCFR_data_QDS_stack$QDS_richness, SWAFR_data_QDS_stack$QDS_richness)
-origin(GCFR_data_QDS_stack)
-origin(SWAFR_data_QDS_stack)
-
 # Explore data visually --------------------------------------------------------
 
 GCFR_biplots <- foreach(variable_ = GCFR_predictor_names_QDS) %do% {
@@ -178,6 +174,8 @@ SWAFR_model %$%
     geom_abline(intercept = 0, slope = 1, lty = "dashed") +
     geom_point()
 
-summary(GCFR_model)
+# Attempt to merge datasets ----------------------------------------------------
 
-
+merge(GCFR_data_QDS_stack$QDS_richness, SWAFR_data_QDS_stack$QDS_richness)
+origin(GCFR_data_QDS_stack)
+origin(SWAFR_data_QDS_stack)
