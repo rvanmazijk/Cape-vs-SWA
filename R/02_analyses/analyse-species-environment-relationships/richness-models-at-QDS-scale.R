@@ -173,9 +173,3 @@ SWAFR_model %$%
     geom_smooth(method = lm) +
     geom_abline(intercept = 0, slope = 1, lty = "dashed") +
     geom_point()
-
-# Attempt to merge datasets ----------------------------------------------------
-
-merge(GCFR_data_QDS_stack$QDS_richness, SWAFR_data_QDS_stack$QDS_richness)
-origin(GCFR_data_QDS_stack)
-origin(SWAFR_data_QDS_stack)
