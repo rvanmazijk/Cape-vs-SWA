@@ -39,10 +39,10 @@ SWAFR_species %<>% get_geocodes(SWAFR_QDS[, "qdgc"])
 # Now count no. species by QDS
 GCFR_richness_values <- GCFR_species@data %>%
   group_by(qdgc) %>%
-  summarise(QDS_richness = length(species))
+  summarise(QDS_richness = length(unique(species)))
 SWAFR_richness_values <- SWAFR_species@data %>%
   group_by(qdgc) %>%
-  summarise(QDS_richness = length(species))
+  summarise(QDS_richness = length(unique(species)))
 
 # Put those values in the QDS SpatialPolygonsDataFrame
 GCFR_QDS@data %<>% left_join(GCFR_richness_values)
