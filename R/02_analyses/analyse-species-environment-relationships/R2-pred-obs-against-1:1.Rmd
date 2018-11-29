@@ -62,43 +62,41 @@ The simple $R^2$ for a given OLS regression is defined as the ratio of sums of s
     }
 \end{align}
 
-We wish to measure, instead, the degree to which the original model minimises the deviation of predicted values from the 1:1 line. These deviations can be thought of "residuals" (hereafter $r'$) for predicted values against the presumed 1:1 line against observed values that would result if the model fit the data perfectly. Then, $R^2_{pred-obs}$ should be the ratio of $1 - r'$ to the total $SS$ of a model.
+We wish to measure, instead, the degree to which the original model minimises the deviation of predicted values from the 1:1 line.
 
-\begin{align}
-  let \ r'_i = pred_i - obs_i \\
-  R^2_{pred-obs} 
-    &= \frac{SS_{r'}}{SS_{total}} \\
-    &= \frac{
-      \sum_{i=1}^n (1 - pred_i - obs_i)^2
-    }{
-      \sum_{i=1}^n (obs_i - \overline{obs_i})^2
-    }
-\end{align}
+Traditional $R^2$ describes the "residue" between the null ($\overline{y}$) and the data ($y$) that the fit ($\hat{y}$) has accounted for (first figure below). In a similar sense, the fit (sensu $pred$) can account for residue between the 1:1 line between fit and observed values and a null of those fits ($\overline{pred}$) (seconds figure below).
 
-E.g.:
-
-```{r r2-pred-obs-eg}
-r2_pred_obs <- function(pred, obs) {
-  ss_rprime <- sum((pred - obs) ^ 2)
-  ss_total <- sum((obs - mean(obs)) ^ 2)
-  r2_pred_obs <- ss_rprime / ss_total
-  data.frame(ss_rprime, ss_total, r2_pred_obs)
-}
-obs <- 1:10
-pred <- obs
-r2_pred_obs(pred, obs)
+```{r traditional-r2-logic, echo=FALSE, fig.cap='Logic behind traditional $R^2$.'}
+x <- 1:25
+y <- jitter(3 * x, 15)
+m <- lm(y ~ x)
+plot(y ~ x)
+abline(h = mean(y))
+text(x = 25, y = 30, expression(paste(bar(y))))
+abline(m)
+text(x = 25, y = 70, expression(paste(hat(y))))
 ```
 
-***
+```{r r2-pred-obs-logic, echo=FALSE, fig.cap='Logic behind proposed $R^2_{pred-obs}$.'}
+obs <- -10:10
+pred <- jitter(1.5 * obs, 15)
+plot(pred ~ obs, xlim = range(pred))
+abline(h = mean(pred))
+text(x = 10, y = -2, expression(paste(bar(y))))
+abline(0, 1, lty = "dashed")
+text(x = 10, y = 8, "1:1")
+```
+
+As such, we can define $R^2_{pred-obs}$, analogously to traditional $R^2$, as the ratio between the $SS$ of $pred$ versus $\overline{pred}$ and the $SS$ of the 1:1 line against $\overline{pred}$.
 
 \begin{align}
-  let \ r'_i = pred_i - obs_i \\
-  R^2_{pred-obs} 
-    &= \frac{SS_{r'}}{SS_{total}} \\
+  obs \equiv the \ 1:1 \ line \\
+  R^2_{pred-obs}
+    &= \frac{SS_{pred}}{SS_{1:1}} \\
     &= \frac{
-      \sum_{i=1}^n (1 - pred_i - obs_i)^2
+      \sum_{i=1}^n (pred_i - \overline{pred})^2
     }{
-      \sum_{i=1}^n (obs_i - \overline{obs_i})^2
+      \sum_{i=1}^n (obs_i - \overline{pred})^2
     }
 \end{align}
 
@@ -112,7 +110,23 @@ r2_pred_obs <- function(pred, obs) {
 }
 obs <- 1:10
 pred <- jitter(3 * obs, 5)
-plot(pred, obs)
+plot(pred ~ obs)
+abline(0, 1, lty = "dashed")
+r2_pred_obs(pred, obs)
+```
+
+***
+
+```{r}
+r2_pred_obs <- function(pred, obs) {
+  ss_one_to_one <- sum((obs - mean(pred)) ^ 2)
+  ss_pred_obs_total <- sum((pred - mean(pred)) ^ 2)
+  r2_pred_obs <- ss_one_to_one / ss_pred_obs_total
+  data.frame(ss_one_to_one, ss_pred_obs_total, r2_pred_obs)
+}
+obs <- 1:10
+pred <- jitter(3 * obs)
+plot(pred ~ obs)
 abline(0, 1, lty = "dashed")
 r2_pred_obs(pred, obs)
 ```
