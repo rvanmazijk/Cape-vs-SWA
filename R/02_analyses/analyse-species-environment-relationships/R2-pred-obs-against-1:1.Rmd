@@ -1,0 +1,118 @@
+---
+title: Calculating $R^2_{pred-obs}$ against a 1:1 line as opposed to the OLS-fit of $pred \sim $obs$
+subtitle: Cape vs SWA publication
+author: Ruan van Mazijk
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  message = FALSE, 
+  warning = FALSE
+)
+library(broom)
+```
+
+Suppose one regresses $y$ against $x$, and then regresses $\hat{y}$ from that regression against the original data $y$. This new regression between $y$ ($obs$ for simplicity) and $\hat{y}$ ($pred$) values can also be used to generate an $R^2$, though below I demonstrate that this $R^2$ is not of interest.
+
+If $pred$ perfectly matches $obs$, then all values should fall along the 1:1 line.
+
+```{r pred-obs-1-1}
+x <- 1:10
+obs <- x
+m <- lm(obs ~ x)
+pred <- m$fitted.values
+plot(pred ~ obs)
+abline(0, 1, lty = "dashed")
+```
+
+The $R^2$ for the above regression will, unsurpisingly be 1.
+
+```{r pred-obs-r2}
+m <- lm(pred ~ obs)
+glance(m)$r.squared
+```
+
+The $R^2$ of a $pred$-$obs$-regression is contingent on the slope of the relationship between model predictions and the observed data. Suppose we have a model that overpredicts for small observed values and underpredicts for large observed values.
+
+```{r pred-obs-r2-slope-gt-1}
+obs <- -10:10
+pred <- jitter(3 * obs, factor = 10)
+m <- lm(pred ~ obs)
+plot(pred ~ obs)
+abline(m)
+abline(0, 1, lty = "dashed")
+```
+
+The $R^2$ of this regression (`r glance(m)$r.squared`) does not capture that this model that generates the predicted values ($pred$) is failing to match the data at its extremes.
+
+Instead, we must define an $R^2$-like metric that measures the $R^2$ "about the 1:1 line"---$R^2_{pred-obs}$
+
+The simple $R^2$ for a given OLS regression is defined as the ratio of sums of squares ($SS$) of regression to the total $SS$.
+
+\begin{align}
+  R^2
+    &= \frac{SS_{regression}}{SS_{total}}
+    &= \frac{
+      \sum_{i=1}^n (\hat{y_i} - \overline{y})^2
+    }{
+      \sum_{i=1}^n (y_i - \overline{y})^2
+    }
+\end{align}
+
+We wish to measure, instead, the degree to which the original model minimises the deviation of predicted values from the 1:1 line. These deviations can be thought of "residuals" (hereafter $r'$) for predicted values against the presumed 1:1 line against observed values that would result if the model fit the data perfectly. Then, $R^2_{pred-obs}$ should be the ratio of $1 - r'$ to the total $SS$ of a model.
+
+\begin{align}
+  let \ r'_i = pred_i - obs_i \\
+  R^2_{pred-obs} 
+    &= \frac{SS_{r'}}{SS_{total}} \\
+    &= \frac{
+      \sum_{i=1}^n (1 - pred_i - obs_i)^2
+    }{
+      \sum_{i=1}^n (obs_i - \overline{obs_i})^2
+    }
+\end{align}
+
+E.g.:
+
+```{r r2-pred-obs-eg}
+r2_pred_obs <- function(pred, obs) {
+  ss_rprime <- sum((pred - obs) ^ 2)
+  ss_total <- sum((obs - mean(obs)) ^ 2)
+  r2_pred_obs <- ss_rprime / ss_total
+  data.frame(ss_rprime, ss_total, r2_pred_obs)
+}
+obs <- 1:10
+pred <- obs
+r2_pred_obs(pred, obs)
+```
+
+***
+
+\begin{align}
+  let \ r'_i = pred_i - obs_i \\
+  R^2_{pred-obs} 
+    &= \frac{SS_{r'}}{SS_{total}} \\
+    &= \frac{
+      \sum_{i=1}^n (1 - pred_i - obs_i)^2
+    }{
+      \sum_{i=1}^n (obs_i - \overline{obs_i})^2
+    }
+\end{align}
+
+```{r}
+r2_pred_obs <- function(pred, obs) {
+  one_to_one <- obs
+  ss_pred <- sum((pred - mean(pred)) ^ 2)
+  ss_one_to_one <- sum((one_to_one - mean(pred)) ^ 2)
+  r2_pred_obs <- ss_pred / ss_one_to_one
+  data.frame(ss_pred, ss_one_to_one, r2_pred_obs)
+}
+obs <- 1:10
+pred <- jitter(3 * obs, 5)
+plot(pred, obs)
+abline(0, 1, lty = "dashed")
+r2_pred_obs(pred, obs)
+```
