@@ -119,14 +119,42 @@ r2_pred_obs(pred, obs)
 
 ```{r}
 r2_pred_obs <- function(pred, obs) {
-  ss_one_to_one <- sum((obs - mean(pred)) ^ 2)
+  one_to_one <- obs
+  ss_one_to_one <- sum((one_to_one - mean(pred)) ^ 2)
   ss_pred_obs_total <- sum((pred - mean(pred)) ^ 2)
   r2_pred_obs <- ss_one_to_one / ss_pred_obs_total
   data.frame(ss_one_to_one, ss_pred_obs_total, r2_pred_obs)
 }
-obs <- 1:10
-pred <- jitter(3 * obs)
+obs <- -10:10
+pred <- jitter(0.5 * obs, 5)
 plot(pred ~ obs)
 abline(0, 1, lty = "dashed")
+abline(h = mean(pred))
 r2_pred_obs(pred, obs)
+```
+
+```{r}
+obs <- -10:10
+slope <- seq(-1, 1, length.out = 100)
+dat <- data.frame(slope, r2 = NA)
+for (i in 1:nrow(r2)) {
+  pred <- slope[i] * obs
+  dat$r2[i] <- r2_pred_obs(pred, obs)$r2_pred_obs
+}
+plot(r2 ~ slope, dat, type = "l")
+plot(1, pch = "", xlab = "obs", ylab = "pred", xlim = c(-10, 10), ylim = c(-10, 10))
+for (i in 1:nrow(r2)) {
+  abline(0, dat$slope[i])
+}
+```
+
+***
+
+```{r}
+x <- 1:100
+y <- jitter(5 * x, 100)
+m <- lm(y ~ x)
+glance(m)
+m_res <- lm(m$fitted.values ~ m$model$y)
+glance(m_res)
 ```
