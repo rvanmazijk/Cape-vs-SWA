@@ -189,3 +189,34 @@ permute_wo_nas <- function(x) {
   x[!is.na(x)] %<>% permute_vector()
   x
 }
+
+# Importing all replicate or permuted BRT outputs ------------------------------
+# (quality statistics & variable contributions)
+
+import_replicate_outputs <- function(output_path,
+                                     output_pattern = c("summary", "contribs"),
+                                     output_slug = "_",
+                                     response_ = c("richness", "turnover"),
+                                     scale_ = c("QDS", "HDS")) {
+  output_paths <- list.files(
+    output_path,
+    pattern = output_pattern,
+    full.names = TRUE
+  )
+  outputs <- map(output_paths, ~
+    .x %>%
+      read_csv() %>%
+      mutate(path = .x) %>%
+      mutate(
+        region = str_extract(path, "(GCFR|SWAFR)"),
+        response = response_,
+        scale = scale_,
+        rep = path %>%
+          str_extract(glue("{output_slug}\\d+\\.csv$")) %>%
+          str_remove(output_slug) %>%
+          str_remove("\\.csv")
+      )
+  )
+  bind_rows(outputs)
+
+}
