@@ -167,10 +167,14 @@ my_BRT_summary <- function(x) {
   )
 }
 
-get_zero_contrib_vars <- function(region_, response_) {
-  all_vars <- unique(model_contributions$var)
-  some_vars <- model_contributions %>%
-    filter(region == region_, response == response_) %>%
+get_zero_contrib_vars <- function(region_, response_, scale_) {
+  all_vars <- unique(contribution_data$var)
+  some_vars <- contribution_data %>%
+    filter(
+      region == region_,
+      response == response_,
+      scale == scale_
+    ) %>%
     select(var) %>%
     as_vector()
   all_vars[!(all_vars %in% some_vars)]
