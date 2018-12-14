@@ -109,6 +109,7 @@ write.csv(SWAFR_data_QDS, glue("{output_path}/SWAFR_variables_QDS.csv"))
 # Combine all data at HDS-scale ------------------------------------------------
 
 source(here("R/02_analyses/generate-turnover.R"))
+# Reset output path after runnng above R-script
 output_path <- here(
   "R/02_analyses/",
   "analyse-species-environment-relationships/run-on-UCT-HPC"
@@ -186,3 +187,27 @@ SWAFR_variables_HDS_stack %>%
   as.data.frame() %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/SWAFR_variables_HDS.csv"))
+
+# Combined-region datasets -----------------------------------------------------
+
+GCFR_data_QDS <- read_csv(glue("{output_path}/GCFR_variables_QDS.csv"))[, -1]
+SWAFR_data_QDS <- read_csv(glue("{output_path}/SWAFR_variables_QDS.csv"))[, -1]
+GCFR_data_HDS <- read_csv(glue("{output_path}/GCFR_variables_HDS.csv"))[, -1]
+SWAFR_data_HDS <- read_csv(glue("{output_path}/SWAFR_variables_HDS.csv"))[, -1]
+
+BOTH_data_QDS <- rbind(
+  cbind(region = "GCFR", GCFR_data_QDS),
+  cbind(region = "SWAFR", SWAFR_data_QDS)
+)
+write_csv(
+  BOTH_data_QDS,
+  glue("{output_path}/BOTH_variables_QDS.csv")
+)
+BOTH_data_HDS <- rbind(
+  cbind(region = "GCFR", GCFR_data_HDS),
+  cbind(region = "SWAFR", SWAFR_data_HDS)
+)
+write_csv(
+  BOTH_data_HDS,
+  glue("{output_path}/BOTH_variables_HDS.csv")
+)
