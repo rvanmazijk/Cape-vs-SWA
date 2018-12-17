@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
 library(here)
 source(here("R/setup.R"))
 data_sources <- read_csv(here("manuscript/data-sources.csv"))
+quality_rank_data <- read_csv(here("manuscript/quality-rank-data.csv"))
+quality_region_data <- read_csv(here("manuscript/quality-region-data.csv"))
 ```
 
 \normalsize \break
@@ -49,6 +51,43 @@ data_sources %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
+```{r quality-rank-data, results="asis"}
+options(knitr.kable.NA = "")
+quality_rank_data %>%
+  select(scale, response, region, nt_rank:pred_obs_r2_exp_rank) %>%
+  arrange(desc(scale), response, region) %>%
+  select(-scale) %>%
+  knitr::kable(
+    format = "latex",
+    escape = TRUE,  # NB (not sure why)
+    booktabs = TRUE#,
+    #caption = "(ref:quality-rank-data)"
+  ) %>%
+  kableExtra::group_rows("QDS scale", 1, 2) %>%
+  kableExtra::group_rows("HDS scale", 3, 6) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+
+```{r quality-region-data, results="asis"}
+options(knitr.kable.NA = "")
+quality_region_data %>%
+  select(scale, response, est_diff, p.value) %>%
+  arrange(desc(scale), response) %>%
+  select(-scale) %>%
+  knitr::kable(
+    format = "latex",
+    escape = TRUE,  # NB (not sure why)
+    booktabs = TRUE#,
+    #caption = "(ref:quality-rank-data)"
+  ) %>%
+  kableExtra::group_rows("QDS scale", 1, 4) %>%
+  #kableExtra::group_rows("Species richness", 1, 8) %>%
+  kableExtra::group_rows("HDS scale", 5, 12) %>%
+  #kableExtra::group_rows("Species turnover", 9, 12) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
 \break
 
 # Figures {-}
@@ -64,4 +103,16 @@ knitr::include_graphics(here::here("figures/fig-2-turnover.png"))
 
 ```{r species-environment-relationships, fig.pos="H", out.width="14cm", fig.cap="(ref:species-environment-relationships)"}
 knitr::include_graphics(here::here("figures/fig-3-species-environment-relationships.png"))
+```
+
+```{r QDS-richness-quality-plots, fig.pos="H", out.width="14cm"}
+knitr::include_graphics(here("figures/fig-3.1-QDS-richness-quality-plots.png"))
+```
+
+```{r HDS-richness-quality-plots, fig.pos="H", out.width="14cm"}
+knitr::include_graphics(here("figures/fig-3.2-HDS-richness-quality-plots.png"))
+```
+
+```{r HDS-turnover-quality-plots, fig.pos="H", out.width="14cm"}
+knitr::include_graphics(here("figures/fig-3.3-HDS-turnover-quality-plots.png"))
 ```
