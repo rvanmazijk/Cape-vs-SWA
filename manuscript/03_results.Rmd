@@ -18,11 +18,13 @@ Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at co
 
 ## Comparing species turnover in the two regions
 
-Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover is defined ($P < 0.0001$, Figure \@ref(fig:turnover)a,b).
+Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover was defined here ($P < 0.0001$, Figure \@ref(fig:turnover)a,b).
 
 ## Predicting richness and turnover with environmental heterogeneity
 
-Vascular plant species richness and turnover are both predicted at least in-part, if not primarly, by environmental heterogeneity in both regions (Figure \@ref(fig:species-environment-relationships)). BRT-models of species richness in each region performed better than the turnover models (e.g. Cape richness vs turnover: $R_{pseudo}^2 = 0.30$ vs $0.19$, $R_{O-E}^2 = 0.74$ vs $0.71$, respectively; Figure \@ref(fig:species-environment-relationships)).
+Our six BRT-models performed adequately, and detected relationships between patterns of species occurrence and the environment that do not occur by chance in the permuted datasets (Figure \@ref(fig:BRT-model-quality), Table \@ref(tab:BRT-quality-perms)). Vascular plant species richness and turnover are found to both be predicted at least in-part, if not primarly, by environmental heterogeneity in both regions (Figure \@ref(fig:species-environment-relationships)).
+
+BRT-models of species richness at the QDS-scale in each region seemed to generally performed best, as these models had generally the greatest number of trees ($nt$, Figure \@ref(fig:BRT-model-quality)a), and higher $R^2$-values (Figure \@ref(fig:BRT-model-quality)b,c). Notably, SWA models of 
 
 BRT-models found climatic variables to be of most importance when predicting species richness and turnover (Figure \@ref(fig:species-environment-relationships)). Elevational heterogeneity features prominently in all models too, ranking at worst the third most important predictor.
 

@@ -51,7 +51,7 @@ data_sources %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-```{r quality-rank-data, results="asis"}
+```{r BRT-quality-perms, results="asis"}
 options(knitr.kable.NA = "")
 quality_rank_data %>%
   select(scale, response, region, nt_rank:pred_obs_r2_rank) %>%
@@ -63,7 +63,7 @@ quality_rank_data %>%
     escape = FALSE,
     booktabs = TRUE,
     col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
-    caption = "(ref:quality-rank-data)"
+    caption = "(ref:BRT-quality-perms)"
   ) %>%
   kableExtra::group_rows("QDS-richness", 1, 2) %>%
   kableExtra::group_rows("HDS-richness", 3, 4) %>%
@@ -71,7 +71,7 @@ quality_rank_data %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-```{r quality-region-data, results="asis"}
+```{r BRT-quality-regions, results="asis"}
 options(knitr.kable.NA = "")
 quality_region_data %>%
   select(scale, response, est_diff, quality_metric) %>%
@@ -86,7 +86,7 @@ quality_region_data %>%
     escape = FALSE,
     booktabs = TRUE,
     col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
-    caption = "(ref:quality-region-data)"
+    caption = "(ref:BRT-quality-regions)"
   ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
@@ -103,7 +103,7 @@ knitr::include_graphics(here("figures/fig-1-roughness.png"))
 knitr::include_graphics(here("figures/fig-2-turnover.png"))
 ```
 
-```{r species-environment-relationships, fig.pos="H", out.width="14cm", fig.cap="(ref:species-environment-relationships)"}
+```{r species-environment-relationships, fig.pos="H", out.width="18cm", fig.cap="(ref:species-environment-relationships)"}
 knitr::include_graphics(here("figures/fig-3-species-environment-relationships.png"))
 ```
 
