@@ -54,37 +54,40 @@ data_sources %>%
 ```{r quality-rank-data, results="asis"}
 options(knitr.kable.NA = "")
 quality_rank_data %>%
-  select(scale, response, region, nt_rank:pred_obs_r2_exp_rank) %>%
+  select(scale, response, region, nt_rank:pred_obs_r2_rank) %>%
   arrange(desc(scale), response, region) %>%
-  select(-scale) %>%
+  select(-scale, -response) %>%
+  mutate_if(is.numeric, funs(round(., 3))) %>%
   knitr::kable(
     format = "latex",
-    escape = TRUE,  # NB (not sure why)
-    booktabs = TRUE#,
-    #caption = "(ref:quality-rank-data)"
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
+    caption = "(ref:quality-rank-data)"
   ) %>%
-  kableExtra::group_rows("QDS scale", 1, 2) %>%
-  kableExtra::group_rows("HDS scale", 3, 6) %>%
+  kableExtra::group_rows("QDS-richness", 1, 2) %>%
+  kableExtra::group_rows("HDS-richness", 3, 4) %>%
+  kableExtra::group_rows("HDS-turnover", 5, 6) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
-
 
 ```{r quality-region-data, results="asis"}
 options(knitr.kable.NA = "")
 quality_region_data %>%
-  select(scale, response, est_diff, p.value) %>%
+  select(scale, response, est_diff, quality_metric) %>%
+  filter(quality_metric != "pred_obs_r2_exp") %>%
+  spread(quality_metric, est_diff) %>%
   arrange(desc(scale), response) %>%
-  select(-scale) %>%
+  mutate_if(is.numeric, funs(round(., 3))) %>%
+  mutate(model = glue("{scale}-{response}")) %>%
+  select(model, nt:pseudo_r2) %>%
   knitr::kable(
     format = "latex",
-    escape = TRUE,  # NB (not sure why)
-    booktabs = TRUE#,
-    #caption = "(ref:quality-rank-data)"
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
+    caption = "(ref:quality-region-data)"
   ) %>%
-  kableExtra::group_rows("QDS scale", 1, 4) %>%
-  #kableExtra::group_rows("Species richness", 1, 8) %>%
-  kableExtra::group_rows("HDS scale", 5, 12) %>%
-  #kableExtra::group_rows("Species turnover", 9, 12) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
