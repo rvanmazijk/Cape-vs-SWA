@@ -45,8 +45,8 @@ CLES_plot <- CLES_plot +
   scale_colour_manual(values = var_colours, guide = FALSE) +
   scale_shape_manual(values = var_shapes) +
   facet_wrap(~ variable_type, nrow = 1, dir = "h") +
-  xlab("Spatial resolution") +
-  ylab("CLES (Cape > SWA)") +
+  xlab("Spatial scale") +
+  ylab(expression(paste(italic(CLES)~ ~(Cape > SWA)))) +
   ylim(0.4, 1) +
   guides(shape = guide_legend(
     title = "Environmental variables",
@@ -95,7 +95,7 @@ z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
   scale_fill_manual(name = "Region", values = my_palette) +
   facet_grid(resolution ~ variable, scales = "free_y") +
   labs(
-    x = "Z(Roughness)",
+    x = expression(paste(italic(Z)(Roughness))),
     y = "No. cells"
   )
 
