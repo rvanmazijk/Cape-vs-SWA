@@ -96,26 +96,17 @@ quality_region_data %>%
 # Figures {-}
 
 ```{r roughness, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
-knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
-# TODO: italicise "CLES" in y-axis label
+knitr::include_graphics(here("figures/fig-1-roughness.png"))
 ```
 
 ```{r turnover, fig.pos="H", out.width="12cm", fig.cap="(ref:turnover)"}
-knitr::include_graphics(here::here("figures/fig-2-turnover.png"))
+knitr::include_graphics(here("figures/fig-2-turnover.png"))
 ```
 
 ```{r species-environment-relationships, fig.pos="H", out.width="14cm", fig.cap="(ref:species-environment-relationships)"}
-knitr::include_graphics(here::here("figures/fig-3-species-environment-relationships.png"))
+knitr::include_graphics(here("figures/fig-3-species-environment-relationships.png"))
 ```
 
-```{r QDS-richness-quality-plots, fig.pos="H", out.width="14cm"}
-knitr::include_graphics(here("figures/fig-3.1-QDS-richness-quality-plots.png"))
-```
-
-```{r HDS-richness-quality-plots, fig.pos="H", out.width="14cm"}
-knitr::include_graphics(here("figures/fig-3.2-HDS-richness-quality-plots.png"))
-```
-
-```{r HDS-turnover-quality-plots, fig.pos="H", out.width="14cm"}
-knitr::include_graphics(here("figures/fig-3.3-HDS-turnover-quality-plots.png"))
+```{r BRT-quality-plot, fig.pos="H", out.width="18cm", fig.cap="(ref:BRT-quality-plot)"}
+knitr::include_graphics(here("figures/fig-3.X-BRT-quality-plot.png"))
 ```
