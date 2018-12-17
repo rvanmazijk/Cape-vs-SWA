@@ -1,4 +1,4 @@
-# Make Fig. X (BRT model quality)
+# Make Fig. 4 (BRT model quality)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
@@ -90,7 +90,7 @@ quality_plot <- ggplot(summary_data, aes(value, fill = region, alpha = model_typ
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here("figures/fig-3.X-BRT-quality-plot.png"),
+  here("figures/fig-4-BRT-model-quality.png"),
   quality_plot,
   width = 8, height = 4,
   dpi = 300

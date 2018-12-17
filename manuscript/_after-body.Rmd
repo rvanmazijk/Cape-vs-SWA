@@ -107,6 +107,6 @@ knitr::include_graphics(here("figures/fig-2-turnover.png"))
 knitr::include_graphics(here("figures/fig-3-species-environment-relationships.png"))
 ```
 
-```{r BRT-quality-plot, fig.pos="H", out.width="18cm", fig.cap="(ref:BRT-quality-plot)"}
-knitr::include_graphics(here("figures/fig-3.X-BRT-quality-plot.png"))
+```{r BRT-model-quality, fig.pos="H", out.width="18cm", fig.cap="(ref:BRT-model-quality)"}
+knitr::include_graphics(here("figures/fig-4-BRT-model-quality.png"))
 ```
