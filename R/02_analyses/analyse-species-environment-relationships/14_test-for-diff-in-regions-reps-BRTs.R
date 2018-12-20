@@ -96,11 +96,18 @@ quality_region_data %<>% filter(
 # Exploratory plot -------------------------------------------------------------
 # TODO: move to figure scripts
 
-ggplot(quality_region_data, aes(quality_metric, statistic, col = scale)) +
-  geom_point(position = position_dodge(0.1)) +
+ggplot(quality_region_data,
+  aes(quality_metric, statistic, col = paste(scale, response))
+) +
+  geom_point(position = position_dodge(0.25)) +
   geom_hline(yintercept = 0, lty = "dashed", col = "grey50") +
-  facet_grid(~ response) +
-  labs(x = "Quality statistic", y = "t-value (Cape - SWA)")
+  labs(
+    x = "Quality statistic",
+    y = expression(paste(
+      italic("t"), "-value (Cape - SWA)"
+    ))
+  ) +
+  scale_colour_manual(name = "Scale & response", values = 1:3)
 
 # Save to disc for table -------------------------------------------------------
 
