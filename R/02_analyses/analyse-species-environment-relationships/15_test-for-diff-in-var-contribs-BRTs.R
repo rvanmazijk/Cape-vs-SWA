@@ -51,3 +51,7 @@ ggplot(contribution_F_tests,
   ) +
   facet_grid(~ region) +
   scale_colour_manual(name = "Scale & response", values = 1:3)
+
+# Save to disc -----------------------------------------------------------------
+
+write_csv(contribution_F_tests, here("manuscript/contribution-F-tests.csv"))
