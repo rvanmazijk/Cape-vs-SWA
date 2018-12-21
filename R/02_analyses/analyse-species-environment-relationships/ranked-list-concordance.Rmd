@@ -1,0 +1,120 @@
+---
+title: Quantifying dis-/concordance between ranked lists
+subtitle: Cape vs SWA publication
+author: Ruan van Mazijk
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  fig.pos = "H",
+  fig.width = 3,
+  fig.height = 3
+)
+library(here)
+source(here("R/setup.R"))
+set.seed(1234)  # for reproducibility
+```
+
+# Introduction
+
+Suppose we have a dataset with two different rankings of the same set of categories, e.g.:
+
+```{r setup-data, include=FALSE}
+data <- data.frame(category = letters[1:10], rank1 = 1:10)
+data$rank1 <- sample(data$rank1)
+data$rank2 <- sample(data$rank1)
+comparison12 <- data %>%
+  gather(rank_set, rank, -category) %>%
+  mutate(rank_set = as.numeric(as.factor(rank_set))) %>%
+  filter(rank_set %in% c(1, 2))
+```
+
+```{r print-data}
+knitr::kable(data, col.names = c("Category", "Ranking no. 1", "Ranking no. 2"), align = "c")
+```
+
+# Visualising rank change
+
+How do we visualise the differences in ranking between these two lists? Well, let us visualise the data on their own first:
+
+```{r visualise-data}
+data_plot <- ggplot(comparison12, aes(factor(rank_set), factor(rank), col = category)) +
+  geom_point(size = 3) +
+  labs(x = "List", y = "Rank") +
+  coord_flip() +
+  theme(legend.position = "none")
+data_plot
+```
+
+Here, each point is an observation, and points have been organised by rank and coloured by their category.
+
+\break
+
+Now, let us connect points belonging to the same category with lines:
+
+```{r visualise-rank-change}
+rank_change_plot <- data_plot + geom_line(aes(group = category), size = 1)
+rank_change_plot
+```
+
+# Quantifying rank change
+
+How do we quantify the change in these categories' ranks moving from list no. 1 to 2? Generally, we wish to describe how many positions a category has changed in rank when moving from one list to the other. This can be represented mathematically rather intuitively. Formally, let $\delta_i$ be difference between the $i$^th^ category's position in one list ($p_1$) versus the other ($p_2$). Here, we do not wish to distinguish between positive and negative changes in position, so we shall take the absolute value of all $\delta_i$. Thus, the average change in rank between lists no. 1 and 2 ($\Delta_{1-2}$) is as follows:
+
+$$
+  \Delta_{1-2} = 
+    \overline{|\delta|} = 
+    \sum_{i=1}^{n} \left| \delta_i \right| = 
+    \sum_{i=1}^{n} \left| {p_1}_i - {p_2}_i \right|
+$$
+
+```{r compute-Delta}
+mean_rank_diff <- data %>%
+  select(category, rank1, rank2) %>%
+  mutate(rank_diff = abs(rank1 - rank2)) %>%
+  summarise(mean_rank_diff = mean(rank_diff)) %>%
+  pull("mean_rank_diff")
+```
+
+In the example data above, $\Delta_{1-2} = `r mean_rank_diff`$.
+
+# Drawing inference about rank change
+
+How do we know if some value of $\Delta_{1-2}$ differs from what chance would produce? Let us compute a **randomised null** average change in rank between the two lists by randomly re-ranking the categories in both lists 999 times:
+
+```{r null-rank-change}
+null <- replicate(999, {
+  data %>%
+    select(category, rank1, rank2) %>%
+    mutate(rank1 = sample(rank1), rank2 = sample(rank2)) %>%
+    mutate(rank_diff = abs(rank1 - rank2)) %>%
+    summarise(mean_rank_diff = mean(rank_diff)) %>%
+    pull("mean_rank_diff")
+})
+hist(null, main = "", xlab = expression(paste(Delta[1-2])))
+```
+
+\break
+
+We can rank our observed $\Delta_{1-2}$ amongst these 999 permutations:
+
+```{r obs-rank-change}
+hist(null, main = "", xlab = expression(paste(Delta[1-2])))
+abline(v = mean_rank_diff, lty = "dashed")
+```
+
+We can derived from this a $P$-value as follows (appropriately, using **ranks**):
+
+```{r setup-p-value}
+obs <- mean_rank_diff
+```
+
+```{r derive-p-value, echo=TRUE}
+ranked_Deltas <- rank(c(obs, null))
+obs_Delta_rank <- ranked_Deltas[1]
+p_value <- obs_Delta_rank / (999 + 1)
+p_value
+```
