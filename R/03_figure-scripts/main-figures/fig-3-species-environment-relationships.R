@@ -22,7 +22,11 @@ remove_xlab <- function(x) {
   x + xlab("")
 }
 remove_ylab <- function(x) {
-  x + ylab("")
+  x + theme(
+    axis.title.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank()
+  )
 }
 
 # Import BRT contribution data -------------------------------------------------
@@ -35,6 +39,14 @@ contribution_data <- map_df(
   ),
   ~ cbind(path = .x, read_csv(glue("{output_path}/{.x}")))
 )
+
+contribution_F_tests <- read_csv(here("manuscript/contribution-F-tests.csv"))
+contribution_F_tests %<>%
+  mutate(region = case_when(
+    region == "GCFR" ~ "Cape",
+    region == "SWAFR" ~ "SWA"
+  )) %>%
+  mutate(model_name = paste(region, response, scale))
 
 # Prepare data for plots -------------------------------------------------------
 
@@ -91,6 +103,7 @@ contribution_data$var_class %<>% factor(levels = c(
   "NDVI",
   "Soil"
 ))
+
 contribs_data_summary <- contribution_data %>%
   group_by(
     model_type, model_name,
@@ -104,13 +117,25 @@ contribs_data_summary <- contribution_data %>%
     upper_sd = mean_rel.inf + sd_rel.inf,
     lower_sd = mean_rel.inf - sd_rel.inf
   ) %>%
-  mutate(mean_rel.inf = ifelse(mean_rel.inf == 0, NA, mean_rel.inf))
+  mutate(mean_rel.inf = ifelse(mean_rel.inf == 0, NA, mean_rel.inf)) %>%
+  ungroup() %>%
+  mutate(var = str_replace_all(var, "(\\.|_)", " ")) %>%
+  mutate(var = str_replace(var, "rough", "R"))
 
 # Plot screeplots of variable class contributions ------------------------------
 
+model_names <- c(
+  "Cape richness QDS", "Cape richness HDS", "Cape turnover HDS",
+  "SWA richness QDS",  "SWA richness HDS",  "SWA turnover HDS"
+)
+
+# Set panel height for labelling-ease and adding of piecharts below
+panel_height <- 40
+
 # Create all 9 screeplots
-screeplots <- foreach(model_name_ = unique(contribs_data_summary$model_name),
+screeplots <- foreach(model_name_ = model_names,
                       letter_ = letters[1:6]) %do% {
+  # Extract data for "model_name_"th panel
   reps <- filter(contribs_data_summary,
     model_name == model_name_,
     model_type == "replicates"
@@ -119,6 +144,16 @@ screeplots <- foreach(model_name_ = unique(contribs_data_summary$model_name),
     model_name == model_name_,
     model_type == "permutations"
   )
+  rep_F_value <- contribution_F_tests %>%
+    filter(model_name == model_name_, model_type == "replicates") %>%
+    pull("F_value") %>%
+    round(0) %>%
+    format(big.mark = ",", scientific = FALSE)
+  perm_F_value <- contribution_F_tests %>%
+    filter(model_name == model_name_, model_type == "permutations") %>%
+    pull("F_value") %>%
+    round(2) %>%
+    format(nsmall = 2)
   # Make the actual screeplot of mean rep BRT variable contributions
   screeplot_ <-
     ggplot(
@@ -146,7 +181,8 @@ screeplots <- foreach(model_name_ = unique(contribs_data_summary$model_name),
       data = perms,
       size = 2, shape = 3,  # plus-sign
       position = position_nudge(x = 0.25)
-    )
+    ) +
+    ylim(min(perms$lower_sd), panel_height)
   # Add better labels etc.
   screeplot_ <- screeplot_ +
     labs(
@@ -159,9 +195,35 @@ screeplots <- foreach(model_name_ = unique(contribs_data_summary$model_name),
       axis.text.x = element_text(angle = 90, hjust = 1),
       legend.title = element_blank()
     )
+  # Add F-values for differences in contributions in replicate BRTs
+  # (Have to do "F" and nos. separately to allow for commas in long nos.)
+  screeplot_ <- screeplot_ +
+    annotate("text",
+      x = 3, y = 0.8 * panel_height,
+      label = glue("italic(F)[rep.]"),
+      parse = TRUE,
+      hjust = 0
+    ) +
+    annotate("text",
+      x = 5.25, y = 0.8 * panel_height,
+      label = paste("=", rep_F_value),
+      hjust = 0
+    ) +
+    # And also for permuted BRTs
+    annotate("text",
+      x = 3, y = 0.6 * panel_height,
+      label = glue("italic(F)[prm.]"),
+      parse = TRUE,
+      hjust = 0
+    ) +
+    annotate("text",
+      x = 5.25, y = 0.6 * panel_height,
+      label = paste("=", perm_F_value),
+      hjust = 0
+    )
   screeplot_
 }
-names(screeplots) <- str_replace_all(unique(contribs_data_summary$model_name), " ", "_")
+names(screeplots) <- str_replace_all(model_names, " ", "_")
 
 # Get the legend (for use when combined all 9 plots)
 var_class_legend <- get_legend(screeplots$Cape_richness_QDS)
@@ -175,16 +237,74 @@ screeplots[c(1:4, 6)] %<>% map(remove_xlab)
 # Remove all-but-right-column panels' y-axis titles
 screeplots[-c(1, 4)] %<>% map(remove_ylab)
 
+# Plot piecharts of roughness vs absolute contributions ------------------------
+# (variable _type_)
+
+transparent <- element_rect(colour = "transparent", fill = "transparent")
+
+piecharts <- foreach(model_name_ = model_names) %do% {
+  contribs_data_summary %>%
+    filter(
+      model_type == "replicates",
+      model_name == model_name_,
+      !is.na(mean_rel.inf)
+    ) %>%
+    # FIXME: order pie-slices by size
+    #mutate(var = reorder(var, desc(mean_rel.inf))) %>%
+    ggplot(aes("", mean_rel.inf, fill = var_type)) +
+      geom_col(col = "black", size = 0.25) +
+      coord_polar("y", start = 0) +
+      scale_fill_manual(values = c("white", "grey75")) +
+      theme(
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.background = transparent,
+        plot.background =  transparent,
+        legend.title = element_blank()
+      )
+}
+names(piecharts) <- str_replace_all(model_names, " ", "_")
+
+# Get the legend (for use when combined all 9 plots)
+var_type_legend <- get_legend(piecharts$Cape_richness_QDS)
+
+# Remove all panels' legends for panelling
+piecharts %<>% map(remove_legend)
+
+# Inset the piecharts in the screeplots ----------------------------------------
+
+panel_width <- length(unique(contribs_data_summary$var))
+
+screepieplots <- foreach(screeplot_ = screeplots, piechart_ = piecharts) %do% {
+  screeplot_ + annotation_custom(
+    ggplotGrob(piechart_),
+    xmin = 0.65 * panel_width,  xmax = panel_width,
+    ymin = 0.3 * panel_height, ymax = panel_height
+  )
+}
+screepieplots[[1]]
+
 # Combine panels ---------------------------------------------------------------
 
-screeplots <- plot_grid(plotlist = screeplots)
-screeplots <- plot_grid(screeplots, var_class_legend, rel_widths = c(1, 0.25))
+screepieplots <- plot_grid(plotlist = screepieplots, rel_widths = c(1, 0.9, 0.9))
+var_legend <- plot_grid(
+  var_type_legend, var_class_legend, white_rect,
+  nrow = 3,
+  rel_heights = c(1, 1, 0.25)
+)
+screepieplots <- plot_grid(
+  screepieplots, var_legend,
+  nrow = 1,
+  rel_widths = c(1, 0.2)
+)
 
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
   here("figures/fig-3-species-environment-relationships.png"),
-  screeplots,
+  screepieplots,
   width = 10, height = 6,
   dpi = 300
 )
