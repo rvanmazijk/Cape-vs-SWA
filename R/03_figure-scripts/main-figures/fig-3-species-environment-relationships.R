@@ -15,6 +15,8 @@ output_path <- here(
 var_names %<>% str_replace_all(" ", ".")
 rough_var_names <- glue("rough_{var_names}")
 
+transparent <- element_rect(colour = "transparent", fill = "transparent")
+
 remove_legend <- function(x) {
   x + theme(legend.position = "none")
 }
@@ -237,12 +239,10 @@ screeplots[c(1:4, 6)] %<>% map(remove_xlab)
 # Remove all-but-right-column panels' y-axis titles
 screeplots[-c(1, 4)] %<>% map(remove_ylab)
 
-# Plot piecharts of roughness vs absolute contributions ------------------------
-# (variable _type_)
+# Plot piecharts of variable contributions -------------------------------------
+# (variable _class_)
 
-transparent <- element_rect(colour = "transparent", fill = "transparent")
-
-piecharts <- foreach(model_name_ = model_names) %do% {
+piecharts_var_class <- foreach(model_name_ = model_names) %do% {
   contribs_data_summary %>%
     filter(
       model_type == "replicates",
@@ -251,10 +251,46 @@ piecharts <- foreach(model_name_ = model_names) %do% {
     ) %>%
     # FIXME: order pie-slices by size
     #mutate(var = reorder(var, desc(mean_rel.inf))) %>%
-    ggplot(aes("", mean_rel.inf, fill = var_type)) +
-      geom_col(col = "black", size = 0.25) +
+    mutate(var_class = factor(var_class, levels = c(
+      "Elevation",
+      "Climate",
+      "NDVI",
+      "Soil"
+    ))) %>%
+    ggplot(aes("", mean_rel.inf, col = var_class, fill = var_class)) +
+      geom_col() +
       coord_polar("y", start = 0) +
-      scale_fill_manual(values = c("white", "grey75")) +
+      scale_colour_manual(values = var_colours, drop = FALSE) +
+      scale_fill_manual(values = var_colours, drop = FALSE) +
+      theme(
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.background = transparent,
+        plot.background =  transparent,
+        legend.position = "none"
+      )
+}
+names(piecharts_var_class) <- str_replace_all(model_names, " ", "_")
+
+# Plot piecharts of roughness vs absolute contributions ------------------------
+# (variable _type_)
+
+piecharts_var_type <- foreach(model_name_ = model_names) %do% {
+  contribs_data_summary %>%
+    filter(
+      model_type == "replicates",
+      model_name == model_name_,
+      !is.na(mean_rel.inf)
+    ) %>%
+    # FIXME: order pie-slices by size
+    #mutate(var = reorder(var, desc(mean_rel.inf))) %>%
+    ggplot(aes("", mean_rel.inf, col = var_type, fill = var_type)) +
+      geom_col() +
+      coord_polar("y", start = 0) +
+      scale_colour_manual(values = c("grey75", "black")) +
+      scale_fill_manual(values = c("grey75", "black")) +
       theme(
         axis.title = element_blank(),
         axis.text = element_blank(),
@@ -265,24 +301,31 @@ piecharts <- foreach(model_name_ = model_names) %do% {
         legend.title = element_blank()
       )
 }
-names(piecharts) <- str_replace_all(model_names, " ", "_")
+names(piecharts_var_type) <- str_replace_all(model_names, " ", "_")
 
 # Get the legend (for use when combined all 9 plots)
-var_type_legend <- get_legend(piecharts$Cape_richness_QDS)
-
-# Remove all panels' legends for panelling
-piecharts %<>% map(remove_legend)
+var_type_legend <- get_legend(piecharts_var_type$Cape_richness_QDS)
+# Now remove legends for panelling below
+piecharts_var_type %<>% map(remove_legend)
 
 # Inset the piecharts in the screeplots ----------------------------------------
 
 panel_width <- length(unique(contribs_data_summary$var))
 
-screepieplots <- foreach(screeplot_ = screeplots, piechart_ = piecharts) %do% {
-  screeplot_ + annotation_custom(
-    ggplotGrob(piechart_),
-    xmin = 0.65 * panel_width,  xmax = panel_width,
-    ymin = 0.3 * panel_height, ymax = panel_height
-  )
+screepieplots <- foreach(screeplot_ = screeplots,
+                         piechart_var_class_ = piecharts_var_class,
+                         piechart_var_type_ = piecharts_var_type) %do% {
+  screeplot_ +
+    annotation_custom(
+      ggplotGrob(piechart_var_class_),
+      xmin = 0.65 * panel_width,  xmax = 0.90 * panel_width,
+      ymin = 0.4 * panel_height, ymax = panel_height
+    ) +
+    annotation_custom(
+      ggplotGrob(piechart_var_type_),
+      xmin = 0.80 * panel_width,  xmax = 1.05 * panel_width,
+      ymin = 0.4 * panel_height, ymax = panel_height
+    )
 }
 screepieplots[[1]]
 
