@@ -353,6 +353,6 @@ ggsave(
 )
 
 # TODO:
-#   - [ ] Move QDS-richness panels to first column
-#   - [ ] Tidy x-axis labels
-#   - [ ] Add pie charts for var_type
+#   - [x] Move QDS-richness panels to first column
+#   - [x] Tidy x-axis labels
+#   - [x] Add pie charts for var_type
