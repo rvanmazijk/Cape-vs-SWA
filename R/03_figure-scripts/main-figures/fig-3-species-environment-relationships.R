@@ -201,25 +201,25 @@ screeplots <- foreach(model_name_ = model_names,
   # (Have to do "F" and nos. separately to allow for commas in long nos.)
   screeplot_ <- screeplot_ +
     annotate("text",
-      x = 3, y = 0.8 * panel_height,
+      x = 2.25, y = 0.85 * panel_height,
       label = glue("italic(F)[rep.]"),
       parse = TRUE,
       hjust = 0
     ) +
     annotate("text",
-      x = 5.25, y = 0.8 * panel_height,
+      x = 4.50, y = 0.85 * panel_height,
       label = paste("=", rep_F_value),
       hjust = 0
     ) +
     # And also for permuted BRTs
     annotate("text",
-      x = 3, y = 0.6 * panel_height,
+      x = 2.25, y = 0.65 * panel_height,
       label = glue("italic(F)[prm.]"),
       parse = TRUE,
       hjust = 0
     ) +
     annotate("text",
-      x = 5.25, y = 0.6 * panel_height,
+      x = 4.50, y = 0.65 * panel_height,
       label = paste("=", perm_F_value),
       hjust = 0
     )
