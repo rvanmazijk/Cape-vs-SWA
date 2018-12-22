@@ -351,8 +351,3 @@ ggsave(
   width = 10, height = 6,
   dpi = 300
 )
-
-# TODO:
-#   - [x] Move QDS-richness panels to first column
-#   - [x] Tidy x-axis labels
-#   - [x] Add pie charts for var_type
