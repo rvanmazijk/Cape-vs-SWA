@@ -10,6 +10,6 @@ Table \@ref(tab:data-sources): (ref:data-sources)
 
 Table \@ref(tab:BRT-quality-perms): (ref:BRT-quality-perms)
 
-(ref:BRT-quality-regions) Estimated differences between replicate Cape and SWA BRT-models' performance measures ($nt$, $R^2_{pseudo}$, $R^2_{E-O}$) following $t$-tests. Positive values indicate that the Cape models had greater values. In all cases, the Cape and SWA had highly significantly different values for these quality measures ($P < 0.0001$).
+(ref:BRT-quality-regions) Estimated differences between replicate Cape and SWA BRT-models' performance measures ($nt$, $R^2_{pseudo}$ (Equation \@ref(eq:pseudo-R2)), $R^2_{E-O}$) following $t$-tests. Positive values indicate that the Cape models had greater values. In all cases, the Cape and SWA had highly significantly different values for these quality measures ($P < 0.0001$).
 
 Table \@ref(tab:BRT-quality-regions): (ref:BRT-quality-regions)
