@@ -6,7 +6,7 @@
 
 library(here)
 source(here("R/setup.R"))
-source(here("R/02_analyses/generate-turnover.R"))
+source(here("R/analyses/generate-turnover.R"))
 
 output_path <- here("outputs/turnover")
 
@@ -19,8 +19,8 @@ vars_to_keep <- c(
   "mean_QDS_richness",
   "mean_QDS_jaccard"
 )
-names(GCFR_species)[5:9] <- vars_to_keep
-names(SWAFR_species)[5:9] <- vars_to_keep
+names(GCFR_species)[4:8] <- vars_to_keep
+names(SWAFR_species)[4:8] <- vars_to_keep
 
 GCFR_species_data <- GCFR_species@data %>%
   select(vars_to_keep) %>%

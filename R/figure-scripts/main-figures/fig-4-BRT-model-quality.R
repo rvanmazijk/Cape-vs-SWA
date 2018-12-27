@@ -29,7 +29,7 @@ nice_facet_labels <- list(
   qual = c(
     # "~ ~" = space
     "(a)~ ~italic(nt)",
-    "(b)~ ~italic(R)[italic(pseudo)]^2",
+    "(b)~ ~italic(R)[pseudo]^2",
     "(c)~ ~italic(R)[italic(E-O)]^2"
   ),
   scal = c(
@@ -43,6 +43,10 @@ nice_facet_labels <- list(
 summary_data %<>%
   select(scale, response, region, model_type, nt:pred_obs_r2) %>%
   gather(quality_metric, value, nt:pred_obs_r2) %>%
+  mutate(region = case_when(
+    region == "GCFR" ~ "Cape",
+    region == "SWAFR" ~ "SWA"
+  )) %>%
   # Make nice facet labels
   mutate(scale_response = glue("{scale}-{response}")) %>%
   mutate(scale_response = factor(scale_response, levels = nice_facet_labels$scal)) %>%
@@ -69,7 +73,7 @@ quality_plot <- ggplot(summary_data, aes(value, fill = region, alpha = model_typ
   ) +
   scale_fill_manual(name = "Region", values = my_palette) +
   scale_alpha_manual(name = "", values = c(0.5, 1), labels = c(
-    "GCFR", "SWAFR"  # Cheat-labelling
+    "Cape", "SWA"  # Cheat-labelling
   )) +
   guides(
     fill = guide_legend(

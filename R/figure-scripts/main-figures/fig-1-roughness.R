@@ -36,6 +36,7 @@ roughness_analysis_data <- U_CLES_results %>%
 # Basic plot
 CLES_plot <- roughness_analysis_data %>%
   ggplot(aes(resolution, CLES_value, col = variable_type)) +
+    geom_hline(yintercept = 0.5, lty = "dashed", col = "grey25") +
     geom_point(aes(shape = variable), size = 2) +
     geom_line(aes(group = variable)) +
     geom_text(aes(label = U_sig), size = 2, col = "black", nudge_x = 0.4)
@@ -91,7 +92,10 @@ z_dbn_plot_data <- roughness_data %>%
 
 z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
   geom_histogram(position = "dodge", bins = 20) +
-  xlim(min(z_dbn_plot_data$z_roughness), quantile(z_dbn_plot_data$z_roughness, 0.99)) +
+  xlim(
+    min(z_dbn_plot_data$z_roughness),
+    quantile(z_dbn_plot_data$z_roughness, 0.99)
+  ) +
   scale_fill_manual(name = "Region", values = my_palette) +
   facet_grid(resolution ~ variable, scales = "free_y") +
   labs(
