@@ -1,34 +1,46 @@
+# Manuscript
 INDEX = manuscript/index.Rmd
 BODY = $(wildcard manuscript/*_*.Rmd)
 AFTER_BODY_RMD = manuscript/_after-body.Rmd
-META = \
+MS_META = \
 	manuscript/_bookdown.yml \
 	manuscript/_output.yml \
 	manuscript/Cape-vs-SWA.bib \
-	manuscript/journal-of-biogeography.csl
-TABLES = $(wildcard manuscript/*.csv)
-FIGURES_R = $(wildcard R/figures/fig-*.R)
-OUTPUTS = $(wildcard outputs/*/*.csv)
-FUNCTIONS = $(wildcard R/functions/*.R)
-
-FIGURES_PNG = $(wildcard figures/fig-*.png)
+	manuscript/journal-of-biogeography.csl \
+	manuscript/style.sty 
+TABLES = $(wildcard manuscript/tables/*.csv)
+MS_FIGURES_PNG = $(wildcard manuscript/figures/fig-*.png)
 AFTER_BODY_TEX = $(AFTER_BODY_RMD:.Rmd=.tex)
-PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
+OUTPUTS = $(wildcard outputs/*.csv)
+FUNCTIONS = $(wildcard R/functions/*.R)
+MS_PDF = manuscript/_manuscript-pdf/Van-Mazijk-et-al_in-prep.pdf
 
-$(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
+# Slides
+SLIDES_RMD = SAAB-AMA-SASSB-2019-talk/RvanMazijk_environmental-heterogeneity-species-richness_slides.Rmd
+SLIDES_META = \
+	SAAB-AMA-SASSB-2019-talk/_output.yml \
+	SAAB-AMA-SASSB-2019-talk/style.sty
+SLIDES_FIGURES_PNG = $(wildcard SAAB-AMA-SASSB-2019-talk/figures/fig-*.png)
+SLIDES_PDF = $(SLIDES_RMD:.Rmd=.pdf)
+
+all: manuscript slides
+
+manuscript: $(MS_PDF)
+
+slides: $(SLIDES_PDF)
+
+$(MS_PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(MS_META) $(OUTPUTS) $(FUNCTIONS)
 	Rscript -e "\
 	setwd('manuscript'); \
 	library(bookdown); \
 	render_book('$<', 'bookdown::pdf_document2')"
 
-$(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(TABLES) $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
+$(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(TABLES) $(MS_FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
 	Rscript -e "\
 	library(rmarkdown); \
 	render('$<', 'latex_fragment')"
-	# NOTE: setwd("manuscript") not needed for fragments
 
-$(FIGURES_PNG): $(FIGURES_R)
-	Rscript -e "source('$<')"
-
-# Outputs that are needed by the ms and figures are re-generated
-# automatically by R within the ms and figure scripts
+$(SLIDES_PDF): $(SLIDES_RMD) $(SLIDES_META) $(SLIDES_FIGURES_PNG)
+	Rscript -e "\
+	library(rmarkdown); \
+	render('$<', 'beamer_presentation')"
