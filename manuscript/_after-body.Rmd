@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
 ```{r setup-tables, include=FALSE}
 library(here)
 source(here("R/setup.R"))
-data_sources <- read_csv(here("manuscript/data-sources.csv"))
-quality_rank_data <- read_csv(here("manuscript/quality-rank-data.csv"))
-quality_region_data <- read_csv(here("manuscript/quality-region-data.csv"))
+data_sources <- read_csv(here("manuscript/tables/data-sources.csv"))
+quality_rank_data <- read_csv(here("manuscript/tables/quality-rank-data.csv"))
+quality_region_data <- read_csv(here("manuscript/tables/quality-region-data.csv"))
 ```
 
 \normalsize \break
@@ -99,21 +99,21 @@ quality_region_data %>%
 # Figures {-}
 
 ```{r roughness, fig.cap="(ref:roughness)"}
-knitr::include_graphics(here("figures/fig-1-roughness.png"))
+knitr::include_graphics(here("manuscript/figures/fig-1-roughness.png"))
 ```
 
 ```{r turnover, out.width="12cm", fig.cap="(ref:turnover)"}
-knitr::include_graphics(here("figures/fig-2-turnover.png"))
+knitr::include_graphics(here("manuscript/figures/fig-2-turnover.png"))
 ```
 
 ```{r species-environment-relationships, fig.cap="(ref:species-environment-relationships)"}
-knitr::include_graphics(here("figures/fig-3-species-environment-relationships.png"))
+knitr::include_graphics(here("manuscript/figures/fig-3-species-environment-relationships.png"))
 ```
 
 ```{r BRT-model-quality, fig.cap="(ref:BRT-model-quality)"}
-knitr::include_graphics(here("figures/fig-4-BRT-model-quality.png"))
+knitr::include_graphics(here("manuscript/figures/fig-4-BRT-model-quality.png"))
 ```
 
 ```{r BRT-variable-rank-concordance, out.width="15cm", fig.cap="(ref:BRT-variable-rank-concordance)"}
-knitr::include_graphics(here("figures/fig-5-BRT-variable-rank-concordance.png"))
+knitr::include_graphics(here("manuscript/figures/fig-5-BRT-variable-rank-concordance.png"))
 ```

@@ -1,22 +1,12 @@
 ---
-title: "**Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse floras**"
-subtitle: "**Running title:** Environmental heterogeneity and plant species richness"
-author: Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom
+title: '**Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse floras**'
+subtitle: '**Running title:** Environmental heterogeneity and plant species richness'
+author: 'Ruan van Mazijk, Michael D. Cramer & G. Anthony Verboom'
+toc: false
 bibliography: Cape-vs-SWA.bib
 link-citations: true
 csl: journal-of-biogeography.csl
-toc: false
-# Settings for PDF
-mainfont: Times New Roman
-header-includes:
-  - \usepackage[fontsize=11pt]{scrextend}  # bc `fontsize:` doesn't work w/ custom `mainfont:`
-  - \usepackage{float}  # so _after-body.Rmd can "hold" tables and figures
-  - \usepackage{hanging}  # for bibliography
-  - \usepackage{lineno}  # for every-5th-line-numbering
-  - \def\linenumberfont{\normalfont\footnotesize\rmfamily}  # Make line-numbering bigger
-  - \raggedright  # un-justify all text
-  - \renewcommand{\baselinestretch}{1.5} # 1.5pt line spacing
-  - \setlength{\parskip}{1em}  # increase betwe-para spacing
+mainfont: Times New Roman  # for PDF
 ---
 
 ```{r setup, include=FALSE}
