@@ -32,14 +32,16 @@ knitr::include_graphics(here("SAAB-AMA-SASSB-2019-talk/figures/speciation.png"))
 plot_coexistence()
 ```
 
-# Species richness ($S$)
+# How to explain extremely high $S$?
 
-\center Environmental heterogeneity\footnotemark[1]\footnotemark[2]
+Environmental heterogeneity\footnotemark[1]\footnotemark[2]\footnotemark[3]
 
-_TODO: expand_
+- $\uparrow$ gradients : $\uparrow$ speciation
+- $\uparrow$ habitats : $\uparrow$ co-existence
 
-\footnotetext[1]{Kreft \& Jetz 2007. \emph{PNAS} 104(14)}
-\footnotetext[2]{Thuiller et al. 2006. \emph{Ecography} 29(5)}
+\footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
+\footnotetext[2]{Kreft \& Jetz 2007. \emph{PNAS} 104(14)}
+\footnotetext[3]{Thuiller et al. 2006. \emph{Ecography} 29(5)}
 
 # The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
 
