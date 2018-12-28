@@ -2,7 +2,7 @@
 
 library(here)
 library(visreg)
-source(here("R/analyses/analyse-turnover.R"))
+#source(here("R/analyses/analyse-turnover.R"))
 
 tidy_p <- function(p) {
   ifelse(p == 0,
@@ -11,12 +11,17 @@ tidy_p <- function(p) {
   )
 }
 
+richness_turnover_data <- read_csv(here("outputs/turnover/richness_turnover_data.csv"))
+
 # Wrangle data -----------------------------------------------------------------
 
 richness_turnover_data2 <- transmute(richness_turnover_data,
   region = region,
   gamma = HDS_richness,
   beta = mean_QDS_jaccard * HDS_richness,
+  beta2 = mean_QDS_jaccard * mean_QDS_richness,
+  beta3 = add_residual_turnover,
+  beta4 = add_residual_turnover_prop,
   alpha = mean_QDS_richness
 )
 
@@ -63,14 +68,12 @@ m_summaries <- full_join(m_both_summary, m_sep_summary)
 
 # Plot the data
 ggplot(richness_turnover_data2, aes(alpha, gamma, col = region)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, lty = "dashed", col = "grey25")
+  geom_point()
 ggplot(richness_turnover_data2, aes(beta, gamma, col = region)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, lty = "dashed", col = "grey25")
 ggplot(richness_turnover_data2, aes(alpha, beta, col = region)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, lty = "dashed", col = "grey25")
+  geom_point()
 
 # Plot combined model's results
 visreg(m_both, xvar = "beta", by = "region", overlay = TRUE)
@@ -147,3 +150,20 @@ ggplot(cross_pred_gamma, aes(obs, exp)) +
   geom_abline(intercept = 0, slope = 1, lty = "dashed", col = "grey25") +
   facet_grid(model ~ region) +
   labs(x = bquote(gamma), y = bquote(hat(gamma)))
+
+# Visualise other things -------------------------------------------------------
+
+ggplot(richness_turnover_data2, aes(beta2, gamma, col = region)) +
+  geom_point()
+ggplot(richness_turnover_data2, aes(beta2, alpha, col = region)) +
+  geom_point()
+
+ggplot(richness_turnover_data2, aes(beta3, gamma, col = region)) +
+  geom_point()
+ggplot(richness_turnover_data2, aes(beta3, alpha, col = region)) +
+  geom_point()
+
+ggplot(richness_turnover_data2, aes(beta4, gamma, col = region)) +
+  geom_point()
+ggplot(richness_turnover_data2, aes(beta4, alpha, col = region)) +
+  geom_point()
