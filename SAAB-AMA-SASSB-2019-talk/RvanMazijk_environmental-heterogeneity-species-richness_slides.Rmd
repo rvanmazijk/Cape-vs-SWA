@@ -99,21 +99,31 @@ Roughness $R(N) = SD_{focal}(N)$
 
 ***
 
-```{r elev-roughness, out.width='12cm'}
-knitr::include_graphics("figures/fig-1.1-elev-roughness.png")
-```
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/fig-1.1-elev-roughness_blank.png}
+    \onslide<2-> \center 
+      \includegraphics[width=12cm]{figures/fig-1.1-elev-roughness.png}
+  \end{overprint}
+\end{figure}
 
-- Roughness varies with scale
-- And differently so for the Cape and SWA
+- \onslide<3-> Roughness varies with scale
+- \onslide<3-> And differently so for the Cape and SWA
 
 ***
 
-```{r CLES-roughness, out.width='7cm'}
-knitr::include_graphics(here("SAAB-AMA-SASSB-2019-talk/figures/fig-1.2-CLES-roughness.png"))
-```
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center
+      \includegraphics[width=7cm]{figures/fig-1.2-CLES-roughness_blank.png}
+    \onslide<2-> \center 
+      \includegraphics[width=7cm]{figures/fig-1.2-CLES-roughness.png}
+  \end{overprint}
+\end{figure}
 
-- Different forms of roughness scale differently
-- And differently so for the Cape and SWA
+- \onslide<3-> Different forms of roughness scale differently
+- \onslide<3-> And differently so for the Cape \& SWA
 
 # Species turnover
 
