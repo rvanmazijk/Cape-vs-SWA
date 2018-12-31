@@ -18,7 +18,7 @@ Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at co
 
 ## Comparing species turnover in the two regions
 
-Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover was defined here ($P < 0.0001$, Figure \@ref(fig:turnover)a,b).
+Following calculations of $\overline{J}_{\mathrm{QDS}}$ and $T_{\mathrm{HDS}}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, for both measures of turnover defined here ($P < 0.0001$, Figure \@ref(fig:turnover)a,b). Being derived from Jaccard distances, $\overline{J}_{\mathrm{QDS}}$ measures the average pairwise proportional floristic turnover between QDS in each HDS<!--TODO: expand-->. $T_{HDS}$, however, represents the latter of two partitionings of $\gamma$-diversity (i.e. HDS-scale richness here): $\alpha$- and $\beta$-diversity. As $\gamma$-diversity in the Cape is more greatly a function of $\beta$-diversity than in SWA, the complement is necessarily true: $\gamma$-diversity in the Cape is less a function of $\alpha$-diversity than in SWA.
 
 ## Predicting richness and turnover with environmental heterogeneity
 

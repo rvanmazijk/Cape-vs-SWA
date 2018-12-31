@@ -88,7 +88,10 @@ quality_region_data %>%
     format = "latex",
     escape = FALSE,
     booktabs = TRUE,
-    col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
+    col.names = c(
+      "Model", "$nt$", 
+      "$R^2_{\\mathrm{pseudo}}$", "$R^2_{\\mathrm{E-O}}$"
+    ),
     caption = "(ref:BRT-quality-regions)"
   ) %>%
   kableExtra::kable_styling(latex_options = "hold_position")

@@ -56,30 +56,28 @@ The final total plant species richness in each region was `r richness$n_final$GC
 
 ### Quantifying environmental heterogeneity
 
-First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions. Using the R package "raster" [@Hijmans2016], we used a modified version of the "roughness" index in the "terrain" function. For a three by three neighbourhood $N$ of cells, our index of roughness is the average square-root of the squared difference between each of the $n$ neighbour cells' values $x_i$ and the central focal cell's value $x_{focal}$:
+First, in order to assess predictions (i) and (ii), we needed to describe the EH in both regions. Using the R package "raster" [@Hijmans2016], we used a modified version of the "roughness" index in the "terrain" function. For a three by three neighbourhood $\textbf{N}$ of cells, our index of roughness $R$ is the average square-root of the squared difference between each of the $n$ neighbour cells' values $x_i$ and the central focal cell's value $x_{\mathrm{focal}}$:
 
 \begin{equation}
-  Roughness(N) =
-    \frac 1 n
-    \sqrt{
+  R(\textbf{N}) = \frac{1}{n} \sqrt{
       \sum_{i=1}^n
-      \left( x_{focal} - x_i \right)^2
-    },
+    \left( x_{\mathrm{focal}} - x_i \right)^2
+  }
   (\#eq:roughness)
 \end{equation}
 
-This value, notionally the standard deviation of values relative to the focal value, is ascribed to the focal cell. Note, in order to use as much data from within regions' borders as possible, roughness was computed if a focal cell had at least one neighbour cell---that is, roughness is defined where $n_{x_{focal}} \geq 1$. Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity. We compared the distributions of roughness values in each variable in each region with non-parametric Mann-Whitney $U$-tests, as almost all variables could not be normalised by log-transformations. We also compare the effect size of the Cape vs SWA using the "common language effect size" ($CLES$), using the R package "canprot". The $CLES$ is the proportion of all pairwise comparisons between two sample groups' observations where one group's value is greater than the other. In our case, of all pairwise comparisons of a variable's roughness values between the Cape and SWA, we calculated the CLES as the proportion of pairs where Cape roughness values were greater than that of SWA. This allowed us to assess prediction (i). To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we repeated this analysis at all four spatial scales. Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
+This value, notionally the standard deviation of values relative to the focal value, is ascribed to the focal cell. Note, in order to use as much data from within regions' borders as possible, roughness was computed if a focal cell had at least one neighbour cell---that is, roughness is defined where $n_{x_{\mathrm{focal}}} \geq 1$. Using this index of heterogeneity, we produced raster layers of each of our nine environmental variable's heterogeneity. We compared the distributions of roughness values in each variable in each region with non-parametric Mann-Whitney $U$-tests, as almost all variables could not be normalised by log-transformations. We also compare the effect size of the Cape vs SWA using the "common language effect size" ($CLES$), using the R package "canprot". The $CLES$ is the proportion of all pairwise comparisons between two sample groups' observations where one group's value is greater than the other. In our case, of all pairwise comparisons of a variable's roughness values between the Cape and SWA, we calculated the $CLES$ as the proportion of pairs where Cape roughness values were greater than that of SWA. This allowed us to assess prediction (i). To compare the spatial scales of heterogeneity (prediction (ii)) between each region, we repeated this analysis at all four spatial scales. Once again, this entailed recalculating the roughness layer for each variable after the original layer (0.05 degrees resolution) had been rescaled to each of the coarser resolutions.
 
 ### Quantifying species turnover
 
-Regarding prediction (iii), we wished to compare the general degree of species turnover in each region. To compare the extent of species turnover between the Cape and SWA, we determined two metrics of species turnover. The first, computes the mean species turnover as Jaccard distance [@R-vegan] between each pair of QDS within each HDS ($\overline{J}_{QDS}$, based on HDS with $2 \leq n \leq 4$ QDS) in both regions. The second is defined in terms of Whittaker's additive definition of $\beta$-diversity [@ref], where
+Regarding prediction (iii), we wished to compare the general degree of species turnover in each region. To compare the extent of species turnover between the Cape and SWA, we determined two metrics of species turnover. The first, computes the mean species turnover as Jaccard distance [@R-vegan] between each pair of QDS within each HDS ($\overline{J}_{\mathrm{QDS}}$, based on HDS with $2 \leq n \leq 4$ QDS) in both regions. The second is defined in terms of Whittaker's additive definition of $\beta$-diversity [@ref], as follows:
 
 \begin{equation}
   \gamma = \alpha + \beta
   (\#eq:whittaker)
 \end{equation}
 
-Here, we treat species richness at the HDS-scale ($S_{HDS})$) as $\gamma$ and at the QDS-scale as $\alpha$. Intuitively, the species richness of an area is the result of the richness of sites within that area and the difference in species complements between those sites. Thus, we use here an additively defined residual turnover ($T_{HDS}$; i.e. $\beta = \alpha - \gamma$) as the proportion of $S_{HDS}$ unexplained by the mean species richness of HDS' constituent QDS ($\overline{S}_{QDS}$). We compare the distributions of $\overline{J}_{QDS}$ and $T_{HDS}$ using non-parametric Mann-Whitney $U$-tests, in order to guard against non-normality.
+Here, we treat species richness at the HDS-scale ($S_{\mathrm{HDS}}$) as $\gamma$-diversity and at the QDS-scale as $\alpha$-diversity. Intuitively, the species richness of an area is the result of the richness of sites within that area and the difference in species complements between those sites.<!--*2x versions of the rest of this para-->
 
 ### Predicting richness and turnover with environmental heterogeneity
 
@@ -89,10 +87,10 @@ Regarding prediction (iii), we wished to compare the general degree of species t
 
 <!--What are BRTs?-->
 
-BRTs are a flexible machine learning-based model of response variables and do so without involving normal null-hypothesis significance testing [@Elith2008], and have been employed previously to model species richness [see @Mouchet2015; @Thuiller2006; @Cramer2016] as macro-ecological models. BRTs are developed through the iterative generation of non-linear regression trees. BRTs are an ensemble-approach, in which a prediction $\widehat{y_i}$ is based on the weighted sum of the predictions of progressively "less important" regression trees ($t_k$), as opposed to the predictions of one tree [@Elith2008]. For $k \rightarrow nt$ number of trees, where each tree is itself a function of the matrix $X$ of $j$ predictor variables ($t_k = f(x_{ij})$),
+BRTs are a flexible machine learning-based model of response variables and do so without involving normal null-hypothesis significance testing [@Elith2008], and have been employed previously to model species richness [see @Mouchet2015; @Thuiller2006; @Cramer2016] as macro-ecological models. BRTs are developed through the iterative generation of non-linear regression trees. BRTs are an ensemble-approach, in which a prediction $\widehat{y_i}$ is based on the weighted sum of the predictions of progressively "less important" regression trees ($t_k$), as opposed to the predictions of one tree [@Elith2008]. For $k \rightarrow nt$ number of trees, where each tree is itself a function of the matrix $\textbf{X}$ of $j$ predictor variables ($t_k = f(x_{ij})$), a BRT-model can be represented as follows:
 
 \begin{equation}
-  \widehat{y_i} = \sum_{k=1}^{nt} w_k t_k.
+  \widehat{y_i} = \sum_{k=1}^{nt} w_k t_k
   (\#eq:BRT)
 \end{equation}
 
@@ -100,7 +98,7 @@ BRTs have two major metaparameters that users have control over [@Friedman2001An
 
 <!--Our BRT-modelling approach-->
 
-BRTs were implemented here to predict both vascular plant species richness and turnover in each HDS, as a function of environmental variables and environmental roughness values in those cells, as Gaussian responses<!--(Equations \@ref(eq:S-BRT),\@ref(eq:J-BRT))-->, thus resulting in two BRT-models for each region. We treated richness as $S_{HDS}$ and turnover as $\overline{J}_{QDS}$. The natural logarithm of species richness was used, in order to satisfy the assumptions of a Gaussian response. Note, this is not strictly because BRTs have any parametric assumptions concerning the distribution of the response variable, but rather to aid in applying the Gaussian-family of BRT algorithms to the richness data available. Additionally, BRTs were implemented to predict both vascular plant species richness at the QDS-scale ($S_{QDS}$), thus resulting in a total of six BRT-models presented here.
+BRTs were implemented here to predict both vascular plant species richness and turnover in each HDS, as a function of environmental variables and environmental roughness values in those cells, as Gaussian responses<!--(Equations \@ref(eq:S-BRT),\@ref(eq:J-BRT))-->, thus resulting in two BRT-models for each region. We treated richness as $S_{HDS}$ and turnover as $\overline{J}_{\mathrm{QDS}}$. The natural logarithm of species richness was used, in order to satisfy the assumptions of a Gaussian response. Note, this is not strictly because BRTs have any parametric assumptions concerning the distribution of the response variable, but rather to aid in applying the Gaussian-family of BRT algorithms to the richness data available. Additionally, BRTs were implemented to predict both vascular plant species richness at the QDS-scale ($S_{\mathrm{QDS}}$), thus resulting in a total of six BRT-models presented here.
 
 As recommended by @Elith2008, BRT models were trained on a set of non-collinear predictor variables using "gbm.step" in "dismo" [@Hijmans2017] and "gbm" [@ref]<!--ref = Ridgeway, 2007-->. Collinear predictor variables can skew the interpretation of results, as the relatively influence of mutually collinear variables is reduced. Collinearity among the 9 environmental predictor variables and their respective 9 roughness-equivalents was assessed using "removeCollinearity" in the R package "virtualspecies" [@Leroy2015] separately for each region, such that variables were no more than 80% collinear (Pearson's $r \geq 0.80$). When faced with a cluster of collinear variables, one variable was chosen manually therefrom. Where possible, the roughness-equivalent of an environmental variable was included if its absolute-equivalent could also be included. When interpreting the results of BRTs, it is important to consider the effects of the variables included as representative of the effect of the excluded variables with which it is collinear.<!--e.g. any interpretation of the effect of SNDPPT on species richness would then be also considered to be descriptive of the effect of soil pH on species richness.--><!--TODO: expand and include final list of predictor variables in-text or as table--><!--TODO: add dendrogram figure? appendix?-->
 
@@ -116,19 +114,19 @@ The optimum configuration of $lr$ and $tc$ for the final model is a trade-off be
 
 <!--pseudo-R2 & exp-obs-R2-->
 
-BRT-model performance can described by measuring the variance in a dataset a BRT-model has explained, quantified here by $R_{pseudo}^2$, which is the proportion of null deviance $D_{null}$ explained by some model $i$ (Equation \@ref(eq:pseudo-R2)).
+BRT-model performance can described by measuring the variance in a dataset a BRT-model has explained, quantified here by $R_{\mathrm{pseudo}}^2$, which is the proportion of null deviance $D_{null}$ explained by some model $i$. Formally, it is defined as follows:
 
 \begin{equation}
-  R_{pseudo}^2 = 1 - \frac{D_i}{D_{null}}
+  R_{\mathrm{pseudo}}^2 = 1 - \frac{D_i}{D_{\mathrm{null}}}
   (\#eq:pseudo-R2)
 \end{equation}
 
-This metric does not always yield easy interpretation, though, as it is not immediately clear what model deviance is. Alternatively, comparing expected (i.e. model-predicted) and observed data has more heuristic appeal. We employed this metric of BRT-model performance too. We regressed expected against observed richness and turnover, and calculated the $R^2$-value for those regressions (hereafter $R_{E-O}^2$).
+This metric does not always yield easy interpretation, though, as it is not immediately clear what model deviance is. Alternatively, comparing expected (i.e. model-predicted) and observed data has more heuristic appeal. We employed this metric of BRT-model performance too. We regressed expected against observed richness and turnover, and calculated the $R^2$-value for those regressions (hereafter $R_{\mathrm{E-O}}^2$).
 
 <!--Permuted and replicate BRTS-->
 
 The BRT-model fitting algorithm has some intrinsic stochasticity because of the random partitions made in a dataset during cross-validation. Though this randomness is usually negligible (e.g. variables' contributions vary from run-to-run by a few decimal places), we ran each of the six BRT-models (see above) 1000 times in order to account for this stochasticity. Where indicated, we either present the average these replicate-models' results or the results of a representative model from each set of replicates.
 
-In order to assess the reliability of the conclusions drawn from these models, we randomly permuted the response data ($S_{QDS}$, $S_{HDS}$ and $\overline{J}_{QDS}$) with respect to the environmental and heterogeneity data, and refit all six BRT-models 999 times (with the final non-collinear predictor sets and preconfigurations above). This also allows us to remove any effect of spatial autocorrelation in generating the observed correlations between patterns of species occurrence and environment [@CramerVerboom2016], and to allow us to assess the significance of our results relative to a random null. For all six models, the majority of the 999 permuted models failed to learn associations between the response and predictor variables. The results of those that succeeded to fit a model to completion (usually ca. 200 out of 999<!--TODO: expand, add actual numbers-->) are presented. The replicate and permuted BRT-models were compared using various measures of model performance (above; $nt$, $R_{pseudo}^2$ (Equation \@ref(eq:pseudo-R2)), $R_{E-O}^2$) and the ranks of these values for each replicate BRT-model relative to the 999 permuted models for that region/scope<!--TODO: reword-->.
+In order to assess the reliability of the conclusions drawn from these models, we randomly permuted the response data ($S_{\mathrm{QDS}}$, $S_{\mathrm{HDS}}$ and $\overline{J}_{\mathrm{QDS}}$) with respect to the environmental and heterogeneity data, and refit all six BRT-models 999 times (with the final non-collinear predictor sets and preconfigurations above). This also allows us to remove any effect of spatial autocorrelation in generating the observed correlations between patterns of species occurrence and environment [@CramerVerboom2016], and to allow us to assess the significance of our results relative to a random null. For all six models, the majority of the 999 permuted models failed to learn associations between the response and predictor variables. The results of those that succeeded to fit a model to completion (usually ca. 200 out of 999<!--TODO: expand, add actual numbers-->) are presented. The replicate and permuted BRT-models were compared using various measures of model performance (above; $nt$, $R_{\mathrm{pseudo}}^2$ (Equation \@ref(eq:pseudo-R2)), $R_{\mathrm{E-O}}^2$) and the ranks of these values for each replicate BRT-model relative to the 999 permuted models for that region/scope<!--TODO: reword-->.
 
 <!--$nt$, the number of regressions trees used in a BRT-model, which is a measure of the duration for which a model was trained before adding additional trees did not significantly reduce the unexplained deviance-->
