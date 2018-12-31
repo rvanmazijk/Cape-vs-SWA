@@ -29,39 +29,35 @@ Co-existence \onslide<5->{\emph{within ecological space}}
 
 _TODO: maps of regions_
 
-# The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
+# Similar
 
-- Similar
   - \textcolor{brown}{Environments} \hfill _mediterranean, winter rainfall_
   - \textcolor{green}{Plant ecologies} \hfill _serotiny, sclerophylly_
 
-- Different
-  - $S$ per unit area \hfill _Cape > SWA_
-  - Topographies \hfill _mountainous vs flat_
+\center ![<!--TODO: replace this place-holder figure-->](images/AfricanProtea.jpg){ height=4cm } ![<!--_Banksia ahsbyi_, WA (CC BY 2.5 Gnangarra 2011)-->](images/B_ashbyi_gnangarra_03.jpg){ height=4cm }
 
-# The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
+# But different
 
+- $S$ per unit area \hfill \emph{\textcolor{orange}{Cape} > \textcolor{blue}{SWA}}
+- Topographies \hfill \emph{\textcolor{orange}{mountainous} vs \textcolor{blue}{flat}}
+
+\center ![<!--Peninsula Sandstone Fynbos, Table Mountain (CC BY-SA 3.0 Abu Shawka 2011)--><!--TODO: swap for photo from Sir Lowry's Pass?-->](images/Peninsula_Sandstone_Fynbos_on_Table_Mountain_-_Cape_Town_3.jpg){ height=4cm } ![<!--Fitzgerald River NP, WA (CC BY-SA 3.0 Yewenyi)-->](images/Fitzgerald_River_National_Park_DSC04436.jpg){ height=4cm }
+
+<!--
 - Wide range of environmental conditions $\rightarrow$ supports diverse flora.
 - Environmental stability through evolutionary time 
   - (Pleistocene LGM in Cape, ??? in SW Australia).
   - This means that the ecological gradients have persisted longer, facilitating greater degrees of ecological speciation, and thus species richness, along those gradients and barriers to gene flow.
 
-# The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
-
 Thus, spatially heterogeneous that is stable through deep time $\rightarrow$ support and produce more diverse biota. 
 
 Environmental heterogeneity then has roles in the ecological present and over evolutionary time in stimulating species richness\footnotemark[1]\footnotemark[2]\footnotemark[3].
 
-\footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
-\footnotetext[2]{Kreft \& Jetz 2007. \emph{PNAS} 104(14)}
-\footnotetext[3]{Thuiller et al. 2006. \emph{Ecography} 29(5)}
-
-<!--
 Cramer & Verboom 2016. _J. Biogeography_ 44(3)
-Gaston 2000. _Nature_ 405(6783)
 Kreft & Jetz 2007. _PNAS_ 104(14)
+Thuiller et al. 2006. \emph{Ecography} 29(5)
+Gaston 2000. _Nature_ 405(6783)
 Mouchet et al. 2015. _PLoS ONE_ 10(7)
-Thuiller et al. 2006. _Ecography_ 29(5)
 -->
 
 # Hypotheses
