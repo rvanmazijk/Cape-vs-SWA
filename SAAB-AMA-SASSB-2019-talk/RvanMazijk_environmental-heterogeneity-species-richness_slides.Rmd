@@ -127,21 +127,26 @@ Roughness $R(N) = SD_{focal}(N)$
 
 # Species turnover
 
-Local neighbourhood $N$ about cell $x_{focal}$
+\center
 
-$\overline{J}(N) =$ average Jaccard distance between cells
+Each HDS is composed of 2--4 QDS
 
-```{r turnover-neighbourhood, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_neighbourhood()
-```
+$\overline{J}_{QDS} =$ average Jaccard distance between QDS
+
+![](figures/HDS-QDS.png){ width=4cm }
 
 ***
 
-```{r turnover, out.width='10cm'}
-knitr::include_graphics(here("SAAB-AMA-SASSB-2019-talk/figures/fig-2-turnover.png"))
-```
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center
+      \includegraphics[width=10cm]{figures/fig-2-turnover_blank.png}
+    \onslide<2-> \center 
+      \includegraphics[width=10cm]{figures/fig-2-turnover.png}
+  \end{overprint}
+\end{figure}
 
-- The Cape has $\uparrow$ species turnover
+- \onslide<3-> The Cape has $\uparrow$ species turnover
 
 # BRT-modelling
 
