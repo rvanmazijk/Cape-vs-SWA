@@ -49,18 +49,11 @@ CLES_plot <- CLES_plot +
   xlab("Spatial scale") +
   ylab(expression(paste(italic(CLES)~ ~(Cape > SWA)))) +
   ylim(0.4, 1) +
-  guides(shape = guide_legend(
-    title = "Environmental variables",
-    nrow = 5, ncol = 2,
-    direction = "vertical",
-    override.aes = list(col = c(
-      var_colours[1],
-      rep(var_colours[2], 3),
-      var_colours[3],
-      rep(var_colours[4], 4)
-    ))
-  )) +
   theme(legend.position = "none")
+
+CLES_plot_blank <- CLES_plot +
+  scale_colour_manual(values = c("white", "white", "white", "white"))
+CLES_plot_blank$layers[4:5] <- NULL  # remove geom_text()s
 
 # Roughness distribution plots -------------------------------------------------
 
@@ -75,11 +68,11 @@ elev_z_dbn_plot_data <- roughness_data %>%
   ungroup() %>%
   na.exclude()
 
-elev_z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
+elev_z_dbn_plot <- ggplot(elev_z_dbn_plot_data, aes(z_roughness, fill = region)) +
   geom_histogram(position = "dodge", bins = 20) +
   xlim(
-    min(z_dbn_plot_data$z_roughness),
-    quantile(z_dbn_plot_data$z_roughness, 0.99)
+    min(elev_z_dbn_plot_data$z_roughness),
+    quantile(elev_z_dbn_plot_data$z_roughness, 0.99)
   ) +
   scale_fill_manual(name = "Region", values = my_palette) +
   facet_wrap(~ resolution, scales = "free_y") +
@@ -87,6 +80,14 @@ elev_z_dbn_plot <- ggplot(z_dbn_plot_data, aes(z_roughness, fill = region)) +
     x = expression(paste(italic(Z)(Elevation~ ~roughness))),
     y = "No. cells"
   )
+
+elev_z_dbn_plot_blank <- elev_z_dbn_plot +
+  scale_fill_manual(values = c("white", "white")) +
+  guides(fill = guide_legend(
+    title = "Region",
+    nrow = 2,
+    override.aes = list(fill = my_palette)
+  ))
 
 # Save plots to disc -----------------------------------------------------------
 
@@ -98,15 +99,22 @@ ggsave(
 )
 
 ggsave(
+  here("SAAB-AMA-SASSB-2019-talk/figures/fig-1.1-elev-roughness_blank.png"),
+  elev_z_dbn_plot_blank,
+  width = 5, height = 2.5,
+  dpi = 300
+)
+
+ggsave(
   here("SAAB-AMA-SASSB-2019-talk/figures/fig-1.2-CLES-roughness.png"),
   CLES_plot,
   width = 4, height = 4,
   dpi = 300
 )
 
-# Tidy-up workspace ------------------------------------------------------------
-
-rm(
-  elev_z_dbn_plot,
-  CLES_plot
+ggsave(
+  here("SAAB-AMA-SASSB-2019-talk/figures/fig-1.2-CLES-roughness_blank.png"),
+  CLES_plot_blank,
+  width = 4, height = 4,
+  dpi = 300
 )

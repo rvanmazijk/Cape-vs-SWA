@@ -42,7 +42,9 @@ contribution_data <- map_df(
   ~ cbind(path = .x, read_csv(glue("{output_path}/{.x}")))
 )
 
-contribution_F_tests <- read_csv(here("manuscript/contribution-F-tests.csv"))
+contribution_F_tests <- read_csv(here(
+  "manuscript/tables/contribution-F-tests.csv"
+))
 contribution_F_tests %<>%
   mutate(region = case_when(
     region == "GCFR" ~ "Cape",
@@ -207,6 +209,11 @@ screeplots %<>% map(remove_legend)
 # Remove right-panel y-axis for panelling
 screeplots$SWA_richness_QDS %<>% remove_ylab()
 
+screeplots_blank <- map(screeplots, function(x) {
+  x + scale_colour_manual(values = c("white", "white", "white", "white"))
+})
+screeplots_blank
+
 # Plot piecharts of variable contributions -------------------------------------
 # (variable _class_)
 
@@ -295,16 +302,30 @@ screepieplots <- foreach(screeplot_ = screeplots,
       ymin = 0.50 * panel_height, ymax = panel_height
     )
 }
-screepieplots[[1]]
 
 # Combine panels ---------------------------------------------------------------
 
-screepieplots <- plot_grid(plotlist = screepieplots, rel_widths = c(1, 0.9))
 var_legend <- plot_grid(
   var_type_legend, var_class_legend, white_rect,
   nrow = 3,
   rel_heights = c(1, 1, 0.25)
 )
+
+screeplots_blank <- plot_grid(plotlist = screeplots_blank, rel_widths = c(1, 0.9))
+screeplots_blank <- plot_grid(
+  screeplots_blank, var_legend,
+  nrow = 1,
+  rel_widths = c(1, 0.2)
+)
+
+screeplots <- plot_grid(plotlist = screeplots, rel_widths = c(1, 0.9))
+screeplots <- plot_grid(
+  screeplots, var_legend,
+  nrow = 1,
+  rel_widths = c(1, 0.2)
+)
+
+screepieplots <- plot_grid(plotlist = screepieplots, rel_widths = c(1, 0.9))
 screepieplots <- plot_grid(
   screepieplots, var_legend,
   nrow = 1,
@@ -314,7 +335,30 @@ screepieplots <- plot_grid(
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here("SAAB-AMA-SASSB-2019-talk/figures/fig-3-species-environment-relationships.png"),
+  here(
+    "SAAB-AMA-SASSB-2019-talk/figures/",
+    "fig-3-species-environment-relationships_blank.png"
+  ),
+  screeplots_blank,
+  width = 6, height = 3,
+  dpi = 300
+)
+
+ggsave(
+  here(
+    "SAAB-AMA-SASSB-2019-talk/figures/",
+    "fig-3-species-environment-relationships_nopie.png"
+  ),
+  screeplots,
+  width = 6, height = 3,
+  dpi = 300
+)
+
+ggsave(
+  here(
+    "SAAB-AMA-SASSB-2019-talk/figures/",
+    "fig-3-species-environment-relationships.png"
+  ),
   screepieplots,
   width = 6, height = 3,
   dpi = 300

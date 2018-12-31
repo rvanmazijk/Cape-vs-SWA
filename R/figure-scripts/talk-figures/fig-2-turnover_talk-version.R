@@ -20,13 +20,13 @@ richness_turnover_data <- read_csv(glue(
 
 y_lim <- 35
 
-mean_QDS_jaccard_panel <- richness_turnover_data %>%
+mean_QDS_jaccard <- richness_turnover_data %>%
   ggplot(aes(mean_QDS_jaccard, fill = region)) +
     geom_histogram(position = "dodge", bins = 20) +
     scale_fill_manual(name = "Region", values = my_palette) +
     labs(
       x = expression(paste(
-        italic(bar("J")["QDS"])
+        italic(bar("J"))["QDS"]
       )),
       y = "No. HDS"
     ) +
@@ -45,11 +45,27 @@ mean_QDS_jaccard_panel <- richness_turnover_data %>%
       )
     )
 
+mean_QDS_jaccard_blank <- mean_QDS_jaccard +
+  scale_fill_manual(values = c("white", "white")) +
+  guides(fill = guide_legend(
+    title = "Region",
+    nrow = 2,
+    override.aes = list(fill = my_palette)
+  ))
+mean_QDS_jaccard_blank$layers[[2]] <- NULL  # remove annotate()
+
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here::here("SAAB-AMA-SASSB-2019-talk/figures/fig-2-turnover.png"),
-  mean_QDS_jaccard_panel,
+  here("SAAB-AMA-SASSB-2019-talk/figures/fig-2-turnover.png"),
+  mean_QDS_jaccard,
+  width = 4, height = 3,
+  dpi = 300
+)
+
+ggsave(
+  here("SAAB-AMA-SASSB-2019-talk/figures/fig-2-turnover_blank.png"),
+  mean_QDS_jaccard_blank,
   width = 4, height = 3,
   dpi = 300
 )

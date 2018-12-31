@@ -44,7 +44,10 @@ summary_data %<>%
   )) %>%
   # Make nice facet labels
   mutate(scale_response = glue("{scale}-{response}")) %>%
-  mutate(scale_response = factor(scale_response, levels = nice_facet_labels$scal)) %>%
+  mutate(scale_response = factor(
+    scale_response,
+    levels = nice_facet_labels$scal
+  )) %>%
   filter(scale_response != "HDS-turnover") %>%
   mutate(quality_metric = case_when(
     quality_metric == "pseudo_r2" ~ nice_facet_labels$qual
@@ -54,7 +57,10 @@ summary_data %<>%
 
 # Quality-statistic distributions for the permuted and repeated BRTs -----------
 
-quality_plot <- ggplot(summary_data, aes(value, fill = region, alpha = model_type)) +
+quality_plot <-
+  ggplot(summary_data,
+    aes(value, fill = region, alpha = model_type)
+  ) +
   geom_histogram(
     position = position_dodge2(preserve = "single", padding = -1),
     bins = 25
@@ -86,6 +92,9 @@ quality_plot <- ggplot(summary_data, aes(value, fill = region, alpha = model_typ
   ) +
   theme(strip.text = element_text(hjust = 0))
 
+quality_plot_blank <- quality_plot +
+  scale_fill_manual(values = c("white", "white"))
+
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
@@ -95,3 +104,9 @@ ggsave(
   dpi = 300
 )
 
+ggsave(
+  here("SAAB-AMA-SASSB-2019-talk/figures/fig-4-BRT-model-quality_blank.png"),
+  quality_plot_blank,
+  width = 5, height = 2,
+  dpi = 300
+)
