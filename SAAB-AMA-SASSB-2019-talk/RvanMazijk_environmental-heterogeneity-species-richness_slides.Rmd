@@ -87,15 +87,15 @@ Hypothesis         | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA}
 - \textcolor{green}{Vascular plant occurrence records}
   - GBIF
 
-# Environmental heterogeneity
+# Environmental heterogeneity (EH)
+
+\center
 
 Local neighbourhood $N$ about cell $x_{focal}$
 
-$Roughness(N) = SD_{focal}(N)$
+Roughness $R(N) = SD_{focal}(N)$
 
-```{r roughness-neighbourhood, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_neighbourhood()
-```
+![](figures/neighbourhood.png){ width=6cm }
 
 ***
 
