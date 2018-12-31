@@ -151,15 +151,11 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 # BRT-modelling
 
 - Machine-learning
-- Non-linear, complex and multivariate datasets
+- Non-linear, complex & multivariate datasets
 
-$$
-  \hat{S} = w_1 t_1 + w_2 t_2 + w_3 t_3 + \dots + w_n t_n
-$$
+\pause
 
-where $t_i =$ _TODO: Insert regression-tree image_
-
-_TODO: Change $\hat{S}$-equation to version from Protea-SDMs slides_
+\center ![](figures/BRT.pdf)
 
 ***
 
