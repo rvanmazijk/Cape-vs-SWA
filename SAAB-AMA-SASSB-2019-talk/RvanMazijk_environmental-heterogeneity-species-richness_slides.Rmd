@@ -159,44 +159,62 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 ***
 
-```{r BRT-model-quality, out.width='12cm'}
-knitr::include_graphics(here("SAAB-AMA-SASSB-2019-talk/figures/fig-4-BRT-model-quality.png"))
-```
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/fig-4-BRT-model-quality_blank.png}
+    \onslide<2-> \center 
+      \includegraphics[width=12cm]{figures/fig-4-BRT-model-quality.png}
+  \end{overprint}
+\end{figure}
 
-- Patterns different from chance (permuted null) \hfill $\checkmark$
-- Cape patterns breakdown at coarser scales \hfill $\checkmark$
-- SWA patterns do not \hfill $\checkmark$
+- \onslide<3-> Patterns different from chance (permuted null) \hfill $\checkmark$
+- \onslide<3-> Cape patterns breakdown at coarser scales \hfill $\checkmark$
+- \onslide<3-> SWA patterns do not \hfill $\checkmark$
 
 ***
 
-```{r species-environment-relationships, out.width='12cm'}
-knitr::include_graphics(here("SAAB-AMA-SASSB-2019-talk/figures/fig-3-species-environment-relationships.png"))
-```
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/fig-3-species-environment-relationships_blank.png}
+    \onslide<2> \center 
+      \includegraphics[width=12cm]{figures/fig-3-species-environment-relationships_nopie.png}
+    \onslide<3-> \center 
+      \includegraphics[width=12cm]{figures/fig-3-species-environment-relationships.png}
+  \end{overprint}
+\end{figure}
 
-- Broad suite of variables vs MAP
-- Roughness and soil vs absolute and climate
+\onslide<4->
+
+\textcolor{orange}{Cape} | \textcolor{blue}{SWA}
+:-----------------------:|:---------------------:
+Broad suite of variables | MAP
+Roughness, soil          | Absolute, climate
+
+***
+
+\onslide<1-> \center ![](figures/hypothesis.png){ width=4cm }
+
+\onslide<2->
+
+Hypothesis | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA} | $\checkmark$?
+----------:|:-------------------------------------------------:|:-------------:
+Degree of EH       | >                            | \onslide<3->{$\checkmark$}
+Scale EH           | <                            | \onslide<3->{$\checkmark$}
+Floristic turnover | >                            | \onslide<3->{$\checkmark$}
+$S \sim$ EH        | Both                         | \onslide<3->{$\checkmark$}
+Types of EH        | \textcolor{brown}{Soil?}     | \onslide<3->{$\frac{1}{2}$}
 
 # Conclusions
 
-i. The Cape has $\uparrow$ EH, \hfill $\checkmark$
-ii. and at a finer spatial scale \hfill $\checkmark$
-iii. The Cape has $\uparrow$ species turnover \hfill $\checkmark$
-iv. $S$ and turnover are explained by EH \hfill $\checkmark$
-v. Different axes of EH \hfill $\checkmark$
+- \onslide<1-> The \textcolor{orange}{Cape} is more environmentally heterogeneous than \textcolor{blue}{SWA}
+  - \onslide<2-> Consequently more species rich
+  - \onslide<2-> Greater floristic turnover supports this.
 
-# Conclusions: Summary
+- \onslide<3-> Different axes of EH are biologically important in the \textcolor{orange}{Cape} and \textcolor{blue}{SWA}.
 
-i--iii. The Cape **is** more environmentally heterogeneous \hfill $\checkmark$
-
-iv--v. Different forms of heterogeneity **do** matter in the Cape and SWA \hfill $\checkmark$
-
-```{r hypothesis-6, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_hypothesis()
-```
-
-***
-
-\center \textcolor{brown}{Soil?}
+\onslide<4-> \center \textcolor{brown}{Soil?}
 
 ***
 
