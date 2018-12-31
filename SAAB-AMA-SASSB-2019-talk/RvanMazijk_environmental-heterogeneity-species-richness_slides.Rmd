@@ -60,54 +60,24 @@ Gaston 2000. _Nature_ 405(6783)
 Mouchet et al. 2015. _PLoS ONE_ 10(7)
 -->
 
-# Hypotheses
+***
 
 - \textcolor{orange}{Cape} richness previously shown to depend on heterogeneity\footnotemark[1]
 - Does this extend to \textcolor{blue}{SWA}?
 
-```{r hypothesis-1, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_hypothesis()
-```
-
 \footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
 
-# Hypotheses
+***
 
-i. The Cape has $\uparrow$ environmental heterogeneity (EH),
-ii. and at a finer spatial scale
+\onslide<1-> \center ![](figures/hypothesis.png){ width=4cm }
 
-```{r hypothesis-2, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_hypothesis()
-```
-
-# Hypotheses
-
-iii. The Cape has $\uparrow$ species turnover
-
-```{r hypothesis-3, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_hypothesis()
-```
-
-# Hypotheses
-
-iv. $S$ and turnover are explained by EH
-v. Different axes of EH are NB in the Cape and SWA 
-
-\textcolor{brown}{(Soil?)}
-  
-```{r hypothesis-4, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_hypothesis()
-```
-
-# Hypotheses: Summary
-
-i--iii. The Cape should be more environmentally heterogeneous
-
-iv--v. Different forms of heterogeneity should matter in the Cape and SWA
-
-```{r hypothesis-5, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_hypothesis()
-```
+Hypothesis         | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA}
+------------------:|:-------------------------------------------------:
+\onslide<2->{Degree of EH}       | \onslide<3->{>}
+\onslide<2->{Scale EH}           | \onslide<3->{<}
+\onslide<4->{Floristic turnover} | \onslide<4->{>}
+\onslide<5->{$S \sim$ EH}        | \onslide<5->{Both}
+\onslide<6->{Types of EH}        | \onslide<7->{\textcolor{brown}{Soil?}}
 
 # Data sources
 
