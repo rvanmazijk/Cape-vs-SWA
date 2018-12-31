@@ -167,3 +167,90 @@ ggplot(richness_turnover_data2, aes(beta4, gamma, col = region)) +
   geom_point()
 ggplot(richness_turnover_data2, aes(beta4, alpha, col = region)) +
   geom_point()
+
+# Model gamma ~ alpha and beta separately --------------------------------------
+
+m_alpha <- lm(
+  gamma ~ alpha + alpha * region,
+  richness_turnover_data2
+)
+m_beta <- lm(
+  gamma ~ beta3 + beta3 * region,
+  richness_turnover_data2
+)
+
+# Summarise models
+m_alpha_beta_summary <-
+  rbind(
+    cbind(param = "alpha", tidy(m_alpha, conf.int = TRUE)),
+    cbind(param = "beta3", tidy(m_beta, conf.int = TRUE))
+  ) %>%
+  filter(term != "(Intercept)", term != "regionSWA") %>%
+  mutate(p.value = p.value %>%
+    round(3) %>%
+    tidy_p()
+  ) %>%
+  mutate(term = case_when(
+    param == "alpha" & term == "alpha"           ~ "Slope",
+    param == "alpha" & term == "alpha:regionSWA" ~ "Interaction (SWA)",
+    param == "beta3" & term == "beta3"           ~ "Slope",
+    param == "beta3" & term == "beta3:regionSWA" ~ "Interaction (SWA)"
+  )) %>%
+  mutate(term = factor(term, levels = c("Slope", "Interaction (SWA)")))
+
+# Visualise that
+# Plot the data
+ggplot(richness_turnover_data2, aes(alpha, gamma, col = region)) +
+  geom_smooth(method = lm, size = 0.5) +
+  geom_point() +
+  labs(
+    x = bquote(bar(italic("S"))["QDS"]),
+    y = bquote(italic("S")["HDS"])
+  ) +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  theme(axis.title.y = element_text(angle = 0, vjust = 0.5))
+ggplot(richness_turnover_data2, aes(beta3, gamma, col = region)) +
+  geom_smooth(method = lm, size = 0.5) +
+  geom_point() +
+  labs(
+    x = bquote(italic("T")["HDS"]),
+    y = bquote(italic("S")["HDS"])
+  ) +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  theme(axis.title.y = element_text(angle = 0, vjust = 0.5))
+ggplot(richness_turnover_data2, aes(alpha, beta3, col = region)) +
+  geom_abline(intercept = 0, slope = 1, lty = "dashed", col = "grey25") +
+  geom_point() +
+  labs(
+    x = bquote(bar(italic("S"))["QDS"]),
+    y = bquote(italic("T")["HDS"])
+  ) +
+  lims(
+    x = c(0, max(richness_turnover_data2$beta3)),
+    y = c(0, max(richness_turnover_data2$beta3))
+  ) +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  theme(axis.title.y = element_text(angle = 0, vjust = 0.5))
+
+# Plot model's results
+visreg(m_alpha, xvar = "alpha", by = "region", overlay = TRUE)
+visreg(m_beta, xvar = "beta3", by = "region", overlay = TRUE)
+# ggplot2 version
+ggplot(m_alpha_beta_summary, aes(term, estimate)) +
+  geom_point(position = position_dodge(0.3)) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    width = 0,
+    position = position_dodge(0.3)
+  ) +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  facet_grid(~ param, labeller = label_parsed) +
+  ylab("Estimate") +
+  theme(axis.title.x = element_blank())
+
+# ...
+
+ggplot(richness_turnover_data2, aes(beta3 / gamma, fill = region)) +
+  geom_histogram(pos = "dodge")
+ggplot(richness_turnover_data2, aes(alpha / gamma, fill = region)) +
+  geom_histogram(pos = "dodge")

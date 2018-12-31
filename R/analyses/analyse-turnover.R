@@ -39,6 +39,7 @@ richness_turnover_data <-
   as_tibble() %>%
   filter(n_QDS > 1) %>%  # turnover is non-sensicle for 1 QDS)
   mutate(
+    avg_no_spp_diff = mean_QDS_jaccard * HDS_richness,
     add_residual_turnover = HDS_richness - mean_QDS_richness,
     add_residual_turnover_prop = add_residual_turnover / HDS_richness,
     mul_residual_turnover = HDS_richness / mean_QDS_richness
