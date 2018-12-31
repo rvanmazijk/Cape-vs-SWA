@@ -94,7 +94,7 @@ BRTs are a flexible machine learning-based model of response variables and do so
   (\#eq:BRT)
 \end{equation}
 
-BRTs have two major metaparameters that users have control over [@Friedman2001AnnStatistics]: the learning rate ($lr$, the rate at which iterative trees reduce predictive deviance during model-training, conceptually a "shrinkage factor" controlling the contribution of each tree to the final model) and tree complexity ($tc$, the number of nodes on a given regression-tree, i.e. the maximum interaction depth the model is permitted to fit). <!--We optimised the values of these parameters through iterative use of different $lr$ and $tc$, settling on a final combination that... TODO: expand?-->
+BRTs have two major meta-parameters that users have control over [@Friedman2001AnnStatistics]: the learning rate ($lr$, the rate at which iterative trees reduce predictive deviance during model-training, conceptually a "shrinkage factor" controlling the contribution of each tree to the final model) and tree complexity ($tc$, the number of nodes on a given regression-tree, i.e. the maximum interaction depth the model is permitted to fit). <!--We optimised the values of these parameters through iterative use of different $lr$ and $tc$, settling on a final combination that... TODO: expand?-->
 
 <!--Our BRT-modelling approach-->
 
