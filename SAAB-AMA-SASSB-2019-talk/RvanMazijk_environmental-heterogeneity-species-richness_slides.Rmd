@@ -31,8 +31,8 @@ _TODO: maps of regions_
 
 # Similar
 
-  - \textcolor{brown}{Environments} \hfill _mediterranean, winter rainfall_
-  - \textcolor{green}{Plant ecologies} \hfill _serotiny, sclerophylly_
+- \textcolor{brown}{Environments} \hfill _mediterranean, winter rainfall_
+- \textcolor{green}{Plant ecologies} \hfill _serotiny, sclerophylly_
 
 \center ![<!--TODO: replace this place-holder figure-->](images/AfricanProtea.jpg){ height=4cm } ![<!--_Banksia ahsbyi_, WA (CC BY 2.5 Gnangarra 2011)-->](images/B_ashbyi_gnangarra_03.jpg){ height=4cm }
 
@@ -220,4 +220,6 @@ Types of EH        | \textcolor{brown}{Soil?}     | \onslide<3->{$\frac{1}{2}$}
 
 \center Thank you\footnotemark[1]!
 
-\footnotetext[1]{And an extra thank you to Mike and Tony}
+_TODO: Add Hons thesis cover photos here_
+
+\footnotetext[1]{And an extra thank you to my supervisors, Mike \& Tony}
