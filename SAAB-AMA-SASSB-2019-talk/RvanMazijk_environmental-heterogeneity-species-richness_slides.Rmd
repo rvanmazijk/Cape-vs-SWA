@@ -3,45 +3,27 @@ title: '_TODO: Add Powerpoint coverslide manually_'
 mainfont: Avenir  # for PDF
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = FALSE,
-  message = FALSE,
-  warning = FALSE,
-  fig.align = "center"
-)
-library(here)
-source(here("R/figure-scripts/talk-figures/explanatory-plots.R"))
-```
-
 # Species richness ($S$)
 
-\center Speciation along ecological gradients
+\center
 
-\center ![](figures/speciation.png){ width=3cm }
+\onslide<3->\alt<3>{Extremely high $S$?}{Environmental heterogeneity (EH)}
 
-<!--FIXME
-```{r speciation, out.width='3cm'}
-knitr::include_graphics(here("SAAB-AMA-SASSB-2019-talk/figures/speciation.png"))
-```
--->
+\onslide<2->
 
-\center Co-existence within ecological space
+Speciation \onslide<5->{\emph{along ecological gradients}}
 
-```{r co-existence, fig.width=2, fig.height=2, out.width='3cm', out.height='3cm'}
-plot_coexistence()
-```
+![](figures/speciation.png){ width=3cm }
 
-# How to explain extremely high $S$?
+Co-existence \onslide<5->{\emph{within ecological space}}
 
-Environmental heterogeneity\footnotemark[1]\footnotemark[2]\footnotemark[3]
+![](figures/co-existence.png){ width=3cm }
 
-- $\uparrow$ gradients : $\uparrow$ speciation
-- $\uparrow$ habitats : $\uparrow$ co-existence
-
+<!--
 \footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
 \footnotetext[2]{Kreft \& Jetz 2007. \emph{PNAS} 104(14)}
 \footnotetext[3]{Thuiller et al. 2006. \emph{Ecography} 29(5)}
+-->
 
 # The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
 
