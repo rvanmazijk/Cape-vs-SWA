@@ -83,11 +83,9 @@ Hypothesis         | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA}
 
 - Each region’s boundaries
 - \textcolor{brown}{Environmental data}
-  \par \hfill NASA MODIS
-  \par \hfill CHIRPS
-  \par \hfill SoilsGrid250m
+  - NASA MODIS, CHIRPS, SoilsGrid250m
 - \textcolor{green}{Vascular plant occurrence records}
-  \par \hfill GBIF
+  - GBIF
 
 # Environmental heterogeneity
 
