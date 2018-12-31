@@ -82,8 +82,8 @@ turnover_results <- richness_turnover_data %>%
     )
   ) %>%
   map_df(.id = "test", function(.x) {
-    U_p_value <- tidy(wilcox.test(.x$Cape, .x$SWA, alternative = "two.sided"))$p.value
-    CLES_value <- CLES(.x$SWA, .x$Cape)  # Order of x and y NB
+    U_p_value <- .x %$%
+      wilcox.test(Cape, SWA, alternative = "two.sided") %>%
     message("Done")
     tibble(U_p_value, CLES_value)
   })
