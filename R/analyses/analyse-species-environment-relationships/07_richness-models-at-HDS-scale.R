@@ -24,9 +24,11 @@ SWAFR_data_HDS <- SWAFR_variables_HDS_stack %>%
   na.exclude() %>%
   mutate(log_HDS_richness = log(HDS_richness))
 
-#for (i in 1:1000) {
+# ------------------------------------------------------------------------------
+
+for (i in 1:1000) {
 #for (i in 123:1000) {
-for (i in 1000) {
+#for (i in 1000) {
 
   set.seed(i)
 

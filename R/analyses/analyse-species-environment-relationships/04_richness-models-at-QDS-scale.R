@@ -14,12 +14,12 @@ output_path <- here(
   "from-local-machines/QDS-richness-models_1000-reps"
 )
 
-# Run 1000 times to account for subtle differences
+# Run 1000 times to account for subtle differences -----------------------------
 # (inherent randomness in BRT-algorithm)
 
-#for (i in 1:1000) {
+for (i in 1:1000) {
 #for (i in 655:1000) {
-for (i in 892:1000) {
+#for (i in 892:1000) {
 
   set.seed(i)
 
