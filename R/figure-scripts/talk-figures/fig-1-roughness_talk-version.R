@@ -1,4 +1,4 @@
-# Make Fig. 1 (Environmental heterogeneity and spatial scales)
+# Make Fig. 1.1 & 1.2 (Environmental heterogeneity and spatial scales)
 # Cape vs SWA publication
 # Ruan van Mazijk
 
