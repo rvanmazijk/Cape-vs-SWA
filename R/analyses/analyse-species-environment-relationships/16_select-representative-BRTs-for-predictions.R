@@ -40,8 +40,10 @@ filter_reps_by_bound <- function(summary_data, summary_data_medians,
 }
 
 remove_dir <- function(x, levels_to_keep = 0) {
-  stopifnot(is.numeric(levels_to_keep))
-  # Remove starting "/" if present
+  stopifnot({
+    is.character(x)
+    is.numeric(levels_to_keep)
+  })
   x %<>% str_remove("^/")
   n_levels <- str_count(x, "/")
   if (levels_to_keep == n_levels) {
@@ -111,10 +113,71 @@ representative_rep_models <- candidate_rep_models %>%
   )
 representative_rep_models
 
-# Get those models RDS-files from my external harddrive ------------------------
+# <Get those models RDS-files from my external harddrive manually>
 
-external_RDS_dir <-
-  "/Volumes/RUAN_UCT/Cape-vs-SWA_BRT-outputs-from-local-machines_copy_2018-12-11/"
+# 2019-01-04 22:42 --- Cont. from here ----
+
+####
+
+# Not all the RDS are in the same from-local-machines copy folder
+# Thus, move all RDS-files into folder
+external_RDS_dirs <-
+  paste0("/Volumes/RUAN_UCT/Cape-vs-SWA_archive/") %>%
+  paste0("Cape-vs-SWA_BRT-outputs-from-local-machines_copy_2018-12-") %>%
+  paste0(c("05", "10", "11"))
+  paste0("/")
+
+region <- regex("(GCFR|SWAFR)")
+scale <- regex("(Q|H)DS")
+response <- regex("(richness|turnover)")
+date <- regex("\\d{4}-\\d{2}-\\d{2}")
+rep <- regex("\\d+")
+
+model_code <- glue("{region}_{scale}-{response}-gbm-step_BRT_{date}_{rep}\\.RDS")
+
+external_RDS_paths <- list.files(external_RDS_dirs,
+  pattern = model_code,
+  recursive = TRUE,
+  full.names = TRUE
+)
+external_RDS_paths %<>%
+  tibble(path = .) %>%
+  mutate(
+    filename = remove_dir(path),
+    batch_date = path %>%
+      str_split("/") %>%
+      map_chr(5) %>%
+      str_extract(date)
+  )
+
+#external_RDS_paths <-
+representative_rep_models %>%
+  ungroup() %>%
+  transmute(model_code = path %>%
+    str_replace("summary", "BRT") %>%
+    str_replace("csv", "RDS") %>%
+    remove_dir()
+  ) %>%
+  mutate(rep = model_code %>%
+    str_extract(glue("{rep}\\.RDS")) %>%
+    str_remove("\\.RDS")
+  ) %>%
+  mutate(filename = ifelse(filename %in% external_RDS_paths$filename,
+    TRUE, FALSE))
+  paste0(external_RDS_dir, filename)
+
+####
+
+all_RDS_destination <- "/Volumes/RUAN_UCT/Cape-vs-SWA_archive/Cape-vs-SWA_BRT-outputs-from-local-machines_copy_all/"
+
+# Takes a while, so do not run this unless it hasn't been done already
+file.copy(
+  from = external_RDS_paths,
+  to = all_RDS_destination,
+  overwrite = TRUE
+)
+
+####
 
 external_RDS_paths <- representative_rep_models %>%
   ungroup() %>%
@@ -125,9 +188,12 @@ external_RDS_paths <- representative_rep_models %>%
   ) %$%
   paste0(external_RDS_dir, filename)
 
-file.copy(external_RDS_paths, output_path)
+file.copy(
+  from = external_RDS_paths,
+  to = output_path,
+  overwrite = TRUE
+)
 # 2018-12-31 17:37 --- Figured out the problem:
-#   Not all the RDS are in the same from-local-machines copy folder
 
 ####
 
