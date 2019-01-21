@@ -7,7 +7,7 @@ mainfont: Avenir  # for PDF
 
 \center
 
-\onslide<3->\alt<3>{Extremely high $S$?}{Environmental heterogeneity (EH)}
+\onslide<3-> \alt<3>{Extremely high $S$?}{Environmental heterogeneity (EH)}
 
 \onslide<2->
 
@@ -27,14 +27,14 @@ Co-existence \onslide<5->{\emph{within ecological space}}
 
 # The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
 
-_TODO: maps of regions_
+\center ![](figures/fig-6-region-map.png){ width=11cm }
 
 # Similar
 
 - \textcolor{brown}{Environments} \hfill _mediterranean, winter rainfall_
 - \textcolor{green}{Plant ecologies} \hfill _serotiny, sclerophylly_
 
-\center ![<!--TODO: replace this place-holder figure-->](images/AfricanProtea.jpg){ height=4cm } ![<!--_Banksia ahsbyi_, WA (CC BY 2.5 Gnangarra 2011)-->](images/B_ashbyi_gnangarra_03.jpg){ height=4cm }
+\center ![<!--_Leucospermum cordifolium_ (CC BY-SA 3.0 Marco Schmidt 2008) (<https://commons.wikimedia.org/wiki/File:Leucospermum_cordifolium_MS_9316.jpg>)-->](images/Leucospermum_cordifolium_MS_9316_crop.jpg){ height=4cm } ![<!--_Banksia ahsbyi_, WA (CC BY 2.5 Gnangarra 2011)-->](images/B_ashbyi_gnangarra_03.jpg){ height=4cm }
 
 # But different
 
@@ -62,7 +62,7 @@ Mouchet et al. 2015. _PLoS ONE_ 10(7)
 
 ***
 
-- \textcolor{orange}{Cape} richness previously shown to depend on heterogeneity\footnotemark[1]
+- EH shown previously as NB in the \textcolor{orange}{Cape}\footnotemark[1]
 - Does this extend to \textcolor{blue}{SWA}?
 
 \footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
@@ -71,13 +71,16 @@ Mouchet et al. 2015. _PLoS ONE_ 10(7)
 
 \onslide<1-> \center ![](figures/hypothesis.png){ width=4cm }
 
+\onslide<2->
+
 Hypothesis         | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA}
 ------------------:|:-------------------------------------------------:
-\onslide<2->{Degree of EH}       | \onslide<3->{>}
-\onslide<2->{Scale EH}           | \onslide<3->{<}
-\onslide<4->{Floristic turnover} | \onslide<4->{>}
-\onslide<5->{$S \sim$ EH}        | \onslide<5->{Both}
-\onslide<6->{Types of EH}        | \onslide<7->{\textcolor{brown}{Soil?}}
+\onslide<3->{Degree of EH}       | \onslide<3->{>}
+\onslide<3->{Floristic turnover} | \onslide<3->{>}
+\onslide<4->{$S \sim$ EH}        | \onslide<5->{Both}
+\onslide<6->{Types of EH} | \onslide<7->{Topography? \textcolor{brown}{Soil?}}
+
+<!--\onslide<2->{Scale EH} | \onslide<3->{<}-->
 
 # Data sources
 
@@ -87,7 +90,7 @@ Hypothesis         | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA}
 - \textcolor{green}{Vascular plant occurrence records}
   - GBIF
 
-# Environmental heterogeneity (EH)
+#  Quantifying EH
 
 \center
 
@@ -101,10 +104,27 @@ Roughness $R(N) = SD_{focal}(N)$
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center
-      \includegraphics[width=12cm]{figures/fig-1.1-elev-roughness_blank.png}
-    \onslide<2-> \center 
-      \includegraphics[width=12cm]{figures/fig-1.1-elev-roughness.png}
+    \onslide<1> \center \includegraphics[width=10cm]{%
+      figures/fig-1.3-elevation-maps_blank1.png%
+    }
+    \onslide<2> \center \includegraphics[width=10cm]{%
+      figures/fig-1.3-elevation-maps_blank2.png%
+    }
+    \onslide<3-> \center \includegraphics[width=10cm]{%
+      figures/fig-1.3-elevation-maps.png%
+    }
+  \end{overprint}
+\end{figure}
+
+<!--
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-1.1-elev-roughness_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=12cm]{%
+      figures/fig-1.1-elev-roughness.png%
+    }
   \end{overprint}
 \end{figure}
 
@@ -115,15 +135,18 @@ Roughness $R(N) = SD_{focal}(N)$
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center
-      \includegraphics[width=7cm]{figures/fig-1.2-CLES-roughness_blank.png}
-    \onslide<2-> \center 
-      \includegraphics[width=7cm]{figures/fig-1.2-CLES-roughness.png}
+    \onslide<1> \center \includegraphics[width=7cm]{%
+      figures/fig-1.2-CLES-roughness_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=7cm]{%
+      figures/fig-1.2-CLES-roughness.png%
+    }
   \end{overprint}
 \end{figure}
 
 - \onslide<3-> Different forms of roughness scale differently
 - \onslide<3-> And differently so for the Cape \& SWA
+-->
 
 # Species turnover
 
@@ -139,16 +162,18 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center
-      \includegraphics[width=10cm]{figures/fig-2-turnover_blank.png}
-    \onslide<2-> \center 
-      \includegraphics[width=10cm]{figures/fig-2-turnover.png}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-2-turnover_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=12cm]{%
+      figures/fig-2-turnover.png%
+    }
   \end{overprint}
 \end{figure}
 
-- \onslide<3-> The Cape has $\uparrow$ species turnover
+<!--- \onslide<3-> The Cape has $\uparrow$ species turnover-->
 
-# BRT-modelling
+# Relating $S$ & EH: BRT-modelling
 
 - Machine-learning
 - Non-linear, complex & multivariate datasets
@@ -161,27 +186,53 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center
-      \includegraphics[width=12cm]{figures/fig-4-BRT-model-quality_blank.png}
-    \onslide<2-> \center 
-      \includegraphics[width=12cm]{figures/fig-4-BRT-model-quality.png}
+    \onslide<1> \center \includegraphics[width=10cm]{%
+      figures/fig-5.1-QDS-richness-maps_blank1.png%
+    }
+    \onslide<2> \center \includegraphics[width=10cm]{%
+      figures/fig-5.1-QDS-richness-maps_blank2.png%
+    }
+    \onslide<3> \center \includegraphics[width=10cm]{%
+      figures/fig-5.1-QDS-richness-maps.png%
+    }
+    \onslide<4-> \center \includegraphics[width=10cm]{%
+      figures/fig-5.2-QDS-richness-maps.png%
+    }
+  \end{overprint}
+\end{figure}
+
+<!--
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-4-BRT-model-quality_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=12cm]{%
+      figures/fig-4-BRT-model-quality.png%
+    }
   \end{overprint}
 \end{figure}
 
 - \onslide<3-> Patterns different from chance (permuted null) \hfill $\checkmark$
 - \onslide<3-> Cape patterns breakdown at coarser scales \hfill $\checkmark$
 - \onslide<3-> SWA patterns do not \hfill $\checkmark$
+-->
 
 ***
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center
-      \includegraphics[width=12cm]{figures/fig-3-species-environment-relationships_blank.png}
-    \onslide<2> \center 
-      \includegraphics[width=12cm]{figures/fig-3-species-environment-relationships_nopie.png}
-    \onslide<3-> \center 
-      \includegraphics[width=12cm]{figures/fig-3-species-environment-relationships.png}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-3-species-environment-relationships_blank.png%
+    }
+    \onslide<2> \center \includegraphics[width=12cm]{%
+      figures/fig-3-species-environment-relationships_nopie.png%
+    }
+    \onslide<3-> \center \includegraphics[width=12cm]{%
+      figures/fig-3-species-environment-relationships.png%
+    }
   \end{overprint}
 \end{figure}
 
@@ -201,10 +252,11 @@ Roughness, soil          | Absolute, climate
 Hypothesis | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA} | $\checkmark$?
 ----------:|:-------------------------------------------------:|:-------------:
 Degree of EH       | >                            | \onslide<3->{$\checkmark$}
-Scale EH           | <                            | \onslide<3->{$\checkmark$}
 Floristic turnover | >                            | \onslide<3->{$\checkmark$}
 $S \sim$ EH        | Both                         | \onslide<3->{$\checkmark$}
-Types of EH        | \textcolor{brown}{Soil?}     | \onslide<3->{$\frac{1}{2}$}
+Types of EH | Topography? \textcolor{brown}{Soil?} | \onslide<4->{$\frac{1}{2}$}
+
+<!--Scale EH | < | \onslide<3->{$\checkmark$}-->
 
 # Conclusions
 
@@ -220,6 +272,5 @@ Types of EH        | \textcolor{brown}{Soil?}     | \onslide<3->{$\frac{1}{2}$}
 
 \center Thank you\footnotemark[1]!
 
-_TODO: Add Hons thesis cover photos here_
-
+\center ![<!--_Leucospermum reflexum_ var. _luteum_, Kirstenbosch National Botanical Gardens, South Africa (CC BY 4.0 Ruan van Mazijk 2017)-->](images/Leucospermum_reflexum_var_luteum_Ruan.jpg){ height=6cm } ![<!--_Anigozanthos manglesii_ (Red and green kangaroo paw), Kings Park, Perth, WA (CC BY 2.0 A. Chapman 2008)-->](images/Anigozanthos_manglesii.jpg){ height=6cm }
 \footnotetext[1]{And an extra thank you to my supervisors, Mike \& Tony}
