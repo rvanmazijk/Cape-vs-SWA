@@ -10,7 +10,7 @@ library(here)
 source(here("R/setup.R"))
 
 output_path <- here(
-  "R/02_analyses/",
+  "R/analyses/",
   "analyse-species-environment-relationships/run-on-UCT-HPC"
 )
 
@@ -20,7 +20,7 @@ library(virtualspecies)
 # Combine all data at QDS-scale ------------------------------------------------
 
 # Import/get data
-source(here("R/02_analyses/generate-roughness.R"))
+source(here("R/analyses/generate-roughness.R"))
 import_region_polygons()
 
 # Aggregate enviro data to QDS-scale
@@ -108,10 +108,10 @@ write.csv(SWAFR_data_QDS, glue("{output_path}/SWAFR_variables_QDS.csv"))
 
 # Combine all data at HDS-scale ------------------------------------------------
 
-source(here("R/02_analyses/generate-turnover.R"))
+source(here("R/analyses/generate-turnover.R"))
 # Reset output path after runnng above R-script
 output_path <- here(
-  "R/02_analyses/",
+  "R/analyses/",
   "analyse-species-environment-relationships/run-on-UCT-HPC"
 )
 

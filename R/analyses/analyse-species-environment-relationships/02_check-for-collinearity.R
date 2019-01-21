@@ -162,8 +162,8 @@ BOTH_predictor_names_HDS  %<>% map_chr(1)
 
 # For bare-minimum BRT work on UCT HPC:
 output_path <- here(
-  "R/02_analyses/",
-  "analyse-species-environment-relationships/run-on-UCT-HPC/"
+  "R/02_analyses",
+  "analyse-species-environment-relationships/run-on-UCT-HPC"
 )
 write.csv(
   GCFR_predictor_names_QDS,
