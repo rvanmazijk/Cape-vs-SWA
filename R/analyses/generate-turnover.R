@@ -24,7 +24,7 @@ SWAFR_species_path <- glue("{output_path}/SWAFR_species_2018-08-14")
 if (!file.exists(GCFR_species_path)) {
   source(here("R/setup.R"))
   # Read in processed GBIF occurence data as SpatialPointsDataFrames
-  trimmed_GCFR_clean_flora_spdf_species <- read_rds(here::here(
+  trimmed_GCFR_clean_flora_spdf_species <- read_rds(here(
     "data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_species"
   ))
   GCFR_species <- calc_richness_turnover(
@@ -39,7 +39,7 @@ if (!file.exists(GCFR_species_path)) {
 
 if (!file.exists(SWAFR_species_path)) {
   source(here("R/setup.R"))
-  trimmed_SWAFR_clean_flora_spdf_species <- read_rds(here::here(
+  trimmed_SWAFR_clean_flora_spdf_species <- read_rds(here(
     "data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_species"
   ))
   SWAFR_species <- calc_richness_turnover(
