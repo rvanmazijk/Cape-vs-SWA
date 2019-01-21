@@ -128,12 +128,12 @@ names(SWAFR_species) <- c(
 
 variables_HDS_stacks <- pmap(
   # For each region:
-  .l = list(
-    vars = list(GCFR_variables, SWAFR_variables),
+  list(
+    vars       = list(GCFR_variables,     SWAFR_variables),
     rough_vars = list(GCFR_roughness_HDS, SWAFR_roughness_HDS),
-    species = list(GCFR_species, SWAFR_species)
+    species    = list(GCFR_species,       SWAFR_species)
   ),
-  .f = function(vars, rough_vars, species) {
+  function(vars, rough_vars, species) {
 
     # Generate absolute environmental values at HDS-scale
     vars %<>% map(aggregate, fact = 0.50 / 0.05)
@@ -171,16 +171,16 @@ variables_HDS_stacks <- pmap(
   }
 )
 
-GCFR_variables_HDS_stack <- variables_HDS_stacks[[1]]
-SWAFR_variables_HDS_stack <- variables_HDS_stacks[[2]]
+GCFR_data_HDS_stack <- variables_HDS_stacks[[1]]
+SWAFR_data_HDS_stack <- variables_HDS_stacks[[2]]
 
 # .... Output data for bare-minimum BRT work on UCT HPC ------------------------
 
-GCFR_variables_HDS_stack %>%
+GCFR_data_HDS_stack %>%
   as.data.frame() %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/GCFR_variables_HDS.csv"))
-SWAFR_variables_HDS_stack %>%
+SWAFR_data_HDS_stack %>%
   as.data.frame() %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/SWAFR_variables_HDS.csv"))
