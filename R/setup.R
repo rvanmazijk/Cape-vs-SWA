@@ -37,7 +37,11 @@ library(readr)
 library(quantreg)
 library(broom)
 library(canprot)
-library(spgwr)
+
+# BRTs
+library(dismo)
+library(virtualspecies)
+library(gbm)
 
 # Visualisations
 library(ggplot2)
@@ -45,8 +49,9 @@ library(grid)
 library(gridExtra)
 library(cowplot)
 library(scales)
-#library(rasterVis)
-#library(ggspatial)
+library(rasterVis)
+library(ggspatial)
+
 
 # Record session information ---------------------------------------------------
 
