@@ -208,3 +208,23 @@ write_csv(
   BOTH_data_HDS,
   glue("{output_path}/BOTH_variables_HDS.csv")
 )
+
+# Import lists of non-collinear variables (if script no. 2 has been run) -------
+
+output_path <- here(
+  "R/analyses",
+  "analyse-species-environment-relationships/run-on-UCT-HPC"
+)
+predictor_name_files <- c(
+  "GCFR_predictor_names_QDS",
+  "GCFR_predictor_names_HDS",
+  "SWAFR_predictor_names_QDS",
+  "SWAFR_predictor_names_HDS",
+  "BOTH_predictor_names_QDS",
+  "BOTH_predictor_names_HDS"
+)
+predictor_names <- map(predictor_name_files, function(x) {
+  x <-  glue("{output_path}/{x}.csv")
+  if (file.exists(x)) read_csv(x)$x
+})
+names(predictor_names) <- predictor_name_files
