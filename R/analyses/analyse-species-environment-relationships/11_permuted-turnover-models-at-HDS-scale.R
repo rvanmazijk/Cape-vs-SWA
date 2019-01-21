@@ -2,6 +2,13 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
+library(here)
+source(here(
+  "R/analyses/analyse-species-environment-relationships/01_collate-data.R"
+))
+
 output_path <- here(
   "outputs/species-environment-relationships",
   "from-local-machines/HDS-turnover-models_999-permuted-reps"
@@ -14,6 +21,8 @@ GCFR_data_HDS <- GCFR_variables_HDS_stack %>%
 SWAFR_data_HDS <- SWAFR_variables_HDS_stack %>%
   as.data.frame() %>%
   na.exclude()
+
+# ------------------------------------------------------------------------------
 
 for (i in 1:999) {
 

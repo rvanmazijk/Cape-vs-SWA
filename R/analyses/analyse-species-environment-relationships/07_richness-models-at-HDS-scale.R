@@ -2,6 +2,13 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
+library(here)
+source(here(
+  "R/analyses/analyse-species-environment-relationships/01_collate-data.R"
+))
+
 output_path <- here(
   "outputs/species-environment-relationships",
   "from-local-machines/HDS-richness-models_1000-reps"

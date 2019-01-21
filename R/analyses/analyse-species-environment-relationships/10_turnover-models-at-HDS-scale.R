@@ -2,6 +2,13 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
+library(here)
+source(here(
+  "R/analyses/analyse-species-environment-relationships/01_collate-data.R"
+))
+
 output_path <- here(
   "outputs/species-environment-relationships",
   "from-local-machines/HDS-turnover-models_1000-reps"
@@ -15,8 +22,10 @@ SWAFR_data_HDS <- SWAFR_variables_HDS_stack %>%
   as.data.frame() %>%
   na.exclude()
 
-#for (i in 1:1000) {
-for (i in 460:1000) {
+# ------------------------------------------------------------------------------
+
+for (i in 1:1000) {
+#for (i in 460:1000) {
 
   set.seed(i)
 

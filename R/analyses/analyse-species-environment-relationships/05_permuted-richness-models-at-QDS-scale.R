@@ -2,10 +2,19 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
+library(here)
+source(here(
+  "R/analyses/analyse-species-environment-relationships/01_collate-data.R"
+))
+
 output_path <- here(
   "outputs/species-environment-relationships",
   "from-local-machines/QDS-richness-models_999-permuted-reps"
 )
+
+# ------------------------------------------------------------------------------
 
 for (i in 1:999) {
 

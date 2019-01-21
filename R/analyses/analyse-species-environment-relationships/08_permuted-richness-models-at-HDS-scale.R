@@ -2,6 +2,13 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
+# Setup ------------------------------------------------------------------------
+
+library(here)
+source(here(
+  "R/analyses/analyse-species-environment-relationships/01_collate-data.R"
+))
+
 output_path <- here(
   "outputs/species-environment-relationships",
   "from-local-machines/HDS-richness-models_999-permuted-reps"
@@ -16,6 +23,8 @@ SWAFR_data_HDS <- SWAFR_variables_HDS_stack %>%
   as.data.frame() %>%
   na.exclude() %>%
   mutate(log_HDS_richness = log(HDS_richness))
+
+# ------------------------------------------------------------------------------
 
 for (i in 1:999) {
 

@@ -14,9 +14,6 @@ output_path <- here(
   "analyse-species-environment-relationships/run-on-UCT-HPC"
 )
 
-library(dismo)
-library(virtualspecies)
-
 # Combine all data at QDS-scale ------------------------------------------------
 
 # Import/get data
