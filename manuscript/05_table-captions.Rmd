@@ -5,3 +5,11 @@ Captions are also repeated alongside their respective tables for readability.
 (ref:data-sources) Georeferenced vascular plant species occurence and environmental data sources used in this study. Data were acquired for the Cape and SWA regions, with the temporal extent of data products used described where applicable. Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity.
 
 Table \@ref(tab:data-sources): (ref:data-sources)
+
+(ref:BRT-quality-perms) Average percentile-ranks for BRT-model performance measures ($nt$, $R_{\mathrm{pseudo}}^2$ (Equation \@ref(eq:pseudo-R2)), $R_{\mathrm{E-O}}^2$) of 1000 replicate BRT-models relative to 999 BRT-models fit to permuted datasets. Ranks approaching one indicate that a set of replicate BRT-models had greater values than the permuted models.
+
+Table \@ref(tab:BRT-quality-perms): (ref:BRT-quality-perms)
+
+(ref:BRT-quality-regions) Estimated differences between replicate Cape and SWA BRT-models' performance measures ($nt$, $R^2_{\mathrm{pseudo}}$ (Equation \@ref(eq:pseudo-R2)), $R^2_{\mathrm{E-O}}$) following $t$-tests. Positive values indicate that the Cape models had greater values. In all cases, the Cape and SWA had highly significantly different values for these quality measures ($P < 0.0001$).
+
+Table \@ref(tab:BRT-quality-regions): (ref:BRT-quality-regions)

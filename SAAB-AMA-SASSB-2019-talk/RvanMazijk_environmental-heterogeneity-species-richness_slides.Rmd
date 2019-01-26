@@ -1,0 +1,276 @@
+---
+title: '_TODO: Add Powerpoint coverslide manually_'
+mainfont: Avenir  # for PDF
+---
+
+# Species richness ($S$)
+
+\center
+
+\onslide<3-> \alt<3>{Extremely high $S$?}{Environmental heterogeneity (EH)}
+
+\onslide<2->
+
+Speciation \onslide<5->{\emph{along ecological gradients}}
+
+![](figures/speciation.png){ width=3cm }
+
+Co-existence \onslide<5->{\emph{within ecological space}}
+
+![](figures/co-existence.png){ width=3cm }
+
+<!--
+\footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
+\footnotetext[2]{Kreft \& Jetz 2007. \emph{PNAS} 104(14)}
+\footnotetext[3]{Thuiller et al. 2006. \emph{Ecography} 29(5)}
+-->
+
+# The \textcolor{orange}{Cape} & \textcolor{blue}{SWA}
+
+\center ![](figures/fig-6-region-map.png){ width=11cm }
+
+# Similar
+
+- \textcolor{brown}{Environments} \hfill _mediterranean, winter rainfall_
+- \textcolor{green}{Plant ecologies} \hfill _serotiny, sclerophylly_
+
+\center ![<!--_Leucospermum cordifolium_ (CC BY-SA 3.0 Marco Schmidt 2008) (<https://commons.wikimedia.org/wiki/File:Leucospermum_cordifolium_MS_9316.jpg>)-->](images/Leucospermum_cordifolium_MS_9316_crop.jpg){ height=4cm } ![<!--_Banksia ahsbyi_, WA (CC BY 2.5 Gnangarra 2011)-->](images/B_ashbyi_gnangarra_03.jpg){ height=4cm }
+
+# But different
+
+- $S$ per unit area \hfill \emph{\textcolor{orange}{Cape} > \textcolor{blue}{SWA}}
+- Topographies \hfill \emph{\textcolor{orange}{mountainous} vs \textcolor{blue}{flat}}
+
+\center ![<!--Peninsula Sandstone Fynbos, Table Mountain (CC BY-SA 3.0 Abu Shawka 2011)--><!--TODO: swap for photo from Sir Lowry's Pass?-->](images/Peninsula_Sandstone_Fynbos_on_Table_Mountain_-_Cape_Town_3.jpg){ height=4cm } ![<!--Fitzgerald River NP, WA (CC BY-SA 3.0 Yewenyi)-->](images/Fitzgerald_River_National_Park_DSC04436.jpg){ height=4cm }
+
+<!--
+- Wide range of environmental conditions $\rightarrow$ supports diverse flora.
+- Environmental stability through evolutionary time 
+  - (Pleistocene LGM in Cape, ??? in SW Australia).
+  - This means that the ecological gradients have persisted longer, facilitating greater degrees of ecological speciation, and thus species richness, along those gradients and barriers to gene flow.
+
+Thus, spatially heterogeneous that is stable through deep time $\rightarrow$ support and produce more diverse biota. 
+
+Environmental heterogeneity then has roles in the ecological present and over evolutionary time in stimulating species richness\footnotemark[1]\footnotemark[2]\footnotemark[3].
+
+Cramer & Verboom 2016. _J. Biogeography_ 44(3)
+Kreft & Jetz 2007. _PNAS_ 104(14)
+Thuiller et al. 2006. \emph{Ecography} 29(5)
+Gaston 2000. _Nature_ 405(6783)
+Mouchet et al. 2015. _PLoS ONE_ 10(7)
+-->
+
+***
+
+- EH shown previously as NB in the \textcolor{orange}{Cape}\footnotemark[1]
+- Does this extend to \textcolor{blue}{SWA}?
+
+\footnotetext[1]{Cramer \& Verboom 2016. \emph{J. Biogeography} 44(3)}
+
+***
+
+\onslide<1-> \center ![](figures/hypothesis.png){ width=4cm }
+
+\onslide<2->
+
+Hypothesis         | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA}
+------------------:|:-------------------------------------------------:
+\onslide<3->{Degree of EH}       | \onslide<3->{>}
+\onslide<3->{Floristic turnover} | \onslide<3->{>}
+\onslide<4->{$S \sim$ EH}        | \onslide<5->{Both}
+\onslide<6->{Types of EH} | \onslide<7->{Topography? \textcolor{brown}{Soil?}}
+
+<!--\onslide<2->{Scale EH} | \onslide<3->{<}-->
+
+# Data sources
+
+- Each region’s boundaries
+- \textcolor{brown}{Environmental data}
+  - NASA MODIS, CHIRPS, SoilsGrid250m
+- \textcolor{green}{Vascular plant occurrence records}
+  - GBIF
+
+#  Quantifying EH
+
+\center
+
+Local neighbourhood $N$ about cell $x_{focal}$
+
+Roughness $R(N) = SD_{focal}(N)$
+
+![](figures/neighbourhood.png){ width=6cm }
+
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=10cm]{%
+      figures/fig-1.3-elevation-maps_blank1.png%
+    }
+    \onslide<2> \center \includegraphics[width=10cm]{%
+      figures/fig-1.3-elevation-maps_blank2.png%
+    }
+    \onslide<3-> \center \includegraphics[width=10cm]{%
+      figures/fig-1.3-elevation-maps.png%
+    }
+  \end{overprint}
+\end{figure}
+
+<!--
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-1.1-elev-roughness_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=12cm]{%
+      figures/fig-1.1-elev-roughness.png%
+    }
+  \end{overprint}
+\end{figure}
+
+- \onslide<3-> Roughness varies with scale
+- \onslide<3-> And differently so for the Cape and SWA
+
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=7cm]{%
+      figures/fig-1.2-CLES-roughness_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=7cm]{%
+      figures/fig-1.2-CLES-roughness.png%
+    }
+  \end{overprint}
+\end{figure}
+
+- \onslide<3-> Different forms of roughness scale differently
+- \onslide<3-> And differently so for the Cape \& SWA
+-->
+
+# Species turnover
+
+\center
+
+Each HDS is composed of 2--4 QDS
+
+$\overline{J}_{QDS} =$ average Jaccard distance between QDS
+
+![](figures/HDS-QDS.png){ width=4cm }
+
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-2-turnover_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=12cm]{%
+      figures/fig-2-turnover.png%
+    }
+  \end{overprint}
+\end{figure}
+
+<!--- \onslide<3-> The Cape has $\uparrow$ species turnover-->
+
+# Relating $S$ & EH: BRT-modelling
+
+- Machine-learning
+- Non-linear, complex & multivariate datasets
+
+\pause
+
+\center ![](figures/BRT.pdf)
+
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=10cm]{%
+      figures/fig-5.1-QDS-richness-maps_blank1.png%
+    }
+    \onslide<2> \center \includegraphics[width=10cm]{%
+      figures/fig-5.1-QDS-richness-maps_blank2.png%
+    }
+    \onslide<3> \center \includegraphics[width=10cm]{%
+      figures/fig-5.1-QDS-richness-maps.png%
+    }
+    \onslide<4-> \center \includegraphics[width=10cm]{%
+      figures/fig-5.2-QDS-richness-maps.png%
+    }
+  \end{overprint}
+\end{figure}
+
+<!--
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-4-BRT-model-quality_blank.png%
+    }
+    \onslide<2-> \center \includegraphics[width=12cm]{%
+      figures/fig-4-BRT-model-quality.png%
+    }
+  \end{overprint}
+\end{figure}
+
+- \onslide<3-> Patterns different from chance (permuted null) \hfill $\checkmark$
+- \onslide<3-> Cape patterns breakdown at coarser scales \hfill $\checkmark$
+- \onslide<3-> SWA patterns do not \hfill $\checkmark$
+-->
+
+***
+
+\begin{figure}
+  \begin{overprint}
+    \onslide<1> \center \includegraphics[width=12cm]{%
+      figures/fig-3-species-environment-relationships_blank.png%
+    }
+    \onslide<2> \center \includegraphics[width=12cm]{%
+      figures/fig-3-species-environment-relationships_nopie.png%
+    }
+    \onslide<3-> \center \includegraphics[width=12cm]{%
+      figures/fig-3-species-environment-relationships.png%
+    }
+  \end{overprint}
+\end{figure}
+
+\onslide<4->
+
+\textcolor{orange}{Cape} | \textcolor{blue}{SWA}
+:-----------------------:|:---------------------:
+Broad suite of variables | MAP
+Roughness, soil          | Absolute, climate
+
+***
+
+\onslide<1-> \center ![](figures/hypothesis.png){ width=4cm }
+
+\onslide<2->
+
+Hypothesis | \textcolor{orange}{Cape} vs \textcolor{blue}{SWA} | $\checkmark$?
+----------:|:-------------------------------------------------:|:-------------:
+Degree of EH       | >                            | \onslide<3->{$\checkmark$}
+Floristic turnover | >                            | \onslide<3->{$\checkmark$}
+$S \sim$ EH        | Both                         | \onslide<3->{$\checkmark$}
+Types of EH | Topography? \textcolor{brown}{Soil?} | \onslide<4->{$\frac{1}{2}$}
+
+<!--Scale EH | < | \onslide<3->{$\checkmark$}-->
+
+# Conclusions
+
+- \onslide<1-> The \textcolor{orange}{Cape} is more environmentally heterogeneous than \textcolor{blue}{SWA}
+  - \onslide<2-> Consequently more species rich
+  - \onslide<2-> Greater floristic turnover supports this.
+
+- \onslide<3-> Different axes of EH are biologically important in the \textcolor{orange}{Cape} and \textcolor{blue}{SWA}.
+
+\onslide<4-> \center \textcolor{brown}{Soil?}
+
+***
+
+\center Thank you\footnotemark[1]!
+
+\center ![<!--_Leucospermum reflexum_ var. _luteum_, Kirstenbosch National Botanical Gardens, South Africa (CC BY 4.0 Ruan van Mazijk 2017)-->](images/Leucospermum_reflexum_var_luteum_Ruan.jpg){ height=6cm } ![<!--_Anigozanthos manglesii_ (Red and green kangaroo paw), Kings Park, Perth, WA (CC BY 2.0 A. Chapman 2008)-->](images/Anigozanthos_manglesii.jpg){ height=6cm }
+\footnotetext[1]{And an extra thank you to my supervisors, Mike \& Tony}

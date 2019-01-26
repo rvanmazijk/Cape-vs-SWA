@@ -7,6 +7,7 @@ packrat/lib*/
 *.tex
 *_cache
 *.RDS
+*.log
 
 outputs/turnover/GCFR_spp_2018-08-10/
 outputs/turnover/SWAFR_spp_2018-08-10/

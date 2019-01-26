@@ -5,14 +5,19 @@ knitr::opts_chunk$set(
   eval = TRUE,
   echo = FALSE,
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  results="asis",
+  fig.pos="H",
+  out.width="18cm"
 )
 ```
 
 ```{r setup-tables, include=FALSE}
 library(here)
 source(here("R/setup.R"))
-data_sources <- read_csv(here("manuscript/data-sources.csv"))
+data_sources <- read_csv(here("manuscript/tables/data-sources.csv"))
+quality_rank_data <- read_csv(here("manuscript/tables/quality-rank-data.csv"))
+quality_region_data <- read_csv(here("manuscript/tables/quality-region-data.csv"))
 ```
 
 \normalsize \break
@@ -35,7 +40,7 @@ MDC and GAV conceived the study question, which RVM investigated under their sup
 
 # Tables {-}
 
-```{r data-sources, results="asis"}
+```{r data-sources}
 options(knitr.kable.NA = "")
 data_sources %>%
   knitr::kable(
@@ -49,19 +54,69 @@ data_sources %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
+```{r BRT-quality-perms}
+options(knitr.kable.NA = "")
+quality_rank_data %>%
+  select(scale, response, region, nt_rank:pred_obs_r2_rank) %>%
+  arrange(desc(scale), response, region) %>%
+  select(-scale, -response) %>%
+  mutate_if(is.numeric, funs(round(., 3))) %>%
+  knitr::kable(
+    format = "latex",
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
+    caption = "(ref:BRT-quality-perms)"
+  ) %>%
+  kableExtra::group_rows("QDS-richness", 1, 2) %>%
+  kableExtra::group_rows("HDS-richness", 3, 4) %>%
+  kableExtra::group_rows("HDS-turnover", 5, 6) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+```{r BRT-quality-regions}
+options(knitr.kable.NA = "")
+quality_region_data %>%
+  select(scale, response, est_diff, quality_metric) %>%
+  filter(quality_metric != "pred_obs_r2_exp") %>%
+  spread(quality_metric, est_diff) %>%
+  arrange(desc(scale), response) %>%
+  mutate_if(is.numeric, funs(round(., 3))) %>%
+  mutate(model = glue("{scale}-{response}")) %>%
+  select(model, nt:pseudo_r2) %>%
+  knitr::kable(
+    format = "latex",
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c(
+      "Model", "$nt$", 
+      "$R^2_{\\mathrm{pseudo}}$", "$R^2_{\\mathrm{E-O}}$"
+    ),
+    caption = "(ref:BRT-quality-regions)"
+  ) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
 \break
 
 # Figures {-}
 
-```{r roughness, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
-knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
-# TODO: italicise "CLES" in y-axis label
+```{r roughness, fig.cap="(ref:roughness)"}
+knitr::include_graphics(here("manuscript/figures/fig-1-roughness.png"))
 ```
 
-```{r turnover, fig.pos="H", out.width="12cm", fig.cap="(ref:turnover)"}
-knitr::include_graphics(here::here("figures/fig-2-turnover.png"))
+```{r turnover, out.width="12cm", fig.cap="(ref:turnover)"}
+knitr::include_graphics(here("manuscript/figures/fig-2-turnover.png"))
 ```
 
-```{r species-environment-relationships, fig.pos="H", out.width="14cm", fig.cap="(ref:species-environment-relationships)"}
-knitr::include_graphics(here::here("figures/fig-3-species-environment-relationships.png"))
+```{r species-environment-relationships, fig.cap="(ref:species-environment-relationships)"}
+knitr::include_graphics(here("manuscript/figures/fig-3-species-environment-relationships.png"))
+```
+
+```{r BRT-model-quality, fig.cap="(ref:BRT-model-quality)"}
+knitr::include_graphics(here("manuscript/figures/fig-4-BRT-model-quality.png"))
+```
+
+```{r BRT-variable-rank-concordance, out.width="15cm", fig.cap="(ref:BRT-variable-rank-concordance)"}
+knitr::include_graphics(here("manuscript/figures/fig-5-BRT-variable-rank-concordance.png"))
 ```

@@ -3,3 +3,5 @@ bookdown::pdf_document2:
   pandoc_args: [
     "--include-after-body", "_after-body.tex"
   ]
+  includes: 
+    in_header: style.sty

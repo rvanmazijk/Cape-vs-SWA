@@ -207,20 +207,17 @@ import_replicate_outputs <- function(output_path,
     pattern = output_pattern,
     full.names = TRUE
   )
-  outputs <- map(output_paths, ~
-    .x %>%
-      read_csv() %>%
-      mutate(path = .x) %>%
-      mutate(
-        region = str_extract(path, "(GCFR|SWAFR)"),
-        response = response_,
-        scale = scale_,
-        rep = path %>%
-          str_extract(glue("{output_slug}\\d+\\.csv$")) %>%
-          str_remove(output_slug) %>%
-          str_remove("\\.csv")
-      )
+  map_dfr(output_paths, ~ .x %>%
+    read_csv() %>%
+    mutate(path = .x) %>%
+    mutate(
+      region = str_extract(path, "(GCFR|SWAFR)"),
+      response = response_,
+      scale = scale_,
+      rep = path %>%
+        str_extract(glue("{output_slug}\\d+\\.csv$")) %>%
+        str_remove(output_slug) %>%
+        str_remove("\\.csv")
+    )
   )
-  bind_rows(outputs)
-
 }

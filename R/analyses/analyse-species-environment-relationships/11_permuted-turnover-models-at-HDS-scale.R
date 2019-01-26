@@ -1,0 +1,93 @@
+# Fitting BRTs of permuted richness at HDS-scale
+# Cape vs SWA publication
+# Ruan van Mazijk
+
+# Setup ------------------------------------------------------------------------
+
+library(here)
+source(here(
+  "R/analyses/analyse-species-environment-relationships/01_collate-data.R"
+))
+
+output_path <- here(
+  "outputs/species-environment-relationships",
+  "from-local-machines/HDS-turnover-models_999-permuted-reps"
+)
+
+GCFR_data_HDS <- GCFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude()
+
+SWAFR_data_HDS <- SWAFR_variables_HDS_stack %>%
+  as.data.frame() %>%
+  na.exclude()
+
+# ------------------------------------------------------------------------------
+
+for (i in 1:999) {
+
+  set.seed(i)
+
+  GCFR_data_HDS_permuted <- GCFR_data_HDS
+  GCFR_data_HDS_permuted$mean_QDS_turnover <- permute_wo_nas(
+    GCFR_data_HDS_permuted$mean_QDS_turnover
+  )
+  GCFR_model <- gbm.step(
+    data = GCFR_data_HDS_permuted,
+    gbm.x = GCFR_predictor_names_HDS,
+    gbm.y = "mean_QDS_turnover",
+    tree.complexity = 3,
+    learning.rate = 0.001,
+    max.trees = 10000,
+    family = "gaussian",
+    plot.main = TRUE
+  )
+  model_succeeded <- !is.null(GCFR_model)
+  if (model_succeeded) {
+    write_rds(
+      GCFR_model,
+      glue("{output_path}/GCFR_HDS-turnover-gbm-step_BRT_{Sys.Date()}_permutation-{i}.RDS")
+    )
+    write_csv(
+      select(my_BRT_summary(GCFR_model), -contribs),
+      glue("{output_path}/GCFR_HDS-turnover-gbm-step_summary_{Sys.Date()}_permutation-{i}.csv")
+    )
+    write_csv(
+      as.data.frame(my_BRT_summary(GCFR_model)$contribs),
+      glue("{output_path}/GCFR_HDS-turnover-gbm-step_contribs_{Sys.Date()}_permutation-{i}.csv")
+    )
+  }
+  rm(GCFR_model)
+
+  SWAFR_data_HDS_permuted <- SWAFR_data_HDS
+  SWAFR_data_HDS_permuted$mean_QDS_turnover <- permute_wo_nas(
+    SWAFR_data_HDS_permuted$mean_QDS_turnover
+  )
+  SWAFR_model <- gbm.step(
+    data = SWAFR_data_HDS_permuted,
+    gbm.x = SWAFR_predictor_names_HDS,
+    gbm.y = "mean_QDS_turnover",
+    tree.complexity = 3,
+    learning.rate = 0.001,
+    max.trees = 10000,
+    family = "gaussian",
+    plot.main = TRUE
+  )
+  model_succeeded <- !is.null(SWAFR_model)
+  if (model_succeeded) {
+    write_rds(
+      SWAFR_model,
+      glue("{output_path}/SWAFR_HDS-turnover-gbm-step_BRT_{Sys.Date()}_permutation-{i}.RDS")
+    )
+    write_csv(
+      select(my_BRT_summary(SWAFR_model), -contribs),
+      glue("{output_path}/SWAFR_HDS-turnover-gbm-step_summary_{Sys.Date()}_permutation-{i}.csv")
+    )
+    write_csv(
+      as.data.frame(my_BRT_summary(SWAFR_model)$contribs),
+      glue("{output_path}/SWAFR_HDS-turnover-gbm-step_contribs_{Sys.Date()}_permutation-{i}.csv")
+    )
+  }
+  rm(SWAFR_model)
+
+}
