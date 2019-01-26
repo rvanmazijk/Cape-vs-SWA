@@ -1,0 +1,47 @@
+---
+title: Reading notes
+susbtitle: Cape vs SWA publication
+author: Ruan van Mazijk
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+# Pre-reading premises
+
+## "Angles" to the study
+
+(Listed more-or-less from broadest to most specialised.)
+
+- Macroecological theory/general questions:
+  - What determines the species richness in an area?
+  - What causes areas to differ in species completents?
+- Mediterranean biodiversity hotspot questions:
+  - How and why do these hotspots arise?
+  - How do these hotspots differ in their function (particularly w.r.t. patterns of species occurence)?
+    - $\rightarrow$ Comparing the Cape and SWA
+- The importance of environmental heterogeneity (EH) in macroecological models of species richness and turnover
+  - Identifying EH as possible mechanism by demonstrating its patterns of covariation with species richness and turnover
+- Following on from Cramer & Verboom (2016. _J. Biogeog._)
+  - The importance of studying the Cape flora
+
+## Key findings to the study
+
+See presentation
+
+## Interpreting the correlates of species richness and turnover
+
+<!--TODO-->
+
+## Issues and/or related topics to address
+
+- Theoretical
+  - Species-area relationships
+  - Whittaker's additive model ($\gamma = \alpha + \beta$)
+- Methodological
+  - Species turnover indices
+  - Spatial autocorrelation (not an issue b/c (1) autocorrelated predictors and (2) permutation tests)
+  - Temporal range of data sources << that of the question(s)
+- Application
+  - Furthering generality of the importance of EH
+  - Conservation importance of heterogeneous environments
+  - Differing environments of different hotspots = different management/priorities
