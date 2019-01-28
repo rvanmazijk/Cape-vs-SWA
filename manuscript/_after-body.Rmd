@@ -24,7 +24,7 @@ quality_region_data <- read_csv(here("manuscript/tables/quality-region-data.csv"
 
 # Biosketches {-}
 
-**Ruan van Mazijk** is currently a Masters student at the University of Cape Town, interested in phylogenetic systematics, macroecology, community and functional ecology.
+**Ruan van Mazijk** is a Masters student interested in phylogenetic systematics, macro-ecology, comparative work and plant functional ecology.
 
 **Michael D. Cramer** <!--TODO-->
 
@@ -36,7 +36,7 @@ MDC and GAV conceived the study question, which RVM investigated under their sup
 
 <!--[CRediT](https://casrai.org/credit/) breakdown: GAV and MDC conceptualised the study and methodology, and supervised RVM in carrying out the work as part of his BSc Hons project. RVM curated the data, developed and performed the analyses, implemented in R, and produced the figures documenting the results. RVM wrote the original manuscript, and GAV and MDC reviewed and edited subsequent drafts with RVM.-->
 
-\break
+\clearpage
 
 # Tables {-}
 
@@ -97,7 +97,7 @@ quality_region_data %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-\break
+\clearpage
 
 # Figures {-}
 
