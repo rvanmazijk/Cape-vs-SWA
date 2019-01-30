@@ -1,0 +1,40 @@
+---
+title: "Choosing representative BRT-models from sets of replicates"
+subtitle: |
+  | Supplementary Information
+  | Cape vs SWA publication
+author: "Ruan van Mazijk"
+date: "`r Sys.Date()`"
+mainfont: Times New Roman  # for PDF
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+```{r example-helper-functions}
+is_between <- function(x, a, b) {
+  (x >= a) & (x <= b)
+}
+determine_bounds <- function(reps, bound_quantile = 0.05) {
+  columns <- c("nt", "pseudo_r2", "pred_obs_r2", "pred_obs_r2_exp")
+  summarise_at(reps, columns, funs(
+    # E.g. 0.025 + 0.025 = 5% quantile about the median
+    lwr = quantile(., (0.5 - (bound_quantile / 2))),
+    upr = quantile(., (0.5 + (bound_quantile / 2)))
+  ))
+}
+filter_reps_by_bounds <- function(reps, bounds) {
+  bounds %$% filter(reps,
+    nt          %>% is_between(nt_lwr,          nt_upr),
+    pseudo_r2   %>% is_between(pseudo_r2_lwr,   pseudo_r2_upr),
+    pred_obs_r2 %>% is_between(pred_obs_r2_lwr, pred_obs_r2_upr)
+  )
+}
+```
+
+```{r example-do}
+reps <- read.csv(...)
+bounds <- determine_bounds(reps)
+filter_reps_by_bounds(reps, bounds)
+```

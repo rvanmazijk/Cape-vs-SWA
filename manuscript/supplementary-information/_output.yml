@@ -1,0 +1,4 @@
+pdf_document:
+  latex_engine: xelatex
+  includes:
+    in_header: style.sty
