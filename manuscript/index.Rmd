@@ -42,7 +42,7 @@ ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1
   
 **Results:** The Cape is more environmentally heterogeneous and has higher levels of floristic turnover than SWA. We find that environmental heterogeneity is the main predictor of species richness in the Cape, and somewhat less so for SWA. Edaphic conditions are found to be of more biologically important in the Cape, though this is contingent on the quality of the data modelled.
   
-**Main conclusions:** <!--TODO-->
+**Main conclusions:** <!--The Cape is more generally environmentally heterogeneous than the SWA, as expected, though there are cases where SWA is as heterogeneous as the Cape.--> <!--TODO: expand & cont.-->
 
 _Keywords:_ biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region, kwongan, macroecology, species richness, species turnover, vascular plants, Southwest Australia Floristic Region
 
