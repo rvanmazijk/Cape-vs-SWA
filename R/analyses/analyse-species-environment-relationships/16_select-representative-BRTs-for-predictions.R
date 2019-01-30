@@ -20,22 +20,19 @@ filter_reps_by_bound <- function(summary_data, summary_data_medians,
                                  scale_ = c("QDS", "HDS")) {
   reps <- filter(summary_data,
     model_type == "replicates",
-    region == region_,
-    response == response_,
-    scale == scale_
+    region     == region_,
+    response   == response_,
+    scale      == scale_
   )
   bounds <- filter(summary_data_medians,
-    region == region_,
+    region   == region_,
     response == response_,
-    scale == scale_
+    scale    == scale_
   )
-  filter(reps,
-    nt <= bounds$nt_upr,
-    nt >= bounds$nt_lwr,
-    pseudo_r2 <= bounds$pseudo_r2_upr,
-    pseudo_r2 >= bounds$pseudo_r2_lwr,
-    pred_obs_r2 <= bounds$pred_obs_r2_upr,
-    pred_obs_r2 >= bounds$pred_obs_r2_lwr
+  bounds %$% filter(reps,
+    nt          >= nt_lwr,          nt          <= nt_upr,
+    pseudo_r2   >= pseudo_r2_lwr,   pseudo_r2   <= pseudo_r2_upr,
+    pred_obs_r2 >= pred_obs_r2_lwr, pred_obs_r2 <= pred_obs_r2_upr
   )
 }
 
@@ -79,7 +76,10 @@ summary_data_medians <- summary_data %>%
   group_by(region, response, scale) %>%
   summarise_at(
     c("nt", "pseudo_r2", "pred_obs_r2", "pred_obs_r2_exp"),
-    funs(lwr = quantile(., 0.475), upr = quantile(., 0.525))
+    funs(
+      lwr = quantile(., 0.475),
+      upr = quantile(., 0.525)
+    )
   )
 
 # Filter the set of replicate models to those close to median quality ----------
