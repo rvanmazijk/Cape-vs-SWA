@@ -1,12 +1,11 @@
 ---
-title: Reading notes
-susbtitle: Cape vs SWA publication
-author: Ruan van Mazijk
-date: '`r Sys.Date()`'
-output: pdf_document
+title: "Reading notes"
+susbtitle: "Cape vs SWA publication"
+author: "Ruan van Mazijk"
+date: "`r Sys.Date()`"
 ---
 
-# Pre-reading premises
+# Pre-reading premises & notes
 
 ## "Angles" to the study
 
@@ -26,9 +25,20 @@ output: pdf_document
 
 ## Key findings to the study
 
-<!--see presentation-->
+Hypothesis         | Cape vs SWA       | $\checkmark$?
+------------------:|:-----------------:|:-------------:
+Degree of EH       | >                 | $\checkmark$
+Scale EH           | <                 | $\checkmark$
+Floristic turnover | >                 | $\checkmark$
+$S \sim$ EH        | Both              | $\checkmark$
+Types of EH        | Topography? Soil? | $\frac{1}{2}$
 
-## Interpreting the correlates of species richness and turnover
+- The Cape is more environmentally heterogeneous than SWA
+  - Consequently more species rich
+  - Greater floristic turnover supports this.  
+- Different axes of EH are biologically important in the Cape and SWA.
+
+## Interpreting the major correlates of species richness and turnover
 
 <!--TODO-->
 
@@ -45,3 +55,5 @@ output: pdf_document
   - Furthering generality of the importance of EH
   - Conservation importance of heterogeneous environments
   - Differing environments of different hotspots = different management/priorities
+
+# Reading notes proper
