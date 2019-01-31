@@ -79,6 +79,8 @@ obs_Delta_rank <- ranked_Deltas[1]
 (p_value <- obs_Delta_rank / (999 + 1))
 ```
 
+The $P$-value, then, is the probability that two lists have items in the observed orders, compared to two random lists. This can then quantify how similar two lists orderings are relevant to chance.
+
 ```{r visualise-data, fig.cap='Visualising rank change. Here, each point is an observation, and points have been organised by rank and coloured by their category. Points are connected with lines if they belong to the same category.'}
 ggplot(comparison12, aes(factor(rank_set), factor(rank), col = category)) +
   geom_point(size = 3) +
