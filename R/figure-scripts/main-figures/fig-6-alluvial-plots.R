@@ -33,7 +33,7 @@ alluvial_plots <- foreach(model_name_ = model_names) %do% {
 names(alluvial_plots) <- str_replace_all(model_names, " ", "_")
 
 ggsave(
-  here("figures/fig-6-alluvial-plots.png"),
+  here("manuscript/figures/fig-6-alluvial-plots.png"),
   plot_grid(plotlist = alluvial_plots),
   width = 12, height = 6,
   dpi = 300

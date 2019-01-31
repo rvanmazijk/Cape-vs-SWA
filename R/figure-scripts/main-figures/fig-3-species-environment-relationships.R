@@ -346,7 +346,7 @@ screepieplots <- plot_grid(
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here("figures/fig-3-species-environment-relationships.png"),
+  here("manuscript/figures/fig-3-species-environment-relationships.png"),
   screepieplots,
   width = 10, height = 6,
   dpi = 300

@@ -94,7 +94,7 @@ quality_plot <- ggplot(summary_data, aes(value, fill = region, alpha = model_typ
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here("figures/fig-4-BRT-model-quality.png"),
+  here("manuscript/figures/fig-4-BRT-model-quality.png"),
   quality_plot,
   width = 8, height = 4,
   dpi = 300
