@@ -145,13 +145,13 @@ lighten <- function(col, factor = 1.33) {
 }
 var_colours2 <- c(
   # grey50
-  lighten(var_colours[[1]]),      darken(var_colours[[1]]),
+  var_colours[[1]], var_colours[[1]],
   # blue
-  lighten(var_colours[[2]], 1.5), lighten(var_colours[[2]]),
-  var_colours[[2]],               darken(var_colours[[2]]),
+  lighten(var_colours[[2]]), lighten(var_colours[[2]]),
+  darken(var_colours[[2]]),          darken(var_colours[[2]]),
   # brown
-  lighten(var_colours[[4]], 1.5), lighten(var_colours[[4]]),
-  var_colours[[4]],               darken(var_colours[[4]])
+  lighten(var_colours[[4]]), lighten(var_colours[[4]]),
+  darken(var_colours[[4]]),          darken(var_colours[[4]])
 )
 model_names <- c(
   "(a) Cape QDS richness", "(b) Cape HDS richness", "(c) Cape HDS turnover",
