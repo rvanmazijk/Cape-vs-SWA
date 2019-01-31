@@ -6,18 +6,13 @@
 
 library(here)
 source(here("R/setup.R"))
-library(callr)
-
-output_path <- here(
-  "outputs/species-environment-relationships/from-local-machines/"
-)
 
 # Import representative BRT-models ---------------------------------------------
 
 # FIXME:
 #source(here(
-#  "R/analyses/analyse-species-environment-relationships",
-#  "18-pre_copy-representative-BRTs-to-Ubuntu-machine.R"
+#  "R/figure-scripts/main-figures",
+#  "import-representative-BRTs-on-Ubuntu-machine.R"
 #))
 # (Run manually for now)
 
@@ -176,7 +171,7 @@ fits %<>%
     "rough",
     "absolute"
   ))
-ggplot(fits, aes(predictor_val, y)) +
+fit_plots <- ggplot(fits, aes(predictor_val, y)) +
   geom_line(
     aes(colour = predictor, linetype = var_type),
     size = 1
@@ -203,4 +198,9 @@ ggplot(fits, aes(predictor_val, y)) +
       size = 1
     )
   ))
-
+ggsave(
+  here("manuscript/figures/fig-7-environment-marginal-effects.png"),
+  fit_plots,
+  width = 9, height = 4.5,
+  dpi = 300
+)
