@@ -1,5 +1,7 @@
 ---
-title: "Choosing representative BRT-models from sets of replicates"
+title: |
+  | Choosing representative BRT-models
+  | from sets of replicates
 subtitle: |
   | Supplementary Information
   | Cape vs SWA publication
@@ -11,6 +13,8 @@ mainfont: Times New Roman  # for PDF
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
+
+A representative model from a set of replicates is one which falls within the 5% quantile bound about the set's median values for _all_ the various model-quality statistics ($nt$, $R^2_{pseudo}$, $R^2_{E-O}$). When there is more than one model that meets this criterion, one is chosen at random.
 
 ```{r example-helper-functions}
 is_between <- function(x, a, b) {
@@ -26,9 +30,9 @@ determine_bounds <- function(reps, bound_quantile = 0.05) {
 }
 filter_reps_by_bounds <- function(reps, bounds) {
   bounds %$% filter(reps,
-    nt          %>% is_between(nt_lwr,          nt_upr),
-    pseudo_r2   %>% is_between(pseudo_r2_lwr,   pseudo_r2_upr),
-    pred_obs_r2 %>% is_between(pred_obs_r2_lwr, pred_obs_r2_upr)
+    is_between(nt,          nt_lwr,          nt_upr),
+    is_between(pseudo_r2,   pseudo_r2_lwr,   pseudo_r2_upr),
+    is_between(pred_obs_r2, pred_obs_r2_lwr, pred_obs_r2_upr)
   )
 }
 ```
