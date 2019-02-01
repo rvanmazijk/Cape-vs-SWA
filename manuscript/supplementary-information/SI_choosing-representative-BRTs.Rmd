@@ -11,34 +11,21 @@ mainfont: Times New Roman  # for PDF
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 6, fig.height = 3
+)
+library(here)
+source(here("R/setup.R"))
 ```
 
-A representative model from a set of replicates is one which falls within the 5% quantile bound about the set's median values for _all_ the various model-quality statistics ($nt$, $R^2_{pseudo}$, $R^2_{E-O}$). When there is more than one model that meets this criterion, one is chosen at random.
-
-```{r example-helper-functions}
-is_between <- function(x, a, b) {
-  (x >= a) & (x <= b)
-}
-determine_bounds <- function(reps, bound_quantile = 0.05) {
-  columns <- c("nt", "pseudo_r2", "pred_obs_r2", "pred_obs_r2_exp")
-  summarise_at(reps, columns, funs(
-    # E.g. 0.025 + 0.025 = 5% quantile about the median
-    lwr = quantile(., (0.5 - (bound_quantile / 2))),
-    upr = quantile(., (0.5 + (bound_quantile / 2)))
-  ))
-}
-filter_reps_by_bounds <- function(reps, bounds) {
-  bounds %$% filter(reps,
-    is_between(nt,          nt_lwr,          nt_upr),
-    is_between(pseudo_r2,   pseudo_r2_lwr,   pseudo_r2_upr),
-    is_between(pred_obs_r2, pred_obs_r2_lwr, pred_obs_r2_upr)
-  )
-}
-```
-
-```{r example-do}
-reps <- read.csv(...)
-bounds <- determine_bounds(reps)
-filter_reps_by_bounds(reps, bounds)
+```{r example, fig.cap="Example distribution of some BRT-model quality metric. Vertical dashed lines represent the 5% bound about the median metric value. A representative boosted regression tree (BRT) model from a set of replicates was determined as one which falls within the 5% quantile bound about the set's median values for all the various model-quality statistics ($nt$, $R^2_{\\mathrm{pseudo}}$, $R^2_{\\mathrm{E-O}}$). When more than one model was found to meet this criterion, one was chosen at random."}
+set.seed(1234)
+dbn <- tibble(x = rnorm(1000))
+ggplot(dbn, aes(x)) + 
+  geom_histogram(colour = "black", fill = "white") + 
+  geom_vline(xintercept = qnorm(c(0.475, 0.525)), linetype = "dashed") +
+  xlab("Quality metric value")
 ```
