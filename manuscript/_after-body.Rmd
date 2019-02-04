@@ -113,14 +113,14 @@ knitr::include_graphics(here("manuscript/figures/fig-2-turnover.png"))
 knitr::include_graphics(here("manuscript/figures/fig-3-species-environment-relationships.png"))
 ```
 
-```{r environment-marginal-effects, fig.cap="(ref:environment-marginal-effects)"}
-knitr::include_graphics(here("manuscript/figures/fig-7-environment-marginal-effects.png"))
-```
-
 ```{r BRT-model-quality, fig.cap="(ref:BRT-model-quality)"}
 knitr::include_graphics(here("manuscript/figures/fig-4-BRT-model-quality.png"))
 ```
 
 ```{r BRT-variable-rank-concordance, out.width="15cm", fig.cap="(ref:BRT-variable-rank-concordance)"}
 knitr::include_graphics(here("manuscript/figures/fig-5-BRT-variable-rank-concordance.png"))
+```
+
+```{r environment-marginal-effects, fig.cap="(ref:environment-marginal-effects)"}
+knitr::include_graphics(here("manuscript/figures/fig-7-environment-marginal-effects.png"))
 ```

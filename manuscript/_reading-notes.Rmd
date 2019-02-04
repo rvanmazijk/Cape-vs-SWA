@@ -57,3 +57,57 @@ Types of EH        | Topography? Soil? | $\frac{1}{2}$
   - Differing environments of different hotspots = different management/priorities
 
 # Reading notes proper
+
+## Autocorrelation
+
+### Legendre 1993. _Ecology_
+
+- NB paper outlining how to identify, remedying and accounting for spatial autocorrelation in data
+- Notes the intuitive prevalance of of spatial structure in ecological datasets
+- "Spatial heterogeneity is then _functional_ in ecosystems, and not the results of some random, noise-generating process, [...]"
+
+## Biodiversity hotpots
+
+### Cook et al. 2015. _New Phytol._
+
+- NB summary of mediterranean region mechanisms and hypotheses (see my summary list below), with references for each
+- Ref for SWAFR delimitation
+- Found that steep climatic gradients contribute to SWAFR richness
+
+Hypotheses for high plant diversity in mediterranean regions[^1]:
+
+1. Diversification
+  a. **Speciation b/o ecological specialisation**
+  b. Low disperal rates
+  c. Low extinction rates (b/of climatic stability)
+  d. High speciation rates (e.g. b/o shorter generation times b/o fire)
+  e. Pollinator specialisation
+2. Co-existence
+  a. **Spatial heterogeneity**
+  b. Disturbance
+  c. Low competition b/o ecological/life-history specialisation
+3. Time for species accumulation
+  a. Climatic stability
+  b. Stable oligotrophic soils
+  c. Pre-adaptation for xerophylly/sclerophylly
+
+[^1]: Hypotheses/aspects that my study concerns are in bold
+
+### Noroozi et al. 2018. _Sci. Reports_
+
+"Both endemic richness and degree of endemicity were positively related to topographic complexity and elevational range."
+
+### Zanne et al. 2018. _New Phytol._
+
+"Nonlinear relationships between species and their environments are believed common in ecology and evolution, including during angiosperms’ rise to dominance."
+
+## Cape & SWA studies
+
+### Beard et al. 2000. _J. Biogeog._
+
+"The Italian mediterranean zone also contains about this number but in a smaller area, while the much smaller Cape Floristic Region has almost twice as many native species."
+
+"While those life forms are prominent in the Cape, that region differs in the great importance of herbaceous families and succulents, both of which are virtually absent from Western Australia."
+
+"It is suggested that the dominant factor shaping the South-West Province flora is the extreme poverty of the area’s soils, a feature that emphasizes sclerophylly, favours habitat specialization and ensures relatively many local endemic species."
+

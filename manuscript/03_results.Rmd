@@ -23,10 +23,82 @@ Vascular plant species richness and turnover are found to both be predicted prim
 
 BRT-models of species richness at the QDS-scale in each region seemed to generally performed best, as these models had generally fit the greatest number of trees ($nt$, Figure \@ref(fig:BRT-model-quality)a), and higher $R^2$-values (Figure \@ref(fig:BRT-model-quality)b,c). Notably, SWA models of species richness and turnover at the HDS-scale out-performed Cape models, while at the QDS-scale the Cape models performed as-well or better (Figure \@ref(fig:BRT-model-quality), Table \@ref(tab:BRT-quality-regions)).
 
+<!--### Ranking biologically important environmental axes-->
+
 Across our BRT-models of species richness and turnover, the sets of environmental variables important to model predictions differ substantially between the Cape and SWA, both in terms of which aspects of the environment were found to be biologically relevant and in terms of the relative importance of absolute and heterogeneity variables (Figure \@ref(fig:species-environment-relationships)). Most obviously, species richness and turnover in the Cape are predicted in majority by environmental heterogeneity, which is not the case in SWA (piecharts inset Figure \@ref(fig:species-environment-relationships)). Species richness and turnover in the Cape are predicted by a broad suite of environmental variables, with no individual variable contributing more than ca. 20% to any model prediction (Figure \@ref(fig:species-environment-relationships)a--c). The SWA models' predictions, however, are largely determined by MAP (Figure \@ref(fig:species-environment-relationships)d--f).
 
 Species richness at QDS-scales, and to a lesser extent at HDS-scales, in the Cape is predicted in large part by edaphic conditions (Figure \@ref(fig:species-environment-relationships)a,b). Contrastingly, richness in SWA across both scales is mostly predicted by MAP and other climatic variables (Figure \@ref(fig:species-environment-relationships)d,e). Interestingly, topograhphic heterogeneity did not feature as highly in contributing to Cape predictions as we expected (Figure \@ref(fig:species-environment-relationships)a--c).
 
+<!--TODO: where to put this para?-->It is important to consider variables not included formally in these BRT-models that were found to be collinear with some of the variables included (see SI). Here, we interpret the effects of variables excluded from the analyses as well as those included, as the forms and importances of these relationships are likely similar.
+
+In the Cape (c0ncerning clusters of collinear variables relevant to relevant to those retained during BRT-model fitting), MAP was included in the BRT-analyses as representative of a cluster of collinear variables consisting of itself, NDVI, surface T and soil C at the. Roughness in soil clay content represented itself, roughness in soil pH and roughness in NDVI. In SWA, MAP was select as representative of itself, NDVI and soil C.
+
+**In the equations below, collinear groups of variables are listed as predictors enclosed within braces.**
+ 
+**Cape:**
+
+\begin{align*}
+  \overline{S}_{\mathrm{QDS}} &\sim
+    pH + 
+    RSurfT + 
+    &&\begin{Bmatrix}
+      MAP \\ NDVI \\ SurfT \\ SoilC
+    \end{Bmatrix} +
+    \begin{Bmatrix}
+      RClay \\ RpH
+    \end{Bmatrix} +
+    RElev \\
+  S_{\mathrm{HDS}} &\sim
+    RSurfT + 
+    RElev +
+    RCEC +
+    &\begin{Bmatrix}
+      RMAP \\ RPDQ \\ RNDVI
+    \end{Bmatrix} +
+    &\begin{Bmatrix}
+      MAP \\ NDVI \\ SurfT \\ SoilC
+    \end{Bmatrix} \\
+  T_{\mathrm{HDS}} &\sim
+    RElev +
+    RSurfT + 
+    &\begin{Bmatrix}
+      RMAP \\ RPDQ \\ RNDVI
+    \end{Bmatrix} + &
+    Elev +
+    RCEC
+\end{align*}
+
+**SWA:**
+
+\begin{align*}
+  \overline{S}_{\mathrm{QDS}} &\sim
+    \begin{Bmatrix}
+      MAP \\ NDVI \\ SoilC
+    \end{Bmatrix} +
+    PDQ +
+    RMAP \\
+  S_{\mathrm{HDS}} &\sim 
+    \begin{Bmatrix}
+      MAP \\ NDVI \\ SoilC
+    \end{Bmatrix} +
+    CEC +
+    RElev \\
+  T_{\mathrm{HDS}} &\sim 
+    \begin{Bmatrix}
+      MAP \\ NDVI \\ SoilC
+    \end{Bmatrix} +
+    RElev +
+    CEC
+\end{align*}
+
 Our BRT-models of species richness at QDS- and HDS-scales, in both regions, rank environmental variables somewhat differently (Figure \@ref(fig:species-environment-relationships)a,b,d,e), though these differences are slightly less extreme than would be expected by chance ($P_{1-2} < 0.01$, Figure \@ref(fig:BRT-variable-rank-concordance)). This suggests a weak, but measurable, scale-dependence of the importance of different environmental variables' associations with species richness.
 
 It is noteworthy that BRT-models of species turnover (at HDS-scales) (Figure \@ref(fig:species-environment-relationships)c,f) rank variables similarly to models of richness at HDS-scales ($P_{2-3} \le 0.005$, Figure \@ref(fig:BRT-variable-rank-concordance)). This is likely due to the fact that species turnover covaries with species richness. As such, though the signs of relationships determining turnover may differ from those determining richness, the importances of different variables would be similar.
+
+<!--### Describing the forms of environmental relationships-->
+
+In addition to different variables being more strongly associated with species richness and turnover in the Cape compared to SWA (Figure \@ref(fig:species-environment-relationships)), the forms of those relationships vary (Figure \@ref(fig:environment-marginal-effects)). We found MAP, and roughness therein, to relate positively with species richness in both regions at both scales (Figure \@ref(fig:environment-marginal-effects)a,b,d,e). As MAP is collinear with NDVI and soil C in both regions (and surface T in the Cape), this can be interpreted as the signal of a biological productivity and resource availability associating with high levels of species richness.
+
+The positive association of heterogeneity variables in the Cape as opposed to SWA (Figure \@ref(fig:environment-marginal-effects)a,b vs d,e) concurs with their greater importance in BRT-model predictions (Figure \@ref(fig:species-environment-relationships)).
+
+The fact that species turnover ($T_{HDS} = \overline{J}_{QDS}$) in the Cape and SWA is largely predicted by the same variables as species richness, but with opposite signs to its relationships (Figure \@ref(fig:environment-marginal-effects)c,f), is indicative of the richness-dependence of the measure of floristic turnover used here (Jaccard distances) to quantify turnover at the HDS-scale. <!--TODO: expand-->
