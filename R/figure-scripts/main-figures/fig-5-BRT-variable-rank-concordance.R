@@ -261,7 +261,7 @@ contribs_rank_plot <-
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here("figures/fig-5-BRT-variable-rank-concordance.png"),
+  here("manuscript/figures/fig-5-BRT-variable-rank-concordance.png"),
   contribs_rank_plot,
   width = 6, height = 2.25,
   dpi = 300

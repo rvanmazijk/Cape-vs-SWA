@@ -132,7 +132,7 @@ final_plot <- plot_grid(
 )
 
 ggsave(
-  here("figures/fig-1-roughness.png"),
+  here("manuscript/figures/fig-1-roughness.png"),
   final_plot,
   width = 9, height = 6,
   dpi = 300
