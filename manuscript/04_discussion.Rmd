@@ -1,5 +1,19 @@
 # Discussion
 
+<!--## Main conclusions-->
+
+The Cape is generally more environmentally heterogenous than SWA, though SWA does possess edaphic heterogeneity as great as that in the Cape at coarse spatial scales.
+
+The Cape has greater levels of floristic turnover in vascular plant communities between grid-cells than SWA.
+
+Vascular plant species richness and turnover in the Cape is associated more strongly with environmental heterogeneity, and particularly edaphic heterogeneity, than species richness in SWA. In SWA, patterns of species richness and turnover are more strongly associated with climatic axes<!--NOTE: see Hopper (1979. _Ann. Rev. Ecol. Syst._) Re: the SWA escarpment and coastal band climate-->.
+
+The relative strengths and natures of associations of different environmental variables with patterns of species richness and turnover varies with spatial scale.
+
+Jaccard distances, as used here as $\overline{J}_{\mathrm{QDS}}$, are highly richness dependent. Although they represent the proportional floristic turnover between cells, this proportion itself is sensitive to the richness of sites under comparison. For example, the turnover between two low richness sites has is likely to be greater by chance, due to the absence or presence of a few species, than the turnover between two high richness sites, where the absence or presence of a few species does not greatly affect the turnover calculated.
+
+<!--## Old writing-->
+
 I have provided support for the hypothesis that the difference in plant species richness between the GCFR and SWAFR is accounted for by the fact that the GCFR is more abiotically heterogeneous than the SWAFR. As expected, the GCFR is shown to possess (i) a quantifiably more heterogeneous environment, and (ii) is heterogeneous at a finer spatial scale than the SWAFR. I have shown that vascular plant species richness (iii) can be explained in terms of environmental conditions, including environmental heterogeneity, in both the GCFR and SWAFR. Also, I have shown that (iv) the set of environmental axes that explain plant species richness, both absolute and as heterogeneity, differs between the GCFR and SWAFR. These findings contribute towards an understanding of the ecological conditions that facilitate species coexistence (and likely stimulate ecological speciation) in these two regions.
 
 These two regions present differentiable environmental spaces, each with heterogeneity varying across spatial scales. The clear separation of the regions' topographic features is as expected (Figures \ref{PC-boxplots}A, \ref{quant-sexy-plots-climate-et-al}). Indeed, topography seems to be the most striking distinction between the regions. The Cape region has been found previously to have the second highest median topographic heterogeneity of the five Mediterranean-climate regions [@Bradshaw2014]. The GCFR has a much wider range of scales exhibited in the heterogeneity across its environmental axes. Notably, each region has finer scale heterogeneity in some variables, and coarser scale in others---neither region is necessarily more fine or coarse than the other, as it depends on the variable concerned. BRT-models of species richness in both regions reveal species richness to depend on those environmental axes that differentiate the two regions (Figures \ref{richness_pred_obs}), \ref{BRT_contribs_summary}). The importance of variables is also shown to vary with spatial scale (Figure \ref{BRT_contribs_summary}), as previously suggested may be the case when modelling geographic patterns of biodiversity [@Baudena2015]. Indeed, as @Cowling1996 describes differing patterns of species richness across spatial scales, so do the predictors of those patterns vary with scale [@Hart2017].
