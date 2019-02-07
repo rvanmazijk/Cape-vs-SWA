@@ -84,7 +84,7 @@ Summary of drivers of patterns of species occurence:
 ### Cook et al. 2015. _New Phytol._
 
 - NB summary of mediterranean region mechanisms and hypotheses (see my summary list below), with references for each
-- Ref for SWAFR delimitation
+- NB ref for SWAFR delimitation
 - Found that steep climatic gradients contribute to SWAFR richness
 
 Hypotheses for high plant diversity in mediterranean regions[^1]:
@@ -106,6 +106,11 @@ Hypotheses for high plant diversity in mediterranean regions[^1]:
 
 [^1]: Hypotheses/aspects that my study concerns are in bold
 
+### Molina-Venegas et al. 2015. _J. Biogeog._
+
+- Plant communities show strong structuring compositionally, phylogenetically and functionally among elevational belts in the Western Mediterranean biodiversity hotspots.
+- Elevation + temperature correlations
+
 ### Noroozi et al. 2018. _Sci. Reports_
 
 "Both endemic richness and degree of endemicity were positively related to topographic complexity and elevational range."
@@ -123,6 +128,27 @@ Hypotheses for high plant diversity in mediterranean regions[^1]:
 "While those life forms are prominent in the Cape, that region differs in the great importance of herbaceous families and succulents, both of which are virtually absent from Western Australia."
 
 "It is suggested that the dominant factor shaping the South-West Province flora is the extreme poverty of the area’s soils, a feature that emphasizes sclerophylly, favours habitat specialization and ensures relatively many local endemic species."
+
+### Hopper 1979. _Ann. Rev. Ecol. Syst._
+
+- SWA has high levels of endemism (up to 80% of the flora)
+- "the rich flora of the southwest is all the more remarkable in view of its low relief and subdued topography [...] [in] contrast [to] other regions of the world rich in endemic species [which] have much higher and more extensive moun- tain systems, e.g. South Africa, California, Turkey and Greece, and some oceanic islands"
+  - The Great Plateau of Western Australia dominant (< 500m)
+  - Relatively high relief only along SWA southern and western margins (< 1000m)
+- Rainfall-based zonation:
+  1. "High-rainfall zone (800-1400 mm annual rainfall)"
+    - "forests and woodlands dominated by jarrah (Eucalyptus marginata), marri (E. calophylla), and karri (E. diversicolor)"
+    - "occupies the lower southwest and extends northwards along the Swan Coastal Plain and Darling Range to the vicinity of Perth"
+  2. "Transitional-rainfall zone (300-800 mm annual rainfall)"
+    - "woodlands, mallees and heathlands-reaches the west coast from Perth to Shark Bay, extends southeast inland of the forests through an area known locally as the Wheatbelt"
+    - "occurs as an elongate strip along the south coast eastward to Israelite Bay"
+  3. "Arid zone (less than 300 mm annual rainfall)"
+    - "Eucalyptus woodlands, Acacia shrublands, and Triodia hummock grassland"
+    - "occupies much of central Australia and is marginal to the area under review, extends along the western coast northwards of Shark Bay to the tropics and along the south coast from Israelite Bay eastward across the low open shrubland of the Nullarbor Plain to temperate South Australia"
+- Soil-based zonation:
+  - "Although there is an approximate parallel between vegetation structure and annual rainfall across these three zones, soil characteristics are of primary importance in determining local distribution patterns of vegetation" (many refs in here for this)
+
+Although
 
 ### Power et al. 2017. _J. Biogeog._
 
