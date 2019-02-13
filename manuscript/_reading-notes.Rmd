@@ -131,6 +131,8 @@ Hypotheses for high plant diversity in mediterranean regions[^1]:
 
 ### Hopper 1979. _Ann. Rev. Ecol. Syst._
 
+#### General zonations
+
 - SWA has high levels of endemism (up to 80% of the flora)
 - "the rich flora of the southwest is all the more remarkable in view of its low relief and subdued topography [...] [in] contrast [to] other regions of the world rich in endemic species [which] have much higher and more extensive moun- tain systems, e.g. South Africa, California, Turkey and Greece, and some oceanic islands"
   - The Great Plateau of Western Australia dominant (< 500m)
@@ -148,7 +150,44 @@ Hypotheses for high plant diversity in mediterranean regions[^1]:
 - Soil-based zonation:
   - "Although there is an approximate parallel between vegetation structure and annual rainfall across these three zones, soil characteristics are of primary importance in determining local distribution patterns of vegetation" (many refs in here for this)
 
-Although
+#### Patterns of richness
+
+- Notably rich flora of the transitional zone
+  - _Similar_ but not exactly the same as in my study
+  - But, this zone is bigger, and has roughly the number of species you'd expect given the size of a SWAFR sub-area
+  
+#### Landscape development in the Tertiary & Quaternary
+
+##### The Tertiary
+
+###### Eocene
+
+A "mosaic of numerous islands and peninsulas" during the "maximum marine intrusion onto the Australian continent during the Eocene"
+
+###### Post-Eocene geomorphologies
+
+These may have positively affected the diversity of habitats and speciation.
+
+1. Uplift of the Great Plateau and its peripheral sedimentary basins
+2. Lateritic soil development during the Oligocene--Miocene $\because$ of regular supply of seasonal rainfall $\rightarrow$ weathering/"differential erosion of lateritic landforms" $\rightarrow$ soil mosaic/soil texture varying regionally?
+
+$\rightarrow$ Soil and topography mosaic $\because$ of palaeo drainage patterns and rainfall.
+
+These patterns are most pronounced in the contemporary transitional rainfall zone. 
+
+##### The Quaternary
+
+Hypothesised aridification (similar to GCFR)
+
+#### Conclusions
+
+- Species richness of heathlands (transitional rainfall zone)
+- Due to relatuvely recent geological changes
+- High levels of endemism and richness b/o:
+  1. Tertiary-generated topographic and edaphic diversity of habitats persist to today
+  2. Marine, edaphic and/or climatic barriers isolating SWA
+  3. Lateritic soil formation $\rightarrow$ sclerophyllous flora (diverse)
+  4. Repeated climatic stress in the transitional rainfall zone
 
 ### Power et al. 2017. _J. Biogeog._
 
@@ -157,6 +196,11 @@ Although
 ### Richardson et al. 2001. _Nature_
 
 "diversification began approximately 7--8Myr ago, coincident with extensive aridification caused by changes in ocean currents. The recent origin of endemic species diversity in the Cape fora shows that large continental bursts of speciation can occur rapidly over timescales comparable to those previously associated with oceanic island radiations"
+
+### Shane et al. 2008. _Plant, Cell Enviro._
+
+- Species-specific respones of Proteaceae to soil P availability in the context of high levels of habitat turnover $\rightarrow$ likely a big part of maintaining high levels of coexistence in CFR (and SWA)
+- The importance of soils and root traits!
 
 ## Community assembly/ecology
 
@@ -172,3 +216,36 @@ Although
     2. Speciation & extinction
 
 My thoughts: as local determinism and history are both important, we should not expect our BRT-models to predict richness 100%---there are necessarily elements missing from our study and that's fine! We only wish to tackle the local determinism + 1/2 aspect of history: in-situ ecological speciation and facilitation of the arrival of diverse assemblages in a region through the existance of diverse habitats there---i.e. environmental heterogeneity.
+
+## Biome boundary studies
+
+### **Also see Power et al. (2017) above**
+
+### Pinto-Ledezma et al. 2018. _Front. Ecol. Evol._
+
+- "Understanding why species composition and diversity varies spatially and with environmental variation is a long standing theme in macroecological research"
+- "[Little] attention has been invested in explaining patterns of beta diversity"
+- Expected increasing $\beta$-diversity to associate with biome boundaries b/o:
+  - Contrasting environments (Re: my study)
+  - Differing patterns of climatic stability
+- Undertanding ecological and evolutionary process across spatial scales is very NB
+  - Analysing $\btea$-diversity aids this!
+  - The link between biodiversity and environmental heterogeneity is species turnover
+- $\beta$-diversity = species turnover (i.e. replacement) + nestedness
+- Few studies consider $\beta$!!
+- Link to Power et al. (2017):
+  - Niche conservatism evidence: habitat conservatism in lineages and rarity of biome transitions
+  - Cf. commonality of biome transitions over evolutionary time (often at boundaries)
+- $\beta$-diversity-nestedness is higher at high northern latitudes $\because$ of more geologically recent colonisation. Cf. mediterranean and deciduous forest biomes with lower nestedness $\because$ of greater species persistance and accumualtion.
+- They also found a lot of spatial autocorrelation among measures of diversity
+  - They interpret this as shared processes driving these patterns
+  - I note that if at any poiu\nt I draw comparisons or even regress $S$ and $T$ or $J$, I need to use spatially explicit models (e.g. GWR), $\because$ these measures are not intrinsically spatial, per se. Cf. environmental conditions and heterogeneity, which is in a sense more spatial, and thus captures the correlation struture when used a predictor of $S$ or $T$ or $J$, thus precluding the need for something like a GWR.
+
+## Environmental heterogeneity studies
+
+### Meynard et al. 2011. _Glob. Ecol. Biogeog._
+
+- This study partitions $\gamma$ into $\alpha$ and $\beta$, where $\beta$ is treated as the average turnover between localities and the broader region
+- SAR and partition regression analyses (SAR is very common in diversity studies!)
+- Results support extension of relationships between taxonomic $\gamma$, $\beta$ and $\alpha$ to their phylogenetic and functional equivalents
+- "[R]egions with higher vegetation productivity [...] and regions with a mosaic of landscape features [...] should [...] harbour higher diversity (Hawkins et al. 2003; Rahbek et al. 2007)"
