@@ -1,4 +1,4 @@
----
+﻿---
 title: "Reading notes"
 susbtitle: "Cape vs SWA publication"
 author: "Ruan van Mazijk"
@@ -239,9 +239,16 @@ My thoughts: as local determinism and history are both important, we should not 
 - $\beta$-diversity-nestedness is higher at high northern latitudes $\because$ of more geologically recent colonisation. Cf. mediterranean and deciduous forest biomes with lower nestedness $\because$ of greater species persistance and accumualtion.
 - They also found a lot of spatial autocorrelation among measures of diversity
   - They interpret this as shared processes driving these patterns
-  - I note that if at any poiu\nt I draw comparisons or even regress $S$ and $T$ or $J$, I need to use spatially explicit models (e.g. GWR), $\because$ these measures are not intrinsically spatial, per se. Cf. environmental conditions and heterogeneity, which is in a sense more spatial, and thus captures the correlation struture when used a predictor of $S$ or $T$ or $J$, thus precluding the need for something like a GWR.
+  - I note that if at any point I draw comparisons or even regress $S$ and $T$ or $J$, I need to use spatially explicit models (e.g. GWR), $\because$ these measures are not intrinsically spatial, per se. Cf. environmental conditions and heterogeneity, which is in a sense more spatial, and thus captures the correlation struture when used a predictor of $S$ or $T$ or $J$, thus precluding the need for something like a GWR.
 
 ## Environmental heterogeneity studies
+
+### Dufour et al. 2006. _Ecography_
+
+- "simple hypothesis that local species diversity is related to spatial environmental heterogeneity"
+- "change in underlying mechanisms" across scales, but EH was NB across all scales
+- They took into account spatial autocorrelation directly in their models...
+- The roles of plant-plant competition at small scales vs spatial configuration of habitats at larger scales
 
 ### Meynard et al. 2011. _Glob. Ecol. Biogeog._
 
@@ -249,3 +256,18 @@ My thoughts: as local determinism and history are both important, we should not 
 - SAR and partition regression analyses (SAR is very common in diversity studies!)
 - Results support extension of relationships between taxonomic $\gamma$, $\beta$ and $\alpha$ to their phylogenetic and functional equivalents
 - "[R]egions with higher vegetation productivity [...] and regions with a mosaic of landscape features [...] should [...] harbour higher diversity (Hawkins et al. 2003; Rahbek et al. 2007)"
+
+### Reed et al. 1993. _J. Veg. Sci._
+
+- The lack of generality and power from stuides considered at only one spatial scale
+- Recommendation to include more than one scale in ecological studies where-ever possible
+- Hypothesised that environmental axes that matter should be similar across scales
+- Competition at small scales vs environmental patterns at broader scales
+
+### Tamme et al. 2010. _J. Veg. Sci._
+
+- Large, regional scale heterogeneity (like that in my study) is positively associated with diversity (with reasons like those in my study)
+- "Spatial heterogeneity occurs simultaneously at different scales."
+- "$\beta$-scale processes", "$\beta$-scale patches", "$\beta$-niches"
+- Grain = scale at which heterogeneity is measured, or patch-size
+- They suggest grain as being most NB of scale things
