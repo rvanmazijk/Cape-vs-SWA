@@ -217,9 +217,12 @@ Hypothesised aridification (similar to GCFR)
 
 My thoughts: as local determinism and history are both important, we should not expect our BRT-models to predict richness 100%---there are necessarily elements missing from our study and that's fine! We only wish to tackle the local determinism + 1/2 aspect of history: in-situ ecological speciation and facilitation of the arrival of diverse assemblages in a region through the existance of diverse habitats there---i.e. environmental heterogeneity.
 
-## Biome boundary studies
+## Species-turnover/$\beta$-diversity/biome-boundary studies
 
-### **Also see Power et al. (2017) above**
+### Konig et al. 2017. _Glob. Ecol. Biogeog._
+
+- "Beta diversity describes two independent sources of composi-tional variation: the replacement or turnover component, reflecting the amount of change in species identities among study sites, and the nestedness component, reflecting the compositional variation owing to differences in species numbers (Lennonet al., 2001; Baselga, 2010; Legendre, 2014). We quantified compositional variation using the $\beta_{sim}$ index which is insensitive to richness differences and thus only quantifies the turnover component of beta diversity (Baselga, 2010)"
+- "The distance decay of similarity was stronger for mainland units than for islands. Among taxonomic and functional groups, the rate of decay was lowest for pteridophytes and highest for shrubs"
 
 ### Pinto-Ledezma et al. 2018. _Front. Ecol. Evol._
 
@@ -241,6 +244,8 @@ My thoughts: as local determinism and history are both important, we should not 
   - They interpret this as shared processes driving these patterns
   - I note that if at any point I draw comparisons or even regress $S$ and $T$ or $J$, I need to use spatially explicit models (e.g. GWR), $\because$ these measures are not intrinsically spatial, per se. Cf. environmental conditions and heterogeneity, which is in a sense more spatial, and thus captures the correlation struture when used a predictor of $S$ or $T$ or $J$, thus precluding the need for something like a GWR.
 
+### **Also see Power et al. (2017) above**
+
 ## Environmental heterogeneity studies
 
 ### Dufour et al. 2006. _Ecography_
@@ -249,6 +254,10 @@ My thoughts: as local determinism and history are both important, we should not 
 - "change in underlying mechanisms" across scales, but EH was NB across all scales
 - They took into account spatial autocorrelation directly in their models...
 - The roles of plant-plant competition at small scales vs spatial configuration of habitats at larger scales
+
+### Jimenez & Ricklefs. 2014. _Glob. Ecol. Biogeog._
+
+- Greater proportion of climatic variation in CFR explained by spatially explicit sinusoidal patterns of climatic heterogeneity than in SWA, which, conversely, is more explained by spatially explicit linear patterns of climatic heterogeneity
 
 ### Meynard et al. 2011. _Glob. Ecol. Biogeog._
 
@@ -271,3 +280,10 @@ My thoughts: as local determinism and history are both important, we should not 
 - "$\beta$-scale processes", "$\beta$-scale patches", "$\beta$-niches"
 - Grain = scale at which heterogeneity is measured, or patch-size
 - They suggest grain as being most NB of scale things
+
+## Phylogenetic $\beta$-diversity
+
+### Graham & Fine 2008. _Ecol. Letters_
+
+- Scale-dependence (spatial, taxonomic, temporal) of ecological and evolutionary questions
+- Phylogenetic turnover NB in this!
