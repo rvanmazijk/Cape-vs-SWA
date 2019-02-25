@@ -167,10 +167,14 @@ my_BRT_summary <- function(x) {
   )
 }
 
-get_zero_contrib_vars <- function(region_, response_) {
-  all_vars <- unique(model_contributions$var)
-  some_vars <- model_contributions %>%
-    filter(region == region_, response == response_) %>%
+get_zero_contrib_vars <- function(region_, response_, scale_) {
+  all_vars <- unique(contribution_data$var)
+  some_vars <- contribution_data %>%
+    filter(
+      region == region_,
+      response == response_,
+      scale == scale_
+    ) %>%
     select(var) %>%
     as_vector()
   all_vars[!(all_vars %in% some_vars)]
@@ -188,4 +192,32 @@ permute_wo_nas <- function(x) {
   # but keeps NAs in their starting positions
   x[!is.na(x)] %<>% permute_vector()
   x
+}
+
+# Importing all replicate or permuted BRT outputs ------------------------------
+# (quality statistics & variable contributions)
+
+import_replicate_outputs <- function(output_path,
+                                     output_pattern = c("summary", "contribs"),
+                                     output_slug = "_",
+                                     response_ = c("richness", "turnover"),
+                                     scale_ = c("QDS", "HDS")) {
+  output_paths <- list.files(
+    output_path,
+    pattern = output_pattern,
+    full.names = TRUE
+  )
+  map_dfr(output_paths, ~ .x %>%
+    read_csv() %>%
+    mutate(path = .x) %>%
+    mutate(
+      region = str_extract(path, "(GCFR|SWAFR)"),
+      response = response_,
+      scale = scale_,
+      rep = path %>%
+        str_extract(glue("{output_slug}\\d+\\.csv$")) %>%
+        str_remove(output_slug) %>%
+        str_remove("\\.csv")
+    )
+  )
 }

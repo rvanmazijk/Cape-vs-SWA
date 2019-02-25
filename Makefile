@@ -1,34 +1,94 @@
-INDEX = manuscript/index.Rmd
-BODY = $(wildcard manuscript/*_*.Rmd)
-AFTER_BODY_RMD = manuscript/_after-body.Rmd
-META = \
-	manuscript/_bookdown.yml \
-	manuscript/_output.yml \
-	manuscript/Cape-vs-SWA.bib \
-	manuscript/journal-of-biogeography.csl
-TABLES = $(wildcard manuscript/*.csv)
-FIGURES_R = $(wildcard R/figures/fig-*.R)
-OUTPUTS = $(wildcard outputs/*/*.csv)
+# Paths to work in -------------------------------------------------------------
+
+# Manuscript
+MS_PATH = manuscript
+SI_PATH = $(MS_PATH)/supplementary-information
+
+# Slides
+SLIDES_PATH = SAAB-AMA-SASSB-2019-talk
+
+# Input files (components) -----------------------------------------------------
+
+# Manuscript
+INDEX = $(MS_PATH)/index.Rmd
+BODY = $(wildcard $(MS_PATH)/*_*.Rmd)
+AFTER_BODY_RMD = $(MS_PATH)/_after-body.Rmd
+MS_META = \
+	$(MS_PATH)/_bookdown.yml \
+	$(MS_PATH)/_output.yml \
+	$(MS_PATH)/Cape-vs-SWA.bib \
+	$(MS_PATH)/journal-of-biogeography.csl \
+	$(MS_PATH)/style.sty
+TABLES = $(wildcard $(MS_PATH)/tables/*.csv)
+MS_FIGURES_PNG = $(wildcard $(MS_PATH)/figures/fig-*.png)
+AFTER_BODY_TEX = $(AFTER_BODY_RMD:.Rmd=.tex)
+SI_RMD = $(wildcard $(MS_PATH)/supplementary-information/SI_*.Rmd)
+OUTPUTS = $(wildcard outputs/*.csv)
 FUNCTIONS = $(wildcard R/functions/*.R)
 
-FIGURES_PNG = $(wildcard figures/fig-*.png)
-AFTER_BODY_TEX = $(AFTER_BODY_RMD:.Rmd=.tex)
-PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
+# Slides
+SLIDES_RMD = \
+	$(SLIDES_PATH)/RvanMazijk_environmental-heterogeneity-species-richness_slides.Rmd
+SLIDES_META = \
+	$(SLIDES_PATH)/_output.yml \
+	$(SLIDES_PATH)/style.sty
+SLIDES_FIGURES_PNG = $(wildcard $(SLIDES_PATH)/figures/fig-*.png)
 
-$(PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(META) $(OUTPUTS) $(FUNCTIONS)
-	Rscript -e "\
-	setwd('manuscript'); \
-	library(bookdown); \
+# Output files (goals) ---------------------------------------------------------
+
+# Manuscript
+MS_PDF = manuscript/_manuscript-pdf/Van-Mazijk-et-al_in-prep.pdf
+SI_PDF = $(SI_RMD:.Rmd=.pdf)
+
+# Slides
+SLIDES_PDF = $(SLIDES_RMD:.Rmd=.pdf)
+
+# Rscript commands -------------------------------------------------------------
+# (to use in recipes below)
+
+RENDER_MS = Rscript -e "\
+	setwd('manuscript');\
+	library(bookdown);\
 	render_book('$<', 'bookdown::pdf_document2')"
 
-$(AFTER_BODY_TEX): $(AFTER_BODY_RMD) $(TABLES) $(FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
-	Rscript -e "\
-	library(rmarkdown); \
+RENDER_AFTER_BODY_TEX = Rscript -e "\
+	library(rmarkdown);\
 	render('$<', 'latex_fragment')"
-	# NOTE: setwd("manuscript") not needed for fragments
 
-$(FIGURES_PNG): $(FIGURES_R)
-	Rscript -e "source('$<')"
+RENDER_SI = Rscript -e "\
+	library(purrr);\
+	library(rmarkdown);\
+	SI_Rmd <- list.files('$(SI_PATH)',\
+	  pattern = '.Rmd',\
+	  full.names = TRUE\
+	);\
+	map(SI_Rmd, render)"
 
-# Outputs that are needed by the ms and figures are re-generated
-# automatically by R within the ms and figure scripts
+RENDER_SLIDES = Rscript -e "\
+	library(rmarkdown);\
+	render('$<', 'beamer_presentation')"
+
+# Recipes (inputs -> outputs) --------------------------------------------------
+
+all: manuscript slides
+
+manuscript: $(MS_PDF) $(SI_PDF)
+
+slides: $(SLIDES_PDF)
+
+$(MS_PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(MS_META) $(OUTPUTS) $(FUNCTIONS)
+	$(RENDER_MS)
+
+$(AFTER_BODY_TEX): \
+	$(AFTER_BODY_RMD) $(TABLES) $(MS_FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
+	$(RENDER_AFTER_BODY_TEX)
+
+$(SI_PDF): $(SI_RMD)
+	$(RENDER_SI)
+
+$(SLIDES_PDF): $(SLIDES_RMD) $(SLIDES_META) $(SLIDES_FIGURES_PNG)
+	$(RENDER_SLIDES)
+
+# TODO:
+# $(MS_FIGURES_PNG): $(MS_FIGURES_R)
+# 	...

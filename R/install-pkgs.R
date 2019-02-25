@@ -3,7 +3,8 @@
 # Cape vs SWA publication
 # Ruan van Mazijk
 
-# Install necessary packages ------------------------------------------------------
+# Install necessary packages ---------------------------------------------------
+
 install.packages(
   dependencies = TRUE,
   lib = "~/R-3.5.1/lib/",
@@ -56,4 +57,3 @@ install.packages(
 
   )
 )
-

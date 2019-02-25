@@ -2,30 +2,96 @@
 
 ## Describing environmental heterogeneity across scales
 
-Across all variables considered, the Cape is more environmentally heterogeneous<!--(i.e. grid-cells are more different from each of their neighbouring cells)-->in the majority of pairwise comparisons of grid-cells ($CLES > 0.50$, Mann-Whitney $U$-test: $P < 0.05$, Figure \@ref(fig:roughness)). The Cape is thus more environmentally heterogeneous than SWA overall, but the degree to which it is more heterogeneous varies between environmental variables. These effects also vary somewhat with the spatial scale concerned. In some variables, the differentiation between Cape and SWA heterogeneity lessens at coarser scales (Figure \@ref(fig:roughness)b). Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the coarser 3QDS scale (Mann-Whitney $U$ tests, $P > 0.05$, Figure \@ref(fig:roughness)b).
+Across all variables considered, the Cape is more environmentally heterogeneous in the majority of pairwise comparisons of grid-cells ($CLES > 0.50$, Mann-Whitney $U$-test: $P < 0.05$, Figure \@ref(fig:roughness)). The degree to which the Cape is more heterogeneous varies between environmental variables. These effects also vary somewhat across spatial scales. In some variables, the differentiation between Cape and SWA heterogeneity lessens at coarser scales (Figure \@ref(fig:roughness)b). Indeed, when comparing the overall ranking and medians of Cape vs SWA roughness values for each variable, we only find non-significant differences at the 3QDS scale (Mann-Whitney $U$ tests, $P > 0.05$, Figure \@ref(fig:roughness)b).
 
-Most obviously, and as expected, topographic heterogeneity is greatest in the Cape (Figure \@ref(fig:roughness)). Though SWA has a slightly wider distribution of elevational roughness values at coarse scales (e.g. 3QDS) compared to fine scales (0.05º), so does the Cape. As such, the relative difference between the two regions seems invariant with spatial scale ($CLES \approx 0.95$, Figure \@ref(fig:roughness)b). This concurs with our expectations, as the Cape is mountainous and known to have steep elevational gradients [@ref], while SWA is much more topographically uniform.
+Most obviously, and as expected, topographic heterogeneity is generally greater in the Cape than in SWA (Figure \@ref(fig:roughness)). Though SWA has a slightly wider distribution of elevational roughness values at coarse scales compared to fine scales than the Cape, the relative difference in heterogeneity between the two regions seems invariant with spatial scale ($CLES \approx 0.95$, Figure \@ref(fig:roughness)b). This concurs with our expectations, as the Cape is mountainous and known to have steep elevational gradients [@ref], while SWA is much more topographically uniform. Elevational roughness differs between the two regions in the manner we expected, giving us more confidence in the environmental reality of our other results here.
 
-<!--
-Intuitively, then, elevation serves as a "benchmark test" for our comparisons of EH here, as it is well known and expected that the Cape should be more elevationally heterogeneous than SWA. Additionally, we can conclude that although there are greater extreme values of Cape elevational roughness at 0.05º x 0.05º scales, larger sections of land (i.e. 3QDS-cells) are are more different from each other in the Cape than the same sized sections are different from each other in SWA.
--->
-
-Climatic heterogeneity presents less differentiation between the Cape and SWA than elevational roughness (Figure \@ref(fig:roughness)a), though still the Cape predominates (Figure \@ref(fig:roughess)b). Notably, the difference between Cape and SWA mean annual rainfall and land surface temperature heterogeneity lessens when considered at coarse spatial scales (3QDS scale, Figure \@ref(roughness)b). Rainfall seasonality (PDQ), however, is similarly more heterogeneous in the Cape across all spatial scales considered.
-
-Biological productivity, as measured by NDVI, varies spatially to a similar extent in the Cape and SWA (i.e. is more similarly heterogeneous, $CLES < 0.60$, Figure \@ref(fig:roughness)).
-
-Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at coarser scales, particularly in terms of CEC and Soil C (Figure \@ref(fig:roughness)b).
+Climatic heterogeneity is less differentiated between the Cape and SWA than with topographic heterogeneity (Figure \@ref(fig:roughness)a), though the Cape is indeed more climatically heterogeneous (Figure \@ref(fig:roughess)b). Notably, the difference between roughness in mean annual rainfall (R MAP) and land surface temperature (R Surface T) in the Cape and SWA is less pronounced when considered at coarse spatial scales (Figure \@ref(roughness)b). At all spatial scales considered, roughness in rainfall seasonality (R PDQ), however, is equally more heterogeneous in the Cape than SWA. Biological productivity<!--TODO: expand what NDVI "means"-->, as measured by NDVI, is fairly similarly heterogeneous in the Cape and SWA ($CLES < 0.60$, Figure \@ref(fig:roughness)). Concerning edaphic variables, the Cape and SWA are similarly heterogeneous at coarser scales, particularly in terms of CEC and Soil C ($CLES \approx 0.50$, Figure \@ref(fig:roughness)b).
 
 ## Comparing species turnover in the two regions
 
-Following calculations of $\overline{J}_{QDS}$ and $T_{HDS}$ for each HDS-cell in each region, we used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, no matter how turnover is defined ($P < 0.0001$, Figure \@ref(fig:turnover)a,b).
+Following calculations of $\overline{J}_{\mathrm{QDS}}$ and $T_{\mathrm{HDS}}$<!--deine here again?--> for each HDS-cell in each region, we also used non-parametric Mann-Whitney $U$-tests to compare the distributions of values in the Cape and SWA. The Cape possesses generally greater floristic turnover than SWA, for both measures of turnover defined here ($P < 0.0001$, Figure \@ref(fig:turnover)a,b). $\overline{J}_{\mathrm{QDS}}$ measures the average pairwise Jaccard distance between QDS-cells in each HDS-cell. $T_{HDS}$, however, represents the inferred $\beta$ component of $\gamma$-diversity. As $\gamma$-diversity ($= S_{HDS}$) in the Cape has a greater $\beta$-diversity component ($= T_{HDS}$) than SWA, the complement is necessarily true: $\gamma$-diversity in the Cape has a lesser $\alpha$-diversity component ($= \overline{S}_{\mathrm{QDS}}$) than SWA.
 
 ## Predicting richness and turnover with environmental heterogeneity
 
-Vascular plant species richness and turnover are both predicted at least in-part, if not primarly, by environmental heterogeneity in both regions (Figure \@ref(fig:species-environment-relationships)). BRT-models of species richness in each region performed better than the turnover models (e.g. Cape richness vs turnover: $R_{pseudo}^2 = 0.30$ vs $0.19$, $R_{O-E}^2 = 0.74$ vs $0.71$, respectively; Figure \@ref(fig:species-environment-relationships)).
+We found vascular plant species richness and turnover both to be predicted primarily by environmental heterogeneity in the Cape (Figure \@ref(fig:species-environment-relationships)a--c) and at least in-part by environmental heterogeneity in SWA (Figure \@ref(fig:species-environment-relationships)d--f). Our six BRT-models performed adequately, and detected relationships between patterns of species occurrence and the environment that do not occur in the permuted datasets (Figures \@ref(fig:BRT-model-quality) and \@ref(fig:species-environment-relationships), Table \@ref(tab:BRT-quality-perms)).
 
-BRT-models found climatic variables to be of most importance when predicting species richness and turnover (Figure \@ref(fig:species-environment-relationships)). Elevational heterogeneity features prominently in all models too, ranking at worst the third most important predictor.
+BRT-models of species richness at the QDS-scale in each region generally performed best, as these models had fit greater number of trees ($nt$, Figure \@ref(fig:BRT-model-quality)a), and possess higher $R^2$-values (Figure \@ref(fig:BRT-model-quality)b,c). SWA models of species richness and turnover at the HDS-scale out-performed Cape models. At the QDS-scale, the Cape and SWA models performed equally well (Figure \@ref(fig:BRT-model-quality), Table \@ref(tab:BRT-quality-regions)).
 
-Concerning BRT-models of vascular plant species richness, the sets of environmental variables important to predicting species richness differ substantially between the Cape and SWA (Figure \@ref(fig:species-environment-relationships)a,b<!--TODO:fig-XX-Cape-minus-SWA.png-->). While species richness in the Cape is more strongly predicted by elevational, climatic and edaphic heterogeneity (Figure \@ref(fig:species-environment-relationships)a), richness in SWA is mostly predicted by absolute MAP (Figure \@ref(fig:species-environment-relationships)b). Indeed, Cape species richness is mostly predicted by environmental heterogeneity variables (Figure \@ref(fig:species-environment-relationships)a inset), while SWA species richness is mostly predicted by absolute environmental variables (Figure \@ref(fig:species-environment-relationships)b inset).
+<!--### Ranking biologically important environmental axes-->
 
-Concerning BRT-models of vascular plant species turnover, elevational heterogeneity is the most important predictor in both the Cape and SWA (Figure \@ref(fig:species-environment-relationships)c,d). Also in both regions land surface temperature heterogeneity is an important predictor, especially in SWA (Figure \@ref(fig:species-environment-relationships)c,d). Moreover, species turnover in SWA was found to only depend on two heterogeneity variables (Figure \@ref(fig:species-environment-relationships)d).
+Across our BRT-models of species richness and turnover, the importance of different environmental variables in predictions differed substantially between the Cape and SWA. Additonally, the relative importance of absolute and heterogeneity variables also differs between the Cape and SWA (Figure \@ref(fig:species-environment-relationships)). Most obviously, species richness and turnover in the Cape are predicted mostly by environmental heterogeneity, which is not the case in SWA (Figure \@ref(fig:species-environment-relationships)). Species richness and turnover in the Cape are predicted by a broad suite of environmental variables, with no individual variable contributing more than ca. 20% to any model prediction (Figure \@ref(fig:species-environment-relationships)a--c). The SWA models' predictions, however, are largely determined by MAP (Figure \@ref(fig:species-environment-relationships)d--f).
+
+Species richness at QDS-scales ($= \overline{S}_{\mathrm{QDS}}$), and to a lesser extent at HDS-scales ($= S_{\mathrm{HDS}}$), in the Cape is predicted largely edaphic conditions (Figure \@ref(fig:species-environment-relationships)a,b). Species richness in SWA, at both scales, is mostly predicted by MAP and other climatic variables (Figure \@ref(fig:species-environment-relationships)d,e). Interestingly, topograhphic heterogeneity did not feature as highly in contributing to Cape predictions as we expected (Figure \@ref(fig:species-environment-relationships)a--c).<!--TODO: metnion "unpacking" topography based on this result in discussion-->
+
+<!--TODO: where to put this para?-->It is important to consider variables not included formally in these BRT-models that were found to be collinear with some of the variables included (see SI). Here, we interpret the effects of variables excluded from the analyses as well as those included, as the forms and importances of these relationships are likely similar. In the Cape (concerning clusters of collinear variables relevant to relevant to those retained during BRT-model fitting), MAP was included in the BRT-analyses as representative of a cluster of collinear variables consisting of itself, NDVI, surface T and soil C at the. Roughness in soil clay content represented itself, roughness in soil pH and roughness in NDVI. In SWA, MAP was select as representative of itself, NDVI and soil C.
+
+**In the equations below, collinear groups of variables are listed as predictors enclosed within braces.**
+ 
+**Cape:**
+
+\begin{align*}
+  \overline{S}_{\mathrm{QDS}} &\sim
+    pH + 
+    RSurfT + 
+    &&\begin{Bmatrix}
+      MAP \\ NDVI \\ SurfT \\ SoilC
+    \end{Bmatrix} +
+    \begin{Bmatrix}
+      RClay \\ RpH
+    \end{Bmatrix} +
+    RElev \\
+  S_{\mathrm{HDS}} &\sim
+    RSurfT + 
+    RElev +
+    RCEC +
+    &\begin{Bmatrix}
+      RMAP \\ RPDQ \\ RNDVI
+    \end{Bmatrix} +
+    &\begin{Bmatrix}
+      MAP \\ NDVI \\ SurfT \\ SoilC
+    \end{Bmatrix} \\
+  T_{\mathrm{HDS}} &\sim
+    RElev +
+    RSurfT + 
+    &\begin{Bmatrix}
+      RMAP \\ RPDQ \\ RNDVI
+    \end{Bmatrix} + &
+    Elev +
+    RCEC
+\end{align*}
+
+**SWA:**
+
+\begin{align*}
+  \overline{S}_{\mathrm{QDS}} &\sim
+    \begin{Bmatrix}
+      MAP \\ NDVI \\ SoilC
+    \end{Bmatrix} +
+    PDQ +
+    RMAP \\
+  S_{\mathrm{HDS}} &\sim 
+    \begin{Bmatrix}
+      MAP \\ NDVI \\ SoilC
+    \end{Bmatrix} +
+    CEC +
+    RElev \\
+  T_{\mathrm{HDS}} &\sim 
+    \begin{Bmatrix}
+      MAP \\ NDVI \\ SoilC
+    \end{Bmatrix} +
+    RElev +
+    CEC
+\end{align*}
+
+Our BRT-models of species richness in both regions rank environmental variables somewhat differently at QDS- and HDS-scales (Figure \@ref(fig:species-environment-relationships)a,b,d,e). These differences in rankings are similar to those between two unrelated lists ($P_{1-2} > 0.05$, Figure \@ref(fig:BRT-variable-rank-concordance)). This suggests some scale-dependence of different environmental variables' associations with species richness.
+
+It is noteworthy that BRT-models of species turnover ($= \overline{J}_{\mathrm{QDS}}$, at HDS-scales) (Figure \@ref(fig:species-environment-relationships)c,f) rank variables similarly to models of richness at HDS-scales ($P_{2-3} \leq 0.005$, Figure \@ref(fig:BRT-variable-rank-concordance)). This is likely due to the fact that proportional floristic turnover covaries with species richness. As such, though the signs of relationships determining turnover may differ from those determining richness, the importances of different variables would be similar.<!--TODO: comment more formally on the index of floristic turnover used and its issues-->
+
+<!--### Describing the forms of environmental relationships-->
+
+In addition to different variables being more strongly associated with species richness and turnover in the Cape compared to SWA (Figure \@ref(fig:species-environment-relationships)), the forms of those relationships vary (Figure \@ref(fig:environment-marginal-effects)). We found MAP, and roughness therein, to relate positively with species richness in both regions at both scales (Figure \@ref(fig:environment-marginal-effects)a,b,d,e). As MAP is collinear with NDVI and soil C in both regions (and surface T in the Cape), this can be interpreted as the signal of a biological productivity and resource availability associating with high levels of species richness.<!--TODO: reword this para and mayber move to discussion?-->
+
+The positive association of heterogeneity variables in the Cape as opposed to SWA (Figure \@ref(fig:environment-marginal-effects)a,b vs d,e) concurs with their greater importance in BRT-model predictions (Figure \@ref(fig:species-environment-relationships)).
+
+The fact that species turnover ($T_{HDS} = \overline{J}_{QDS}$) in the Cape and SWA is largely predicted by the same variables as species richness, but with opposite signs to its relationships (Figure \@ref(fig:environment-marginal-effects)c,f), is indicative of the richness-dependence of the measure of floristic turnover used here (Jaccard distances) to quantify turnover at the HDS-scale. <!--TODO: expand-->
