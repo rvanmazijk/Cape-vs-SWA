@@ -4,8 +4,8 @@ subtitle: "**Running title:** Environmental heterogeneity and plant species rich
 author: "Ruan van Mazijk, Michael D. Cramer & G. Anthony Verboom"
 toc: false
 bibliography: Cape-vs-SWA.bib
-link-citations: true
 csl: journal-of-biogeography.csl
+link-citations: true
 mainfont: Times New Roman  # for PDF
 ---
 
