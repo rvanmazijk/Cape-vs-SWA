@@ -1,0 +1,22 @@
+$HDS_richness_BRT
+$HDS_richness_BRT$Cape
+[1] "failed"
+
+$HDS_richness_BRT$SWA
+[1] "failed"
+
+
+$mean_QDS_turnover_BRT
+$mean_QDS_turnover_BRT$Cape
+[1] "failed"
+
+$mean_QDS_turnover_BRT$SWA
+gbm::gbm(formula = y.data ~ ., distribution = as.character(family), 
+    data = x.data, weights = site.weights, var.monotone = var.monotone, 
+    n.trees = target.trees, interaction.depth = tree.complexity, 
+    shrinkage = learning.rate, bag.fraction = bag.fraction, verbose = FALSE)
+A gradient boosted model with gaussian loss function.
+650 iterations were performed.
+There were 3 predictors of which 3 had non-zero influence.
+
+

@@ -1,0 +1,386 @@
+Fitting HDS_richness (logged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 100 observations and 12 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  1.459 
+tolerance is fixed at  0.0015 
+ntrees resid. dev. 
+50    1.3253 
+now adding trees... 
+100   1.2226 
+150   1.1688 
+200   1.1312 
+250   1.107 
+300   1.0967 
+350   1.0967 
+400   1.0843 
+450   1.0798 
+500   1.083 
+550   1.0832 
+600   1.0873 
+650   1.0933 
+700   1.0982 
+750   1.1038 
+800   1.1076 
+850   1.1077 
+900   1.1102 
+950   1.1121 
+1000   1.1189 
+1050   1.1211 
+1100   1.1232 
+
+mean total deviance = 1.459 
+mean residual deviance = 0.301 
+ 
+estimated cv deviance = 1.08 ; se = 0.219 
+ 
+training data correlation = 0.91 
+cv correlation =  0.572 ; se = 0.089 
+ 
+elapsed time -  0.06 minutes 
+Fitting HDS_richness (logged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 100 observations and 10 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  1.459 
+tolerance is fixed at  0.0015 
+ntrees resid. dev. 
+50    1.2785 
+now adding trees... 
+100   1.1553 
+150   1.0954 
+200   1.0735 
+250   1.065 
+300   1.055 
+350   1.0579 
+400   1.0607 
+450   1.0616 
+500   1.071 
+550   1.0784 
+600   1.0755 
+650   1.0821 
+700   1.0888 
+750   1.097 
+800   1.0986 
+850   1.1045 
+900   1.1139 
+950   1.1164 
+1000   1.1266 
+
+mean total deviance = 1.459 
+mean residual deviance = 0.426 
+ 
+estimated cv deviance = 1.055 ; se = 0.145 
+ 
+training data correlation = 0.872 
+cv correlation =  0.509 ; se = 0.111 
+ 
+elapsed time -  0.05 minutes 
+Fitting HDS_richness (logged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 14 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  1.0058 
+tolerance is fixed at  0.001 
+ntrees resid. dev. 
+50    0.7504 
+now adding trees... 
+100   0.6182 
+150   0.5486 
+200   0.5061 
+250   0.4815 
+300   0.4724 
+350   0.4654 
+400   0.4617 
+450   0.4592 
+500   0.455 
+550   0.4539 
+600   0.4536 
+650   0.4522 
+700   0.4519 
+750   0.4528 
+800   0.4506 
+850   0.4482 
+900   0.4479 
+950   0.4493 
+1000   0.4486 
+1050   0.4485 
+1100   0.4489 
+1150   0.4488 
+1200   0.4505 
+1250   0.4524 
+1300   0.4527 
+1350   0.4531 
+1400   0.4535 
+1450   0.4536 
+
+mean total deviance = 1.006 
+mean residual deviance = 0.068 
+ 
+estimated cv deviance = 0.448 ; se = 0.087 
+ 
+training data correlation = 0.97 
+cv correlation =  0.761 ; se = 0.027 
+ 
+elapsed time -  0.13 minutes 
+Fitting HDS_richness (logged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 7 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  1.0058 
+tolerance is fixed at  0.001 
+ntrees resid. dev. 
+50    0.7502 
+now adding trees... 
+100   0.6281 
+150   0.568 
+200   0.5411 
+250   0.522 
+300   0.5128 
+350   0.5091 
+400   0.5078 
+450   0.5087 
+500   0.5092 
+550   0.5075 
+600   0.509 
+650   0.5119 
+700   0.5121 
+750   0.5121 
+800   0.5139 
+850   0.5146 
+900   0.5154 
+950   0.5148 
+1000   0.5154 
+1050   0.5172 
+1100   0.5181 
+1150   0.5187 
+
+mean total deviance = 1.006 
+mean residual deviance = 0.147 
+ 
+estimated cv deviance = 0.508 ; se = 0.099 
+ 
+training data correlation = 0.931 
+cv correlation =  0.749 ; se = 0.041 
+ 
+elapsed time -  0.05 minutes 
+Fitting mean_QDS_turnover (unlogged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 100 observations and 12 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0058 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.0054 
+now adding trees... 
+100   0.0052 
+150   0.0051 
+200   0.005 
+250   0.005 
+300   0.005 
+350   0.005 
+400   0.005 
+450   0.0051 
+500   0.0051 
+550   0.0052 
+600   0.0052 
+650   0.0053 
+700   0.0053 
+750   0.0053 
+800   0.0053 
+850   0.0053 
+900   0.0054 
+950   0.0054 
+1000   0.0054 
+
+mean total deviance = 0.006 
+mean residual deviance = 0.002 
+ 
+estimated cv deviance = 0.005 ; se = 0.001 
+ 
+training data correlation = 0.88 
+cv correlation =  0.431 ; se = 0.098 
+ 
+elapsed time -  0.05 minutes 
+Fitting mean_QDS_turnover (unlogged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 100 observations and 11 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0058 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.0054 
+now adding trees... 
+100   0.0051 
+150   0.005 
+200   0.0049 
+250   0.0048 
+300   0.0048 
+350   0.0048 
+400   0.0047 
+450   0.0047 
+500   0.0047 
+550   0.0047 
+600   0.0047 
+650   0.0047 
+700   0.0048 
+750   0.0048 
+800   0.0048 
+850   0.0048 
+900   0.0048 
+950   0.0048 
+1000   0.0049 
+1050   0.0049 
+1100   0.0049 
+
+mean total deviance = 0.006 
+mean residual deviance = 0.001 
+ 
+estimated cv deviance = 0.005 ; se = 0.001 
+ 
+training data correlation = 0.936 
+cv correlation =  0.371 ; se = 0.134 
+ 
+elapsed time -  0.05 minutes 
+Fitting mean_QDS_turnover (unlogged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 14 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0093 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.0069 
+now adding trees... 
+100   0.0059 
+150   0.0054 
+200   0.0052 
+250   0.0051 
+300   0.0051 
+350   0.0051 
+400   0.0051 
+450   0.0051 
+500   0.0051 
+550   0.0052 
+600   0.0052 
+650   0.0052 
+700   0.0052 
+750   0.0052 
+800   0.0052 
+850   0.0052 
+900   0.0052 
+950   0.0053 
+1000   0.0053 
+1050   0.0053 
+
+mean total deviance = 0.009 
+mean residual deviance = 0.002 
+ 
+estimated cv deviance = 0.005 ; se = 0.001 
+ 
+training data correlation = 0.905 
+cv correlation =  0.687 ; se = 0.052 
+ 
+elapsed time -  0.08 minutes 
+Fitting mean_QDS_turnover (unlogged) 
+with tc = 4, lr = 0.01, max.trees = 10000
+
+ 
+ GBM STEP - version 2.9 
+ 
+Performing cross-validation optimisation of a boosted regression tree model 
+for NA and using a family of gaussian 
+Using 168 observations and 9 predictors 
+creating 10 initial models of 50 trees 
+
+ folds are unstratified 
+total mean deviance =  0.0093 
+tolerance is fixed at  0 
+ntrees resid. dev. 
+50    0.007 
+now adding trees... 
+100   0.006 
+150   0.0055 
+200   0.0053 
+250   0.0052 
+300   0.0051 
+350   0.0051 
+400   0.0051 
+450   0.0051 
+500   0.0052 
+550   0.0052 
+600   0.0052 
+650   0.0052 
+700   0.0052 
+750   0.0053 
+800   0.0053 
+850   0.0053 
+900   0.0053 
+950   0.0054 
+1000   0.0054 
+1050   0.0054 
+
+mean total deviance = 0.009 
+mean residual deviance = 0.002 
+ 
+estimated cv deviance = 0.005 ; se = 0.001 
+ 
+training data correlation = 0.889 
+cv correlation =  0.706 ; se = 0.034 
+ 
+elapsed time -  0.05 minutes 

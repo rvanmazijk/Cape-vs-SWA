@@ -5,37 +5,26 @@ knitr::opts_chunk$set(
   eval = TRUE,
   echo = FALSE,
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  results="asis",
+  fig.pos="H",
+  out.width="18cm"
 )
 ```
 
 ```{r setup-tables, include=FALSE}
-
-source(here::here("setup.R"))
-
-# Table 1 ----------------------------------------------------------------------
-
-data_sources <- read_csv(here::here("manuscript/data-sources.csv"))
-
-# Table 2 ----------------------------------------------------------------------
-
-import_objects(
-  here::here("outputs/species-and-roughness/"),
-  ignore_RDS = TRUE
-)
-species_roughness_AICc <- bind_rows(.id = "region", list(
-  Cape = GCFR_models_AICc_all,
-  SWA = SWAFR_models_AICc_all,
-  Both = combined_models_AICc_all
-))
-
+library(here)
+source(here("R/setup.R"))
+data_sources <- read_csv(here("manuscript/tables/data-sources.csv"))
+quality_rank_data <- read_csv(here("manuscript/tables/quality-rank-data.csv"))
+quality_region_data <- read_csv(here("manuscript/tables/quality-region-data.csv"))
 ```
 
-\break
+\normalsize \break
 
 # Biosketches {-}
 
-**Ruan van Mazijk** is a Masters student broadly interested in comparative biology and ...<!--TODO: finish-->
+**Ruan van Mazijk** is a Masters student interested in phylogenetic systematics, macro-ecology, comparative work and plant functional ecology.
 
 **Michael D. Cramer** <!--TODO-->
 
@@ -45,11 +34,13 @@ species_roughness_AICc <- bind_rows(.id = "region", list(
 
 MDC and GAV conceived the study question, which RVM investigated under their supervision for his BSc Hons project. The analyses and programming work were largely devised by RVM, with input from the other authors, and was carried out by RVM. RVM wrote the first draft of the manuscript and all authors contributed equally thereafter.
 
-\break
+<!--[CRediT](https://casrai.org/credit/) breakdown: GAV and MDC conceptualised the study and methodology, and supervised RVM in carrying out the work as part of his BSc Hons project. RVM curated the data, developed and performed the analyses, implemented in R, and produced the figures documenting the results. RVM wrote the original manuscript, and GAV and MDC reviewed and edited subsequent drafts with RVM.-->
+
+\clearpage
 
 # Tables {-}
 
-```{r data-sources, results="asis"}
+```{r data-sources}
 options(knitr.kable.NA = "")
 data_sources %>%
   knitr::kable(
@@ -59,50 +50,77 @@ data_sources %>%
     caption = "(ref:data-sources)"
   ) %>%
   kableExtra::group_rows("Climatic variables", 4, 6) %>%
-  kableExtra::group_rows("Soil variables (SoilGrids250m)", 7, 10) %>%
+  kableExtra::group_rows("Soil variables", 7, 10) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-```{r species-roughness-AICc, results="asis"}
-species_roughness_AICc %>%
-  mutate(model = case_when(
-    model == "null"     ~ "Null",
-    model == "full"     ~ "All",
-    model == "abs"      ~ "Absolute variables",
-    model == "rough"    ~ "Roughness variables",
-    model == "elev"     ~ "Elevation",
-    model == "non_elev" ~ "Non-elevation variables",
-    model == "soil"     ~ "Soil variables",
-    model == "non_soil" ~ "Non-soil variables"
-  )) %>%
-  mutate_if(is.numeric, function(x) {
-    x %>%
-      round(digits = 2) %>%
-      format(digits = 3, nsmall = 2)
-  }) %>%
-  arrange(region, delta_AICc) %>%
-  select(-region) %>%
+```{r BRT-quality-perms}
+options(knitr.kable.NA = "")
+quality_rank_data %>%
+  select(scale, response, region, nt_rank:pred_obs_r2_rank) %>%
+  arrange(desc(scale), response, region) %>%
+  select(-scale, -response) %>%
+  mutate_if(is.numeric, funs(round(., 3))) %>%
   knitr::kable(
+    format = "latex",
     escape = FALSE,
     booktabs = TRUE,
-    align = c("l", "r", "r", "r"),
-    col.names = c("Model predictors", "$AICc$", "$\\Delta AICc$", "$w_{AICc}$"),
-    caption = "(ref:species-roughness-AICc)"
+    col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
+    caption = "(ref:BRT-quality-perms)"
   ) %>%
-  kableExtra::group_rows("Cape:", 1, 8) %>%
-  kableExtra::group_rows("SWA:", 9, 16) %>%
-  kableExtra::group_rows("Both:", 17, 24) %>%
+  kableExtra::group_rows("QDS-richness", 1, 2) %>%
+  kableExtra::group_rows("HDS-richness", 3, 4) %>%
+  kableExtra::group_rows("HDS-turnover", 5, 6) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-\break
+```{r BRT-quality-regions}
+options(knitr.kable.NA = "")
+quality_region_data %>%
+  select(scale, response, est_diff, quality_metric) %>%
+  filter(quality_metric != "pred_obs_r2_exp") %>%
+  spread(quality_metric, est_diff) %>%
+  arrange(desc(scale), response) %>%
+  mutate_if(is.numeric, funs(round(., 3))) %>%
+  mutate(model = glue("{scale}-{response}")) %>%
+  select(model, nt:pseudo_r2) %>%
+  knitr::kable(
+    format = "latex",
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c(
+      "Model", "$nt$", 
+      "$R^2_{\\mathrm{pseudo}}$", "$R^2_{\\mathrm{E-O}}$"
+    ),
+    caption = "(ref:BRT-quality-regions)"
+  ) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+\clearpage
 
 # Figures {-}
 
-```{r roughness, fig.pos="H", out.width="18cm", fig.cap="(ref:roughness)"}
-knitr::include_graphics(here::here("figures/fig-1-roughness.png"))
+```{r roughness, fig.cap="(ref:roughness)"}
+knitr::include_graphics(here("manuscript/figures/fig-1-roughness.png"))
 ```
 
-```{r turnover, fig.pos="H", out.width="12cm", fig.cap="(ref:turnover)"}
-knitr::include_graphics(here::here("figures/fig-2-turnover.png"))
+```{r turnover, out.width="12cm", fig.cap="(ref:turnover)"}
+knitr::include_graphics(here("manuscript/figures/fig-2-turnover.png"))
+```
+
+```{r species-environment-relationships, fig.cap="(ref:species-environment-relationships)"}
+knitr::include_graphics(here("manuscript/figures/fig-3-species-environment-relationships.png"))
+```
+
+```{r BRT-model-quality, fig.cap="(ref:BRT-model-quality)"}
+knitr::include_graphics(here("manuscript/figures/fig-4-BRT-model-quality.png"))
+```
+
+```{r BRT-variable-rank-concordance, out.width="15cm", fig.cap="(ref:BRT-variable-rank-concordance)"}
+knitr::include_graphics(here("manuscript/figures/fig-5-BRT-variable-rank-concordance.png"))
+```
+
+```{r environment-marginal-effects, fig.cap="(ref:environment-marginal-effects)"}
+knitr::include_graphics(here("manuscript/figures/fig-7-environment-marginal-effects.png"))
 ```

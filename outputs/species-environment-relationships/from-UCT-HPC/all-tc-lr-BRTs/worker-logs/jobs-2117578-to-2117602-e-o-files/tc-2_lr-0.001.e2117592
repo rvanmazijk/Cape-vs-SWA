@@ -1,0 +1,84 @@
+Loading required package: raster
+Loading required package: sp
+Loaded gbm 2.1.4
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 1.0367(0.1307)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8
+processing final dropping of variables with full data
+1-PDQ
+2-pH
+3-CEC
+4-Clay
+5-rough_Clay
+6-Elevation
+7-rough_MAP
+8-rough_CEC
+Simpler predictor set found
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.4873(0.0899)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-rough_CEC
+2-Clay
+3-Surface.T
+4-rough_Surface.T
+5-rough_PDQ
+6-pH
+7-PDQ
+8-rough_Soil.C
+9-Elevation
+10-rough_NDVI
+Simpler predictor set found
+Inital BRT-model re-fit to simplified predictor set
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 12 predictors and 100 observations 
+original deviance = 0.0052(0.0012)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10
+processing final dropping of variables with full data
+1-pH
+2-CEC
+3-PDQ
+4-Clay
+5-rough_Clay
+6-rough_Soil.C
+7-MAP
+8-rough_CEC
+9-rough_MAP
+10-rough_Surface.T
+Inital BRT-model fit
+gbm.simplify - version 2.9 
+simplifying gbm.step model for NA with 14 predictors and 168 observations 
+original deviance = 0.0054(0.001)
+variable removal will proceed until average change exceeds the original se
+creating initial models...
+dropping predictor: 1 2 3 4 5 6 7 8 9 10 11 12
+processing final dropping of variables with full data
+1-Clay
+2-Surface.T
+3-rough_PDQ
+4-pH
+5-rough_Surface.T
+6-rough_Soil.C
+7-rough_CEC
+8-PDQ
+9-rough_NDVI
+10-Elevation
+11-rough_MAP
+12-rough_Elevation
+Simpler predictor set found
+Inital BRT-model re-fit to simplified predictor set
+Error in { : task 2 failed - "task 1 failed - "subscript out of bounds""
+Calls: run_initial_BRTs -> %do% -> <Anonymous>
+Execution halted

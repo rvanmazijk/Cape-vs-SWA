@@ -1,0 +1,366 @@
+---
+title: Exploring different turnover metrics
+subtitle: Cape vs SWA publication
+author: Ruan van Mazijk
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+# Definitions of turnover &/or similarity
+
+Symbol           | Description                       | Derivation
+-----------------|-----------------------------------|------------
+$A$              | No. species in site 1             |
+$B$              | No. species in site 2             |
+$J$ ($\equiv a$) | No. species shared by sites 1 & 2 | $|A \cap B|$
+$b$              | No. species exclusively in site 1 | $|A - J|$
+$c$              | No. species exclusively in site 2 | $|B - J|$
+
+Table: A glossary
+
+Jaccard distance (`vegan::vegdist(x, method = "Jaccard")`)
+
+$$
+  \beta_{d_J} = \frac{A + B - 2J}{A + B - J}
+$$
+
+Jaccard similarity (Koleff et al. 2003. _J. Anim. Ecol._ 72(3))
+
+$$
+  \beta_{s_J} = \frac{a}{a + b + c}
+$$
+
+_(Note: $\beta_{d_J} = 1 - \beta_{s_J}$)_
+
+$\beta_{g}$ distance (Gaston et al. 2001 in Koleff et al. 2003. _J. Anim. Ecol._ 72(3))
+
+$$
+  \beta_{d_g} = \frac{b + c}{a + b + c}
+$$
+
+$\beta_{gl}$ distance (Lennon et al. 2001 _J. Anim. Ecol._ 70(6))
+
+$$
+  \beta_{d_{gl}} = \frac{2|b - c|}{2a + b + c}
+$$
+
+# Expressing turnover in common terms
+
+As above,
+
+$$
+  \beta_{d_J} = \frac{A + B - 2J}{A + B - J}
+$$
+
+Thus, given the indentities in Table 1,
+
+\begin{align*}
+  \beta_{d_g}
+    &= \frac{b + c}{a + b + c} \\
+    &= \frac{(A - J) + (B - J)}{J + (A - J) + (B - J)} \\
+    &= \frac{A + B - 2J}{A + B - J} \\
+  &\therefore \beta_{d_g} \equiv \beta_{d_J}
+\end{align*}
+
+And,
+
+\begin{align*}
+  \beta_{d_{gl}}
+    &= \frac{2|b - c|}{2a + b + c} \\
+    &= \frac{2|(A - J) - (B - J)|}{2J + (A - J) + (B - J)} \\
+    &= \frac{2|A - B|}{A + B} \\
+\end{align*}
+
+Also, Bray-Curtis distance (`vegan::vegdist(x, method = "bray")`) can be derived from Jaccard distance, as, given by `?vegan::vegdist`
+
+$$
+  \beta_{d_J} = \frac{2\beta_{d_{BC}}}{1 + \beta_{d_{BC}}}
+$$
+
+Thus,
+
+$$
+  \beta_{d_{BC}} = \frac{-\beta_{d_J}}{\beta_{d_J} - 2}
+$$
+
+Also, as in Table 1, let $b = |A - J|$ and $c = |B - J|$. Thus,
+
+\begin{align*}
+  |A \cup B|
+    &= a + b + c \\
+    & = J + |A - J| + |B - J| \\
+    & = A + B - J
+\end{align*}
+
+```{r J-vs-BC-simulation, eval=FALSE}
+J_dists <- seq(0, 1, 0.01)
+BC_dists <- (-J_dists) / (J_dists - 2)
+plot(
+  J_dists, BC_dists,
+  xlab = bquote(beta[d[J]]), 
+  ylab = bquote(beta[d[BC]])
+)
+```
+
+```{r many-metrics-simulation, eval=FALSE}
+data <- 
+  expand.grid(A = 1:10, B = 1:10, J = 0:10) %>%
+  filter(J <= A, J <= B) %>%
+  mutate(
+    total_richness = A + B - J,
+    no_shared      = J,
+    no_diff        = A + B - 2*J,
+    prop_shared    = J / (A + B - J),  # = 1 - J_dist
+    J_dist         = (A + B - 2*J) / (A + B - J),  # = "prop_diff"
+    BC_dist        = (-J_dist) / (J_dist - 2),
+    gl_dist        = (2*abs(A - B)) / (A + B)
+  ) %>%
+  gather(param, param_value, A, B, J) %>%
+  gather(metric, metric_value, -param, -param_value)
+ggplot(data, aes(param_value, metric_value)) +
+  geom_point(alpha = 0.25) +
+  facet_grid(metric ~ param, scales = "free_y")
+```
+
+\break
+
+# Is "the no. species not shared" the same as $\gamma - \alpha$?
+
+Symbol           | Description                                  | Derivation
+-----------------|----------------------------------------------|------------
+$\textbf{N}$     | A neighbourhood of $2 \leq n \leq 4$ cells   |
+$\delta$         | No. species not shared by sites              | $|A + B - 2J|$
+$\gamma$         | No. species across sites                     | $|A + B - J|$
+${\beta_{d_J}}_{ij}$ | Jaccard distance between cells $i$ & $j$ | See above
+$\overline{{\beta_{d_J}}_{ij}}$ |                      | $\frac{\delta}{\gamma}$
+$\overline{\alpha}$ | Mean no. species in sites                 |
+
+Table: Another glossary
+
+We wish to quantify the notion of the absolute number of species gained or lost when moving from one cell to another: $\delta$.
+
+The average no. species not shared $\overline{\delta}$ by cells $i$ and $j$ in neighbourhood $\textbf{N}$ can be derived using Jaccard distance ($\beta_{d_J}$) as follows
+
+$$
+  \overline{\delta_{ij}}(\textbf{N})_{\beta_{d_J}} = \gamma(\textbf{N}) \times \overline{{\beta_{d_J}}_{ij}}(\textbf{N})
+$$
+
+The difference between $\gamma$ and average $\alpha$ in $\textbf{N}$ is simply
+
+$$
+  \overline{\delta_{ij}}(\textbf{N})_{\alpha} = \gamma(\textbf{N}) - \overline{\alpha_i}(\textbf{N})
+$$
+
+Additional definitions are in Table 2.
+
+```{r def-functions}
+mean_M <- function(f) {
+  function(...) {
+    N <- c(...)
+    M <- vector(length = choose(length(N), 2))
+    k <- 1
+    while (k <= length(M)) {
+      for (i in seq_along(N)) {
+        for (j in seq_along(N)) {
+          if (j < i) {
+            M[k] <- f(N[[i]], N[[j]])
+            k <- k + 1
+          }
+        }
+      }
+    }
+    mean(M)
+  }
+}
+delta <- function(a, b) {
+  length(union(a, b)[!(union(a, b) %in% intersect(a, b))])
+  #abs(length(union(a, b)) - 2 * length(intersect(a, b)) - 1)
+}
+mean_delta <- mean_M(delta)
+gamma <- function(...) {
+  x <- unlist(...)
+  length(unique(x))
+} 
+beta_d_J <- function(a, b) {
+  delta(a, b) / gamma(a, b)
+}
+mean_beta_d_J <- mean_M(beta_d_J)
+alpha <- function(x) {
+  length(unique(x))
+}
+mean_alpha <- function(...) {
+  N <- c(...)
+  mean(map_int(N, ~ length(unique(.x))))
+}
+```
+
+```{r def-neighbourhood}
+N <- list(
+  cell1 = letters[1:10],
+  cell2 = letters[4:13],
+  cell3 = letters[7:16],
+  cell4 = letters[10:19]
+)
+deltas <- c(
+  delta(N$cell1, N$cell2),
+  delta(N$cell1, N$cell3),
+  delta(N$cell1, N$cell4),
+  delta(N$cell2, N$cell3),
+  delta(N$cell2, N$cell4),
+  delta(N$cell3, N$cell4)
+)
+beta_d_J_s <- c(
+  beta_d_J(N$cell1, N$cell2),
+  beta_d_J(N$cell1, N$cell3),
+  beta_d_J(N$cell1, N$cell4),
+  beta_d_J(N$cell2, N$cell3),
+  beta_d_J(N$cell2, N$cell4),
+  beta_d_J(N$cell3, N$cell4)
+)
+alphas <- map_int(N, alpha)
+```
+
+Suppose the neighbourhood $\textbf{N}$ has four constituent cells each with richness `r unique(alphas)`. If you were to walk from cell no. 1 to 2, then 2 to 3 and then 3 to 4, three of the species you encounter as you cross into a new cell will differ from those in the previous cell. Thus, $\gamma(\textbf{N}) = `r gamma(N)`$. 
+
+The pairwise $\delta$-values are `r paste(sort(deltas), collapse = ", ")`. The mean of these ($\overline{\delta_{ij}} = `r mean(deltas)`$, i.e. the no. species we gain or lose on average when moving between cells in $\textbf{N}$) is the true value we wish to encapsulate.
+
+From the $\textbf{N}$ we have set up, we can calculate $\overline{\delta_{ij}}(\textbf{N})_{\beta_{d_J}}$ and $\overline{\delta_{ij}}(\textbf{N})_{\alpha}$.
+
+The pairwise $\beta_{d_J}$-values are `r paste(sort(beta_d_J_s), collapse = ", ")`, meaning that $\overline{\delta_{ij}}(\textbf{N})_{\beta_{d_J}} = `r gamma(N)` \times `r mean(beta_d_J_s)` = `r gamma(N) * mean(beta_d_J_s)`$.
+
+We know the $\alpha$-values for $\textbf{N}$, so $\overline{\delta_{ij}}(\textbf{N})_{\alpha} = `r gamma(N)` - `r mean(alphas)` = `r gamma(N) - mean(alphas)`$.
+
+Although it can deviate from $\overline{\delta_{ij}}$, $\overline{\delta_{ij}}(N)_{\beta_{d_J}}$ seems a much better definition of the notion of $\delta$ as it necessarily results in $\overline{\beta_{ij}}(\textbf{N}) = \frac{\overline{\delta_{ij}}(\textbf{N})}{\gamma(\textbf{N})}$ (i.e. proportional turnover is the absolute no. species gained/lost relative to the neighbourhood richness), which is desirable.
+
+\break
+
+# Exploring $\overline{\delta_{ij}}(N)$'s components & definition
+
+$$
+  \textbf{N} 
+    = \{ \textbf{N}_i \} 
+    = \{ \textbf{a}, \textbf{b}, \textbf{c}, \textbf{d} \}
+$$
+
+Where
+
+\begin{align*}
+  \textbf{N}_i &\subset\ \textbf{N} \\
+  \textbf{N}_i &= \{ l, m, n, \dots \} \\
+  s.t. \ |\textbf{N}_i| &= \alpha_i
+\end{align*}
+
+$$
+  \gamma(\textbf{N}) = \left| \bigcup_{i=1}^n \textbf{N}_i \right|
+$$
+
+\begin{align*}
+  \delta_{ij} 
+    &= |A + B - 2J| \\
+    &= \left| 
+      |\textbf{N}_i \cup \textbf{N}_j| - 
+      2|\textbf{N}_i \cap \textbf{N}_j| 
+    \right|
+\end{align*}
+
+\begin{align*}
+  \textbf{D}
+    &= \delta(\textbf{N}) \\
+    &= \{ 
+      \delta_{12}, \delta_{13}, \dots, 
+      \delta_{ij}, \dots, 
+      \delta_{n,n-1} 
+    \} \\
+  & where \ 2 \leq n \leq 4 \ and \ j \neq i \\
+  s.t. \ p &= |\textbf{D}| = {n \choose 2}
+\end{align*}
+
+Thus, $\overline{\delta_{ij}}(\textbf{N})$ being the average $\textbf{D}_k$ for a neighbourhood $\textbf{N}$, we can define $\overline{\delta_{ij}}(\textbf{N})$ in two ways.
+
+\begin{align*}
+  \overline{\delta_{ij}}(\textbf{N}) 
+    &=
+      \frac{1}{p}
+      \sum_{i=1}^n \sum_{j=1}^{n, j \neq i} \delta_{ij} \\
+    &= 
+      \frac{1}{p} 
+      \sum_{k=1}^{p} \textbf{D}_k
+\end{align*}
+
+***
+
+# ASIDE: _WHAT ABOUT THIS??_
+
+$$
+  \overline{\delta_{ij}}(\textbf{N})_{??} = \overline{\alpha_i}(\textbf{N}) \times \overline{{\beta_{d_J}}_{ij}}(\textbf{N}) = `r mean(alphas)` \times `r mean(beta_d_J_s)` = `r mean(alphas) * mean(beta_d_J_s)`
+$$
+
+***
+
+\break
+
+# Is $\overline{\delta_{ij}}(\textbf{N})$ derivable from $\overline{{\beta_{d_J}}_{ij}}(\textbf{N})$ (truly)?
+
+We have two definitions of $\overline{\delta_{ij}}$.
+
+First, deriving it from first principles and raw calculations of $\textbf{D}$ from $\textbf{N}$:
+
+$$
+  \overline{\delta_{ij}}(\textbf{N})_{\textbf{D}} = \frac{1}{p} \sum_{k=1}^{p} \textbf{D}_k
+$$
+
+Second, deriving "after-the-fact" from averaged Jaccard distances
+
+$$
+  \overline{\delta_{ij}}(\textbf{N})_{J} = \gamma(\textbf{N}) \times \overline{{\beta_{d_J}}_{ij}}(\textbf{N})
+$$
+
+We wish to assess whether $\overline{\delta_{ij}}(\textbf{N})_{J}$ actually equals (or at least estimates) $\overline{\delta_{ij}}(\textbf{N})_{\textbf{D}}$.
+
+```{r, eval=FALSE}
+theoretical_gamma <- function(N) {
+  mean_alpha(N) + (mean_alpha(N) * mean_beta_d_J(N))
+}
+mean_alpha(N)
+gamma(N)
+theoretical_gamma(N)
+```
+
+```{r, eval=FALSE}
+make_N <- function(n, alpha, beta) {
+  shift <- function(x) {
+    ceiling(x + (alpha * beta))
+  }
+  N <- vector("list", length = n)
+  sp1 <- 1
+  for (i in seq_along(N)) {
+    N[[i]] <- sp1:alpha
+    sp1 <- shift(sp1)
+    alpha <- shift(alpha)
+  }
+  N
+}
+```
+
+```{r, eval=FALSE}
+data <- map_df(.x = 1:10, function(alpha) {
+  map_df(.x = seq(0, 1, 0.1), function(beta) {
+    tibble(
+      alpha, beta, 
+      gamma = gamma(make_N(4, alpha, beta)),
+      theoretical_gamma = theoretical_gamma(make_N(4, alpha, beta))
+    )
+  })
+})
+data %>%
+  gather(param, param_value, alpha, beta) %>%
+  gather(est, est_value, gamma, theoretical_gamma) %>%
+  ggplot(aes(param_value, est_value)) +
+    geom_point() +
+    facet_grid(est ~ param, scales = "free_x")
+```

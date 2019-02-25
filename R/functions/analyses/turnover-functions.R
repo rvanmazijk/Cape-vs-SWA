@@ -1,19 +1,31 @@
-# QDS -> HDS by dropping the last letter
 qdgc2hdgc <- function(x) {
+  # QDS -> HDS by dropping the last letter
   substr(x, 1, nchar(x) - 1)
+}
+get_geocodes <- function(flora_points, QDS_polygon) {
+  flora_points@data$qdgc <- over(flora_points, QDS_polygon)[[1]]
+  flora_points@data$hdgc <- map_chr(flora_points@data$qdgc, ~
+    .x %>%
+      as.character() %>%
+      qdgc2hdgc()
+  )
+  flora_points
 }
 
 calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
                                    region_name = NULL, date = NULL) {
-
+  # Master function to calculate richness and turnover metrics in grid cells
+  # using a SpatialPointsDataFrame of species occurrences
   stopifnot(exprs = {
     class(flora_points) == "SpatialPointsDataFrame"
     class(QDS_polygon) == "SpatialPolygonsDataFrame"
   })
 
-  # Get the QDS and HDS geocodes
-  flora_points@data$qdgc <- over(flora_points, QDS_polygon[, "qdgc"])[[1]]
-  flora_points@data$hdgc <- map_chr(flora_points@data$qdgc, qdgc2hdgc)
+  # Get the QDS and HDS geocodes -----------------------------------------------
+
+  flora_points %<>% get_geocodes(QDS_polygon[, "qdgc"])
+
+  # Calculate average Jaccard distance betw QDS in each HDS --------------------
 
   # Init empty columns for data to come
   flora_points@data$HDS_richness <- NA
@@ -21,11 +33,12 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
   flora_points@data$mean_QDS_richness <- NA
   flora_points@data$mean_QDS_turnover <- NA
 
-  pb <- txtProgressBar(0, length(levels(factor(flora_points$hdgc))))
-  for (i in seq_along(levels(factor(flora_points$hdgc)))) {
+  HDS_cells <- levels(factor(flora_points$hdgc))
+  pb <- txtProgressBar(0, length(HDS_cells))
+  for (i in seq_along(HDS_cells)) {
 
     # Current HDS geocode name
-    current_HDS <- levels(factor(flora_points$hdgc))[[i]]
+    current_HDS <- HDS_cells[[i]]
 
     # Filter to only those QDS w/i the current HDS
     spp_in_hdgc_by_qdgc <- flora_points@data %>%
@@ -58,6 +71,8 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
       }
     }
 
+    # Output mean Jaccard + richness measures ----------------------------------
+
     # Output the summary data to the right rows in the spatial points data frame
     flora_points$HDS_richness[flora_points$hdgc == current_HDS] <-
       community_matrix %>%
@@ -83,7 +98,8 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
   }
   close(pb)
 
-  # Save to disc
+  # Save to disc ---------------------------------------------------------------
+
   if (is.null(date)) {
     date <- Sys.Date()
   }
@@ -102,5 +118,4 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
   }
 
   flora_points
-
 }

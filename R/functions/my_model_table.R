@@ -14,7 +14,6 @@
 my_model_table <- function(model_tidy = NULL, model = NULL,
                            tidy_terms = c("Intercept"),
                            AIC_table = NULL) {
-
   if (!is.null(model_tidy)) {
     message("Using tidied model data-frame")
   } else if (!is.null(model)) {
@@ -22,7 +21,6 @@ my_model_table <- function(model_tidy = NULL, model = NULL,
   } else {
     stop("Please provide either a model object or tidied model data-frame")
   }
-
   stopifnot(length(tidy_terms) == length(model_tidy$term))
 
   if (!is.null(AIC_table)) {
@@ -53,5 +51,4 @@ my_model_table <- function(model_tidy = NULL, model = NULL,
     model_table = model_table,
     deltaAIC = deltaAIC_tidy
   )
-
 }

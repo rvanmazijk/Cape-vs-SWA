@@ -1,0 +1,406 @@
+Last login: Wed Oct  3 18:57:30 on ttys000
+Ruans-MacBook-Air:~ ruanvanmazijk$ cd Google\ Drive/
+Ruans-MacBook-Air:Google Drive ruanvanmazijk$ Rscript -e "rmarkdown::render('UCT-HPC-guide.Rmd')"
+Error in tools::file_path_as_absolute(input) : 
+  file 'UCT-HPC-guide.Rmd' does not exist
+Calls: <Anonymous> -> setwd -> dirname -> <Anonymous>
+In addition: Warning message:
+In normalizePath(path, winslash = winslash, mustWork = mustWork) :
+  path[1]="UCT-HPC-guide.Rmd": No such file or directory
+Execution halted
+Ruans-MacBook-Air:Google Drive ruanvanmazijk$ Rscript -e "rmarkdown::render('work/UCT-HPC-guide.Rmd')"
+
+
+processing file: UCT-HPC-guide.Rmd
+  |...                                                              |   4%
+   inline R code fragments
+
+  |......                                                           |   9%
+label: setup (with options) 
+List of 1
+ $ include: logi FALSE
+
+  |........                                                         |  13%
+  ordinary text without R code
+
+  |...........                                                      |  17%
+label: unnamed-chunk-1 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |..............                                                   |  22%
+  ordinary text without R code
+
+  |.................                                                |  26%
+label: unnamed-chunk-2 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |....................                                             |  30%
+  ordinary text without R code
+
+  |.......................                                          |  35%
+label: unnamed-chunk-3 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |.........................                                        |  39%
+  ordinary text without R code
+
+  |............................                                     |  43%
+label: unnamed-chunk-4 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |...............................                                  |  48%
+  ordinary text without R code
+
+  |..................................                               |  52%
+label: unnamed-chunk-5 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |.....................................                            |  57%
+  ordinary text without R code
+
+  |........................................                         |  61%
+label: unnamed-chunk-6 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |..........................................                       |  65%
+  ordinary text without R code
+
+  |.............................................                    |  70%
+label: unnamed-chunk-7 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |................................................                 |  74%
+  ordinary text without R code
+
+  |...................................................              |  78%
+label: unnamed-chunk-8 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |......................................................           |  83%
+  ordinary text without R code
+
+  |.........................................................        |  87%
+label: unnamed-chunk-9 (with options) 
+List of 1
+ $ engine: chr "sh"
+
+  |...........................................................      |  91%
+  ordinary text without R code
+
+  |..............................................................   |  96%
+label: unnamed-chunk-10
+  |.................................................................| 100%
+  ordinary text without R code
+
+
+output file: UCT-HPC-guide.knit.md
+
+/usr/local/bin/pandoc +RTS -K512m -RTS UCT-HPC-guide.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output UCT-HPC-guide.tex --template /Library/Frameworks/R.framework/Versions/3.5/Resources/library/rmarkdown/rmd/latex/default-1.17.0.2.tex --highlight-style tango --pdf-engine pdflatex --variable graphics=yes --variable 'geometry:margin=1in' 
+
+Output created: UCT-HPC-guide.pdf
+Ruans-MacBook-Air:Google Drive ruanvanmazijk$ open work/UCT-HPC-guide.pdf
+Ruans-MacBook-Air:Google Drive ruanvanmazijk$ cd ..
+Ruans-MacBook-Air:~ ruanvanmazijk$ scp vmzrua001@hexdata.uct.ac.za:/home/vmzrua001/fit-final-*.RDS
+usage: scp [-346BCpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
+           [-l limit] [-o ssh_option] [-P port] [-S program] source ... target
+Ruans-MacBook-Air:~ ruanvanmazijk$ scp vmzrua001@hexdata.uct.ac.za:/home/vmzrua001/fit-final-*.RDS /
+Password: 
+scp: /home/vmzrua001/fit-final-*.RDS: No such file or directory
+Ruans-MacBook-Air:~ ruanvanmazijk$ scp vmzrua001@hexdata.uct.ac.za:/home/vmzrua001/fit-final-GCFR-richness.RDS .
+Password: 
+scp: /home/vmzrua001/fit-final-GCFR-richness.RDS: No such file or directory
+Ruans-MacBook-Air:~ ruanvanmazijk$ scp vmzrua001@hexdata.uct.ac.za:/home/vmzrua001/final-BRT_GCFR_richness_BRTs.RDS .
+Password: 
+final-BRT_GCFR_richness_BRTs.RDS                                                                                                                100% 9063KB   6.9MB/s   00:01    
+Ruans-MacBook-Air:~ ruanvanmazijk$ scp vmzrua001@hexdata.uct.ac.za:/home/vmzrua001/final-BRT_{GC,SWA}FR_{richness,turnover}_BRTs.RDS .
+Password: 
+final-BRT_GCFR_richness_BRTs.RDS                                                                                                                100% 9063KB   6.2MB/s   00:01    
+Password: 
+final-BRT_GCFR_turnover_BRTs.RDS                                                                                                                100% 7715KB   7.5MB/s   00:01    
+Password: 
+final-BRT_SWAFR_richness_BRTs.RDS                                                                                                               100% 9891KB   7.5MB/s   00:01    
+Password: 
+final-BRT_SWAFR_turnover_BRTs.RDS                                                                                                               100% 6285KB   8.0MB/s   00:00    
+Ruans-MacBook-Air:~ ruanvanmazijk$ R
+
+R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> list.files()
+ [1] "Applications"                      "Cape-vs-SWA"                      
+ [3] "Cape-vs-SWA_hpc-bare-minimum"      "Desktop"                          
+ [5] "Documents"                         "Downloads"                        
+ [7] "Dropbox"                           "final-BRT_GCFR_richness_BRTs.RDS" 
+ [9] "final-BRT_GCFR_turnover_BRTs.RDS"  "final-BRT_SWAFR_richness_BRTs.RDS"
+[11] "final-BRT_SWAFR_turnover_BRTs.RDS" "Google Drive"                     
+[13] "Library"                           "Mendeley Desktop"                 
+[15] "Movies"                            "Music"                            
+[17] "node_modules"                      "package-lock.json"                
+[19] "Pictures"                          "Public"                           
+[21] "PycharmProjects"                   "Sites"                            
+> library(dismo)
+Loading required package: raster
+Loading required package: sp
+> library(gbm)
+Error in library(gbm) : there is no package called ‘gbm’
+> library(readr)
+> cape_richness <- read_rds("final-BRT_GCFR_richness_BRTs.RDS")
+> summary(cape_richness)
+                     Length Class      Mode     
+initF                   1   -none-     numeric  
+fit                   100   -none-     numeric  
+train.error          4900   -none-     numeric  
+valid.error          4900   -none-     numeric  
+oobag.improve        4900   -none-     numeric  
+trees                4900   -none-     list     
+c.splits                0   -none-     list     
+bag.fraction            1   -none-     numeric  
+distribution            1   -none-     list     
+interaction.depth       1   -none-     numeric  
+n.minobsinnode          1   -none-     numeric  
+num.classes             1   -none-     numeric  
+n.trees                 1   -none-     numeric  
+nTrain                  1   -none-     numeric  
+train.fraction          1   -none-     numeric  
+response.name           1   -none-     character
+shrinkage               1   -none-     numeric  
+var.levels             11   -none-     list     
+var.monotone           11   -none-     numeric  
+var.names              11   -none-     character
+var.type               11   -none-     numeric  
+verbose                 1   -none-     logical  
+data                    6   -none-     list     
+Terms                   3   terms      call     
+cv.folds                1   -none-     numeric  
+call                   11   -none-     call     
+m                       6   -none-     call     
+gbm.call               21   -none-     list     
+fitted                100   -none-     numeric  
+fitted.vars           100   -none-     numeric  
+residuals             100   -none-     numeric  
+contributions           2   data.frame list     
+self.statistics         7   -none-     list     
+cv.statistics           8   -none-     list     
+weights               100   -none-     numeric  
+trees.fitted           98   -none-     numeric  
+training.loss.values   98   -none-     numeric  
+cv.values              98   -none-     numeric  
+cv.loss.ses            98   -none-     numeric  
+cv.loss.matrix        980   -none-     numeric  
+cv.roc.matrix          10   -none-     numeric  
+> class(cape_richness)
+[1] "gbm"
+> class(cape_richness) <- "gbm.object"
+> summary(cape_richness)
+                     Length Class      Mode     
+initF                   1   -none-     numeric  
+fit                   100   -none-     numeric  
+train.error          4900   -none-     numeric  
+valid.error          4900   -none-     numeric  
+oobag.improve        4900   -none-     numeric  
+trees                4900   -none-     list     
+c.splits                0   -none-     list     
+bag.fraction            1   -none-     numeric  
+distribution            1   -none-     list     
+interaction.depth       1   -none-     numeric  
+n.minobsinnode          1   -none-     numeric  
+num.classes             1   -none-     numeric  
+n.trees                 1   -none-     numeric  
+nTrain                  1   -none-     numeric  
+train.fraction          1   -none-     numeric  
+response.name           1   -none-     character
+shrinkage               1   -none-     numeric  
+var.levels             11   -none-     list     
+var.monotone           11   -none-     numeric  
+var.names              11   -none-     character
+var.type               11   -none-     numeric  
+verbose                 1   -none-     logical  
+data                    6   -none-     list     
+Terms                   3   terms      call     
+cv.folds                1   -none-     numeric  
+call                   11   -none-     call     
+m                       6   -none-     call     
+gbm.call               21   -none-     list     
+fitted                100   -none-     numeric  
+fitted.vars           100   -none-     numeric  
+residuals             100   -none-     numeric  
+contributions           2   data.frame list     
+self.statistics         7   -none-     list     
+cv.statistics           8   -none-     list     
+weights               100   -none-     numeric  
+trees.fitted           98   -none-     numeric  
+training.loss.values   98   -none-     numeric  
+cv.values              98   -none-     numeric  
+cv.loss.ses            98   -none-     numeric  
+cv.loss.matrix        980   -none-     numeric  
+cv.roc.matrix          10   -none-     numeric  
+> source("Cape-vs-SWA_hpc-bare-minimum/R/functions/analyses/species-environment-relationship-functions.R")
+> pseudo_r2(cape_richness)
+Error in pseudo_r2(cape_richness) : class(x) == "gbm" is not TRUE
+> class(cape_richness) <- "gbm"
+> pseudo_r2(cape_richness)
+Error in x %$% { : could not find function "%$%"
+> library(tidyverse)
+── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+✔ ggplot2 2.2.1     ✔ purrr   0.2.5
+✔ tibble  1.4.2     ✔ dplyr   0.7.5
+✔ tidyr   0.8.1     ✔ stringr 1.3.1
+✔ ggplot2 2.2.1     ✔ forcats 0.3.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ tidyr::extract() masks raster::extract()
+✖ dplyr::filter()  masks stats::filter()
+✖ dplyr::lag()     masks stats::lag()
+✖ dplyr::select()  masks raster::select()
+> pseudo_r2(cape_richness)
+Error in x %$% { : could not find function "%$%"
+> library(magrittr)
+
+Attaching package: ‘magrittr’
+
+The following object is masked from ‘package:purrr’:
+
+    set_names
+
+The following object is masked from ‘package:tidyr’:
+
+    extract
+
+The following object is masked from ‘package:raster’:
+
+    extract
+
+> pseudo_r2(cape_richness)
+[1] 0.3026823
+> swa_richness <- read_rds("final-BRT_SWAFR_richness_BRTs.RDS")
+> pseudo_r2(swa_richness)
+[1] 0.5247337
+> swa_turnover <- read_rds("final-BRT_SWAFR_turnover_BRTs.RDS")
+> pseudo_r2(swa_turnover)
+[1] 0.1847221
+> cape_turnover <- read_rds("final-BRT_GCFR_turnover_BRTs.RDS")
+> pseudo_r2(swa_turnover)
+[1] 0.1847221
+> pseudo_r2(cape_turnover)
+[1] 0.1877405
+> pred_obs_r2(cape_turnover)
+Error in glance(.) : could not find function "glance"
+> library(broom)
+> pred_obs_r2(cape_turnover)
+$pred_obs_m
+r.squared 
+0.7131229 
+
+$pred_obs_m_exp
+r.squared 
+0.7117717 
+
+> pred_obs_r2(swa_turnover)
+$pred_obs_m
+r.squared 
+0.5208874 
+
+$pred_obs_m_exp
+r.squared 
+0.5297553 
+
+> pred_obs_r2(swa_richness)
+$pred_obs_m
+r.squared 
+0.8412852 
+
+$pred_obs_m_exp
+r.squared 
+0.7389499 
+
+> pred_obs_r2(cape_richness)
+$pred_obs_m
+r.squared 
+ 0.807349 
+
+$pred_obs_m_exp
+r.squared 
+0.7393327 
+
+> ls()
+ [1] "cape_richness"       "cape_turnover"       "fit_gbm_step"       
+ [4] "get_pred_obs"        "model_pred_obs"      "my_BRT_summary"     
+ [7] "permute_vector"      "permute_wo_nas"      "pred_obs_r2"        
+[10] "pseudo_r2"           "r2"                  "simplify_predictors"
+[13] "swa_richness"        "swa_turnover"       
+> summary(cape_richness)
+                     Length Class      Mode     
+initF                   1   -none-     numeric  
+fit                   100   -none-     numeric  
+train.error          4900   -none-     numeric  
+valid.error          4900   -none-     numeric  
+oobag.improve        4900   -none-     numeric  
+trees                4900   -none-     list     
+c.splits                0   -none-     list     
+bag.fraction            1   -none-     numeric  
+distribution            1   -none-     list     
+interaction.depth       1   -none-     numeric  
+n.minobsinnode          1   -none-     numeric  
+num.classes             1   -none-     numeric  
+n.trees                 1   -none-     numeric  
+nTrain                  1   -none-     numeric  
+train.fraction          1   -none-     numeric  
+response.name           1   -none-     character
+shrinkage               1   -none-     numeric  
+var.levels             11   -none-     list     
+var.monotone           11   -none-     numeric  
+var.names              11   -none-     character
+var.type               11   -none-     numeric  
+verbose                 1   -none-     logical  
+data                    6   -none-     list     
+Terms                   3   terms      call     
+cv.folds                1   -none-     numeric  
+call                   11   -none-     call     
+m                       6   -none-     call     
+gbm.call               21   -none-     list     
+fitted                100   -none-     numeric  
+fitted.vars           100   -none-     numeric  
+residuals             100   -none-     numeric  
+contributions           2   data.frame list     
+self.statistics         7   -none-     list     
+cv.statistics           8   -none-     list     
+weights               100   -none-     numeric  
+trees.fitted           98   -none-     numeric  
+training.loss.values   98   -none-     numeric  
+cv.values              98   -none-     numeric  
+cv.loss.ses            98   -none-     numeric  
+cv.loss.matrix        980   -none-     numeric  
+cv.roc.matrix          10   -none-     numeric  
+> summary(cape_richness$contributions)
+        var       rel.inf      
+ Clay     :1   Min.   : 2.758  
+ Elevation:1   1st Qu.: 5.324  
+ MAP      :1   Median : 9.224  
+ PDQ      :1   Mean   : 9.091  
+ pH       :1   3rd Qu.:12.026  
+ rough_CEC:1   Max.   :18.617  
+ (Other)  :5                   
+> plot(cape_richness$contributions)
+> 
