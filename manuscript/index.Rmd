@@ -1,7 +1,7 @@
 ---
-title: "**Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse floras**"
-subtitle: "**Running title:** Environmental heterogeneity and plant species richness"
+title: "Environmental heterogeneity patterns plant species richness and turnover in two hyperdiverse floras"
 author: "Ruan van Mazijk, Michael D. Cramer & G. Anthony Verboom"
+date: "`r Sys.Date()`"
 toc: false
 bibliography: Cape-vs-SWA.bib
 csl: journal-of-biogeography.csl
@@ -20,9 +20,11 @@ knitr::opts_chunk$set(
 
 Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 
-Corresponding author: RVM (ruanvmazijk@gmail.com, +27 21 650 3684)
+Corresponding author: RVM (<ruanvmazijk@gmail.com>, +27 21 650 3684)
 
 ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1363-9781<!--?-->
+
+**Running title:** Environmental heterogeneity and plant species richness
 
 <!--Start line-numbering after title-matter-->
 
@@ -34,8 +36,8 @@ ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1
 
 <!--J Biogeog: 300 word abstract-->
 
-**Aim:** <!--From ResearchGate project: To quantify the explanatory power of heterogeneity in predicting plant species richness and turnover here in the Greater Cape Floristic Region and in the Southwest Australia Floristic Region. We compare the environmental heterogeneity in each region, how species richness and turnover interact in each region to produce the observed patterns of richness, and what different forms of environmental heterogeneity better predict richness in each region. We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in S.W. Australia.--> <!--Alt. version from intro: This study investigates the role EH plays in explaining vascular plant species richness in the Cape and SWA. We compare the relative importance of heterogeneity between the two regions, as heterogeneity has the evolutionary role of facilitating speciation, and the ecological role of supporting diverse species assemblages. Spatial scale of that heterogeneity is also considered, as the heterogeneity-richness relationship can vary with habitat grain-size.-->
-  
+**Aim:** <!--From ResearchGate project-->To quantify the explanatory power of environmental heterogeneity in predicting plant species richness and turnover in two mediterranean-type biodiversity hotpots, the southwestern Cape of South Africa and southwest Australia (SWA), due to habitat diversity's stimulating speciation and supporting diverse assemblages. In each region, we compare different forms of environmental heterogeneity, species turnover and the relative importance of different forms of heterogeneity better predict species richness and turnover. We expected the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjectured that edaphic heterogeneity would be an important factor in predicting species richness patterns in SWA.
+
 **Location:** The Greater Cape Floristic Region in southwest Africa (the Cape), and the Southwest Australia Floristic Region (SWA)
 
 **Taxon:** Vascular plants
@@ -44,13 +46,13 @@ ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1
   
 **Results:** The Cape is more environmentally heterogeneous and has higher levels of floristic turnover than SWA. We find that environmental heterogeneity is the main predictor of species richness in the Cape, and somewhat less so for SWA. Edaphic conditions are found to be of more biologically important in the Cape, though this is contingent on the quality of the data modelled.
   
-**Main conclusions:** <!--The Cape is more generally environmentally heterogeneous than the SWA, as expected, though there are cases where SWA is as heterogeneous as the Cape.--> <!--TODO: expand & cont.-->
+**Main conclusions:** The Cape was found to have generally more environmentally heterogenous than SWA, though SWA does possess edaphic heterogeneity as great as that in the Cape at coarse spatial scales, and greater levels of floristic turnover in vascular plant communities between grid-cells than SWA. Vascular plant species richness and turnover in the Cape was associated more strongly with environmental heterogeneity than in SWA, and particularly edaphic heterogeneity, than species richness in SWA. In SWA, patterns of species richness and turnover are more strongly associated with climatic axes<!--NOTE: see Hopper (1979. _Ann. Rev. Ecol. Syst._) Re: SWA escarpment and coastal band climate-->. The relative strengths of association of different environmental variables with patterns of species richness and turnover was found to vary with spatial scale.
 
-_Keywords:_ biodiversity, environmental heterogeneity, fynbos, Greater Cape Floristic Region, kwongan, macroecology, species richness, species turnover, vascular plants, Southwest Australia Floristic Region
+_Keywords:_ biodiversity, boosted regression trees, BRTs, environmental heterogeneity, fynbos, Greater Cape Floristic Region, kwongan, macroecology, species richness, species turnover, vascular plants, Southwest Australia Floristic Region
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (hpc.uct.ac.za).
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<hpc.uct.ac.za>).
 
 <!--TODO: Notify these acknowledged parties of publication too-->
 

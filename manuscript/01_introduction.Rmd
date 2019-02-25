@@ -17,7 +17,7 @@ Both regions have sources of edaphic heterogeneity, but at different scales. Thi
 
 Our hypotheses concern the Cape and SWA's environments and floras. Our main hypothesis is that the Cape possesses greater abiotic heterogeneity, and at finer grain, compared to SWA, such as to explain the Cape's greater species richness per unit area, and proposed greater levels of species turnover between areas. We also conjecture that the heterogeneity that predicts species richness in SWA will be more pronounced in terms of edaphic variables. Here we attempt to assess five key predictions of this hypothesis, additionally investigating a seventh prediction to test the conjectured role of edaphic heterogeneity in SWA. Dealing with the two regions' environments, we assess (i) whether the Cape environment is more heterogeneous than that of SWA and (ii) whether the Cape environment has more pronounced heterogeneity at finer scales than that of SWA. Dealing with the distribution of species in the two regions, we assess (iii) whether the Cape exhibits greater levels of species turnover between areas. Relating each regions' environment and flora, we finally assess (iv) whether species richness and species turnover are adequately predicted by EH in both regions and whether (v) species richness and species turnover are better predicted by different forms of EH in either region (e.g. the importance of edaphic heterogeneity in SWA).
 
-<!--Junk sentences that sound good-->
+<!--## Junk sentences that sound good-->
 
 <!--As one moves across a heterogeneous landscape, we expect to find greater turnover in community composition, as different environments support different species.-->
 
