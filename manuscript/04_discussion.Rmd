@@ -1,10 +1,24 @@
 # Discussion
 
-We have support for the hypothesis that the difference in plant species richness between the Cape and SWA is accounted for by the greater abiotic heterogeneity in the Cape. As expected, the Cape is shown to possess (i) a quantifiably more heterogeneous environment that is (ii) generally heterogeneous at a finer spatial scale than SWA, with (iii) greater levels of floristic turnover. We have shown that vascular plant species richness (iv) can be explained in terms of environmental conditions including environmental heterogeneity in both the Cape and SWA. Also, we have shown that (v) the sets of environmental axes that explain plant species richness differ between the Cape and SWA. These findings contribute towards an understanding of the ecological conditions associated with high levels of species co-existence in these two regions, and strengthens the generality of a positive relationship between environmental heterogeneity and biodiversity.
+<!--## Referring back to the hypotheses-->
 
-These two regions present differentiable environmental spaces, each with varying degrees of heterogeneity across spatial scale. The clear separation of the regions' topographic features is as expected (Figures \ref{PC-boxplots}A, \ref{quant-sexy-plots-climate-et-al}), particularly regarding topography. The Cape region has been found previously to have the second highest median topographic heterogeneity of the five Mediterranean-climate regions [@Bradshaw2014]. The Cape has a much wider range of scales exhibited in the heterogeneity across its environmental axes. Notably, each region has finer scale heterogeneity in some variables, and coarser scale in others---neither region is more fine or coarse than the other over all environmental axes. BRT-models of species richness in both regions reveal species richness to depend on those environmental axes that differentiate the two regions (Figures \ref{richness_pred_obs}), \ref{BRT_contribs_summary}). The importance of variables is also shown to vary with spatial scale (Figure \ref{BRT_contribs_summary}), as previously suggested may be the case when modelling geographic patterns of biodiversity [@Baudena2015]. Indeed, as @Cowling1996 describes differing patterns of species richness across spatial scales, so do the predictors of those patterns vary with scale [@Hart2017].
+<!--### Overview-->
 
-In line with our hypotheses, a combination of absolute and roughness variables are associated with species richness and turnover. In the models developed by @Cramer2016 for South Africa, roughness in topography was largely superseded as an important predictor of species richness by other roughness variables.
+Here we have provided support for the hypothesis that the difference in plant species richness between the Cape and SWA is accounted for by the greater abiotic heterogeneity in the Cape. As expected, the Cape is shown to possess (i) a quantifiably more heterogeneous environment that is (ii) generally heterogeneous at a finer spatial scale than SWA, with (iii) greater levels of floristic turnover. We have shown that vascular plant species richness (iv) can be explained in terms of environmental conditions including environmental heterogeneity in both the Cape and SWA. Also, we have shown that (v) the sets of environmental axes that explain plant species richness differ between the Cape and SWA. These findings contribute towards an understanding of the ecological conditions associated with high levels of species co-existence in these two regions, and strengthens the generality of a positive relationship between environmental heterogeneity and biodiversity.
+
+<!--### Biologically relevant environmental differences betw. the regions-->
+
+These two regions present differentiable environmental spaces, each with varying degrees of heterogeneity across spatial scales and environmental axes. The clear distinction of the regions' topographic features is as expected [@fig-ref]. The Cape region has been found previously to have the second highest median topographic heterogeneity of the five Mediterranean-climate regions [@Bradshaw2014]. In the models developed by @Cramer2016 for South Africa, roughness in topography was largely superseded as an important predictor of species richness by other roughness variables. This is the case with our results too, likely as topographic complexity can be considered a proxy for gradients in other environmental axes, such as rainfall or temperature [@ref].
+
+In line with our hypotheses, a combination of absolute and roughness variables are associated with species richness and turnover. The modelled determinants of vascular plant species richness and turnover are shown here to be region-specific, particularly in that the patterns in the Cape are more strongly determined by edaphic and heterogeneity variables, while in SWA things are more governed by climatic and absolute variables.
+
+...
+
+The Cape has a much wider range of scales exhibited in the heterogeneity across its environmental axes. Notably, each region has finer scale heterogeneity in some variables, and coarser scale in others---neither region is more fine or coarse than the other over all environmental axes.
+
+...
+
+<!--Old sentences/para (is this true?; note good refs in the end of this para): "BRT-models of species richness in both regions reveal species richness to depend on those environmental axes that differentiate the two regions (Figures \ref{richness_pred_obs}), \ref{BRT_contribs_summary}). The importance of variables is also shown to vary with spatial scale (Figure \ref{BRT_contribs_summary}), as previously suggested may be the case when modelling geographic patterns of biodiversity [@Baudena2015]. Indeed, as @Cowling1996 describes differing patterns of species richness across spatial scales, so do the predictors of those patterns vary with scale [@Hart2017].-->
 
 ...
 
@@ -42,8 +56,7 @@ Following from the understanding that functionally diverse assemblages, which ar
 
 Summarily, we have demonstrated support for the generality of as a meaningful predictor of patterns of species richness and turnover in mediterranean-type ecosystems. In SWA and the Cape, high levels of are also likely the results of long-term landscape and climatic stability [@Hopper1979]. Thus, the roles of environmental variability through space that persists through deep time are two important ways in which the environment relates to biodiversity in these regions. The efficacy of environmental stability through geological time should be explored further, comparing the Cape and SWA.
 
-## Future studies (a.k.a. "to do after first review maybe")
-
+<!--Future studies (a.k.a. "to do after first review maybe"):
 - 3QDS scale BRTs
 - $S_{\mathrm{HDS}} \sim \overline{S}_{\mathrm{QDS}} + \overline{\delta_{ij}}_{??}$ (= "$\gamma = \alpha + \beta$"-analysis) (see `explore-turnover-metrics.pdf` note, where $\overline{\delta_{ij}}(\textbf{N})_{??} = \overline{\alpha_i}(\textbf{N}) \times \overline{\beta_{ij}}(\textbf{N}) = \overline{S}_{\mathrm{QDS}} \times \overline{J}_{\mathrm{QDS}}$)
 - Expanding the analyses to other/all mediterranean-type regions
@@ -52,3 +65,4 @@ Summarily, we have demonstrated support for the generality of as a meaningful pr
 - Teasing apart co-existance and evolution
 - Teasing about turnover into turnover-sensu-stricto and nestedness
 - Functional diversity $\sim$ EH? Functional turnover?
+-->

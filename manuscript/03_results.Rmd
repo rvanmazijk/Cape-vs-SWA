@@ -26,6 +26,7 @@ Species richness at QDS-scales ($= \overline{S}_{\mathrm{QDS}}$), and to a lesse
 
 <!--TODO: where to put this para?-->It is important to consider variables not included formally in these BRT-models that were found to be collinear with some of the variables included (see SI). Here, we interpret the effects of variables excluded from the analyses as well as those included, as the forms and importances of these relationships are likely similar. In the Cape (concerning clusters of collinear variables relevant to relevant to those retained during BRT-model fitting), MAP was included in the BRT-analyses as representative of a cluster of collinear variables consisting of itself, NDVI, surface T and soil C at the. Roughness in soil clay content represented itself, roughness in soil pH and roughness in NDVI. In SWA, MAP was select as representative of itself, NDVI and soil C.
 
+<!--
 **In the equations below, collinear groups of variables are listed as predictors enclosed within braces.**
  
 **Cape:**
@@ -83,6 +84,7 @@ Species richness at QDS-scales ($= \overline{S}_{\mathrm{QDS}}$), and to a lesse
     RElev +
     CEC
 \end{align*}
+-->
 
 Our BRT-models of species richness in both regions rank environmental variables somewhat differently at QDS- and HDS-scales (Figure \@ref(fig:species-environment-relationships)a,b,d,e). These differences in rankings are similar to those between two unrelated lists ($P_{1-2} > 0.05$, Figure \@ref(fig:BRT-variable-rank-concordance)). This suggests some scale-dependence of different environmental variables' associations with species richness.
 

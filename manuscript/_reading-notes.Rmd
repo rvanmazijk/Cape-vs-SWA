@@ -1,8 +1,7 @@
 ﻿---
 title: "Reading notes"
-susbtitle: "Cape vs SWA publication"
+subtitle: "Cape vs SWA publication"
 author: "Ruan van Mazijk"
-date: "`r Sys.Date()`"
 ---
 
 # Pre-reading premises & notes

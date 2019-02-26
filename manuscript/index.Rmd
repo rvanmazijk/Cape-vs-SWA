@@ -52,7 +52,7 @@ _Keywords:_ biodiversity, boosted regression trees, BRTs, environmental heteroge
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<hpc.uct.ac.za>).
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<hpc.uct.ac.za  >).
 
 <!--TODO: Notify these acknowledged parties of publication too-->
 
