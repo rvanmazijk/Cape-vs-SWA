@@ -1,6 +1,8 @@
 # Discussion outline
 
-## Hypotheses/findings
+## Hypotheses/findings & interpretations (to be melded together)
+
+### Hypotheses/findings
 
 Correct                         | Incorrect
 --------------------------------|---------------------------------------
@@ -10,9 +12,20 @@ Types of EH: elevation, climate | Types of EH: soil, NDVI [@Cramer2016]
 
 - Link to @Cook2015
   - @Cook2015 summarise the suites of hypotheses for the high levels of plant diversity in mediterranean-type ecosystems, regarding aspects of evolutionary diversification, ecological co-existence and time for species accumulation by either immigration or in situ evolution. Our study concens the dual role of EH in facilitating ecological speciation along environmental gradients and a diversity of habitats in wich greater numbers of species may co-exist. Regarding the former, ecological specialisation ... 
-  - An avenue for future investigation may include quantifying associations between environmental stability and species richness and turnover (sensu that N American study), particularly regarding {inset info on Cape and SWA geologic/environmental evolution}.
+  - An avenue for future investigation may include quantifying associations between environmental stability and species richness and turnover (sensu that @PintoLedezma2018), particularly regarding {insert info on Cape and SWA geologic/environmental evolution}.
 
-## Caveats
+### Interpretations of our results
+
+Environmental axis | Cape                    | SWA
+-------------------|-------------------------|-----------------------
+Productivity       | NB (discuss)            | NB (discuss)
+Soil               | Conditions & variety NB | Nope... (see caveats)
+Topography         | NB                      | Nope... (as expected)
+Climate            | Somewhat                | NB
+
+- Comment on other studies/broader context here
+
+## Caveats (to be sprinkled through-out discussion)
 
 1. Species turnover and richness issues
   - Species-area relationships etc.
@@ -44,17 +57,6 @@ Types of EH: elevation, climate | Types of EH: soil, NDVI [@Cramer2016]
   - Temporal range of environmental data (and indeed floristic data) vastly less than the temporal scope of the research question (unavoidable I suppose?)
   - Herbarium vs inventory floristics
   - GBIF floristics
-
-## Interpretations of our results
-
-Environmental axis | Cape                    | SWA
--------------------|-------------------------|-----------------------
-Productivity       | NB (discuss)            | NB (discuss)
-Soil               | Conditions & variety NB | Nope... (see caveats)
-Topography         | NB                      | Nope... (as expected)
-Climate            | Somewhat                | NB
-
-- Comment on other studies/broader context here
 
 ## Implications
 
