@@ -103,28 +103,28 @@ Roughness $R(N) = SD_{focal}(N)$
 ***
 
 \begin{figure}
-  \begin{overprint}
-    \onslide<1> \center \includegraphics[width=10cm]{%
-      figures/fig-1.3-elevation-maps_blank1.png%
-    }
-    \onslide<2> \center \includegraphics[width=10cm]{%
-      figures/fig-1.3-elevation-maps_blank2.png%
-    }
-    \onslide<3-> \center \includegraphics[width=10cm]{%
-      figures/fig-1.3-elevation-maps.png%
-    }
+  \begin{overprint} 
+    \onslide<1> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-1.3-elevation-maps_blank1.png}
+    \onslide<2> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-1.3-elevation-maps_blank2.png}
+    \onslide<3-> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-1.3-elevation-maps.png}
   \end{overprint}
 \end{figure}
 
 <!--
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center \includegraphics[width=12cm]{%
-      figures/fig-1.1-elev-roughness_blank.png%
-    }
-    \onslide<2-> \center \includegraphics[width=12cm]{%
-      figures/fig-1.1-elev-roughness.png%
-    }
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-1.1-elev-roughness_blank.png}
+    \onslide<2-> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-1.1-elev-roughness.png}
   \end{overprint}
 \end{figure}
 
@@ -135,12 +135,12 @@ Roughness $R(N) = SD_{focal}(N)$
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center \includegraphics[width=7cm]{%
-      figures/fig-1.2-CLES-roughness_blank.png%
-    }
-    \onslide<2-> \center \includegraphics[width=7cm]{%
-      figures/fig-1.2-CLES-roughness.png%
-    }
+    \onslide<1> \center
+      \includegraphics[width=7cm]{figures/%
+      fig-1.2-CLES-roughness_blank.png}
+    \onslide<2-> \center
+      \includegraphics[width=7cm]{figures/%
+      fig-1.2-CLES-roughness.png}
   \end{overprint}
 \end{figure}
 
@@ -162,12 +162,12 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center \includegraphics[width=12cm]{%
-      figures/fig-2-turnover_blank.png%
-    }
-    \onslide<2-> \center \includegraphics[width=12cm]{%
-      figures/fig-2-turnover.png%
-    }
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-2-turnover_blank.png}
+    \onslide<2-> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-2-turnover.png}
   \end{overprint}
 \end{figure}
 
@@ -186,18 +186,18 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center \includegraphics[width=10cm]{%
-      figures/fig-5.1-QDS-richness-maps_blank1.png%
-    }
-    \onslide<2> \center \includegraphics[width=10cm]{%
-      figures/fig-5.1-QDS-richness-maps_blank2.png%
-    }
-    \onslide<3> \center \includegraphics[width=10cm]{%
-      figures/fig-5.1-QDS-richness-maps.png%
-    }
-    \onslide<4-> \center \includegraphics[width=10cm]{%
-      figures/fig-5.2-QDS-richness-maps.png%
-    }
+    \onslide<1> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-5.1-QDS-richness-maps_blank1.png}
+    \onslide<2> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-5.1-QDS-richness-maps_blank2.png}
+    \onslide<3> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-5.1-QDS-richness-maps.png}
+    \onslide<4-> \center
+      \includegraphics[width=10cm]{figures/%
+      fig-5.2-QDS-richness-maps.png}
   \end{overprint}
 \end{figure}
 
@@ -206,12 +206,12 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center \includegraphics[width=12cm]{%
-      figures/fig-4-BRT-model-quality_blank.png%
-    }
-    \onslide<2-> \center \includegraphics[width=12cm]{%
-      figures/fig-4-BRT-model-quality.png%
-    }
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-4-BRT-model-quality_blank.png}
+    \onslide<2-> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-4-BRT-model-quality.png}
   \end{overprint}
 \end{figure}
 
@@ -224,15 +224,15 @@ $\overline{J}_{QDS} =$ average Jaccard distance between QDS
 
 \begin{figure}
   \begin{overprint}
-    \onslide<1> \center \includegraphics[width=12cm]{%
-      figures/fig-3-species-environment-relationships_blank.png%
-    }
-    \onslide<2> \center \includegraphics[width=12cm]{%
-      figures/fig-3-species-environment-relationships_nopie.png%
-    }
-    \onslide<3-> \center \includegraphics[width=12cm]{%
-      figures/fig-3-species-environment-relationships.png%
-    }
+    \onslide<1> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-3-species-environment-relationships_blank.png}
+    \onslide<2> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-3-species-environment-relationships_nopie.png}
+    \onslide<3-> \center
+      \includegraphics[width=12cm]{figures/%
+      fig-3-species-environment-relationships.png}
   \end{overprint}
 \end{figure}
 
