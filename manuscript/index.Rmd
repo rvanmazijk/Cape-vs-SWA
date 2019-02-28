@@ -3,10 +3,10 @@ title: "Environmental heterogeneity patterns plant species richness and turnover
 author: "Ruan van Mazijk, Michael D. Cramer & G. Anthony Verboom"
 date: "`r Sys.Date()`"
 toc: false
-bibliography: Cape-vs-SWA.bib
+bibliography: Cape-vs-SWA_manual-edit.bib
 csl: journal-of-biogeography.csl
 link-citations: true
-mainfont: Times New Roman  # for PDF
+#mainfont: Times New Roman  # for PDF
 ---
 
 ```{r setup, include=FALSE}
