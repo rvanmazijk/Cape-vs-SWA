@@ -1,4 +1,4 @@
 repo: https://github.com/rvanmazijk/Cape-vs-SWA/
 book_filename: Van-Mazijk-et-al_in-prep
-output_dir: _manuscript-pdf
+output_dir: _manuscript
 delete_merged_file: true

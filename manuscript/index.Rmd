@@ -6,7 +6,7 @@ toc: false
 bibliography: Cape-vs-SWA_manual-edit.bib
 csl: journal-of-biogeography.csl
 link-citations: true
-#mainfont: Times New Roman  # for PDF
+mainfont: Times New Roman  # for PDF
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +14,10 @@ knitr::opts_chunk$set(
   eval = TRUE,
   echo = FALSE,
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  results = "asis",
+  fig.pos = "H",
+  out.width = "18cm"
 )
 ```
 
@@ -25,10 +28,6 @@ Corresponding author: RVM (<ruanvmazijk@gmail.com>, +27 21 650 3684)
 ORCID nos.: RVM: 0000-0003-2659-6909, MDC: 0000-0003-0989-3266, GAV: 0000-0002-1363-9781<!--?-->
 
 **Running title:** Environmental heterogeneity and plant species richness
-
-<!--Start line-numbering after title-matter-->
-
-\linenumbers
 
 <!--TODO: check "mediterranean" not "Mediterranean"-->
 
@@ -52,7 +51,7 @@ _Keywords:_ biodiversity, boosted regression trees, BRTs, environmental heteroge
 
 # Acknowledgements {-}
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<hpc.uct.ac.za  >).
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
 
 <!--TODO: Notify these acknowledged parties of publication too-->
 
@@ -67,3 +66,4 @@ Abbreviations:
 - environmental heterogeneity (EH)
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 -->
+

@@ -12,32 +12,23 @@ SLIDES_PATH = SAAB-AMA-SASSB-2019-talk
 # Manuscript
 INDEX = $(MS_PATH)/index.Rmd
 BODY = $(wildcard $(MS_PATH)/*_*.Rmd)
-AFTER_BODY_RMD = $(MS_PATH)/_after-body.Rmd
-MS_META = \
-	$(MS_PATH)/_bookdown.yml \
-	$(MS_PATH)/_output.yml \
-	$(MS_PATH)/Cape-vs-SWA.bib \
-	$(MS_PATH)/journal-of-biogeography.csl \
-	$(MS_PATH)/style.sty
+MS_META = $(wildcard $(MS_PATH)/*.{bib,csl,yml}) $(wildcard $(MS_PATH)/style.*)
 TABLES = $(wildcard $(MS_PATH)/tables/*.csv)
 MS_FIGURES_PNG = $(wildcard $(MS_PATH)/figures/fig-*.png)
-AFTER_BODY_TEX = $(AFTER_BODY_RMD:.Rmd=.tex)
 SI_RMD = $(wildcard $(MS_PATH)/supplementary-information/SI_*.Rmd)
 OUTPUTS = $(wildcard outputs/*.csv)
 FUNCTIONS = $(wildcard R/functions/*.R)
 
 # Slides
-SLIDES_RMD = \
-	$(SLIDES_PATH)/RvanMazijk_environmental-heterogeneity-species-richness_slides.Rmd
-SLIDES_META = \
-	$(SLIDES_PATH)/_output.yml \
-	$(SLIDES_PATH)/style.sty
+SLIDES_RMD = $(SLIDES_PATH)/RvanMazijk_environmental-heterogeneity-species-richness_slides.Rmd
+SLIDES_META = $(SLIDES_PATH)/_output.yml $(SLIDES_PATH)/style.sty
 SLIDES_FIGURES_PNG = $(wildcard $(SLIDES_PATH)/figures/fig-*.png)
 
 # Output files (goals) ---------------------------------------------------------
 
 # Manuscript
-MS_PDF = manuscript/_manuscript-pdf/Van-Mazijk-et-al_in-prep.pdf
+MS_DOCX = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.docx
+MS_PDF = manuscript/_manuscript/Van-Mazijk-et-al_in-prep.pdf
 SI_PDF = $(SI_RMD:.Rmd=.pdf)
 
 # Slides
@@ -46,14 +37,15 @@ SLIDES_PDF = $(SLIDES_RMD:.Rmd=.pdf)
 # Rscript commands -------------------------------------------------------------
 # (to use in recipes below)
 
-RENDER_MS = Rscript -e "\
+RENDER_MS_DOCX = Rscript -e "\
+	setwd('manuscript');\
+	library(bookdown);\
+	render_book('$<', 'bookdown::word_document2')"
+
+RENDER_MS_PDF = Rscript -e "\
 	setwd('manuscript');\
 	library(bookdown);\
 	render_book('$<', 'bookdown::pdf_document2')"
-
-RENDER_AFTER_BODY_TEX = Rscript -e "\
-	library(rmarkdown);\
-	render('$<', 'latex_fragment')"
 
 RENDER_SI = Rscript -e "\
 	library(purrr);\
@@ -72,16 +64,15 @@ RENDER_SLIDES = Rscript -e "\
 
 all: manuscript slides
 
-manuscript: $(MS_PDF) $(SI_PDF)
+manuscript: $(MS_DOCX) $(MS_PDF) $(SI_PDF)
 
 slides: $(SLIDES_PDF)
 
-$(MS_PDF): $(INDEX) $(BODY) $(AFTER_BODY_TEX) $(MS_META) $(OUTPUTS) $(FUNCTIONS)
-	$(RENDER_MS)
+$(MS_DOCX): $(INDEX) $(BODY) $(MS_META) $(OUTPUTS) $(FUNCTIONS)
+	$(RENDER_MS_DOCX)
 
-$(AFTER_BODY_TEX): \
-	$(AFTER_BODY_RMD) $(TABLES) $(MS_FIGURES_PNG) $(OUTPUTS) $(FUNCTIONS)
-	$(RENDER_AFTER_BODY_TEX)
+$(MS_PDF): $(INDEX) $(BODY) $(MS_META) $(OUTPUTS) $(FUNCTIONS)
+	$(RENDER_MS_PDF)
 
 $(SI_PDF): $(SI_RMD)
 	$(RENDER_SI)

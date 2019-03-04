@@ -2,6 +2,5 @@ bookdown::pdf_document2:
   latex_engine: xelatex
   includes:
     in_header: style.sty
-  pandoc_args: [
-    "--include-after-body", "_after-body.tex"
-  ]
+bookdown::word_document2:
+  reference_docx: style.docx
