@@ -19,61 +19,70 @@ quality_region_data <-
 options(knitr.kable.NA = "")
 data_sources %>%
   knitr::kable(
-    format = "latex",
     escape = FALSE,
     booktabs = TRUE,
     caption = "(ref:data-sources)"
   ) %>%
+  # The following only applies to LaTeX output
   kableExtra::group_rows("Climatic variables", 4, 6) %>%
   kableExtra::group_rows("Soil variables", 7, 10) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
+<!--FIXME: get tab:data-source citations to render in LaTeX-->
+
 <!--NOTE: might incorportate these tables 2 & 3's data into figure captions directly-->
+
+\clearpage
 
 (ref:BRT-quality-perms) Average proportional-ranks for BRT-model performance measures ($nt$, $R_{\mathrm{pseudo}}^2$ (Equation \@ref(eq:pseudo-R2)), $R_{\mathrm{E-O}}^2$ (see text)) of the 1000 replicate BRT-models relative to 999 BRT-models fit to permuted datasets. Each of the 1000 replicate BRT-mdels was ranked against the 999 permuted BRT-models. The average rank of each, as a proportion, is presented.
 
 ```{r BRT-quality-perms}
 options(knitr.kable.NA = "")
-quality_rank_data %>%
+quality_rank_data_tidy <- quality_rank_data %>%
   select(scale, response, region, nt_rank:pred_obs_r2_rank) %>%
   arrange(desc(scale), response, region) %>%
   select(-scale, -response) %>%
-  mutate_if(is.numeric, funs(round(., 3))) %>%
-  knitr::kable(
-    format = "latex",
-    escape = FALSE,
-    booktabs = TRUE,
-    col.names = c("Model", "$nt$", "$R^2_{pseudo}$", "$R^2_{E-O}$"),
-    caption = "(ref:BRT-quality-perms)"
-  ) %>%
-  kableExtra::group_rows("QDS-richness", 1, 2) %>%
+  mutate_if(is.numeric, funs(round(., 3)))
+knitr::kable(quality_rank_data_tidy,
+  escape = FALSE,
+  booktabs = TRUE,
+  col.names = c(
+    "Model", "$nt$",
+    "$R^2_{pseudo}$", "$R^2_{E-O}$"
+  ),
+  caption = "(ref:BRT-quality-perms)"
+)
+```
+
+<!--kableExtra::group_rows("QDS-richness", 1, 2) %>%
   kableExtra::group_rows("HDS-richness", 3, 4) %>%
   kableExtra::group_rows("HDS-turnover", 5, 6) %>%
-  kableExtra::kable_styling(latex_options = "hold_position")
-```
+  kableExtra::kable_styling(latex_options = "hold_position")-->
+
+\clearpage
 
 (ref:BRT-quality-regions) Estimated differences between replicate Cape and SWA BRT-models' performance measures ($nt$, $R^2_{\mathrm{pseudo}}$ (Equation \@ref(eq:pseudo-R2)), $R^2_{\mathrm{E-O}}$ (see text)) following two-sided $t$-tests. Positive values indicate that the Cape models had greater values. In all cases, the Cape and SWA had highly significantly different values for these quality measures ($P < 0.0001$).
 
 ```{r BRT-quality-regions}
 options(knitr.kable.NA = "")
-quality_region_data %>%
+quality_region_data_tidy <- quality_region_data %>%
   select(scale, response, est_diff, quality_metric) %>%
   filter(quality_metric != "pred_obs_r2_exp") %>%
   spread(quality_metric, est_diff) %>%
   arrange(desc(scale), response) %>%
   mutate_if(is.numeric, funs(round(., 3))) %>%
   mutate(model = glue("{scale}-{response}")) %>%
-  select(model, nt:pseudo_r2) %>%
-  knitr::kable(
-    format = "latex",
-    escape = FALSE,
-    booktabs = TRUE,
-    col.names = c(
-      "Model", "$nt$", 
-      "$R^2_{\\mathrm{pseudo}}$", "$R^2_{\\mathrm{E-O}}$"
-    ),
-    caption = "(ref:BRT-quality-regions)"
-  ) %>%
-  kableExtra::kable_styling(latex_options = "hold_position")
+  select(model, nt:pseudo_r2)
+knitr::kable(quality_region_data_tidy,
+  escape = FALSE,
+  booktabs = TRUE,
+  col.names = c(
+    "Model", "$nt$", 
+    "$R^2_{\\mathrm{pseudo}}$", "$R^2_{\\mathrm{E-O}}$"
+  ),
+  caption = "(ref:BRT-quality-regions)"
+)
 ```
+
+<!--kableExtra::kable_styling(latex_options = "hold_position")-->
