@@ -3,9 +3,12 @@
     Rondebosch, South Africa
   - Corresponding author: RVM (<ruanvmazijk@gmail.com>, +27 21 650 3684)
 
-![](logos/UCT-logo.png) ![](logos/BIO-logo.png)
-![](logos/eResearch-logo.png) ![](logos/DST-logo.png)
-![](logos/NRF-logo.png) ![](logos/SAAB-logo.png)
+<img src="logos/UCT-logo.png" width="100" />
+<img src="logos/BIO-logo.png" width="100" />
+<img src="logos/eResearch-logo.png" width="150" />
+<img src="logos/DST-logo.png" width="200" />
+<img src="logos/NRF-logo.png" width="150" />
+<img src="logos/SAAB-logo.png" width="150" />
 
 This project continues from RVM’s BSc Hons project, and aims to quantify
 the explanatory power of heterogeneity in predicting plant species

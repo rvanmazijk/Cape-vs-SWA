@@ -1,12 +1,32 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  message = FALSE, 
+  warning = FALSE
+)
+```
+
 - Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - Corresponding author: RVM (ruanvmazijk@gmail.com, +27 21 650 3684)
 
-![](logos/UCT-logo.png){ width=100 }
-![](logos/BIO-logo.png){ width=100 }
-![](logos/eResearch-logo.png){ width=150 }
-![](logos/DST-logo.png){ width=200 }
-![](logos/NRF-logo.png){ width=150 }
-![](logos/SAAB-logo.png){ width=150 }
+```{r, out.width=100}
+knitr::include_graphics("logos/UCT-logo.png")
+```
+```{r, out.width=100}
+knitr::include_graphics("logos/BIO-logo.png")
+```
+```{r, out.width=150}
+knitr::include_graphics("logos/eResearch-logo.png")
+```
+```{r, out.width=200}
+knitr::include_graphics("logos/DST-logo.png")
+```
+```{r, out.width=150}
+knitr::include_graphics("logos/NRF-logo.png")
+```
+```{r, out.width=150}
+knitr::include_graphics("logos/SAAB-logo.png")
+```
 
 This project continues from RVM's BSc Hons project, and aims to quantify the explanatory power of heterogeneity in predicting plant species richness and turnover in the Greater Cape Floristic Region and in the Southwest Australia Floristic Region. We compare the environmental heterogeneity in each region, how species richness and turnover interact in each region to produce the observed patterns of richness, and what different forms of environmental heterogeneity better predict richness in each region.
 
