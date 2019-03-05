@@ -59,19 +59,16 @@ capture.output(
   sessionInfo(),
   file =
     if (is_macos()) {
-      #here("outputs/sessionInfo_macos.txt")
-      "sessionInfo_macos.txt"
+      here("outputs/sessionInfo_macos.txt")
     } else if (is_windows()) {
-      #here("outputs/sessionInfo_windows.txt")
-      "sessionInfo_windows.txt"
+      here("outputs/sessionInfo_windows.txt")
     }
 )
 
 # Import all custom functions in R-scripts in R/functions/ ---------------------
 
 my_functions <- list.files(
-  #here("R/functions"),
-  "~/Cape-vs-SWA/R/functions",
+  here("R/functions"),
   pattern = ".R",
   recursive = TRUE,
   full.names = TRUE
