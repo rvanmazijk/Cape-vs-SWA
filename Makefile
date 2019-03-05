@@ -60,10 +60,6 @@ RENDER_SLIDES = Rscript -e "\
 	library(rmarkdown);\
 	render('$<', 'beamer_presentation')"
 
-RENDER_WEBSITE = Rscript -e "\
-	library(rmarkdown);\
-	render('$<', 'github_document')"
-
 # Recipes (inputs -> outputs) --------------------------------------------------
 
 all: manuscript slides website
@@ -85,6 +81,3 @@ $(SI_PDF): $(SI_RMD)
 
 $(SLIDES_PDF): $(SLIDES_RMD) $(SLIDES_META) $(SLIDES_FIGURES_PNG)
 	$(RENDER_SLIDES)
-
-index.md: index.Rmd
-	$(RENDER_WEBSITE)
