@@ -1,4 +1,5 @@
-- Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom
+_Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
+
 - Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - Corresponding author: RVM (<ruanvmazijk@gmail.com>, +27 21 650 3684)
 
