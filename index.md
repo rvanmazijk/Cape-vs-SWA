@@ -3,6 +3,7 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
 - Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - Corresponding author: RVM (<ruanvmazijk@gmail.com>, +27 21 650 3684)
 
+<!-- NOTE: <p>...</p> not needed to get logos on same line for GitHub Pages-->
 <img src="logos/UCT-logo.png"       width="100" />
 <img src="logos/BIO-logo.png"       width="100" />
 <img src="logos/eResearch-logo.png" width="150" />
