@@ -5,7 +5,7 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
 - Department of Biological Sciences, University of Cape Town, Rondebosch, South Africa
 - Corresponding author: RVM (ruanvmazijk@gmail.com, +27 21 650 3684)
 
-<p><!-- to get logos on same line -->
+<p>
   <img src="logos/UCT-logo.png"       width="100" />
   <img src="logos/BIO-logo.png"       width="100" />
   <img src="logos/eResearch-logo.png" width="150" />
@@ -23,14 +23,6 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 ## Acknowledgments
 
 This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RVM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RVM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
-
-<p><!-- to get logos on same line -->
-  <img src="logos/BIO-logo.png"       width="80"  />
-  <img src="logos/eResearch-logo.png" width="100" />
-  <img src="logos/DST-logo.png"       width="180" />
-  <img src="logos/NRF-logo.png"       width="100" />
-  <img src="logos/SAAB-logo.png"      width="100" />
-</p>
 
 ## Reproducing the analyses
 
