@@ -311,3 +311,5 @@ My thoughts: as local determinism and history are both important, we should not 
 - http://onlinelibrary.wiley.com/doi/10.1111/1365-2435.13079/full
 - http://onlinelibrary.wiley.com/doi/10.1111/ecog.02596/full
 - http://onlinelibrary.wiley.com/doi/10.1111/jbi.13164/abstract
+- https://onlinelibrary.wiley.com/doi/10.1111/geb.12887
+- https://www.researchgate.net/publication/330527918_Environmental_filtering_predicts_plant-community_trait_distribution_and_diversity_Kettle_holes_as_models_of_meta-community_systems
