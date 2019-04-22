@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Reading notes"
 subtitle: "Cape vs SWA publication"
 author: "Ruan van Mazijk"
@@ -313,3 +313,6 @@ My thoughts: as local determinism and history are both important, we should not 
 - http://onlinelibrary.wiley.com/doi/10.1111/jbi.13164/abstract
 - https://onlinelibrary.wiley.com/doi/10.1111/geb.12887
 - https://www.researchgate.net/publication/330527918_Environmental_filtering_predicts_plant-community_trait_distribution_and_diversity_Kettle_holes_as_models_of_meta-community_systems
+- https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2745.13158
+- https://www.researchgate.net/publication/332253146_Time_explains_regional_richness_patterns_within_clades_more_often_than_diversification_rates_or_area
+
