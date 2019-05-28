@@ -156,6 +156,11 @@ variables_HDS_stacks <- pmap(
         species,
         vars$Elevation,
         field = "mean_QDS_turnover"
+      ),
+      mean_QDS_richness = rasterize(
+        species,
+        vars$Elevation,
+        field = "mean_QDS_richness"
       )
     )
 
