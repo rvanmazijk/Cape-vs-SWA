@@ -30,8 +30,18 @@ get_roughness <- function(x, resolution = unique(res(x))) {
     "Aggregating from {resolution} to {resolution / 0.05}"
   ))
   x %>%
-    aggregate(fact = resolution / 0.05) %>%
-    roughness()
+    aggregate(fact =
+      if (resolution != 0.05) {
+        # Get to 1 multiple lower than goal resolution...
+        # (e.g. QDS if goal is HDS)
+        (resolution / 2) / 0.05
+      } else {
+        # UNLESS already at lowest resolution (0.05)
+        1
+      }
+    ) %>%
+    roughness() %>%
+    aggregate(fact = resolution / 0.05)  # get to goal resolution
 }
 
 get_roughness_values <- function(x, resolution = unique(res(x))) {
