@@ -182,6 +182,11 @@ variables_HDS_stacks <- pmap(
 
     # Add raster of HDS richness and mean QDS turnover to data list
     species_rasters <- list(
+      #hdgc = rasterize(
+      #  species,
+      #  vars$Elevation,
+      #  field = "hdgc"
+      #),
       HDS_richness = rasterize(
         species,
         vars$Elevation,
