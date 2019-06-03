@@ -61,7 +61,7 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
         community_matrix[j, k] <-
           spp_in_hdgc_by_qdgc %>%
           filter(
-            qdgc == rownames(community_matrix)[[j]] &
+            qdgc    == rownames(community_matrix)[[j]],
             species == colnames(community_matrix)[[k]]
           ) %>%
           magrittr::extract2("species") %>%
@@ -73,7 +73,7 @@ calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
 
     # Output mean Jaccard + richness measures ----------------------------------
 
-    # Output the summary data to the right rows in the spatial points data frame
+    # Output the summary data to the right rows in the spatial points dataframe
     flora_points$HDS_richness[flora_points$hdgc == current_HDS] <-
       community_matrix %>%
       colnames() %>%
