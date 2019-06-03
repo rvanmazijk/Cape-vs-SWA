@@ -51,6 +51,19 @@ GCFR_QDS@data %<>% left_join(GCFR_richness_values)
 SWAFR_QDS@data %<>% left_join(SWAFR_richness_values)
 GCFR_QDS <- GCFR_QDS[!is.na(GCFR_QDS$QDS_richness), ]
 SWAFR_QDS <- SWAFR_QDS[!is.na(SWAFR_QDS$QDS_richness), ]
+# Make lat & lon NUMBERS, not factors
+GCFR_QDS$lat %<>%
+  as.character() %>%
+  as.numeric()
+GCFR_QDS$lon %<>%
+  as.character() %>%
+  as.numeric()
+SWAFR_QDS$lat %<>%
+  as.character() %>%
+  as.numeric()
+SWAFR_QDS$lon %<>%
+  as.character() %>%
+  as.numeric()
 GCFR_richness_QDS <- rasterize(
   GCFR_QDS,
   GCFR_variables_QDS$Elevation,
@@ -62,7 +75,31 @@ SWAFR_richness_QDS <- rasterize(
   field = "QDS_richness"
 )
 names(GCFR_richness_QDS) <- "QDS_richness"
+GCFR_lat_QDS <- rasterize(
+  GCFR_QDS,
+  GCFR_variables_QDS$Elevation,
+  field = "lat"
+)
+SWAFR_lat_QDS <- rasterize(
+  SWAFR_QDS,
+  SWAFR_variables_QDS$Elevation,
+  field = "lat"
+)
+GCFR_lon_QDS <- rasterize(
+  GCFR_QDS,
+  GCFR_variables_QDS$Elevation,
+  field = "lon"
+)
+SWAFR_lon_QDS <- rasterize(
+  SWAFR_QDS,
+  SWAFR_variables_QDS$Elevation,
+  field = "lon"
+)
 names(SWAFR_richness_QDS) <- "QDS_richness"
+names(GCFR_lat_QDS)       <- "lat"
+names(SWAFR_lat_QDS)      <- "lat"
+names(GCFR_lon_QDS)       <- "lon"
+names(SWAFR_lon_QDS)      <- "lon"
 
 plot(GCFR_richness_QDS)
 plot(SWAFR_richness_QDS)
@@ -73,6 +110,8 @@ names(GCFR_roughness_QDS) %<>% paste0("rough_", .)
 names(SWAFR_roughness_QDS) %<>% paste0("rough_", .)
 
 GCFR_data_QDS_stack <- stack(
+  GCFR_lat_QDS,
+  GCFR_lon_QDS,
   GCFR_richness_QDS,
   stack(
     stack(GCFR_variables_QDS),
@@ -80,6 +119,8 @@ GCFR_data_QDS_stack <- stack(
   )
 )
 SWAFR_data_QDS_stack <- stack(
+  SWAFR_lat_QDS,
+  SWAFR_lon_QDS,
   SWAFR_richness_QDS,
   stack(
     stack(SWAFR_variables_QDS),
@@ -182,11 +223,15 @@ SWAFR_data_HDS_stack <- variables_HDS_stacks[[2]]
 # .... Output data for bare-minimum BRT work on UCT HPC ------------------------
 
 GCFR_data_HDS_stack %>%
+  rasterToPoints() %>%
   as.data.frame() %>%
+  rename(lon = x, lat = y) %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/GCFR_variables_HDS.csv"))
 SWAFR_data_HDS_stack %>%
+  rasterToPoints() %>%
   as.data.frame() %>%
+  rename(lon = x, lat = y) %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/SWAFR_variables_HDS.csv"))
 
