@@ -52,7 +52,6 @@ library(scales)
 #library(rasterVis)
 #library(ggspatial)
 
-
 # Record session information ---------------------------------------------------
 
 capture.output(
