@@ -1,3 +1,80 @@
+assign_global <- function(x) {
+  # Assign a variable to the global environment,
+  # not simply the parent environment (as with <<-),
+  # with the same name
+  assign(
+    x = deparse(substitute(x)),
+    value = x,
+    envir = .GlobalEnv
+  )
+}
+
+import_region_polygons <- function(borders_dir = here("data/derived-data/borders")) {
+  # Read in and assign all polygon objects to global environment
+
+  # GCFR -------------------------------------------------------------------------
+
+  GCFR_border <- readOGR(glue(
+    "{borders_dir}/GCFR_border/"
+  ))
+  assign_global(GCFR_border)
+  GCFR_border_buffered <- readOGR(glue(
+    "{borders_dir}/GCFR_border_buffered/"
+  ))
+  assign_global(GCFR_border_buffered)
+  GCFR_box <- readOGR(glue(
+    "{borders_dir}/GCFR_box/"
+  ))
+  assign_global(GCFR_box)
+  GCFR_QDS <- readOGR(glue(
+    "{borders_dir}/GCFR_QDS/"
+  ))
+  assign_global(GCFR_QDS)
+
+  # SWAFR ------------------------------------------------------------------------
+
+  SWAFR_border <- readOGR(glue(
+    "{borders_dir}/SWBP_Mike-Cramer/"
+  ))
+  assign_global(SWAFR_border)
+  SWAFR_border_buffered <- readOGR(glue(
+    "{borders_dir}/SWAFR_border_buffered/"
+  ))
+  assign_global(SWAFR_border_buffered)
+  SWAFR_box <- readOGR(glue(
+    "{borders_dir}/SWAFR_box/"
+  ))
+  assign_global(SWAFR_box)
+  SWAFR_QDS <- readOGR(glue(
+    "{borders_dir}/SWAFR_QDS/"
+  ))
+  assign_global(SWAFR_QDS)
+
+  # FIXME: Why are these shapefile imports throwing non-fatal errors/warnings?
+  # TODO: Add GIS-std-checkers here too
+}
+
+stack_soils <- function(region = c("GCFR", "SWAFR"),
+                        variables = c("CECSOL",
+                                      "BLDFIE",
+                                      "CLYPPT",
+                                      "CRFVOL",
+                                      "OCDENS",
+                                      "PHIKCL",
+                                      "SLTPPT",
+                                      "SNDPPT")) {
+  # Create a RasterStack of all the soil variables together, after processing
+  soils <- stack()
+  for (variable in variables) {
+    x <- raster(here(
+      "data/derived-data/soils/",
+      glue("{region}_{region}_{variable}_M_250m_std_CRS_0.05_0.05.tif")
+    ))
+    soils %<>% stack(x)
+  }
+  soils
+}
+
 import_environmental_data <- function(data_dir = here("data/derived-data")) {
   # Read in and assign all data objects to global environment
 
@@ -112,3 +189,13 @@ import_environmental_data <- function(data_dir = here("data/derived-data")) {
   assign_global(GCFR_variables)
   assign_global(SWAFR_variables)
 }
+
+prompt_continue <- function() {
+  continue <- readline(message(glue(
+    "Only run the code below if you haven't already & saved the results to disc.
+    Are you sure you want to continue? [y]
+    (Press any other key to cancel.)"
+  )))
+  continue == "y"
+}
+
