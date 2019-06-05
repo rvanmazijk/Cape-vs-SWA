@@ -140,12 +140,15 @@ roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
 # LDAs -------------------------------------------------------------------------
 # (Linear Discriminant Analysis)
 
-roughness_matrix_scaled <- roughness_matrix
-roughness_matrix_scaled[, -1] %<>% scale()
-roughness_LDA <- lda(region ~ ., roughness_matrix_scaled, )
-roughness_LDA
-roughness_LDA_values <- predict(roughness_LDA)
-ldahist(roughness_LDA_values$x[, 1], g = roughness_matrix$region)  # DF1
+# TODO
+
+#roughness_matrix_scaled <- roughness_matrix
+#roughness_matrix_scaled[, -1] %<>% scale()
+#roughness_LDA <- lda(region ~ ., roughness_matrix_scaled, )
+#roughness_LDA
+#roughness_LDA_values <- predict(roughness_LDA)
+#ldahist(roughness_LDA_values$x[, 1], g = roughness_matrix$region)  # DF1
+
 # FIXME: No DF2?
 #plot(
 #  roughness_LDA_values$x[, 1],
@@ -153,22 +156,22 @@ ldahist(roughness_LDA_values$x[, 1], g = roughness_matrix$region)  # DF1
 #)
 
 # FIXME:
-roughness_EDS_LDA <- lda(region ~ ., roughness_EDS_matrix)
-roughness_EDS_LDA
-roughness_EDS_LDA_values <- predict(roughness_EDS_LDA)
-ldahist(roughness_EDS_LDA_values$x[, 1], g = roughness_EDS_matrix$region)
-roughness_QDS_LDA <- lda(region ~ ., roughness_QDS_matrix)
-roughness_QDS_LDA
-roughness_QDS_LDA_values <- predict(roughness_QDS_LDA)
-ldahist(roughness_QDS_LDA_values$x[, 1], g = roughness_QDS_matrix$region)
-roughness_HDS_LDA <- lda(region ~ ., roughness_HDS_matrix)
-roughness_HDS_LDA
-roughness_HDS_LDA_values <- predict(roughness_HDS_LDA)
-ldahist(roughness_HDS_LDA_values$x[, 1], g = roughness_HDS_matrix$region)
-roughness_3QDS_LDA <- lda(region ~ ., roughness_3QDS_matrix)
-roughness_3QDS_LDA
-roughness_3QDS_LDA_values <- predict(roughness_3QDS_LDA)
-ldahist(roughness_3QDS_LDA_values$x[, 1], g = roughness_3QDS_matrix$region)
+#roughness_EDS_LDA <- lda(region ~ ., roughness_EDS_matrix)
+#roughness_EDS_LDA
+#roughness_EDS_LDA_values <- predict(roughness_EDS_LDA)
+#ldahist(roughness_EDS_LDA_values$x[, 1], g = roughness_EDS_matrix$region)
+#roughness_QDS_LDA <- lda(region ~ ., roughness_QDS_matrix)
+#roughness_QDS_LDA
+#roughness_QDS_LDA_values <- predict(roughness_QDS_LDA)
+#ldahist(roughness_QDS_LDA_values$x[, 1], g = roughness_QDS_matrix$region)
+#roughness_HDS_LDA <- lda(region ~ ., roughness_HDS_matrix)
+#roughness_HDS_LDA
+#roughness_HDS_LDA_values <- predict(roughness_HDS_LDA)
+#ldahist(roughness_HDS_LDA_values$x[, 1], g = roughness_HDS_matrix$region)
+#roughness_3QDS_LDA <- lda(region ~ ., roughness_3QDS_matrix)
+#roughness_3QDS_LDA
+#roughness_3QDS_LDA_values <- predict(roughness_3QDS_LDA)
+#ldahist(roughness_3QDS_LDA_values$x[, 1], g = roughness_3QDS_matrix$region)
 
 # CLESs ------------------------------------------------------------------------
 
@@ -219,9 +222,6 @@ if (prompt_continue()) {  # only run if haven't already
 
 CLES_results %<>%
   filter(variable != "region") %>%
-  mutate(resolution = factor(resolution, levels = c(
-    "0.05º", "EDS", "QDS", "HDS", "3QDS"
-  ))) %>%
   mutate(resolution = case_when(
     resolution == "0.05º" ~ 0.05,
     resolution == "EDS"   ~ 0.125,
@@ -229,7 +229,6 @@ CLES_results %<>%
     resolution == "HDS"   ~ 0.50,
     resolution == "3QDS"  ~ 0.75
   ))
-
 
 # Plot & model CLES_value ~ resolution "in general"
 m_all <- lm(CLES_value ~ resolution, CLES_results)
