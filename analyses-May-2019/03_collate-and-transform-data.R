@@ -47,226 +47,95 @@ gplot(foo) +
 
 # Run on all data, aggregating to a higher scale **before** calculating
 # roughness (b/c: I know why!)
-# 0.05º x 0.05º:
-GCFR_roughness  <- map(GCFR_variables_masked2,  roughness)
-SWAFR_roughness <- map(SWAFR_variables_masked2, roughness)
-# Eighth Degree Square (EDS):
-GCFR_roughness_EDS <- map(GCFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.125 / 0.05) %>%
-    roughness()
-)
-SWAFR_roughness_EDS <- map(SWAFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.125 / 0.05) %>%
-    roughness()
-)
-# Quarter Degree Square (QDS):
-GCFR_roughness_QDS <- map(GCFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.25 / 0.05) %>%
-    roughness()
-)
-SWAFR_roughness_QDS <- map(SWAFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.25 / 0.05) %>%
-    roughness()
-)
-# Half Degree Square (HDS):
-GCFR_roughness_HDS <- map(GCFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.50 / 0.05) %>%
-    roughness()
-)
-SWAFR_roughness_HDS <- map(SWAFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.50 / 0.05) %>%
-    roughness()
-)
-# Three-Quarter Degree Square (3QDS):
-GCFR_roughness_3QDS <- map(GCFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.75 / 0.05) %>%
-    roughness()
-)
-SWAFR_roughness_3QDS <- map(SWAFR_variables_masked2,
-  ~ .x %>%
-    aggregate(fact = 0.75 / 0.05) %>%
-    roughness()
-)
+# (Eighth Degree Square = EDS, Quarter Degree Square       = QDS,
+#  Half Degree Square   = HDS, Three-Quarter Degree Square = 3QDS)
+scales <- list(base = 0.05, EDS = 0.125, QDS = 0.25, HDS = 0.50, `3QDS` = 0.75)
+GCFR_roughness <- map(scales, function(scale) {
+  map(GCFR_variables_masked2, function(layer) {
+    layer %>%
+      aggregate(fact = scale / 0.05) %>%
+      roughness()
+  })
+})
+SWAFR_roughness <- map(scales, function(scale) {
+  map(SWAFR_variables_masked2, function(layer) {
+    layer %>%
+      aggregate(fact = scale / 0.05) %>%
+      roughness()
+  })
+})
 
 # Plot to check
 par(mfrow = c(2, 3))
-plot(GCFR_roughness$pH)
-plot(GCFR_roughness_EDS$pH)
-plot(GCFR_roughness_QDS$pH)
-plot(GCFR_roughness_HDS$pH)
-plot(GCFR_roughness_3QDS$pH)
+iwalk(GCFR_roughness, ~plot(.x$pH, main = glue("GCFR {.y} pH")))
 par(op)
 par(mfrow = c(2, 3))
-plot(SWAFR_roughness$pH)
-plot(SWAFR_roughness_EDS$pH)
-plot(SWAFR_roughness_QDS$pH)
-plot(SWAFR_roughness_HDS$pH)
-plot(SWAFR_roughness_3QDS$pH)
+iwalk(SWAFR_roughness, ~plot(.x$pH, main = glue("SWAFR {.y} pH")))
 par(op)
 
 # Tidy up
-GCFR_roughness_matrix <- GCFR_roughness %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "GCFR", .)}
-SWAFR_roughness_matrix <- SWAFR_roughness %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "SWAFR", .)}
-roughness_matrix <- rbind(
-  GCFR_roughness_matrix,
-  SWAFR_roughness_matrix
+GCFR_roughness_matrices <- map(GCFR_roughness,
+  ~ .x %>%
+    stack() %>%
+    as.data.frame() %>%
+    na.exclude() %>%
+    {cbind(region = "GCFR", .)}
 )
-
-GCFR_roughness_EDS_matrix <- GCFR_roughness_EDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "GCFR", .)}
-SWAFR_roughness_EDS_matrix <- SWAFR_roughness_EDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "SWAFR", .)}
-roughness_EDS_matrix <- rbind(
-  GCFR_roughness_EDS_matrix,
-  SWAFR_roughness_EDS_matrix
+SWAFR_roughness_matrices <- map(SWAFR_roughness,
+  ~ .x %>%
+    stack() %>%
+    as.data.frame() %>%
+    na.exclude() %>%
+    {cbind(region = "SWAFR", .)}
 )
-
-GCFR_roughness_QDS_matrix <- GCFR_roughness_QDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "GCFR", .)}
-SWAFR_roughness_QDS_matrix <- SWAFR_roughness_QDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "SWAFR", .)}
-roughness_QDS_matrix <- rbind(
-  GCFR_roughness_QDS_matrix,
-  SWAFR_roughness_QDS_matrix
-)
-
-GCFR_roughness_HDS_matrix <- GCFR_roughness_HDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "GCFR", .)}
-SWAFR_roughness_HDS_matrix <- SWAFR_roughness_HDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "SWAFR", .)}
-roughness_HDS_matrix <- rbind(
-  GCFR_roughness_HDS_matrix,
-  SWAFR_roughness_HDS_matrix
-)
-
-GCFR_roughness_3QDS_matrix <- GCFR_roughness_3QDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "GCFR", .)}
-SWAFR_roughness_3QDS_matrix <- SWAFR_roughness_3QDS %>%
-  stack() %>%
-  as.data.frame() %>%
-  na.exclude() %>%
-  {cbind(region = "SWAFR", .)}
-roughness_3QDS_matrix <- rbind(
-  GCFR_roughness_3QDS_matrix,
-  SWAFR_roughness_3QDS_matrix
+roughness_matrices <- map2(
+  GCFR_roughness_matrices, SWAFR_roughness_matrices,
+  rbind
 )
 
 # PCAs -------------------------------------------------------------------------
 
-roughness_PCA <- prcomp(roughness_matrix[, -1], scale. = TRUE)
-summary(roughness_PCA)
-# Force scores to be positive if all vars rotations are negative
-if (all(roughness_PCA$rotation[, 1] <= 0)) {
-  roughness_PCA$rotation[, 1] %<>% multiply_by(-1)
-  roughness_PCA$x[, 1]        %<>% multiply_by(-1)
-}
+roughness_PCAs <- map(roughness_matrices, ~prcomp(.x[, -1], scale. = TRUE))
+map(roughness_PCAs, summary)
+# Force PC1 scores to be positive if all vars rotations are negative
+roughness_PCAs %<>% map(function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+})
 # Plot
-autoplot(roughness_PCA, data = roughness_matrix, colour = "region")
-# Store PC1 & 2 in matrix
-roughness_matrix$PC1 <- roughness_PCA$x[, 1]
-roughness_matrix$PC2 <- roughness_PCA$x[, 2]
+map2(roughness_PCAs, roughness_matrices,
+  ~ autoplot(
+    .x,
+    data = .y,
+    colour = "region"
+  )
+)
 
-# Interrogate rotations associated with different variables
-PCA_rotations <- roughness_PCA %$%
-  rotation %>%
-  {tibble(
-    var = rownames(.),
-    PC1 = .[, 1],
-    PC2 = .[, 2]
-  )} %>%
-  gather(PC, rotation, -var)
-ggplot(PCA_rotations, aes(var, rotation)) +
-  geom_col() +
-  facet_wrap(~PC, scales = "free") +
-  theme(axis.text.x = element_text(angle = 45))
+# Store PC1 & 2 in matrices for later
+roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
+  function(PCA, layer) {
+    layer$PC1 <- PCA$x[, 1]
+    layer$PC2 <- PCA$x[, 2]
+    layer
+  }
+)
 
-roughness_EDS_PCA <- prcomp(roughness_EDS_matrix[, -1], scale. = TRUE)
-summary(roughness_EDS_PCA)
-# Force scores to be positive if all vars rotations are negative
-if (all(roughness_EDS_PCA$rotation[, 1] <= 0)) {
-  roughness_EDS_PCA$rotation[, 1] %<>% multiply_by(-1)
-  roughness_EDS_PCA$x[, 1]        %<>% multiply_by(-1)
-}
-# Plot
-autoplot(roughness_EDS_PCA, data = roughness_EDS_matrix, colour = "region")
-# Store PC1 & 2 in matrix
-roughness_EDS_matrix$PC1 <- roughness_EDS_PCA$x[, 1]
-roughness_EDS_matrix$PC2 <- roughness_EDS_PCA$x[, 2]
-
-roughness_QDS_PCA <- prcomp(roughness_QDS_matrix[, -1], scale. = TRUE)
-summary(roughness_QDS_PCA)
-# Force scores to be positive if all vars rotations are negative
-if (all(roughness_QDS_PCA$rotation[, 1] <= 0)) {
-  roughness_QDS_PCA$rotation[, 1] %<>% multiply_by(-1)
-  roughness_QDS_PCA$x[, 1]        %<>% multiply_by(-1)
-}
-# Plot
-autoplot(roughness_QDS_PCA, data = roughness_QDS_matrix, colour = "region")
-# Store PC1 & 2 in matrix
-roughness_QDS_matrix$PC1 <- roughness_QDS_PCA$x[, 1]
-roughness_QDS_matrix$PC2 <- roughness_QDS_PCA$x[, 2]
-
-roughness_HDS_PCA <- prcomp(roughness_HDS_matrix[, -1], scale. = TRUE)
-summary(roughness_HDS_PCA)
-# Force scores to be positive if all vars rotations are negative
-if (all(roughness_HDS_PCA$rotation[, 1] <= 0)) {
-  roughness_HDS_PCA$rotation[, 1] %<>% multiply_by(-1)
-  roughness_HDS_PCA$x[, 1]        %<>% multiply_by(-1)
-}
-# Plot
-autoplot(roughness_HDS_PCA, data = roughness_HDS_matrix, colour = "region")
-# Store PC1 & 2 in matrix
-roughness_HDS_matrix$PC1 <- roughness_HDS_PCA$x[, 1]
-roughness_HDS_matrix$PC2 <- roughness_HDS_PCA$x[, 2]
-
-roughness_3QDS_PCA <- prcomp(roughness_3QDS_matrix[, -1], scale. = TRUE)
-summary(roughness_3QDS_PCA)
-# Force scores to be positive if all vars rotations are negative
-if (all(roughness_3QDS_PCA$rotation[, 1] <= 0)) {
-  roughness_3QDS_PCA$rotation[, 1] %<>% multiply_by(-1)
-  roughness_3QDS_PCA$x[, 1]        %<>% multiply_by(-1)
-}
-# Plot
-autoplot(roughness_3QDS_PCA, data = roughness_3QDS_matrix, colour = "region")
-# Store PC1 & 2 in matrix
-roughness_3QDS_matrix$PC1 <- roughness_3QDS_PCA$x[, 1]
-roughness_3QDS_matrix$PC2 <- roughness_3QDS_PCA$x[, 2]
+# TODO: Interrogate rotations associated with different variables
+#PCA_rotations <- roughness_PCAs %$%
+#  rotation %>%
+#  {tibble(
+#    var = rownames(.),
+#    PC1 = .[, 1],
+#    PC2 = .[, 2]
+#  )} %>%
+#  gather(PC, rotation, -var)
+#ggplot(PCA_rotations, aes(var, rotation)) +
+#  geom_col() +
+#  facet_wrap(~PC, scales = "free") +
+#  theme(axis.text.x = element_text(angle = 45))
 
 # LDAs -------------------------------------------------------------------------
 # (Linear Discriminant Analysis)
