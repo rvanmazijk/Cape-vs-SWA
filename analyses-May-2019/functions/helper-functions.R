@@ -3,51 +3,36 @@ assign_global <- function(x) {
   # not simply the parent environment (as with <<-),
   # with the same name
   assign(
-    x = deparse(substitute(x)),
+    x     = deparse(substitute(x)),
     value = x,
     envir = .GlobalEnv
   )
 }
 
-import_region_polygons <- function(borders_dir = here("data/derived-data/borders")) {
+import_region_polygons <- function(borders_dir =
+                                     here("data/derived-data/borders")) {
   # Read in and assign all polygon objects to global environment
 
-  # GCFR -------------------------------------------------------------------------
+  # GCFR -----------------------------------------------------------------------
 
-  GCFR_border <- readOGR(glue(
-    "{borders_dir}/GCFR_border/"
-  ))
+  GCFR_border          <- readOGR(glue("{borders_dir}/GCFR_border/"))
+  GCFR_border_buffered <- readOGR(glue("{borders_dir}/GCFR_border_buffered/"))
+  GCFR_box             <- readOGR(glue("{borders_dir}/GCFR_box/"))
+  GCFR_QDS             <- readOGR(glue("{borders_dir}/GCFR_QDS/"))
   assign_global(GCFR_border)
-  GCFR_border_buffered <- readOGR(glue(
-    "{borders_dir}/GCFR_border_buffered/"
-  ))
   assign_global(GCFR_border_buffered)
-  GCFR_box <- readOGR(glue(
-    "{borders_dir}/GCFR_box/"
-  ))
   assign_global(GCFR_box)
-  GCFR_QDS <- readOGR(glue(
-    "{borders_dir}/GCFR_QDS/"
-  ))
   assign_global(GCFR_QDS)
 
-  # SWAFR ------------------------------------------------------------------------
+  # SWAFR ----------------------------------------------------------------------
 
-  SWAFR_border <- readOGR(glue(
-    "{borders_dir}/SWBP_Mike-Cramer/"
-  ))
+  SWAFR_border          <- readOGR(glue("{borders_dir}/SWBP_Mike-Cramer/"))
+  SWAFR_border_buffered <- readOGR(glue("{borders_dir}/SWAFR_border_buffered/"))
+  SWAFR_box             <- readOGR(glue("{borders_dir}/SWAFR_box/"))
+  SWAFR_QDS             <- readOGR(glue("{borders_dir}/SWAFR_QDS/"))
   assign_global(SWAFR_border)
-  SWAFR_border_buffered <- readOGR(glue(
-    "{borders_dir}/SWAFR_border_buffered/"
-  ))
   assign_global(SWAFR_border_buffered)
-  SWAFR_box <- readOGR(glue(
-    "{borders_dir}/SWAFR_box/"
-  ))
   assign_global(SWAFR_box)
-  SWAFR_QDS <- readOGR(glue(
-    "{borders_dir}/SWAFR_QDS/"
-  ))
   assign_global(SWAFR_QDS)
 
   # FIXME: Why are these shapefile imports throwing non-fatal errors/warnings?
@@ -82,31 +67,19 @@ import_environmental_data <- function(data_dir = here("data/derived-data")) {
 
   # Elevation ------------------------------------------------------------------
 
-  GCFR_elev <- raster(glue(
-    "{data_dir}/elevation/elevation_GCFR_box.tif"
-  ))
-  SWAFR_elev <- raster(glue(
-    "{data_dir}/elevation/elevation_SWAFR_box.tif"
-  ))
+  GCFR_elev  <- raster(glue("{data_dir}/elevation/elevation_GCFR_box.tif"))
+  SWAFR_elev <- raster(glue("{data_dir}/elevation/elevation_SWAFR_box.tif"))
 
   # Rainfall -------------------------------------------------------------------
 
-  GCFR_MAP <- raster(glue(
-    "{data_dir}/rainfall/MAP_GCFR_box.tif"
-  ))
-  GCFR_PDQ <- raster(glue(
-    "{data_dir}/rainfall/GCFR_PDQ_box.tif"
-  ))
-  SWAFR_MAP <- raster(glue(
-    "{data_dir}/rainfall/MAP_SWAFR_box.tif"
-  ))
-  SWAFR_PDQ <- raster(glue(
-    "{data_dir}/rainfall/SWAFR_PDQ_box.tif"
-  ))
+  GCFR_MAP  <- raster(glue("{data_dir}/rainfall/MAP_GCFR_box.tif"))
+  GCFR_PDQ  <- raster(glue("{data_dir}/rainfall/GCFR_PDQ_box.tif"))
+  SWAFR_MAP <- raster(glue("{data_dir}/rainfall/MAP_SWAFR_box.tif"))
+  SWAFR_PDQ <- raster(glue("{data_dir}/rainfall/SWAFR_PDQ_box.tif"))
 
   # Land surface temperature ---------------------------------------------------
 
-  GCFR_MLST <- raster(glue(
+  GCFR_MLST  <- raster(glue(
     "{data_dir}/temperature/MODIS_annual_mean_GCFR_0.05_buffered.grd"
   ))
   SWAFR_MLST <- raster(glue(
@@ -115,19 +88,15 @@ import_environmental_data <- function(data_dir = here("data/derived-data")) {
 
   # NDVI -----------------------------------------------------------------------
 
-  GCFR_NDVI <- raster(glue(
-    "{data_dir}/NDVI/GCFR_NDVI.tif"
-  ))
-  SWAFR_NDVI <- raster(glue(
-    "{data_dir}/NDVI/SWAFR_NDVI.tif"
-  ))
+  GCFR_NDVI  <- raster(glue("{data_dir}/NDVI/GCFR_NDVI.tif"))
+  SWAFR_NDVI <- raster(glue("{data_dir}/NDVI/SWAFR_NDVI.tif"))
 
   # Soil -----------------------------------------------------------------------
 
-  GCFR_soils <- stack_soils("GCFR")
+  GCFR_soils  <- stack_soils("GCFR")
   SWAFR_soils <- stack_soils("SWAFR")
   # Re-crop to box, because when read-in the extent pops back global
-  GCFR_soils %<>% crop(GCFR_box)
+  GCFR_soils  %<>% crop(GCFR_box)
   SWAFR_soils %<>% crop(SWAFR_box)
 
   # All variables together -----------------------------------------------------
@@ -177,7 +146,7 @@ import_environmental_data <- function(data_dir = here("data/derived-data")) {
   #}
 
   GCFR_variables %<>%
-    map(crop, GCFR_variables[[4]]) %>%  # Choose a layer with the cleanest extent
+    map(crop, GCFR_variables[[4]]) %>%  # [[4]] has cleanest extent
     map(mask, GCFR_border_buffered)
   SWAFR_variables %<>%
     map(crop, SWAFR_variables[[4]]) %>%
