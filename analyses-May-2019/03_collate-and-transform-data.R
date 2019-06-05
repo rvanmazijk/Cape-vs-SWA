@@ -5,45 +5,11 @@
 
 # Setup ------------------------------------------------------------------------
 
-# .... Misc. -------------------------------------------------------------------
-
-# Preserve starting plotting environment settings,
-# to reset after par(mfrow = ...) etc.
-op <- par()
-
-# .... Load packages -----------------------------------------------------------
-
-# General programming
-library(tidyverse)
+# Load packages and functions
 library(here)
-library(glue)
-library(magrittr)
+source(here("analyses-May-2019/setup.R"))
 
-# GIS
-library(raster)
-library(rgdal)
-library(rgeos)
-
-# Analyses
-library(MASS)  # for LDA
-# FIXME: fix conflicts w/ raster::select() and dplyr::select()
-library(canprot)  # for CLES
-library(broom)  # to tidy model outputs
-
-# Figures
-library(rasterVis)  # fpr maps
-library(ggfortify)  # for PCAs
-
-# .... Source helper functions -------------------------------------------------
-
-function_filenames <- list.files(
-  here("analyses-May-2019/functions"),
-  full.names = TRUE
-)
-walk(function_filenames, source)
-
-# .... Import environmental data -----------------------------------------------
-
+# Import environmental data
 var_names <- c(
   # Environmental variable names in nice order
   "Elevation",
@@ -659,3 +625,5 @@ SWAFR_species %<>% get_geocodes(SWAFR_QDS[, "qdgc"])
 
 # New
 GCFR_QDS$Elevation <- extract(GCFR_roughness_QDS$Elevation, GCFR_QDS)
+
+
