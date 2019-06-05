@@ -24,11 +24,13 @@ var_names <- c(
 )
 data_dir <- here("data/derived-data/May-2019")
 GCFR_variables_masked2 <- map(var_names,
-  ~raster( glue("{data_dir}/GCFR_{.x}_masked2.tif"))
+  ~raster(glue("{data_dir}/GCFR_{.x}_masked2.tif"))
 )
+names(GCFR_variables_masked2) <- var_names
 SWAFR_variables_masked2 <- map(var_names,
-  ~raster( glue("{data_dir}/SWAFR_{.x}_masked2.tif"))
+  ~raster(glue("{data_dir}/SWAFR_{.x}_masked2.tif"))
 )
+names(SWAFR_variables_masked2) <- var_names
 
 # Calculate roughness layers across scales -------------------------------------
 
@@ -176,9 +178,9 @@ roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
 # CLESs ------------------------------------------------------------------------
 
 # Pseudo-code:
-# for each resolution,
-#   for each variable,
-#     CLES(Cape, SWA)
+#   for each resolution,
+#     for each variable,
+#       CLES(Cape, SWA)
 
 output_path <- here("outputs/roughness")
 
