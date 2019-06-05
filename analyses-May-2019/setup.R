@@ -23,9 +23,10 @@ library(rgeos)
 
 # Analyses
 library(MASS)  # for LDA
-# FIXME: fix conflicts w/ raster::select() and dplyr::select()
+# FIXME: fix MASS::select() conflicts w/ raster::select() and dplyr::select()
 library(canprot)  # for CLES
 library(broom)  # to tidy model outputs
+library(vegan)
 
 # Figures
 library(rasterVis)  # fpr maps
