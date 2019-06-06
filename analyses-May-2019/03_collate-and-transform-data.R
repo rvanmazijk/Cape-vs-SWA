@@ -203,10 +203,11 @@ QDS_roughness_cells <- QDS_variables_cells %>%
   mutate(hdgc = str_remove(qdgc, ".$")) %>%
   group_by(region, hdgc, variable) %>%
   summarise(
-    lon = mean(lon),
-    lat = mean(lat),
-    n_QDS = n(),
-    roughness = map_dbl(list(value), roughness_cells)
+    lon        = mean(lon),
+    lat        = mean(lat),
+    n_QDS      = n(),
+    mean_value = mean(value),
+    roughness  = map_dbl(list(value), roughness_cells)
   ) %>%
   ungroup() %>%
   filter(n_QDS >= 2)
@@ -364,10 +365,11 @@ EDS_roughness_cells <- EDS_variables_cells %>%
   mutate(qdgc = str_remove(edgc, ".$")) %>%  # now "qdgc" sensu stricto
   group_by(region, qdgc, variable) %>%
   summarise(
-    lon = mean(lon),
-    lat = mean(lat),
-    n_EDS = n(),
-    roughness = map_dbl(list(value), roughness_cells)
+    lon        = mean(lon),
+    lat        = mean(lat),
+    n_EDS      = n(),
+    mean_value = mean(value),
+    roughness  = map_dbl(list(value), roughness_cells)
   ) %>%
   ungroup() %>%
   filter(n_EDS >= 2)
@@ -489,7 +491,9 @@ QDS_roughness_cells_prepped$PC1 <- QDS_roughness_cells_PCA$x[, 1]
 QDS_roughness_cells_prepped$PC2 <- QDS_roughness_cells_PCA$x[, 2]
 
 QDS_data_cells <- QDS_roughness_cells %>%
-  spread(variable, roughness) %>%
+  gather(type, value, -region, -hdgc, -lon, -lat, -n_QDS, -variable) %>%
+  unite(temp, variable, type) %>%
+  spread(temp, value) %>%
   full_join(QDS_roughness_cells_prepped[,c("region", "hdgc", "PC1", "PC2")]) %>%
   full_join(QDS_species_data) %>%
   na.exclude()
@@ -591,7 +595,9 @@ EDS_roughness_cells_prepped$PC1 <- EDS_roughness_cells_PCA$x[, 1]
 EDS_roughness_cells_prepped$PC2 <- EDS_roughness_cells_PCA$x[, 2]
 
 EDS_data_cells <- EDS_roughness_cells %>%
-  spread(variable, roughness) %>%
+  gather(type, value, -region, -qdgc, -lon, -lat, -n_EDS, -variable) %>%
+  unite(temp, variable, type) %>%
+  spread(temp, value) %>%
   full_join(EDS_roughness_cells_prepped[,c("region", "qdgc", "PC1", "PC2")]) %>%
   full_join(EDS_species_data) %>%
   na.exclude()
