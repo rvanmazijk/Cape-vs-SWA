@@ -32,6 +32,8 @@ SWAFR_variables_masked2 <- map(var_names,
 )
 names(SWAFR_variables_masked2) <- var_names
 
+import_region_polygons()
+
 # Calculate roughness layers across scales -------------------------------------
 
 # Define roughness **here** as the mean absolute difference of a focal cell's
@@ -625,8 +627,6 @@ QDS_species_data
 QDS_roughness_cells_prepped$PC1 <- QDS_roughness_cells_PCA$x[, 1]
 QDS_roughness_cells_prepped$PC2 <- QDS_roughness_cells_PCA$x[, 2]
 
-QDS_roughness_cells_prepped[, c("region", "hdgc", "PC1", "PC2")]
-
 QDS_data_cells <- QDS_roughness_cells %>%
   spread(variable, roughness) %>%
   full_join(QDS_roughness_cells_prepped[,c("region", "hdgc", "PC1", "PC2")]) %>%
@@ -697,8 +697,63 @@ ggplot(QDS_data_cells) +
 
 write_csv(QDS_data_cells, here("outputs/QDS_data_cells.csv"))
 
-EDS_roughness_cells
+# Now again for QDS-EDS --------------------------------------------------------
 
-QDS_roughness_cells_PCA
-EDS_roughness_cells_PCA
+GCFR_species %<>% get_geocodes(GCFR_EDS[, "qdgc"])
+GCFR_species_data_EDS <- GCFR_species@data %>%
+  rename(edgc = qdgc, qdgc = hdgc) %>%
+  #as_tibble() %>%
+  #dplyr::select(edgc, qdgc) %>%
+  group_by(qdgc) %>%
+  summarise(
+    QDS_richness = length(unique(species)),
+    n_EDS        = length(unique(edgc))
+  )
+SWAFR_species %<>% get_geocodes(SWAFR_EDS[, "qdgc"])
+SWAFR_species_data_EDS <- SWAFR_species@data %>%
+  rename(edgc = qdgc, qdgc = hdgc) %>%
+  #as_tibble() %>%
+  #dplyr::select(edgc, qdgc) %>%
+  group_by(qdgc) %>%
+  summarise(
+    QDS_richness = length(unique(species)),
+    n_EDS        = length(unique(edgc))
+  )
+EDS_species_data <-
+  rbind(
+    cbind(region = "GCFR",  GCFR_species_data_EDS),
+    cbind(region = "SWAFR", SWAFR_species_data_EDS)
+  ) %>%
+  filter(n_EDS >= 2)
 
+EDS_species_data
+
+EDS_roughness_cells_prepped$PC1 <- EDS_roughness_cells_PCA$x[, 1]
+EDS_roughness_cells_prepped$PC2 <- EDS_roughness_cells_PCA$x[, 2]
+
+EDS_data_cells <- EDS_roughness_cells %>%
+  spread(variable, roughness) %>%
+  full_join(EDS_roughness_cells_prepped[,c("region", "qdgc", "PC1", "PC2")]) %>%
+  full_join(EDS_species_data) %>%
+  na.exclude()
+
+EDS_data_cells
+
+ggplot(EDS_data_cells, aes(lon, lat, colour = QDS_richness)) +
+  geom_point(size = 3) +
+  facet_grid(~region, scales = "free")
+
+ggplot(EDS_data_cells) +
+  aes(PC1, QDS_richness, colour = region) +
+  geom_point()
+ggplot(EDS_data_cells) +
+  aes(PC1/n_EDS, QDS_richness/n_EDS, colour = region) +
+  geom_point()
+ggplot(EDS_data_cells) +
+  aes(PC2, QDS_richness, colour = region) +
+  geom_point()
+ggplot(EDS_data_cells) +
+  aes(PC2/n_EDS, QDS_richness/n_EDS, colour = region) +
+  geom_point()
+
+write_csv(EDS_data_cells, here("outputs/EDS_data_cells.csv"))
