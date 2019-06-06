@@ -168,3 +168,17 @@ prompt_continue <- function() {
   continue == "y"
 }
 
+qdgc2hdgc <- function(x) {
+  # QDS -> HDS or QDS -> EDS by dropping the last letter
+  substr(x, 1, nchar(x) - 1)
+}
+
+get_geocodes <- function(flora_points, QDS_polygon) {
+  flora_points@data$qdgc <- over(flora_points, QDS_polygon)[[1]]
+  flora_points@data$hdgc <- map_chr(flora_points@data$qdgc, ~
+    .x %>%
+      as.character() %>%
+      qdgc2hdgc()
+  )
+  flora_points
+}

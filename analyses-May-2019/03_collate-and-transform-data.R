@@ -99,6 +99,8 @@ roughness_matrices <- map2(
 
 # Calculate roughness in Larsen grid cells -------------------------------------
 
+# .... HDS -> QDS --------------------------------------------------------------
+
 # The goal, as I have learnt is the easiest approach, is to construct a
 # SpatialPixelsDataFrame to collate environmental and species data.
 
@@ -189,16 +191,7 @@ ggplot(SWAFR_QDS_variables_cells, aes(lon, lat)) +
 
 # Define roughness **here** as the mean of sub-cells' mean absolute differences
 # from their con-cellulars (i.e. & e.g.: other QDS in an HDS)
-roughness_cells <- function(x) {
-  out <- vector(length = length(x))
-  for (i in seq_along(x)) {
-    out[[i]] <- mean(abs(x[i] - x[-i]))
-  }
-  mean(out)
-}
-# Test
-roughness_cells(1:4)
-# Good.
+body(roughness_cells)
 
 # Tidy further and calculate roughness in cells sensu stricto
 QDS_variables_cells <- rbind(
@@ -265,7 +258,7 @@ QDS_roughness_cells_PCA %$%
     facet_wrap(~PC, scales = "free") +
     theme(axis.text.x = element_text(angle = 45))
 
-# And again but QDS vs EDS a.o.t. HDS vs QDS -----------------------------------
+# .... QDS -> EDS --------------------------------------------------------------
 
 # Import EDS polygons
 ZA_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_03_zaf")
@@ -427,141 +420,7 @@ EDS_roughness_cells_PCA %$%
     theme(axis.text.x = element_text(angle = 45))
 
 # Species turnover -------------------------------------------------------------
-
-GCFR_species <- read_rds(here(
-  "data/derived-data/flora/trimmed_GCFR_clean_flora_spdf_species"
-))
-SWAFR_species <- read_rds(here(
-  "data/derived-data/flora/trimmed_SWAFR_clean_flora_spdf_species"
-))
-
-# Put QDS geocodes in species SpatialPointsDataFrame
-qdgc2hdgc <- function(x) {
-  # QDS -> HDS by dropping the last letter
-  substr(x, 1, nchar(x) - 1)
-}
-get_geocodes <- function(flora_points, QDS_polygon) {
-  flora_points@data$qdgc <- over(flora_points, QDS_polygon)[[1]]
-  flora_points@data$hdgc <- map_chr(flora_points@data$qdgc, ~
-    .x %>%
-      as.character() %>%
-      qdgc2hdgc()
-  )
-  flora_points
-}
-
-# Calculate turnover between QDS within HDS
-calc_richness_turnover <- function(flora_points, QDS_polygon, output_path,
-                                   region_name = NULL, date = NULL) {
-  # Master function to calculate richness and turnover metrics in grid cells
-  # using a SpatialPointsDataFrame of species occurrences
-  stopifnot(exprs = {
-    class(flora_points) == "SpatialPointsDataFrame"
-    class(QDS_polygon)  == "SpatialPolygonsDataFrame"
-  })
-
-  # Get the QDS and HDS geocodes -----------------------------------------------
-
-  flora_points %<>% get_geocodes(QDS_polygon[, "qdgc"])
-
-  # Calculate average Jaccard distance betw QDS in each HDS --------------------
-
-  # Init empty columns for data to come
-  flora_points@data$HDS_richness <- NA
-  flora_points@data$n_QDS <- NA
-  flora_points@data$mean_QDS_richness <- NA
-  flora_points@data$mean_QDS_turnover <- NA
-
-  #flora_points@data$lat <- NA
-  #flora_points@data$lon <- NA
-
-  HDS_cells <- levels(factor(flora_points$hdgc))
-  pb <- txtProgressBar(0, length(HDS_cells))
-  for (i in seq_along(HDS_cells)) {
-
-    # Current HDS geocode name
-    current_HDS <- HDS_cells[[i]]
-
-    # Filter to only those QDS w/i the current HDS
-    spp_in_hdgc_by_qdgc <- flora_points@data %>%
-      filter(hdgc == current_HDS) %>%
-      dplyr::select(species, qdgc)
-
-    # Construct a community matrix containing the 4 QDS
-    # Make an empty matrix:
-    community_matrix <- matrix(
-      nrow = length(unique(spp_in_hdgc_by_qdgc$qdgc)),
-      ncol = length(unique(spp_in_hdgc_by_qdgc$species)),
-      dimnames = list(
-        unique(spp_in_hdgc_by_qdgc$qdgc),
-        unique(spp_in_hdgc_by_qdgc$species)
-      )
-    )
-    # Fill it:
-    for (j in seq(nrow(community_matrix))) {
-      for (k in seq(ncol(community_matrix))) {
-        community_matrix[j, k] <-
-          spp_in_hdgc_by_qdgc %>%
-          filter(
-            qdgc    == rownames(community_matrix)[[j]],
-            species == colnames(community_matrix)[[k]]
-          ) %>%
-          magrittr::extract2("species") %>%
-          unique() %>%
-          is_empty() %>%
-          not()
-      }
-    }
-
-    # Output mean Jaccard + richness measures ----------------------------------
-
-    # Output the summary data to the right rows in the spatial points dataframe
-    flora_points$HDS_richness[flora_points$hdgc == current_HDS] <-
-      community_matrix %>%
-      colnames() %>%
-      length()
-    flora_points$mean_QDS_turnover[flora_points$hdgc == current_HDS] <-
-      community_matrix %>%
-      vegdist(method = "jaccard") %>%
-      mean(na.rm = TRUE)
-    flora_points$n_QDS[flora_points$hdgc == current_HDS] <-
-      community_matrix %>%
-      nrow()
-    flora_points$mean_QDS_richness[flora_points$hdgc == current_HDS] <-
-      community_matrix %>%
-      t() %>%
-      as.data.frame() %>%
-      summarise_if(is.logical, function(x) length(x[x])) %>%
-      t() %>%
-      mean(na.rm = TRUE)
-
-    #flora_points$lat[flora_points$hdgc == current_HDS] <-
-    #flora_points$lon[flora_points$hdgc == current_HDS] <-
-
-    setTxtProgressBar(pb, i)
-
-  }
-  close(pb)
-
-  # Save to disc ---------------------------------------------------------------
-
-  if (is.null(date)) {
-    date <- Sys.Date()
-  }
-  if (is.null(region_name)) {
-    region_name <- "region"
-  }
-  for (layer in names(flora_points)) {
-    writeOGR(
-      flora_points,
-      dsn    = glue("{output_path}/{region_name}_species_{date}"),
-      layer  = layer,
-      driver = "ESRI Shapefile"
-    )
-  }
-
-  flora_points
-}
+# (HDS -> QDS only)
 
 output_path <- here("outputs/turnover")
 
@@ -599,6 +458,8 @@ if (!file.exists(SWAFR_species_path)) {
 
 # Combine species turnover and richness (cellular) datasets --------------------
 
+# .... HDS -> QDS --------------------------------------------------------------
+
 names(GCFR_species) <- names(SWAFR_species) <- c(
   "species", "cell_nos", "qdgc", "hdgc",
   "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
@@ -633,77 +494,77 @@ QDS_data_cells <- QDS_roughness_cells %>%
   full_join(QDS_species_data) %>%
   na.exclude()
 
-ggplot(QDS_data_cells, aes(lon, lat, colour = HDS_richness)) +
-  geom_point(size = 3) +
-  facet_grid(~region, scales = "free")
-ggplot(QDS_data_cells, aes(lon, lat, colour = mul_turnover)) +
-  geom_point(size = 3) +
-  facet_grid(~region, scales = "free")
-ggplot(QDS_data_cells, aes(lon, lat, colour = PC1)) +
-  geom_point(size = 3) +
-  facet_grid(~region, scales = "free")
-ggplot(QDS_data_cells, aes(lon, lat, colour = PC2)) +
-  geom_point(size = 3) +
-  facet_grid(~region, scales = "free")
-
-ggplot(QDS_data_cells) +
-  aes(
-    PC1, HDS_richness,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    PC1/n_QDS, HDS_richness/n_QDS,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    PC1, mul_turnover,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    PC1/n_QDS, mul_turnover/n_QDS,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    PC1, mean_QDS_turnover,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    PC1/n_QDS, mean_QDS_turnover/n_QDS,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    add_turnover_prop, HDS_richness,
-    colour = region
-  ) +
-  geom_point()
-ggplot(QDS_data_cells) +
-  aes(
-    add_turnover_prop/n_QDS, HDS_richness/n_QDS,
-    colour = region
-  ) +
-  geom_point()
+QDS_data_cells
 
 write_csv(QDS_data_cells, here("outputs/QDS_data_cells.csv"))
 
-# Now again for QDS-EDS --------------------------------------------------------
+#ggplot(QDS_data_cells, aes(lon, lat, colour = HDS_richness)) +
+#  geom_point(size = 3) +
+#  facet_grid(~region, scales = "free")
+#ggplot(QDS_data_cells, aes(lon, lat, colour = mul_turnover)) +
+#  geom_point(size = 3) +
+#  facet_grid(~region, scales = "free")
+#ggplot(QDS_data_cells, aes(lon, lat, colour = PC1)) +
+#  geom_point(size = 3) +
+#  facet_grid(~region, scales = "free")
+#ggplot(QDS_data_cells, aes(lon, lat, colour = PC2)) +
+#  geom_point(size = 3) +
+#  facet_grid(~region, scales = "free")
+#
+#ggplot(QDS_data_cells) +
+#  aes(
+#    PC1, HDS_richness,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    PC1/n_QDS, HDS_richness/n_QDS,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    PC1, mul_turnover,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    PC1/n_QDS, mul_turnover/n_QDS,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    PC1, mean_QDS_turnover,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    PC1/n_QDS, mean_QDS_turnover/n_QDS,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    add_turnover_prop, HDS_richness,
+#    colour = region
+#  ) +
+#  geom_point()
+#ggplot(QDS_data_cells) +
+#  aes(
+#    add_turnover_prop/n_QDS, HDS_richness/n_QDS,
+#    colour = region
+#  ) +
+#  geom_point()
+
+# .... QDS -> EDS --------------------------------------------------------------
 
 GCFR_species %<>% get_geocodes(GCFR_EDS[, "qdgc"])
 GCFR_species_data_EDS <- GCFR_species@data %>%
   rename(edgc = qdgc, qdgc = hdgc) %>%
-  #as_tibble() %>%
-  #dplyr::select(edgc, qdgc) %>%
   group_by(qdgc) %>%
   summarise(
     QDS_richness = length(unique(species)),
@@ -712,8 +573,6 @@ GCFR_species_data_EDS <- GCFR_species@data %>%
 SWAFR_species %<>% get_geocodes(SWAFR_EDS[, "qdgc"])
 SWAFR_species_data_EDS <- SWAFR_species@data %>%
   rename(edgc = qdgc, qdgc = hdgc) %>%
-  #as_tibble() %>%
-  #dplyr::select(edgc, qdgc) %>%
   group_by(qdgc) %>%
   summarise(
     QDS_richness = length(unique(species)),
@@ -739,21 +598,21 @@ EDS_data_cells <- EDS_roughness_cells %>%
 
 EDS_data_cells
 
-ggplot(EDS_data_cells, aes(lon, lat, colour = QDS_richness)) +
-  geom_point(size = 3) +
-  facet_grid(~region, scales = "free")
-
-ggplot(EDS_data_cells) +
-  aes(PC1, QDS_richness, colour = region) +
-  geom_point()
-ggplot(EDS_data_cells) +
-  aes(PC1/n_EDS, QDS_richness/n_EDS, colour = region) +
-  geom_point()
-ggplot(EDS_data_cells) +
-  aes(PC2, QDS_richness, colour = region) +
-  geom_point()
-ggplot(EDS_data_cells) +
-  aes(PC2/n_EDS, QDS_richness/n_EDS, colour = region) +
-  geom_point()
-
 write_csv(EDS_data_cells, here("outputs/EDS_data_cells.csv"))
+
+#ggplot(EDS_data_cells, aes(lon, lat, colour = QDS_richness)) +
+#  geom_point(size = 3) +
+#  facet_grid(~region, scales = "free")
+#
+#ggplot(EDS_data_cells) +
+#  aes(PC1, QDS_richness, colour = region) +
+#  geom_point()
+#ggplot(EDS_data_cells) +
+#  aes(PC1/n_EDS, QDS_richness/n_EDS, colour = region) +
+#  geom_point()
+#ggplot(EDS_data_cells) +
+#  aes(PC2, QDS_richness, colour = region) +
+#  geom_point()
+#ggplot(EDS_data_cells) +
+#  aes(PC2/n_EDS, QDS_richness/n_EDS, colour = region) +
+#  geom_point()
