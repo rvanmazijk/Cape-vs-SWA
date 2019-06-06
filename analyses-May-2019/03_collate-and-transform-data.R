@@ -240,6 +240,8 @@ autoplot(
   data   = QDS_roughness_cells_prepped,
   colour = "region"
 )
+write_rds(QDS_roughness_cells_PCA, here("outputs/QDS_roughness_cells_PCA.RDS"))
+
 
 # Store PC1--2 in the original data, for later modelling etc.
 #QDS_roughness_cells$PC1 <- QDS_roughness_cells_PCA$x[, 1]
@@ -402,6 +404,7 @@ autoplot(
   data   = EDS_roughness_cells_prepped,
   colour = "region"
 )
+write_rds(EDS_roughness_cells_PCA, here("outputs/EDS_roughness_cells_PCA.RDS"))
 
 # Store PC1--2 in the original data, for later modelling etc.
 #EDS_roughness_cells$PC1 <- EDS_roughness_cells_PCA$x[, 1]
