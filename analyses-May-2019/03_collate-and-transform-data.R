@@ -224,7 +224,7 @@ QDS_roughness_cells_prepped <- QDS_roughness_cells %>%
   #dplyr::select(-hdgc) %>%
   as.data.frame()
 QDS_roughness_cells_PCA <- prcomp(
-  QDS_roughness_cells_prepped[, -c(1, 2)],
+  log(QDS_roughness_cells_prepped[, -c(1, 2)]),
   scale. = TRUE
 )
 
@@ -386,7 +386,7 @@ EDS_roughness_cells_prepped <- EDS_roughness_cells %>%
   #dplyr::select(-qdgc) %>%
   as.data.frame()
 EDS_roughness_cells_PCA <- prcomp(
-  EDS_roughness_cells_prepped[, -c(1, 2)],
+  log(EDS_roughness_cells_prepped[, -c(1, 2)]),
   scale. = TRUE
 )
 
