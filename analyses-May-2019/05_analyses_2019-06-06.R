@@ -374,9 +374,243 @@ ggplot(HDS, aes(PC1, Elevation_roughness, colour = region)) +
 ggplot(HDS, aes(PC2, Elevation_roughness, colour = region)) +
   geom_point()
 
+ggplot(QDS, aes(lon, lat, colour = PC1)) +
+  geom_point(size = 3) +
+  facet_grid(~region, scales = "free_x") +
+  scale_colour_viridis_c()
+
 ggplot(HDS, aes(lon, lat, colour = PC1)) +
   geom_point(size = 3) +
-  facet_wrap(~region, scales = "free")
+  facet_wrap(~region, scales = "free") +
+  scale_colour_viridis_c()
 ggplot(HDS, aes(lon, lat, colour = PC2)) +
   geom_point(size = 3) +
   facet_wrap(~region, scales = "free")
+
+# (...) PCA biplots again ------------------------------------------------------
+
+HDS_PCA      <- read_rds(here("outputs/QDS_roughness_cells_PCA.RDS"))
+HDS_PCA_data <- read_csv(here("outputs/QDS_roughness_cells_prepped.csv"))
+QDS_PCA      <- read_rds(here("outputs/EDS_roughness_cells_PCA.RDS"))
+QDS_PCA_data <- read_csv(here("outputs/EDS_roughness_cells_prepped.csv"))
+
+# Log to match PCA
+HDS_PCA_data[, -c(1, 2)] %<>% log()
+QDS_PCA_data[, -c(1, 2)] %<>% log()
+
+autoplot(HDS_PCA,
+  data            = HDS_PCA_data,
+  colour          = "region",
+  loadings        = TRUE,
+  loadings.colour = "blue",
+  loadings.label  = TRUE
+)
+autoplot(QDS_PCA,
+  data            = QDS_PCA_data,
+  colour          = "region",
+  loadings        = TRUE,
+  loadings.colour = "blue",
+  loadings.label  = TRUE
+)
+
+HDS %>%
+  filter(n_QDS == 4) %>%
+  dplyr::select(region, PC1, PC2) %>%
+  group_by(region) %>%
+  summarise_all(.funs = list(mean = mean, sd = sd)) %>%
+  mutate(
+    PC1_upp = PC1_mean + PC1_sd,
+    PC1_low = PC1_mean - PC1_sd,
+    PC2_upp = PC2_mean + PC2_sd,
+    PC2_low = PC2_mean - PC2_sd
+  ) %>%
+  ggplot(aes(PC1_mean, PC2_mean, colour = region)) +
+    geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_point() +
+    geom_errorbar( aes(ymin = PC2_low, ymax = PC2_upp), width  = 0) +
+    geom_errorbarh(aes(xmin = PC1_low, xmax = PC1_upp), height = 0) +
+    geom_point(
+      data    = filter(HDS, n_QDS == 4),
+      mapping = aes(PC1, PC2, colour = region),
+      alpha   = 0.5
+    ) +
+    theme_minimal()
+
+QDS %>%
+  filter(n_EDS == 4) %>%
+  dplyr::select(region, PC1, PC2) %>%
+  group_by(region) %>%
+  summarise_all(.funs = list(mean = mean, sd = sd)) %>%
+  mutate(
+    PC1_upp = PC1_mean + PC1_sd,
+    PC1_low = PC1_mean - PC1_sd,
+    PC2_upp = PC2_mean + PC2_sd,
+    PC2_low = PC2_mean - PC2_sd
+  ) %>%
+  ggplot(aes(PC1_mean, PC2_mean, colour = region)) +
+    geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_point() +
+    geom_errorbar( aes(ymin = PC2_low, ymax = PC2_upp), width  = 0) +
+    geom_errorbarh(aes(xmin = PC1_low, xmax = PC1_upp), height = 0) +
+    geom_point(
+      data    = filter(QDS, n_EDS == 4),
+      mapping = aes(PC1, PC2, colour = region),
+      alpha   = 0.25
+    ) +
+    theme_minimal()
+
+ggplot(HDS, aes(PC1, PC2, colour = PC2 > 0)) +
+  geom_point()
+
+HDS %>%
+  split(.$region) %>%
+  map(~.x %$% table(PC2 > 0, PC1 > 0))
+
+my_PCA_plot <- function(data) {
+  get_lim <- function(x) {
+    lim <- ceiling(max(x))
+    c(-lim, lim)
+  }
+  plot_xlim <- get_lim(data$PC1)
+  plot_ylim <- get_lim(data$PC2)
+  no_legend_no_grid <- theme(
+    legend.position  = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+  white_rect <- grid::grid.rect(gp = grid::gpar(col = "white"))
+
+  PC1_histograms <- ggplot(data, aes(PC1, fill = region)) +
+    geom_histogram(bins = 20, position = "dodge") +
+    xlim(plot_xlim) +
+    theme_minimal() +
+    theme(
+      axis.title.x       = element_blank(),
+      axis.text.x        = element_blank(),
+      axis.text.y        = element_text(angle = 90),
+      axis.line.x.bottom = element_blank(),
+      axis.line.x.top    = element_blank(),
+      axis.line.y.right  = element_blank()
+    ) +
+    no_legend_no_grid
+  PC2_histograms <- ggplot(data, aes(PC2, fill = region)) +
+    geom_histogram(bins = 20, position = "dodge") +
+    xlim(plot_ylim) +
+    coord_flip() +
+    theme_minimal() +
+    theme(
+      axis.title.y       = element_blank(),
+      axis.text.y        = element_blank(),
+      axis.line.y.right  = element_blank(),
+      axis.line.y.left   = element_blank(),
+      axis.line.x.top    = element_blank()
+    ) +
+    no_legend_no_grid
+
+  PCA_biplot <- ggplot(data, aes(PC1, PC2, colour = region)) +
+    geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_point() +
+    lims(x = plot_xlim, y = plot_ylim) +
+    theme_bw() +
+    theme(axis.text.y = element_text(angle = 90)) +
+    no_legend_no_grid
+
+  cowplot::plot_grid(
+    PC1_histograms, white_rect,
+    PCA_biplot,      PC2_histograms,
+    ncol = 2,
+    rel_widths = c(4, 1), rel_heights = c(1, 4)
+  )
+}
+foo <- my_PCA_plot(HDS)
+foo
+PC1_histograms <- ggplot(QDS, aes(PC1, fill = region)) +
+  xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.x = element_blank(),
+                                  axis.text.x = element_blank(),
+                                  axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC2_histograms <- ggplot(QDS, aes(PC2, fill = region)) +
+  xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.y = element_blank(),
+                                  axis.text.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC_biplot <- ggplot(QDS, aes(PC1, PC2, colour = region)) +
+  lims(x = c(-5, 5), y = c(-5, 5)) +
+  geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none", axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+white_rect <- grid::grid.rect(gp = grid::gpar(col = "white"))
+cowplot::plot_grid(
+  PC1_histograms, white_rect,
+  PC_biplot,      PC2_histograms,
+  ncol = 2,
+  rel_widths = c(4, 1), rel_heights = c(1, 4)
+)
+
+PC1_histograms <- ggplot(HDS, aes(PC1, fill = region)) +
+  #xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.x = element_blank(),
+                                  axis.text.x = element_blank(),
+                                  axis.title.y = element_blank(),
+                                  axis.text.y = element_blank(),
+                                  #axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC2_histograms <- ggplot(HDS, aes(PC2, fill = region)) +
+  #xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.y = element_blank(),
+                                  axis.text.y = element_blank(),
+                                  axis.title.x = element_blank(),
+                                  axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC_biplot <- ggplot(HDS, aes(PC1, PC2, colour = region)) +
+  #lims(x = c(-5, 5), y = c(-5, 5)) +
+  geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none", axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+white_rect <- grid::grid.rect(gp = grid::gpar(col = "white"))
+cowplot::plot_grid(
+  PC1_histograms, white_rect,
+  PC_biplot,      PC2_histograms,
+  ncol = 2,
+  rel_widths = c(4, 1), rel_heights = c(1, 4)
+)
+
+all_PCA_data <- rbind(
+  cbind(scale = "HDS", HDS_PCA_data[, -2]),
+  cbind(scale = "QDS", QDS_PCA_data[, -2])
+)
+
+foo <- prcomp(all_PCA_data[, -c(1, 2)], scale. = TRUE)
+if (all(foo$rotation[, 1] <= 0)) {
+  foo$rotation[, 1] %<>% multiply_by(-1)
+  foo$x[, 1]        %<>% multiply_by(-1)
+}
+autoplot(foo, data = unite(all_PCA_data, region_scale, region, scale), colour = "region_scale", alpha = 0.25)
