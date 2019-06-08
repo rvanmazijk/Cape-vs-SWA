@@ -235,8 +235,7 @@ if (all(QDS_roughness_cells_PCA$rotation[, 1] <= 0)) {
 }
 
 # Plot to inspect
-autoplot(
-  QDS_roughness_cells_PCA,
+autoplot(QDS_roughness_cells_PCA,
   data   = QDS_roughness_cells_prepped,
   colour = "region"
 )
@@ -400,8 +399,7 @@ if (all(EDS_roughness_cells_PCA$rotation[, 1] <= 0)) {
 }
 
 # Plot to inspect
-autoplot(
-  EDS_roughness_cells_PCA,
+autoplot(EDS_roughness_cells_PCA,
   data   = EDS_roughness_cells_prepped,
   colour = "region"
 )
