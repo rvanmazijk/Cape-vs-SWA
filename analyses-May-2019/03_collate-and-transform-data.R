@@ -97,6 +97,14 @@ roughness_matrices <- map2(
   rbind
 )
 
+# Save all to disc
+iwalk(roughness_matrices,
+  ~ write_csv(.x, here(
+    "outputs/roughness",
+    glue("{.y}_roughness_matrix.csv")
+  ))
+)
+
 # Calculate roughness in Larsen grid cells -------------------------------------
 
 # .... HDS -> QDS --------------------------------------------------------------
