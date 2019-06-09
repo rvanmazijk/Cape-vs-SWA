@@ -1,0 +1,236 @@
+---
+title: "Analyses v2"
+subtitle: "Cape vs SWA"
+author: "Ruan van Mazijk"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+source(here("analyses-May-2019/setup.R"))
+```
+
+
+# 1. Environmental heterogeneity & scale
+
+_Is the Cape for environmentalyl heterogeneous than SWA, and does the scale of that heterogeneity differ to that of SWA?_
+
+For this question, environmental roughness in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell $x^*$, the roughness is based on $x_1, x_2, \dots, x_i, \dots, x_8$ neighbour cells as:
+
+\begin{align*}
+  Roughness(x^*) =
+    f \left( \begin{matrix}
+      x_1 & x_2 & x_3 \\
+      x_4 & x^* & x_5 \\
+      x_6 & x_7 & x_8
+    \end{matrix} \right) =
+    \frac{1}{n} \sum_{i=1}^n |x^* - x_i|
+\end{align*}
+
+In R, I have implemented this as follows:
+
+```{r print-roughness-body, eval=FALSE}
+roughness <- function(x) {
+  raster::focal(x, matrix(1, nrow = 3, ncol = 3), function(x) {
+    focal_cell <- x[5]
+    neighbour_cells <- x[
+      !is.na(x) &
+      !is.nan(x) &
+      x != focal_cell
+    ]
+    ifelse(!is.na(focal_cell) & !is.nan(focal_cell),
+      mean(abs(focal_cell - neighbour_cells)),
+      NA
+    )
+  })
+}
+```
+
+\clearpage
+
+## 1.1 Ordinating environmental heterogeneity
+
+Here, I $log(x+1)$-transform and perform a scaled and centred PCA of the roughness values as defined above, at each of five spatial scales: the base data resolution (0.05º x 0.05º), eighth- (EDS), quarter- (QDS), half- (HDS) and three-quarter-degree-squares (3QDS).
+
+```{r import-roughness-matrices, include=FALSE}
+output_path      <- here("outputs/roughness")
+resolutions      <- c("base", "EDS", "QDS", "HDS", "3QDS")
+matrix_filenames <- glue("{output_path}/{resolutions}_roughness_matrix.csv")
+
+roughness_matrices <- map(matrix_filenames, read_csv)
+names(roughness_matrices) <- resolutions
+```
+
+The data matrices for each scale for this PCA look like this (and obviously thr region is excluded from the PCA proper):
+
+```{r print-roughness-matrix-example, echo=FALSE}
+roughness_matrices %$%
+  base %>%
+  mutate_if(is.numeric, log1p) %>%
+  mutate_if(is.numeric, round, digits = 2) %>%
+  {rbind(head(.), rep("...", 11), tail(.))} %>%
+  knitr::kable()
+```
+
+```{r PCA-analysis, include=FALSE}
+roughness_PCAs <- map(roughness_matrices,
+  ~ .x[, -1] %>%
+    log1p() %>%
+    prcomp(scale. = TRUE)
+)
+
+# Force PC1 scores to be positive if all vars rotations are negative
+roughness_PCAs %<>% map(function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+})
+
+# Store PC1 & 2 in matrices for later
+roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
+  function(PCA, layer) {
+    layer$PC1 <- PCA$x[, 1]
+    layer$PC2 <- PCA$x[, 2]
+    layer
+  }
+)
+```
+
+Plot PC1 vs PC2 at each scale:
+
+```{r plot-PCA, echo=FALSE, fig.height=8}
+roughness_PCA_plots <- map2(roughness_PCAs, roughness_matrices,
+  ~ autoplot(.x,
+      data = .y, colour = "region", alpha = 0.25,
+      loadings = TRUE, loadings.label = TRUE, loadings.colour = "black"
+    )
+)
+my_legend <- cowplot::get_legend(roughness_PCA_plots[[1]])
+roughness_PCA_plots %<>% map(~.x + theme(legend.position = "none"))
+roughness_PCA_plots <- c(roughness_PCA_plots, my_legend = list(my_legend))
+cowplot::plot_grid(
+  plotlist = roughness_PCA_plots,
+  labels   = names(roughness_PCA_plots),
+  nrow     = 3
+)
+```
+
+\clearpage
+
+## 1.2 Effect size of Cape vs SWA heterogeneity
+
+I calculated the $CLES$ of Cape > SWA untransformed roughness and PC1 values (from the analysis above data).
+
+```{r CLES-analysis, include=FALSE}
+GCFR_roughness_data <- roughness_matrices %>%
+  map(filter, region == "GCFR") %>%
+  map(dplyr::select, -region, -PC2)
+SWAFR_roughness_data <- roughness_matrices %>%
+  map(filter, region == "SWAFR") %>%
+  map(dplyr::select, -region, -PC2)
+
+# (WARNING: this takes a while... Only run if haven't already...)
+if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
+  set.seed(1234)
+  CLES_results <- map2_df(GCFR_roughness_data, SWAFR_roughness_data,
+    .id = "resolution",  # for every spatial resolution,
+    ~ map2_df(.x, .y,
+      .id = "variable",  # for every variable in each region,
+      ~tibble(CLES_value = CLES(.y, .x))
+    )
+  )
+  # Save results to disc
+  write_csv(
+    CLES_results,
+    glue("{output_path}/CLES_results.csv")
+  )
+} else {  # (... Or import from disc.)
+  CLES_results <- read_csv(glue("{output_path}/CLES_results.csv"))
+}
+
+# Tidy
+CLES_results %<>%
+  filter(variable != "region") %>%
+  mutate(resolution = case_when(
+    resolution == "base" ~ 0.05,
+    resolution == "EDS"  ~ 0.125,
+    resolution == "QDS"  ~ 0.25,
+    resolution == "HDS"  ~ 0.50,
+    resolution == "3QDS" ~ 0.75
+  ))
+```
+
+Plot $CLES$ vs scale for each variable^[Note: fits of $CLES ~ scale$ plotted regardless of significance (see Table 2)---will remove non-significant ones later.]:
+
+```{r plot-CLES, echo=FALSE}
+ggplot(filter(CLES_results, variable != "PC2"), aes(resolution, CLES_value)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  geom_hline(yintercept = 0.5, lty = "dashed") +
+  facet_wrap(~variable)
+```
+
+```{r model-CLES, echo=FALSE}
+CLES_models <- CLES_results %>%
+  filter(variable != "PC2") %>%
+  split(.$variable) %>%
+  map(~lm(CLES_value ~ resolution, .x))
+CLES_model_summaries <- CLES_models %>%
+  map_df(.id = "variable", ~ cbind(
+    .x %>% 
+      tidy() %>% 
+      filter(term != "(Intercept)") %>% 
+      dplyr::select(estimate, p.value),
+    dplyr::select(glance(.x), r.squared)
+  )) %>%
+  rename(slope = estimate) %>%
+  mutate(
+    sig = ifelse(p.value <= 0.05, "*", ""),
+    slope_sign = case_when(
+      sig == "*" & slope > 0 ~ "+",
+      sig == "*" & slope < 0 ~ "-",
+      TRUE                   ~ ""
+    )
+  ) %>%
+  arrange(desc(sig), slope_sign)
+knitr::kable(CLES_model_summaries, align = "lrrrcc", caption = paste(
+  "Slopes, significances and R^2^-values from regressions",
+  "of $CLES$ against each form of environmental roughness."
+))
+```
+
+# 2. Species richness & turnover
+
+```{r import-cellular-data}
+HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
+QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
+```
+
+## 2.1 Univariate comparisons
+
+```{r}
+ggplot(HDS, aes(HDS_richness, fill = region)) +
+  geom_histogram(bins = 20, position = "dodge")
+ggplot(HDS, aes(mul_turnover, fill = region)) +
+  geom_histogram(bins = 20, position = "dodge")
+ggplot(HDS, aes(mul_turnover, HDS_richness, colour = region)) +
+  geom_smooth() +
+  geom_point()
+ggplot(HDS, aes(mul_turnover / n_QDS, HDS_richness / n_QDS, colour = region)) +
+  geom_smooth() +#method = lm, formula = y ~ log(x)) +
+  geom_point()
+ggplot(HDS, aes(mean_QDS_richness, HDS_richness, colour = region)) +
+  geom_smooth(method = lm) +
+  geom_point()
+ggplot(HDS, aes(mean_QDS_richness / n_QDS, HDS_richness / n_QDS, colour = region)) +
+  geom_smooth(method = lm) +
+  geom_point()
+m <- lm(HDS_richness ~ mean_QDS_richness * mul_turnover + mean_QDS_richness * region + mul_turnover * region, HDS)
+tidy(m)
+visreg::visreg(m, xvar = "mean_QDS_richness", by = "region", cond = list(mul_turnover = 0.5), overlay = TRUE)
+visreg::visreg(m, xvar = "mean_QDS_richness", by = "region", cond = list(region = "SWAFR"), overlay = TRUE)
+```
