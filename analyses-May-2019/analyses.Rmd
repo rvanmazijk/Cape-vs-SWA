@@ -72,7 +72,7 @@ roughness_matrices <- map(matrix_filenames, read_csv)
 names(roughness_matrices) <- resolutions
 ```
 
-The data matrices for each scale for this PCA look like this (and obviously thr region is excluded from the PCA proper):
+The data matrices for each scale for this PCA look like this (and obviously the "region" column was excluded from the PCA proper):
 
 ```{r print-roughness-matrix-example, echo=FALSE}
 roughness_matrices %$%
@@ -128,6 +128,12 @@ cowplot::plot_grid(
 )
 ```
 
+Plot maps of exemplary roughness variables and PC1
+
+```{r map-PCA}
+# TODO
+```
+
 \clearpage
 
 ## 1.2. Effect size of Cape vs SWA heterogeneity
@@ -176,11 +182,80 @@ CLES_results %<>%
 Plot $CLES$ vs scale for each variable^[Note: fits of $CLES ~ scale$ plotted regardless of significance (see Table 2)---will remove non-significant ones later.]:
 
 ```{r plot-CLES, echo=FALSE}
-ggplot(filter(CLES_results, variable != "PC2"), aes(resolution, CLES_value)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  geom_hline(yintercept = 0.5, lty = "dashed") +
-  facet_wrap(~variable)
+CLES_results %>%
+  filter(variable != "PC2") %>%
+  ggplot(aes(resolution, CLES_value)) +
+    geom_point() +
+    geom_smooth(method = lm) +
+    geom_hline(yintercept = 0.5, lty = "dashed") +
+    facet_wrap(~variable) +
+    scale_x_continuous("Scale",
+      breaks = c(0.05,   0.125, 0.25,  0.50,  0.75),
+      labels = c("0.05º", "EDS", "QDS", "HDS", "3QDS")
+    ) +
+    scale_y_continuous("CLES\n(GCFR > SWAFR)",
+      breaks = c(0.50, 0.75, 1.00)      
+    ) +
+    theme_bw() +
+    theme(
+      legend.position = "none",
+      axis.text.x = element_text(angle = 90),
+      panel.grid = element_blank()
+    )
+```
+
+```{r plot-CLES-draft}
+CLES_results2 <- CLES_results %>%
+  filter(variable != "PC2") %>%
+  mutate(variable_type = case_when(
+    variable == "PC1"                          ~ "PC1",
+    variable == "Elevation"                    ~ "Elevation",
+    variable == "NDVI"                         ~ "NDVI",
+    variable %in% c("MAP", "PDQ", "Surface.T") ~ "Climate",
+    TRUE                                       ~ "Soil"
+  )) %>%
+  mutate(variable_type = factor(variable_type, levels = c(
+    "Elevation",
+    "Climate",
+    "NDVI",
+    "Soil",
+    "PC1"
+  ))) %>%
+  mutate(variable = factor(variable, levels = c(
+    "Elevation",
+    "MAP", "PDQ", "Surface.T",
+    "NDVI",
+    "CEC", "Clay", "Soil.C", "pH",
+    "PC1"
+  )))
+ggplot(CLES_results2, aes(resolution, CLES_value, colour = variable_type)) +
+    geom_point() +
+    geom_smooth(
+      mapping = aes(group = variable),
+      method = lm,
+      data = mutate(CLES_results2,
+        CLES_value = ifelse(variable %in% c("NDVI", "PDQ", "pH"),
+          NA,
+          CLES_value
+        )
+      )
+    ) +
+    geom_hline(yintercept = 0.5, lty = "dashed") +
+    facet_wrap(~variable, nrow = 2) +
+    scale_x_continuous("Scale",
+      breaks = c(0.05,   0.125, 0.25,  0.50,  0.75),
+      labels = c("0.05º", "EDS", "QDS", "HDS", "3QDS")
+    ) +
+    scale_y_continuous("CLES\n(GCFR > SWAFR)",
+      breaks = c(0.50, 0.75, 1.00)      
+    ) +
+    theme_bw() +
+    theme(
+      legend.position = "none",
+      axis.text.x = element_text(angle = 90),
+      panel.grid = element_blank(),
+      strip.background = element_blank()
+    )
 ```
 
 ```{r model-CLES, echo=FALSE}
@@ -198,7 +273,7 @@ CLES_model_summaries <- CLES_models %>%
   )) %>%
   rename(slope = estimate) %>%
   mutate(
-    sig = ifelse(p.value <= 0.05, "*", ""),
+    sig = ifelse(p.value <= 0.07, "*", ""),
     slope_sign = case_when(
       sig == "*" & slope > 0 ~ "+",
       sig == "*" & slope < 0 ~ "-",
@@ -208,7 +283,7 @@ CLES_model_summaries <- CLES_models %>%
   arrange(desc(sig), slope_sign)
 knitr::kable(CLES_model_summaries, align = "lrrrcc", caption = paste(
   "Slopes, significances and R^2^-values from regressions",
-  "of $CLES$ against each form of environmental roughness."
+  "of $CLES$ against each form of environmental roughness (sig = P <= 0.07)."
 ))
 ```
 
@@ -219,6 +294,153 @@ _Do the regions differ w.r.t. the species richness of both HDS and QDS cells, an
 ```{r import-cellular-data}
 HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
 QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
+```
+
+```{r plot-richness-turnover-univariate}
+data_for_histograms <- as_tibble(rbind(
+  HDS %>%
+    dplyr::select(region, HDS_richness, mul_turnover) %>%
+    gather(metric, value, HDS_richness, mul_turnover),
+  QDS %>%
+    dplyr::select(region, QDS_richness) %>%
+    gather(metric, value, QDS_richness)
+))
+ggplot(data_for_histograms, aes(value, fill = region)) +
+  geom_histogram(bins = 20, position = "dodge") +
+  facet_grid(~metric, scales = "free_x")
+data_for_histograms <- as_tibble(rbind(
+  HDS %>%
+    dplyr::select(region, HDS_richness, mul_turnover) %>%
+    gather(metric, value, HDS_richness, mul_turnover),
+  QDS %>%
+    dplyr::select(region, QDS_richness) %>%
+    gather(metric, value, QDS_richness)
+))
+data_for_histograms %>%
+  filter(metric %in% c("HDS_richness", "mul_turnover")) %>%
+  ggplot(aes(value, fill = region)) +
+    geom_histogram(bins = 20, position = "dodge") +
+    facet_grid(~metric, scales = "free_x")
+```
+
+```{r test-richness-turnover-univariate}
+data_for_histograms %>%
+  filter(metric %in% c("HDS_richness", "mul_turnover")) %>%
+  group_by(metric) %>%
+  summarise(
+    U_test = wilcox.test(value[region == "SWAFR"], value[region == "GCFR"]) %>%
+      tidy() %>%
+      list(),
+    U = map_dbl(U_test, "statistic"),
+    P = map_dbl(U_test, "p.value"),
+    CLES_value = CLES(value[region == "SWAFR"], value[region == "GCFR"])
+  ) %>%
+  mutate(sig = ifelse(P <= 0.05, "*", "")) %>%
+  dplyr::select(-U_test) %>%
+  dplyr::select(metric, U, P, sig, CLES_value) %>%
+  knitr::kable()
+```
+
+```{r plot-richness-turnover-bivariate}
+HDS %>%
+  dplyr::select(region, HDS_richness, mean_QDS_richness, mean_QDS_turnover, mul_turnover) %>%
+  gather(partition, value, -region, -HDS_richness) %>%
+  ggplot(aes(value, HDS_richness, colour = region)) +
+    geom_smooth(method = lme4::lmer, formula = y ~ x + (x | colour)) +
+    geom_point() +
+    facet_grid(~partition, scales = "free_x")
+
+
+ggplot(HDS, aes(mul_turnover / n_QDS, HDS_richness / n_QDS, colour = region, size = mean_QDS_richness / n_QDS)) +
+  geom_smooth(method = lm) +
+  geom_point()
+
+ggplot(HDS, aes(mean_QDS_turnover, HDS_richness, colour = region, size = mean_QDS_richness)) +
+  geom_smooth(method = lm) +
+  geom_point()
+
+foo <- HDS %>%
+  mutate(
+    HDS_richness      = HDS_richness      / n_QDS,
+    mean_QDS_richness = mean_QDS_richness / n_QDS,
+    mul_turnover      = mul_turnover      / n_QDS
+  ) %>%
+  {lm(HDS_richness ~ mean_QDS_richness * mul_turnover, .)}
+summary(foo)
+visreg::visreg(foo, xvar = "mean_QDS_richness", by = "mul_turnover", breaks = 1, overlay = TRUE)
+visreg::visreg(foo, xvar = "mul_turnover", by = "region", overlay = TRUE)
+
+foo <- HDS %>%
+  mutate(
+    HDS_richness      = HDS_richness      / n_QDS,
+    mean_QDS_richness = mean_QDS_richness / n_QDS
+  ) %>%
+  {lm(HDS_richness ~ mean_QDS_richness * mean_QDS_turnover + mean_QDS_richness * region + mean_QDS_turnover * region, .)}
+summary(foo)
+visreg::visreg(foo, xvar = "mean_QDS_richness", by = "mean_QDS_turnover", breaks = 3, overlay = TRUE)
+visreg::visreg(foo, xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
+visreg::visreg(foo, xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
+
+foo <- HDS %>%
+  mutate(
+    HDS_richness      = HDS_richness      / n_QDS,
+    mean_QDS_richness = mean_QDS_richness / n_QDS,
+    mul_turnover      = mul_turnover      / n_QDS
+  )
+bar <- list(
+  lme4::lmer(HDS_richness ~ mul_turnover + (1 + mul_turnover |  region), foo),
+  lme4::lmer(HDS_richness ~ mul_turnover + (1 + mul_turnover || region), foo),
+  lme4::lmer(HDS_richness ~ mean_QDS_richness * mul_turnover + (1 + mul_turnover | region) + (1 + mean_QDS_richness | region), foo)
+)
+summary(bar[[1]])
+visreg::visreg(bar[[1]], xvar = "mul_turnover", by = "region", overlay = TRUE)
+visreg::visreg(bar[[2]], xvar = "mul_turnover", by = "region", overlay = TRUE)
+visreg::visreg(bar[[3]], xvar = "mul_turnover", by = "region", overlay = TRUE)
+visreg::visreg(bar[[3]], xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
+
+foo <- HDS %>%
+  mutate(
+    HDS_richness      = HDS_richness      / n_QDS,
+    mean_QDS_richness = mean_QDS_richness / n_QDS,
+    mul_turnover      = mul_turnover      / n_QDS
+  )
+bar <- list(
+  lme4::lmer(HDS_richness ~ mean_QDS_turnover + (1 + mean_QDS_turnover |  region), foo),
+  lme4::lmer(HDS_richness ~ mean_QDS_turnover + (1 + mean_QDS_turnover || region), foo),
+  lme4::lmer(HDS_richness ~ mean_QDS_richness * mean_QDS_turnover + (1 + mean_QDS_turnover | region) + (1 + mean_QDS_richness | region), foo)
+)
+summary(bar[[1]])
+visreg::visreg(bar[[1]], xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
+visreg::visreg(bar[[2]], xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
+visreg::visreg(bar[[3]], xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
+visreg::visreg(bar[[3]], xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
+
+HDS %>% 
+  dplyr::select(region, HDS_richness, mean_QDS_richness, n_QDS) %>%
+  mutate(
+    HDS_richness = HDS_richness / n_QDS,
+    mean_QDS_richness = mean_QDS_richness / n_QDS
+  ) %>%
+  mutate(
+    alpha = mean_QDS_richness / HDS_richness,
+    beta = (HDS_richness - mean_QDS_richness) / HDS_richness
+  ) %>%
+  dplyr::select(region, HDS_richness, alpha, beta) %>%
+  gather(partition, value, -region, -HDS_richness) %>%
+  ggplot(aes(value, HDS_richness, colour = region)) +
+    geom_point() +
+    facet_grid(~partition)
+
+HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% gather(partition, value, -region, -HDS_richness, -hdgc) %>% ggplot(aes(value, HDS_richness, colour = region, group = hdgc)) + geom_point() + geom_line()
+
+HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% gather(partition, value, -region, -HDS_richness, -hdgc) %>% ggplot(aes(reorder(hdgc, desc(value)), value, fill = partition, colour = region)) + geom_col()
+
+HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% ggplot(aes(reorder(hdgc, desc(beta)), beta, fill = region)) + geom_col()
+
+HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% mutate(region = ifelse(region == "GCFR", 1, 0)) %>% {glm(region ~ beta, data = ., family = binomial)} %>% visreg::visreg(scale = "response", gg = TRUE) + scale_y_continuous(limits = c(0, 1), breaks = c(0, 1), labels = c("SWAFR", "GCFR"))
+
+HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% mutate(beta_governed = beta > mean(beta)) %>% group_by(region) %>% summarise(n_HDS = n(), n_beta_governed = sum(beta_governed), prop_beta_governed = sum(beta_governed) / n())
+
 ```
 
 ## 2.1. Univariate comparisons
