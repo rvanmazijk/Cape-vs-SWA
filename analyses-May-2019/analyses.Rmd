@@ -7,7 +7,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 library(here)
 source(here("analyses-May-2019/setup.R"))
 ```
@@ -16,17 +16,21 @@ source(here("analyses-May-2019/setup.R"))
 
 Here I layout the "new", second incarnation of the analyses as discussed over the course of May/June 2019, following the first draft of the manuscript.
 
-The proposed "story" of questions for the analyses as as follows:
+To reiterate that manuscript, we hypothesise that the greater vascular plant species richness of the GCFR compared to that of the SWAFR is explained by the regions' difference in environmental heterogeneity.
 
-1. _Is SWA more heterogeneous environmentally than the Cape, and does the scale of that heterogeneity differ to that of the Cape?_
-2. _Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?_
-3. _Does heterogeneity explain differences in richness and turnover between the regions?_
+The proposed "story" of questions for the analyses is as follows:
+
+1. Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
+2. Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
+3. Does heterogeneity explain differences in richness and turnover between the regions?
 
 # 1. Environmental heterogeneity & scale
 
-_Is the Cape for environmentalyl heterogeneous than SWA, and does the scale of that heterogeneity differ to that of SWA?_
+Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
 
-For this question, environmental roughness in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell $x^*$, the roughness is based on $x_1, x_2, \dots, x_i, \dots, x_8$ neighbour cells as:
+In order to determine which region is more environmentally heterogeneous, and what scales heterogeneity is most pronounced, we calculated a measure of environmental heterogeneity at various spatial scales (namely: the base data resolution (0.05º x 0.05º), eighth- (EDS), quarter- (QDS), half- (HDS) and three-quarter-degree-squares (3QDS)).
+
+Environmental "roughness" in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell $x^*$, the roughness is based on $x_1, x_2, \dots, x_i, \dots, x_8$ neighbour cells as:
 
 \begin{align*}
   Roughness(x^*) =
@@ -38,30 +42,29 @@ For this question, environmental roughness in both regions was calculated, in mo
     \frac{1}{n} \sum_{i=1}^n |x^* - x_i|
 \end{align*}
 
-In R, I have implemented this as follows:
+In R, this is implemented this as follows:
 
-```{r print-roughness-body, eval=FALSE}
+```{r print-roughness-body, echo=TRUE, eval=FALSE}
 roughness <- function(x) {
   raster::focal(x, matrix(1, nrow = 3, ncol = 3), function(x) {
     focal_cell <- x[5]
-    neighbour_cells <- x[
-      !is.na(x) &
-      !is.nan(x) &
-      x != focal_cell
-    ]
-    ifelse(!is.na(focal_cell) & !is.nan(focal_cell),
-      mean(abs(focal_cell - neighbour_cells)),
-      NA
-    )
+    neighbour_exists <- (!is.na(x)) & (!is.nan(x)) & (x != focal_cell)
+    focal_exists <- (!is.na(focal_cell)) & (!is.nan(focal_cell))
+    neighbour_cells <- x[neighbour_exists]
+    if (focal_exists) {
+      return(mean(abs(focal_cell - neighbour_cells)))
+    } else {
+      return(NA)
+    }
   })
 }
 ```
 
-\clearpage
+Following this, the various forms environmental heterogeneity were ordinated using principal component analysis (PCA), to summarise a major axis of heterogeneity in each region (Figure 1). Portions of the data matrices for each scale for these PCAs are shown in Table 1.
 
-## 1.1. Ordinating environmental heterogeneity
+Both the actual environmental heterogeneity values and the principal component of heterogeneity were then compared between the GCFR and SWAFR using common language effect sizes ($CLES$). The $CLES$ of GCFR vs SWAFR heterogeneity values was regressed against the spatial scale at which it was calculated using simple linear regression (Figure 2, Table 2).
 
-Here, I $log(x+1)$-transform and perform a scaled and centred PCA of the roughness values as defined above, at each of five spatial scales: the base data resolution (0.05º x 0.05º), eighth- (EDS), quarter- (QDS), half- (HDS) and three-quarter-degree-squares (3QDS).
+We can see that PDQ, NDVI, pH and, arguably, elevation are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale (Figure 2). The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2). Notably, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2). In general (i.e. regarding PC1; Figure 2), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales.
 
 ```{r import-roughness-matrices, include=FALSE}
 output_path      <- here("outputs/roughness")
@@ -72,17 +75,17 @@ roughness_matrices <- map(matrix_filenames, read_csv)
 names(roughness_matrices) <- resolutions
 ```
 
-The data matrices for each scale for this PCA look like this (and obviously the "region" column was excluded from the PCA proper):
-
-```{r print-roughness-matrix-example, echo=FALSE}
+```{r print-roughness-matrix-example}
 roughness_matrices %$%
   base %>%
   mutate_if(is.numeric, log1p) %>%
   mutate_if(is.numeric, round, digits = 2) %>%
-  {rbind(head(.), rep("...", 11), tail(.))} %>%
-  knitr::kable(caption =
-    "Portions of the data matrices used in the PCA for this analysis."
-  )
+  {rbind(.[1:3, ], rep("...", 11), tail(.)[1:3, ])} %>%
+  knitr::kable(caption = paste(
+    "Portions of the data matrices used in the PCA for this",
+    "section of the analysis, where roughness values were",
+    "$log(x + 1)$-transformed to ensure normality."
+  ))
 ```
 
 ```{r PCA-analysis, include=FALSE}
@@ -111,9 +114,7 @@ roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
 )
 ```
 
-Plot PC1 vs PC2 at each scale:
-
-```{r plot-PCA, echo=FALSE, fig.height=8}
+```{r plot-PCA, fig.height=8, fig.cap="Scatter plots of the first and second principal components (PC1, PC2) of environmental heterogeneity following principal components analyses (PCAs) of the various forms of environmental heterogeneity, repeated at the five spatial scales. The proportion of variation accounted for by each axis is denoted in parentheses. Arrows (labelled) denote the rotational loading of a given form of environmental heterogeneity. Note, the signs of loadings on PC1 have been forced to be positive, while the signs of loadings on PC2 are arbitrary."}
 roughness_PCA_plots <- map2(roughness_PCAs, roughness_matrices,
   ~ autoplot(.x,
       data = .y, colour = "region", alpha = 0.25,
@@ -130,22 +131,14 @@ roughness_PCA_plots %<>% map(~.x + theme(legend.position = "none"))
 roughness_PCA_plots <- c(roughness_PCA_plots, my_legend = list(my_legend))
 plot_grid(
   plotlist = roughness_PCA_plots,
-  labels   = names(roughness_PCA_plots),
+  labels   = c("0.05º", "EDS", "QDS", "HDS", "3QDS", ""),
   nrow     = 3
 )
 ```
 
-Plot maps of exemplary roughness variables and PC1
-
 ```{r map-PCA}
-# TODO
+# TODO: Plot maps of exemplary roughness variables and PC1
 ```
-
-\clearpage
-
-## 1.2. Effect size of Cape vs SWA heterogeneity
-
-I calculated the $CLES$ of Cape > SWA untransformed roughness and PC1 values (from the analysis above).
 
 ```{r CLES-analysis, include=FALSE}
 GCFR_roughness_data <- roughness_matrices %>%
@@ -207,9 +200,40 @@ CLES_results %<>%
   )))
 ```
 
-Let's lot $CLES$ vs scale for each variable:
+```{r model-CLES}
+CLES_models <- CLES_results %>%
+  split(.$variable) %>%
+  map(~lm(CLES_value ~ resolution, .x))
+CLES_model_summaries <- CLES_models %>%
+  map_df(.id = "variable", ~ cbind(
+    .x %>% 
+      tidy() %>% 
+      filter(term != "(Intercept)") %>% 
+      dplyr::select(estimate, p.value),
+    .x %>%
+      glance() %>%
+      dplyr::select(r.squared)
+  )) %>%
+  rename(slope = estimate) %>%
+  mutate(sig = case_when(
+    p.value <= 0.05 ~ "*",
+    p.value <= 0.10 ~ ".",
+    TRUE            ~ ""
+  )) %>%
+  arrange(desc(sig)) %>%
+  mutate_if(is.numeric, round, digits = 3) %>%
+  dplyr::select(variable, r.squared, slope, p.value, sig)
+knitr::kable(CLES_model_summaries,
+  caption = paste(
+    "Slopes, significances and $R^2$-values from regressions",
+    "of $CLES$ against scale for each form of environmental roughness."
+  ),
+  col.names = c("Variable", "$R^2$", "Slope", "$P_{slope}$", ""),
+  align = "lrrrc"
+)
+```
 
-```{r plot-CLES, echo=FALSE}
+```{r plot-CLES-fits, fig.cap="Regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity, and the first principal component thereof (PC1, see Figure 1). Only significant or marginally significant fits are plotted (Table 2)."}
 CLES_plots <- ggplot(CLES_results) +
   aes(resolution, CLES_value, colour = variable_type) +
   geom_hline(yintercept = 0.5, lty = "dashed") +
@@ -229,49 +253,6 @@ CLES_plots <- ggplot(CLES_results) +
     legend.position = "none",
     axis.text.x = element_text(angle = 90)
   )
-CLES_plots
-```
-
-Let's regress $CLES$ against scale for each of these panels:
-
-```{r model-CLES, echo=FALSE}
-CLES_models <- CLES_results %>%
-  split(.$variable) %>%
-  map(~lm(CLES_value ~ resolution, .x))
-CLES_model_summaries <- CLES_models %>%
-  map_df(.id = "variable", ~ cbind(
-    .x %>% 
-      tidy() %>% 
-      filter(term != "(Intercept)") %>% 
-      dplyr::select(estimate, p.value),
-    .x %>%
-      glance() %>%
-      dplyr::select(r.squared)
-  )) %>%
-  rename(slope = estimate) %>%
-  mutate(
-    sig = case_when(
-      p.value <= 0.05 ~ "*",
-      p.value <= 0.10 ~ ".",
-      TRUE            ~ ""
-    ),
-    slope_sign = case_when(
-      sig != "" & slope > 0 ~ "+",
-      sig != "" & slope < 0 ~ "-",
-      TRUE                   ~ ""
-    )
-  ) %>%
-  arrange(desc(sig), slope_sign) %>%
-  mutate_if(is.numeric, round, digits = 3)
-knitr::kable(CLES_model_summaries, align = "lrrrcc", caption = paste(
-  "Slopes, significances and $R^2$-values from regressions",
-  "of $CLES$ against each form of environmental roughness."
-))
-```
-
-CEC is on the verge of significant, so I will still plot it ($P = 0.063$). Let's plot those significant fits then:
-
-```{r plot-CLES-fits, echo=FALSE}
 CLES_results_sans_NS <- mutate(CLES_results,
   CLES_value = ifelse(variable %in% c("NDVI", "PDQ", "pH"),
     NA,
@@ -285,469 +266,367 @@ CLES_plots + geom_smooth(
 )
 ```
 
+\clearpage
+
 # 2. Species richness & turnover
 
-_Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?_
+Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
 
-To tackle this question, I compare measures of species richness and turnover between the regions in both univariate and multivariate/model analyses.
+To tackle this question, I compare measures of species richness and turnover between the regions. Species richness at the HDS-scale ($S_{\mathrm{HDS}}$) can be partitioned into the average richness of the constituent QDS in HDS ($\overline{S}_{\mathrm{QDS}}$) and species turnover ($T_{\mathrm{QDS}}$) defined^[following Whittaker's original additive definition: $\gamma = \alpha + \beta$] as:
 
-## 2.1. Univariate comparisons
+$$
+  T_{\mathrm{QDS}} = S_{\mathrm{HDS}} - \overline{S}_{\mathrm{QDS}}
+$$
+
+The distributions of these data are presented in Figure 3. To test for significant differences between GCFR and SWAFR values, I use Mann-Whitney $U$-tests and $CLES$ (Table 3), as most of the variables deviate significantly from normality (Table 4).
+
+Additionally, a visualisation of how $S_{\mathrm{HDS}}$ is partitioned into $\overline{S}_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}}$ is presented in Figure 4.
+
+We can conclude that broad scale species richness (i.e. that at the HDS scale) is more strongly driven by turnover between areas (i.e. QDS) than so in the SWAFR.
 
 ```{r import-cellular-data, include=FALSE}
 HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
 QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
-HDS_QDS <- as_tibble(rbind(
-  HDS %>%
-    dplyr::select(region, HDS_richness, mean_QDS_richness, mul_turnover, n_QDS) %>%
-    mutate(add_turnover = HDS_richness - (mean_QDS_richness * n_QDS)) %>%
-    rename(n_subcells = n_QDS) %>%
-    gather(metric, value, HDS_richness, mean_QDS_richness, mul_turnover, add_turnover),
-  QDS %>%
-    dplyr::select(region, QDS_richness, n_EDS) %>%
-    rename(n_subcells = n_EDS) %>%
-    gather(metric, value, QDS_richness)
-))
-```
-
-What do the data look like?
-
-```{r plot-richness-turnover-univariate, echo=FALSE, fig.height=2}
-ggplot(HDS_QDS, aes(value, fill = region)) +
-  geom_histogram(bins = 20, position = "dodge") +
-  scale_fill_manual(name = "Region", values = my_palette) +
-  facet_wrap(~metric, nrow = 1, scales = "free")
-```
-
-Are there significant differences between GCFR and SWAFR values?
-
-```{r test-richness-turnover-univariate, echo=FALSE}
-HDS_QDS %>%
-  group_by(metric) %>%
-  summarise(
-    U_test = wilcox.test(value[region == "SWAFR"], value[region == "GCFR"]) %>%
-      tidy() %>%
-      list(),
-    U = map_dbl(U_test, "statistic"),
-    P = map_dbl(U_test, "p.value"),
-    CLES_value = CLES(value[region == "SWAFR"], value[region == "GCFR"])
-  ) %>%
-  mutate(sig = ifelse(P <= 0.05, "*", "")) %>%
-  dplyr::select(-U_test) %>%
-  dplyr::select(metric, U, P, sig, CLES_value) %>%
-  knitr::kable(caption = paste(
-    "Results of Mann-Whitney $U$-tests and the $CLES$ of GCFR vs SWAFR",
-    "QDS and HDS richness and multiplicative turnover."
+HDS_QDS <- 
+  as_tibble(rbind(
+    HDS %>%
+      dplyr::select(region, HDS_richness, mean_QDS_richness, add_turnover) %>%
+      gather(metric, value, HDS_richness, mean_QDS_richness, add_turnover),
+    QDS %>%
+      dplyr::select(region, QDS_richness) %>%
+      gather(metric, value, QDS_richness)
   ))
 ```
 
-## 2.2. Multivariate comparisons & models
-
-Before I get stuck in with modelling HDS richness as a function of QDS richness and turnover, let's wrap our heads around the dataset first, with special attention to how the number of constituent QDS in HDS affects the patterns:
-
-```{r explore-HDS-cellular-data, echo=FALSE}
-HDS %>%
-  gather(partition, value, mean_QDS_richness, mul_turnover) %>%
-  ggplot(aes(value, HDS_richness, colour = region)) +
-    geom_point(aes(alpha = n_QDS)) +
-    scale_colour_manual(name = "Region", values = my_palette) +
-    scale_alpha_continuous(
-      name   = "No. QDS", 
-      breaks = c(2, 3, 4), 
-      range  = c(1, 0.25)
-    ) +
-    facet_grid(region ~ partition, scales = "free_x")
+```{r plot-richness-turnover-univariate, fig.width=4, fig.cap="Distrbutions of the various species richness and turnover metrics in the GCFR and SWAFR."}
+HDS_QDS %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness"      ~ "italic(S)[HDS]",
+    metric == "add_turnover"      ~ "italic(T)[QDS]",
+    metric == "mean_QDS_richness" ~ "bar(italic(S))[QDS]",
+    metric == "QDS_richness"      ~ "italic(S)[QDS]"
+  )) %>%
+  mutate(metric = factor(metric, levels = c(
+    "italic(S)[HDS]",
+    "italic(T)[QDS]",
+    "bar(italic(S))[QDS]",
+    "italic(S)[QDS]"
+  ))) %>%
+  ggplot(aes(value, fill = region)) +
+    geom_histogram(binwidth = 100, position = "dodge") +
+    scale_fill_manual(name = "Region", values = my_palette) +
+    facet_grid(metric ~ ., scales = "free_y", labeller = label_parsed) +
+    theme(strip.text.y = element_text(angle = 0))
 ```
 
+```{r test-richness-turnover-univariate}
+HDS_QDS %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness"      ~ "$S_{\\mathrm{HDS}}$",
+    metric == "add_turnover"      ~ "$T_{\\mathrm{QDS}}$",
+    metric == "mean_QDS_richness" ~ "$\\overline{S}_{\\mathrm{QDS}}$",
+    metric == "QDS_richness"      ~ "$S_{\\mathrm{QDS}}$"
+  )) %>%
+  mutate(metric = factor(metric, levels = c(
+    "$S_{\\mathrm{HDS}}$",
+    "$T_{\\mathrm{QDS}}$",
+    "$\\overline{S}_{\\mathrm{QDS}}$",
+    "$S_{\\mathrm{QDS}}$"
+  ))) %>%
+  group_by(metric) %>%
+  summarise(
+    P = wilcox.test(value[region == "SWAFR"], value[region == "GCFR"])$p.value,
+    CLES_value = CLES(value[region == "SWAFR"], value[region == "GCFR"])
+  ) %>%
+  mutate(sig = ifelse(P <= 0.05, "*", ifelse(P <= 0.10, ".", ""))) %>%
+  mutate_if(is.numeric, ~ifelse(.x <= 0.001,
+    "$\\leq 0.001$",
+    format(round(.x, digits = 3), nsmall = 3)
+  )) %>%
+  dplyr::select(metric, CLES_value, P, sig) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of Mann-Whitney $U$-tests and the $CLES$ of GCFR vs SWAFR",
+      "for various species richness and turnover metrics."
+    ),
+    col.names = c("", "$CLES$", "$P_U$", ""),
+    align = "lrcr"
+  )
+```
 
-```{r correct-for-n-QDS, echo=FALSE}
-HDS %>%
-  mutate(mul_turnover = (HDS_richness / n_QDS) / mean_QDS_richness) %>%
-  gather(partition, value, mean_QDS_richness, mul_turnover) %>%
-  ggplot(aes(value, HDS_richness, colour = region)) +
-    geom_point(aes(alpha = n_QDS)) +
-    scale_colour_manual(name = "Region", values = my_palette) +
-    scale_alpha_continuous(
-      name   = "No. QDS", 
-      breaks = c(2, 3, 4), 
-      range  = c(1, 0.25)
-    ) +
-    facet_grid(region ~ partition, scales = "free_x")
-HDS %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness) / n_QDS) %>%
-  gather(partition, value, mean_QDS_richness, add_turnover) %>%
-  ggplot(aes(HDS_richness, value, colour = region)) +
-    geom_point(aes(alpha = n_QDS)) +
-    scale_colour_manual(name = "Region", values = my_palette) +
-    scale_alpha_continuous(
-      name   = "No. QDS", 
-      breaks = c(2, 3, 4), 
-      range  = c(1, 0.25)
-    ) +
-    facet_grid(partition ~ ., scales = "free_y")
-m1 <- lm(add_turnover ~ HDS_richness * region, mutate(HDS, add_turnover = (HDS_richness - mean_QDS_richness) / n_QDS))
-m2 <- lm(mean_QDS_richness ~ HDS_richness * region, HDS)
-summary(m1)
-summary(m2)
-visreg::visreg(m1, xvar = "HDS_richness", by = "region", overlay = TRUE)
-visreg::visreg(m2, xvar = "HDS_richness", by = "region", overlay = TRUE)
+```{r test-richness-turnover-normality}
+HDS_QDS %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness"      ~ "$S_{\\mathrm{HDS}}$",
+    metric == "add_turnover"      ~ "$T_{\\mathrm{QDS}}$",
+    metric == "mean_QDS_richness" ~ "$\\overline{S}_{\\mathrm{QDS}}$",
+    metric == "QDS_richness"      ~ "$S_{\\mathrm{QDS}}$"
+  )) %>%
+  mutate(metric = factor(metric, levels = c(
+    "$S_{\\mathrm{HDS}}$",
+    "$T_{\\mathrm{QDS}}$",
+    "$\\overline{S}_{\\mathrm{QDS}}$",
+    "$S_{\\mathrm{QDS}}$"
+  ))) %>%
+  group_by(metric) %>%
+  summarise(
+    P_GCFR  = shapiro.test(value[region == "GCFR"])$p.value,
+    P_SWAFR = shapiro.test(value[region == "SWAFR"])$p.value
+  ) %>%
+  mutate_if(is.numeric, ~ifelse(.x <= 0.001,
+    "$\\leq 0.001$",
+    format(round(.x, digits = 3), nsmall = 3)
+  )) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of Shapiro-Wilk tests of normality for various species richness",
+      "and turnover metrics for the GCFR and SWAFR. [Significant deviations",
+      "from normality: $P < 0.05$.]"
+    ),
+    col.names = c("", "$P_{GCFR}$", "$P_{SWAFR}$"),
+    align = "lrr"
+  )
+```
 
-plot(mean_QDS_richness ~ add_turnover, mutate(HDS, add_turnover = (HDS_richness - mean_QDS_richness)))
-abline(0, 1)
+```{r visualise-partitions, fig.width=5, fig.cap="Scatter plot of $\\overline{S}_{\\mathrm{QDS}}$ and $T_{\\mathrm{QDS}}$ with contour lines denoting the $S_{\\mathrm{HDS}}$ that would arise as their sum (i.e. increasing from lower-left to upper-right). Additionally, the relationships between $\\overline{S}_{\\mathrm{QDS}}$ and $S_{\\mathrm{HDS}}$ (upper panel) and $T_{\\mathrm{QDS}}$ and $S_{\\mathrm{HDS}}$ (rightmost panel) are illustrated in the panels flanking the central panel."}
+plot_edges <- HDS %$%
+  ceiling(max(c(mean_QDS_richness, add_turnover))) + 10
 
-HDS2 <- HDS %>%
-  #filter(n_QDS == 4) %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness))
-foo <- ceiling(max(c(HDS2$mean_QDS_richness, HDS2$add_turnover))) + 10
-ggplot(HDS2, aes(add_turnover, mean_QDS_richness, colour = region)) +
-  geom_tile(
-    data = seq(0, foo, 10) %>%
-      {expand.grid(x = ., y = .)} %>%
-      mutate(z = x + y),
-    mapping = aes(x, y, fill = z), colour = NA
+S_QDS_plot <- ggplot(HDS) +
+  aes(HDS_richness, mean_QDS_richness, colour = region) +
+  ylim(0, plot_edges) +
+  geom_point() +
+  xlab(bquote(italic("S")["HDS"])) +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  theme(
+    legend.position = "none",
+    axis.title.y    = element_blank(),
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank()
+  )
+
+T_QDS_plot <- ggplot(HDS) +
+  aes(add_turnover, HDS_richness, colour = region) +
+  xlim(0, plot_edges) +
+  geom_point() +
+  ylab(bquote(italic("S")["HDS"])) +
+  scale_colour_manual(name = "Region", values = my_palette) +
+  theme(
+    legend.position = "none",
+    axis.title.x    = element_blank(),
+    axis.text.x     = element_blank(),
+    axis.ticks.x    = element_blank()
+  )
+
+S_HDS_background <- plot_edges %>%
+  {seq(from = 0, to = ., by = 10)} %>%
+  {expand.grid(x = ., y = .)} %>%
+  mutate(z = x + y)
+S_HDS_background_plot <- ggplot(S_HDS_background) +
+  lims(x = c(0, plot_edges), y = c(0, plot_edges)) +
+  geom_contour(
+    mapping     = aes(x, y, z = z),
+    binwidth    = 100,
+    colour      = "grey90",
+    show.legend = TRUE
   ) +
-  labs(x = bquote(italic("T")["QDS"]), y = bquote(italic("S")["QDS"])) +
+  geom_abline(
+    intercept = 0, slope = 1,
+    linetype = "dashed", colour = "grey25"
+  ) +
   scale_fill_gradient(
     name = bquote(italic("S")["HDS"]),
     low  = "white",
-    high = "grey"
+    high = "grey25"
   ) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  labs(
+    x = bquote(italic("T")["QDS"]),
+    y = bquote(bar(italic("S"))["QDS"])
+  )
+partition_plot <- S_HDS_background_plot +
   geom_point(
-    data    = HDS2,
+    data    = HDS,
     mapping = aes(add_turnover, mean_QDS_richness, colour = region),
-    alpha   = 0.5
   ) +
   scale_colour_manual(name = "Region", values = my_palette)
 
-HDS %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness)) %>%
-  gather(partition, value, mean_QDS_richness, add_turnover) %>%
-  ggplot(aes(HDS_richness, value, colour = region)) +
-    geom_point(aes(alpha = n_QDS)) +
-    scale_colour_manual(name = "Region", values = my_palette) +
-    scale_alpha_continuous(
-      name   = "No. QDS", 
-      breaks = c(2, 3, 4), 
-      range  = c(1, 0.25)
-    ) +
-    facet_grid(~partition, scales = "free_x")
+my_legend <- get_legend(partition_plot)
+partition_plot <- partition_plot + theme(legend.position = "none")
 
-HDS %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness)) %>%
-  ggplot(aes(add_turnover, HDS_richness/mean_QDS_richness, colour = HDS_richness, shape = region)) +
-    geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
-    geom_point() +
-    #lims(x = c(0, max(HDS$HDS_richness)), y = c(0, max(HDS$HDS_richness))) +
-    scale_colour_viridis_c() #+
-    #facet_grid(~region)
-HDS %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness)) %>%
-  ggplot(aes(mean_QDS_richness, mean_QDS_richness + (mean_QDS_turnover * mean_QDS_richness) ^ (n_QDS - 1), colour = HDS_richness, shape = region)) +
-    geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
-    geom_point() +
-    #lims(x = c(0, max(HDS$HDS_richness)), y = c(0, max(HDS$HDS_richness))) +
-    scale_colour_viridis_c() #+
-    #facet_grid(~region)
-HDS %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness)) %>%
-  ggplot(aes(add_turnover / n_QDS, HDS_richness, colour = mean_QDS_richness, shape = region)) +
-    geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
-    geom_point() +
-    #lims(x = c(0, max(HDS$HDS_richness)), y = c(0, max(HDS$HDS_richness))) +
-    scale_colour_viridis_c() #+
-    #facet_grid(~region)
-
-
-foo <- HDS %>%
-  mutate(add_turnover = (HDS_richness - mean_QDS_richness)) %>%
-  {lm(
-    HDS_richness ~
-      mean_QDS_richness + 
-      add_turnover +
-      mean_QDS_richness * region + 
-      add_turnover * region,
-    .
-  )}
-visreg::visreg(foo, xvar = "mean_QDS_richness", by = "add_turnover", overlay = TRUE)
-
-visreg::visreg(foo, xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
+T_QDS_plot     + my_legend  +
+partition_plot + S_QDS_plot +
+plot_layout(nrow = 2, widths = c(1, 0.25), heights = c(0.25, 1))
 ```
 
+\clearpage
 
-```{r plot-richness-turnover-bivariate, eval=FALSE}
+# 3. Relating heterogeneity to species richness & turnover
 
-HDS %>%
-  dplyr::select(region, HDS_richness, mean_QDS_richness, mean_QDS_turnover, mul_turnover) %>%
-  gather(partition, value, -region, -HDS_richness) %>%
-  ggplot(aes(value, HDS_richness, colour = region)) +
-    geom_smooth(method = lme4::lmer, formula = y ~ x + (x | colour)) +
-    geom_point() +
-    facet_grid(~partition, scales = "free_x")
+Does heterogeneity explain differences in richness and turnover between the regions?
 
-ggplot(HDS, aes(mul_turnover / n_QDS, HDS_richness / n_QDS, colour = region, size = mean_QDS_richness / n_QDS)) +
-  geom_smooth(method = lm) +
-  geom_point()
+Here I fit various linear regressions of richness and turnover as functions of environmental heterogeneity. 
 
-ggplot(HDS, aes(mean_QDS_turnover, HDS_richness, colour = region, size = mean_QDS_richness)) +
-  geom_smooth(method = lm) +
-  geom_point()
+[Interpretations to follow after meeting.]
 
-foo <- HDS %>%
-  mutate(
-    HDS_richness      = HDS_richness      / n_QDS,
-    mean_QDS_richness = mean_QDS_richness / n_QDS,
-    mul_turnover      = mul_turnover      / n_QDS
-  ) %>%
-  {lm(HDS_richness ~ mean_QDS_richness * mul_turnover, .)}
-summary(foo)
-visreg::visreg(foo, xvar = "mean_QDS_richness", by = "mul_turnover", breaks = 1, overlay = TRUE)
-visreg::visreg(foo, xvar = "mul_turnover", by = "region", overlay = TRUE)
-
-foo <- HDS %>%
-  mutate(
-    HDS_richness      = HDS_richness      / n_QDS,
-    mean_QDS_richness = mean_QDS_richness / n_QDS
-  ) %>%
-  {lm(HDS_richness ~ mean_QDS_richness * mean_QDS_turnover + mean_QDS_richness * region + mean_QDS_turnover * region, .)}
-summary(foo)
-visreg::visreg(foo, xvar = "mean_QDS_richness", by = "mean_QDS_turnover", breaks = 3, overlay = TRUE)
-visreg::visreg(foo, xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
-visreg::visreg(foo, xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
-
-foo <- HDS %>%
-  mutate(
-    HDS_richness      = HDS_richness      / n_QDS,
-    mean_QDS_richness = mean_QDS_richness / n_QDS,
-    mul_turnover      = mul_turnover      / n_QDS
-  )
-bar <- list(
-  lme4::lmer(HDS_richness ~ mul_turnover + (1 + mul_turnover |  region), foo),
-  lme4::lmer(HDS_richness ~ mul_turnover + (1 + mul_turnover || region), foo),
-  lme4::lmer(HDS_richness ~ mean_QDS_richness * mul_turnover + (1 + mul_turnover | region) + (1 + mean_QDS_richness | region), foo)
-)
-summary(bar[[1]])
-visreg::visreg(bar[[1]], xvar = "mul_turnover", by = "region", overlay = TRUE)
-visreg::visreg(bar[[2]], xvar = "mul_turnover", by = "region", overlay = TRUE)
-visreg::visreg(bar[[3]], xvar = "mul_turnover", by = "region", overlay = TRUE)
-visreg::visreg(bar[[3]], xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
-
-foo <- HDS %>%
-  mutate(
-    HDS_richness      = HDS_richness      / n_QDS,
-    mean_QDS_richness = mean_QDS_richness / n_QDS,
-    mul_turnover      = mul_turnover      / n_QDS
-  )
-bar <- list(
-  lme4::lmer(HDS_richness ~ mean_QDS_turnover + (1 + mean_QDS_turnover |  region), foo),
-  lme4::lmer(HDS_richness ~ mean_QDS_turnover + (1 + mean_QDS_turnover || region), foo),
-  lme4::lmer(HDS_richness ~ mean_QDS_richness * mean_QDS_turnover + (1 + mean_QDS_turnover | region) + (1 + mean_QDS_richness | region), foo)
-)
-summary(bar[[1]])
-visreg::visreg(bar[[1]], xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
-visreg::visreg(bar[[2]], xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
-visreg::visreg(bar[[3]], xvar = "mean_QDS_turnover", by = "region", overlay = TRUE)
-visreg::visreg(bar[[3]], xvar = "mean_QDS_richness", by = "region", overlay = TRUE)
-
-HDS %>% 
-  dplyr::select(region, HDS_richness, mean_QDS_richness, n_QDS) %>%
-  mutate(
-    HDS_richness = HDS_richness / n_QDS,
-    mean_QDS_richness = mean_QDS_richness / n_QDS
-  ) %>%
-  mutate(
-    alpha = mean_QDS_richness / HDS_richness,
-    beta = (HDS_richness - mean_QDS_richness) / HDS_richness
-  ) %>%
-  dplyr::select(region, HDS_richness, alpha, beta) %>%
-  gather(partition, value, -region, -HDS_richness) %>%
-  ggplot(aes(value, HDS_richness, colour = region)) +
-    geom_point() +
-    facet_grid(~partition)
-
-HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% gather(partition, value, -region, -HDS_richness, -hdgc) %>% ggplot(aes(value, HDS_richness, colour = region, group = hdgc)) + geom_point() + geom_line()
-
-HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% gather(partition, value, -region, -HDS_richness, -hdgc) %>% ggplot(aes(reorder(hdgc, desc(value)), value, fill = partition, colour = region)) + geom_col()
-
-HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% ggplot(aes(reorder(hdgc, desc(beta)), beta, fill = region)) + geom_col()
-
-HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% mutate(region = ifelse(region == "GCFR", 1, 0)) %>% {glm(region ~ beta, data = ., family = binomial)} %>% visreg::visreg(scale = "response", gg = TRUE) + scale_y_continuous(limits = c(0, 1), breaks = c(0, 1), labels = c("SWAFR", "GCFR"))
-
-HDS %>% dplyr::select(region, hdgc, HDS_richness, mean_QDS_richness, n_QDS) %>% mutate(HDS_richness = HDS_richness / n_QDS, mean_QDS_richness = mean_QDS_richness / n_QDS) %>% mutate(alpha = mean_QDS_richness / HDS_richness, beta = (HDS_richness - mean_QDS_richness) / HDS_richness) %>% dplyr::select(region, hdgc, HDS_richness, alpha, beta) %>% mutate(beta_governed = beta > mean(beta)) %>% group_by(region) %>% summarise(n_HDS = n(), n_beta_governed = sum(beta_governed), prop_beta_governed = sum(beta_governed) / n())
-
-```
-
-## 2.1. Univariate comparisons
-
-```{r, eval=FALSE}
-ggplot(HDS, aes(HDS_richness, fill = region)) +
-  geom_histogram(bins = 20, position = "dodge")
-ggplot(HDS, aes(mul_turnover, fill = region)) +
-  geom_histogram(bins = 20, position = "dodge")
-ggplot(HDS, aes(mul_turnover, HDS_richness, colour = region)) +
-  geom_smooth() +
-  geom_point()
-ggplot(HDS, aes(mul_turnover / n_QDS, HDS_richness / n_QDS, colour = region)) +
-  geom_smooth() +#method = lm, formula = y ~ log(x)) +
-  geom_point()
-ggplot(HDS, aes(mean_QDS_richness, HDS_richness, colour = region)) +
-  geom_smooth(method = lm) +
-  geom_point()
-ggplot(HDS, aes(mean_QDS_richness / n_QDS, HDS_richness / n_QDS, colour = region)) +
-  geom_smooth(method = lm) +
-  geom_point()
-m <- lm(HDS_richness ~ mean_QDS_richness * mul_turnover + mean_QDS_richness * region + mul_turnover * region, HDS)
-tidy(m)
-visreg::visreg(m, xvar = "mean_QDS_richness", by = "region", cond = list(mul_turnover = 0.5), overlay = TRUE)
-visreg::visreg(m, xvar = "mean_QDS_richness", by = "region", cond = list(region = "SWAFR"), overlay = TRUE)
-```
-
-# 3. Relating environmental heterogeneity to species richness & turnover
-
-_Does heterogeneity explain differences in richness and turnover between the regions?_
-
-...
-
-```{r, eval=FALSE}
-library(here)
-source(here("analyses-May-2019/setup.R"))
-HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
-QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
-
+```{r tidy-cellular-data, include=FALSE}
 # Log roughness values to match that PCAs were done on logged data
 HDS[, str_which(names(HDS), "roughness")] %<>% log()
 QDS[, str_which(names(QDS), "roughness")] %<>% log()
 
-# (.)  Explore normality of data -----------------------------------------------
-
-non_normal_vars <- HDS[, str_which(names(HDS), "(region|mean_value)")] %>%
-  split(.$region) %>%
-  map(dplyr::select, -region) %>%
-  map(map, shapiro.test) %>%
-  map(map_df, tidy, .id = "variable") %>%
-  bind_rows(.id = "region") %>%
-  as_tibble() %>%
-  dplyr::select(-statistic, -method) %>%
-  mutate(sig = p.value <= 0.05) %>%
-  filter(sig)
-
-HDS[, str_which(names(HDS), "(region|mean_value)")] %>%
-  split(.$region) %>%
-  map(dplyr::select, -region) %>%
-  map(map, log) %>%  # !!!
-  map(map, shapiro.test) %>%
-  map(map_df, tidy, .id = "variable") %>%
-  bind_rows(.id = "region") %>%
-  as_tibble() %>%
-  dplyr::select(-statistic, -method) %>%
-  mutate(sig = p.value <= 0.05) %>%
-  filter(sig)
-
-# Conclusion: Logging can't solve everything!
-
-# (a) Separate-regions models with combinations of variables -------------------
-
-# .... HDS ---------------------------------------------------------------------
-
-# ........ GCFR ----------------------------------------------------------------
-
 GCFR_HDS <- filter(HDS, region == "GCFR")
-
-predictor_names <- HDS %>%
-  {names(.)[str_which(names(.), "(roughness|mean_value)")]} %>%
-  paste(collapse = " + ")
-
-m_all_richness <- lm(glue("HDS_richness ~ {predictor_names}"), GCFR_HDS)
-m_all_turnover <- lm(glue("mul_turnover ~ {predictor_names}"), GCFR_HDS)
-summary(m_all_richness)
-summary(m_all_turnover)
-
-m_all_richness_step <- step(m_all_richness)
-m_all_turnover_step <- step(m_all_turnover)
-summary(m_all_richness_step)
-summary(m_all_turnover_step)
-
-# PC1 only model
-m_PC1_richness <- lm(HDS_richness ~ PC1, GCFR_HDS)
-m_PC1_turnover <- lm(mul_turnover ~ PC1, GCFR_HDS)
-summary(m_PC1_richness)
-summary(m_PC1_turnover)
-visreg::visreg(m_PC1_richness)
-visreg::visreg(m_PC1_turnover)
-
-# ........ SWAFR ---------------------------------------------------------------
-
-SWAFR_HDS <- filter(HDS, region == "SWAFR")
-
-predictor_names <- HDS %>%
-  {names(.)[str_which(names(.), "(roughness|mean_value)")]} %>%
-  paste(collapse = " + ")
-
-m_all_richness <- lm(glue("HDS_richness ~ {predictor_names}"), SWAFR_HDS)
-m_all_turnover <- lm(glue("mul_turnover ~ {predictor_names}"), SWAFR_HDS)
-summary(m_all_richness)
-summary(m_all_turnover)
-
-m_all_richness_step <- step(m_all_richness)
-m_all_turnover_step <- step(m_all_turnover)
-summary(m_all_step)
-summary(m_all_turnover_step)
-
-# PC1 only model
-m_PC1_richness <- lm(HDS_richness ~ PC1, SWAFR_HDS)
-m_PC1_turnover <- lm(mul_turnover ~ PC1, SWAFR_HDS)
-summary(m_PC1_richness)
-summary(m_PC1_turnover)
-visreg::visreg(m_PC1_richness)
-visreg::visreg(m_PC1_turnover)
-
-# .... QDS ---------------------------------------------------------------------
-
-# ........ GCFR ----------------------------------------------------------------
-
 GCFR_QDS <- filter(QDS, region == "GCFR")
 
-predictor_names <- QDS %>%
-  {names(.)[str_which(names(.), "(roughness|mean_value)")]} %>%
-  paste(collapse = " + ")
-
-m_all <- lm(glue("QDS_richness ~ {predictor_names}"), GCFR_QDS)
-summary(m_all)
-
-m_all_step <- step(m_all)
-summary(m_all_step)
-
-# PC1 only model
-m_PC1 <- lm(QDS_richness ~ PC1, GCFR_QDS)
-summary(m_PC1)
-visreg::visreg(m_PC1)
-
-# ........ SWAFR ---------------------------------------------------------------
-
+SWAFR_HDS <- filter(HDS, region == "SWAFR")
 SWAFR_QDS <- filter(QDS, region == "SWAFR")
 
-predictor_names <- QDS %>%
-  {names(.)[str_which(names(.), "(roughness|mean_value)")]} %>%
+predictor_names <- HDS %>%
+  {names(.)[str_which(names(.), "(roughness)")]} %>%#|mean_value)")]} %>%
   paste(collapse = " + ")
+```
 
-m_all <- lm(glue("QDS_richness ~ {predictor_names}"), SWAFR_QDS)
-summary(m_all)
+```{r explore-normality, include=FALSE}
+## Explore normality of data
+#
+#non_normal_vars <- HDS[, str_which(names(HDS), "(region|mean_value)")] %>%
+#  split(.$region) %>%
+#  map(dplyr::select, -region) %>%
+#  map(map, shapiro.test) %>%
+#  map(map_df, tidy, .id = "variable") %>%
+#  bind_rows(.id = "region") %>%
+#  as_tibble() %>%
+#  dplyr::select(-statistic, -method) %>%
+#  mutate(sig = p.value <= 0.05) %>%
+#  filter(sig)
+#
+#HDS[, str_which(names(HDS), "(region|mean_value)")] %>%
+#  split(.$region) %>%
+#  map(dplyr::select, -region) %>%
+#  map(map, log) %>%  # !!!
+#  map(map, shapiro.test) %>%
+#  map(map_df, tidy, .id = "variable") %>%
+#  bind_rows(.id = "region") %>%
+#  as_tibble() %>%
+#  dplyr::select(-statistic, -method) %>%
+#  mutate(sig = p.value <= 0.05) %>%
+#  filter(sig)
+#
+## Conclusion: Logging can't solve everything!
+```
 
-m_all_step <- step(m_all)
-summary(m_all_step)
+## 3.1. Separate-regions models with combinations of variables
 
-# PC1 only model
-m_PC1 <- lm(QDS_richness ~ PC1, SWAFR_QDS)
-summary(m_PC1)
-visreg::visreg(m_PC1)
+```{r}
+models <- list(
+  GCFR_HDS_richness  = lm(glue("HDS_richness ~ {predictor_names}"), GCFR_HDS),
+  GCFR_QDS_turnover  = lm(glue("add_turnover ~ {predictor_names}"), GCFR_HDS),
+  GCFR_QDS_richness  = lm(glue("QDS_richness ~ {predictor_names}"), GCFR_QDS),
+  SWAFR_HDS_richness = lm(glue("HDS_richness ~ {predictor_names}"), SWAFR_HDS),
+  SWAFR_QDS_turnover = lm(glue("add_turnover ~ {predictor_names}"), SWAFR_HDS),
+  SWAFR_QDS_richness = lm(glue("QDS_richness ~ {predictor_names}"), SWAFR_QDS)
+)
+models %>% 
+  map(step, trace = 0) %>%
+  map_df(tidy, .id = "response") %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    response = case_when(
+      response == "GCFR_HDS_richness"  ~ "GCFR $S_{\\mathrm{HDS}}$",
+      response == "GCFR_QDS_richness"  ~ "GCFR $\\overline{S}_{\\mathrm{QDS}}$",
+      response == "GCFR_QDS_turnover"  ~ "GCFR $T_{\\mathrm{QDS}}$",
+      response == "SWAFR_HDS_richness" ~"SWAFR $S_{\\mathrm{HDS}}$",
+      response == "SWAFR_QDS_richness" ~"SWAFR $\\overline{S}_{\\mathrm{QDS}}$",
+      response == "SWAFR_QDS_turnover" ~"SWAFR $T_{\\mathrm{QDS}}$"
+    ),
+    term = str_remove_all(term, "_roughness"),
+    sig = ifelse(p.value <= 0.05,
+      "*",
+      ifelse(p.value <= 0.10,
+        ".",
+        ""
+      )
+    )
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of bi-directional stepwise multiple linear regressions of",
+      "three richness and turnover responses in the against additive",
+      "combinations of environmental heterogeneity variables. The stepwise",
+      "regression procedure started with all variables included.",
+      "(See Figure 5 for a graphical representation.)"
+    ),
+    col.names = c("Response", "Predictor", "Slope", "$P_{slope}$", ""),
+    align = "llrrc"
+  )
+```
 
-# (b) Combined-regions models with individual variables ------------------------
+```{r}
+models %>% 
+  map(step, trace = 0) %>%
+  map_df(.id = "response", glance) %>%
+  mutate(response = case_when(
+    response == "GCFR_HDS_richness"  ~ "GCFR $S_{\\mathrm{HDS}}$",
+    response == "GCFR_QDS_richness"  ~ "GCFR $\\overline{S}_{\\mathrm{QDS}}$",
+    response == "GCFR_QDS_turnover"  ~ "GCFR $T_{\\mathrm{QDS}}$",
+    response == "SWAFR_HDS_richness" ~"SWAFR $S_{\\mathrm{HDS}}$",
+    response == "SWAFR_QDS_richness" ~"SWAFR $\\overline{S}_{\\mathrm{QDS}}$",
+    response == "SWAFR_QDS_turnover" ~"SWAFR $T_{\\mathrm{QDS}}$"
+  )) %>%
+  dplyr::select(response, adj.r.squared) %>%
+  mutate(adj.r.squared =
+    format(round(adj.r.squared, digits = 3), nsmall = 3)
+  ) %>%
+  knitr::kable(
+    caption = "Adjusted $R^2$-values of the models in Table 5.",
+    col.names = c("Response", "${R^2}_{adj.}$")
+  )
+```
 
-# .... HDS ---------------------------------------------------------------------
+```{r, fig.cap="Slopes from Table 5, with error bars denoting 95% confidence intervals about each slope estimate."}
+models %>% 
+  map(step, trace = 0) %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic, -p.value) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(term = str_remove_all(term, "_roughness")) %>%
+  separate(response, into = c("region", "scale", "response")) %>%
+  unite(response, scale, response, remove = TRUE) %>%
+  mutate(response = case_when(
+    response == "HDS_richness" ~ "italic(S)[HDS]",
+    response == "QDS_richness" ~ "italic(S)[QDS]",
+    response == "QDS_turnover" ~ "italic(T)[QDS]"
+  )) %>%
+  ggplot(aes(term, estimate, colour = region, group = region)) +
+    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey25") +
+    geom_point(position = position_dodge(width = 0.5)) +
+    geom_errorbar(
+      aes(ymin = conf.low, ymax = conf.high),
+      width = 0,
+      position = position_dodge(width = 0.5)
+    ) +
+    labs(x = "Predictor", y = "Slope") +
+    scale_colour_manual(name = "Region", values = my_palette) +
+    facet_grid(response ~ ., scales = "free_y", labeller = label_parsed) +
+    theme(
+      axis.text.x        = element_text(angle = 90),
+      strip.text.y       = element_text(angle = 0),
+      panel.grid.major.y = element_line(colour = "grey"),
+    ) +
+    coord_flip()
+```
 
-# ........ Richness ------------------------------------------------------------
+\clearpage
 
+## 3.2. Combined-regions models with individual variables
+
+### 3.2.1. Environmental heterogeneity variables
+
+[Plots of the models referred to in Tables 7--9 can be discussed in a meeting.]
+
+```{r, include=FALSE}
 predictor_names <- names(HDS)[
-  str_which(names(HDS), "(roughness|mean_value)")
+  str_which(names(HDS), "(roughness)")#|mean_value)")
 ]
 
 HDS_richness_models_no_region <- predictor_names %>%
@@ -770,15 +649,20 @@ HDS_richness_models_add_region <- predictor_names %>%
     r_squared      = map_dbl(model, ~glance(.x)$r.squared),
     slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
     region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
-    plot           = map(model, visreg::visreg, gg = TRUE)
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
   )
 HDS_richness_models_int_region <- predictor_names %>%
   map(~lm(glue("HDS_richness ~ {.x} * region"), HDS)) %>%
   set_names(predictor_names) %>%
   {tibble(predictor = names(.), model = .)} %>%
   mutate(
-    #model_tidy     = map(model, tidy),
-    #foo            = map_chr(map(model_tidy, "term"), paste, collapse = ", ")
     slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
     region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
     int_p_value    = map_dbl(model, ~tidy(.x)$p.value[[4]]),
@@ -786,39 +670,140 @@ HDS_richness_models_int_region <- predictor_names %>%
     slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
     region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
     int_sig        = ifelse(int_p_value    <= 0.05, "*", ""),
-    plot           = map2(model, predictor,
-                       ~ visreg::visreg(.x,
-                         xvar = .y,
-                         by = "region",
-                         overlay = TRUE,
-                         gg = TRUE
-                       )
-                     )
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
   )
+```
 
-cowplot::plot_grid(plotlist = HDS_richness_models_no_region$plot)
-cowplot::plot_grid(plotlist = HDS_richness_models_add_region$plot)
-cowplot::plot_grid(plotlist = HDS_richness_models_int_region$plot)
+```{r}
+HDS_richness_models_no_region %>%
+  dplyr::select(
+    predictor,     r_squared,
+    slope_p_value, slope_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables",
+      "with no region-term."
+    ),
+    col.names = c(
+      "Predictor",   "$R^2$",
+      "$P_{slope}$", ""
+    ),
+    align = "lrrc"
+  )
+```
 
-# ............ PC1 only model --------------------------------------------------
+```{r}
+HDS_richness_models_add_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables",
+      "with an additive region-term."
+    ),
+    col.names = c(
+      "Predictor",    "$R^2$",
+      "$P_{slope}$",  "",
+      "$P_{region}$", ""
+    ),
+    align = "lrrcrc"
+  )
+```
 
-# Richness
+```{r}
+HDS_richness_models_int_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig,
+    int_p_value,    int_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables",
+      "with an interaction-region-term."
+    ),
+    col.names = c(
+      "Predictor",          "$R^2$",
+      "$P_{slope}$",        "",
+      "$P_{region}$",       "",
+      "$P_{slope:region}$", ""
+    ),
+    align = "lrrcrcrc"
+  )
+```
+
+```{r, eval=FALSE}
+HDS_richness_models_no_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
+  map(~ .x + theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank()
+  ))
+HDS_richness_models_add_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
+  map(~ .x + theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank()
+  ))
+HDS_richness_models_add_region$plot[c(1, 2, 4, 5, 7, 8)] %<>%
+  map(~ .x + theme(legend.position = "none"))
+HDS_richness_models_int_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
+  map(~ .x + theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank()
+  ))
+HDS_richness_models_int_region$plot[c(1, 2, 4, 5, 7, 8)] %<>%
+  map(~ .x + theme(legend.position = "none"))
+
+plot_grid(plotlist = HDS_richness_models_no_region$plot)
+plot_grid(plotlist = HDS_richness_models_add_region$plot)
+plot_grid(plotlist = HDS_richness_models_int_region$plot)
+```
+
+\clearpage
+
+### 3.2.2. PC1 models
+
+Here, I present my findings with raw R-code, because I don't have the time to format it neatly.
+
+```{r, echo=TRUE}
+# Richness (HDS)
 
 m1 <- lm(HDS_richness ~ PC1,          HDS)
 m2 <- lm(HDS_richness ~ PC1 + region, HDS)
 m3 <- lm(HDS_richness ~ PC1 : region, HDS)
 m4 <- lm(HDS_richness ~ PC1 * region, HDS)
-
 AIC(m1, m2, m3, m4)
 
-visreg::visreg(m1)
-visreg::visreg(m2, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m3, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m4, xvar = "PC1", by = "region", overlay = TRUE)
+summary(m1)
 
-tidy(m1)
-glance(m1)
+ggplot(HDS, aes(PC1, HDS_richness)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(colour = region)) +
+  ylab(bquote(italic("S")["HDS"])) +
+  scale_colour_manual(name = "Region", values = my_palette)
+```
 
+```{r}
 # Richness (QDS)
 
 m1 <- lm(QDS_richness ~ PC1,          QDS)
@@ -828,34 +813,35 @@ m4 <- lm(QDS_richness ~ PC1 * region, QDS)
 
 AIC(m1, m2, m3, m4)
 
-visreg::visreg(m1)
+summary(m2)
+
 visreg::visreg(m2, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m3, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m4, xvar = "PC1", by = "region", overlay = TRUE)
+```
 
-tidy(m1)
-glance(m1)
-
+```{r}
 # Turnover
 
-m1 <- lm(mul_turnover ~ PC1,          HDS)
-m2 <- lm(mul_turnover ~ PC1 + region, HDS)
-m3 <- lm(mul_turnover ~ PC1 : region, HDS)
-m4 <- lm(mul_turnover ~ PC1 * region, filter(HDS, n_QDS == 4))
-m5 <- lm(mul_turnover ~ PC1 * region + n_QDS, HDS) # uh oh!
+m1 <- lm(add_turnover ~ PC1,          HDS)
+m2 <- lm(add_turnover ~ PC1 + region, HDS)
+m3 <- lm(add_turnover ~ PC1 : region, HDS)
+m4 <- lm(add_turnover ~ PC1 * region, HDS)
 
 AIC(m1, m2, m3, m4)
 
-visreg::visreg(m1)
-visreg::visreg(m2, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m3, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m4, xvar = "PC1", by = "region", overlay = TRUE)
-# !!!!!!
+summary(m1)
 
-tidy(m4)
-glance(m4)
+ggplot(HDS, aes(PC1, add_turnover)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(colour = region)) +
+  ylab(bquote(italic("T")["QDS"])) +
+  scale_colour_manual(name = "Region", values = my_palette)
+```
 
-# (c) Combined-regions models with combinations of variables -------------------
+## 3.3. Combined-regions models with combinations of variables
+
+[To be discussed in meeting.]
+
+```{r}, eval=FALSE, echo=FALSE}
 
 # TODO
 
@@ -883,13 +869,13 @@ m_all_int <- lm(
     pH_mean_value                 + pH_roughness +
     Soil.C_mean_value             + Soil.C_roughness +
     Surface.T_mean_value          + Surface.T_roughness +
-    Elevation_mean_value : region + Elevation_roughness : region +
-    MAP_mean_value       : region + MAP_roughness       : region +
-    NDVI_mean_value      : region + NDVI_roughness      : region +
-    PDQ_mean_value       : region + PDQ_roughness       : region +
-    pH_mean_value        : region + pH_roughness        : region +
-    Soil.C_mean_value    : region + Soil.C_roughness    : region +
-    Surface.T_mean_value : region + Surface.T_roughness : region,
+    Elevation_mean_value * region + Elevation_roughness * region +
+    MAP_mean_value       * region + MAP_roughness       * region +
+    NDVI_mean_value      * region + NDVI_roughness      * region +
+    PDQ_mean_value       * region + PDQ_roughness       * region +
+    pH_mean_value        * region + pH_roughness        * region +
+    Soil.C_mean_value    * region + Soil.C_roughness    * region +
+    Surface.T_mean_value * region + Surface.T_roughness * region,
   HDS
 )
 m_all_int2 <- lm(
@@ -901,13 +887,13 @@ m_all_int2 <- lm(
     pH_mean_value                 + pH_roughness +
     Soil.C_mean_value             + Soil.C_roughness +
     Surface.T_mean_value          + Surface.T_roughness +
-    Elevation_mean_value : region + Elevation_roughness : region +
-    MAP_mean_value       : region + MAP_roughness       : region +
-    NDVI_mean_value      : region + NDVI_roughness      : region +
-    PDQ_mean_value       : region + PDQ_roughness       : region +
-    pH_mean_value        : region + pH_roughness        : region +
-    Soil.C_mean_value    : region + Soil.C_roughness    : region +
-    Surface.T_mean_value : region + Surface.T_roughness : region,
+    Elevation_mean_value * region + Elevation_roughness * region +
+    MAP_mean_value       * region + MAP_roughness       * region +
+    NDVI_mean_value      * region + NDVI_roughness      * region +
+    PDQ_mean_value       * region + PDQ_roughness       * region +
+    pH_mean_value        * region + pH_roughness        * region +
+    Soil.C_mean_value    * region + Soil.C_roughness    * region +
+    Surface.T_mean_value * region + Surface.T_roughness * region,
   QDS
 )
 summary(m_all_int)
@@ -1130,7 +1116,7 @@ my_PCA_plot <- function(data) {
 
   cowplot::plot_grid(
     PC1_histograms, white_rect,
-    PCA_biplot,      PC2_histograms,
+    PCA_biplot,     PC2_histograms,
     ncol = 2,
     rel_widths = c(4, 1), rel_heights = c(1, 4)
   )
@@ -1225,9 +1211,3 @@ if (all(foo$rotation[, 1] <= 0)) {
 }
 autoplot(foo, data = unite(all_PCA_data, region_scale, region, scale), colour = "region_scale", alpha = 0.25)
 ```
-
-## 3.1. Separate-regions models with combinations of variables
-
-## 3.2. Combined-regions models with individual variables
-
-## 3.3. Combined-regions models with combinations of variables
