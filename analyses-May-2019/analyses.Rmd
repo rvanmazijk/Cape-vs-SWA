@@ -180,20 +180,6 @@ CLES_results %<>%
     resolution == "HDS"  ~ 0.50,
     resolution == "3QDS" ~ 0.75
   )) %>%
-  mutate(variable_type = case_when(
-    variable == "PC1"                          ~ "PC1",
-    variable == "Elevation"                    ~ "Elevation",
-    variable == "NDVI"                         ~ "NDVI",
-    variable %in% c("MAP", "PDQ", "Surface.T") ~ "Climate",
-    TRUE                                       ~ "Soil"
-  )) %>%
-  mutate(variable_type = factor(variable_type, levels = c(
-    "Elevation",
-    "Climate",
-    "NDVI",
-    "Soil",
-    "PC1"
-  ))) %>%
   mutate(variable = factor(variable, levels = c(
     "Elevation",
     "MAP", "PDQ", "Surface.T",
@@ -246,11 +232,21 @@ CLES_results %>%
   mutate(sig = p.value < 0.001)
 ```
 
-```{r plot-CLES-fits, fig.cap="Regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity, and the first principal component thereof (PC1, see Figure 1). Only significant or marginally significant fits are plotted (Table 2). Across spatial scales, all $CLES$ values differed significantly from zero following a two-side $t$-test ($P < 0.001$), demonstrating the difference in heterogeneity between the regions."}
+```{r plot-CLES-fits, fig.cap="SImple linear regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity (a--i), and the first principal component of heterogeneity (j; see Figure 1), where the $CLES$ is treated as the effect of GCFR relative to SWAFR values. Only significant or marginally significant fits are plotted (Table 2). Across spatial scales, all $CLES$ values differed significantly from zero following two-sided $t$-tests ($P < 0.001$)."}
+# Neaten variable labels to include panel letters
+CLES_results %<>%
+  mutate(
+    variable = variable %>%
+      as.character() %>%
+      str_replace_all("\\.", " "),
+    letters = rep(letters[1:10], 5),
+    label = glue("({letters}) {variable}")
+  )
+  
 # Create empty panels
 empty_plots <- ggplot(CLES_results, aes(resolution, CLES_value)) +
   geom_hline(yintercept = 0.5, lty = "dashed") +
-  facet_wrap(~variable, nrow = 2) +
+  facet_wrap(~label, nrow = 2) +
   scale_x_continuous(
     name   = "Scale",
     breaks = c(0.05,   0.125, 0.25,  0.50,  0.75),
@@ -276,7 +272,7 @@ CLES_results_sans_NS <- mutate(CLES_results,
 CLES_plots <- empty_plots +
   geom_smooth(
     data    = CLES_results_sans_NS,
-    mapping = aes(group = variable),
+    mapping = aes(group = label),
     method  = lm,
     colour  = "grey25"
   ) +
@@ -306,7 +302,9 @@ We can conclude that broad scale species richness (i.e. that at the HDS scale) i
 
 ```{r import-cellular-data, include=FALSE}
 HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
+HDS %<>% filter(n_QDS == 4)
 QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
+QDS %<>% filter(n_EDS == 4)
 HDS_QDS <- as_tibble(rbind(
   HDS %>%
     dplyr::select(region, HDS_richness, add_turnover_prop) %>%
@@ -360,7 +358,7 @@ HDS_QDS %>%
   mutate_at(c("P_GCFR", "P_SWAFR"), list(sig = ~ . < 0.05))
 ```
 
-```{r visualise-partitions, fig.width=9, fig.height=3, fig.cap="Scatter plot of $\\overline{S}_{\\mathrm{QDS}}$ and $T_{\\mathrm{QDS}}$ with contour lines denoting the $S_{\\mathrm{HDS}}$ that would arise as their sum (i.e. increasing from lower-left to upper-right)."}
+```{r visualise-partitions, fig.width=9, fig.height=3, fig.cap="(a) Scatter plot of mean QDS-scale richness ($\\overline{S}_{\\mathrm{QDS}}$) and turnover ($T_{\\mathrm{QDS}}$) with contour lines denoting the $S_{\\mathrm{HDS}}$ that would arise as their sum (i.e. increasing from lower-left to upper-right). Distributions of (a) HDS-scale species richness ($S_{\\mathrm{HDS}}$) and (b) the turnover partition of that richness ($T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$)."}
 hist_plots <- HDS_QDS %>%
   filter(metric %in% c("HDS_richness", "add_turnover_prop")) %>%
   mutate(metric = case_when(
@@ -452,7 +450,7 @@ Does heterogeneity explain differences in richness and turnover between the regi
 
 Here I fit various linear regressions of richness and turnover as functions of environmental heterogeneity.
 
-The richness and turnover measures used are the same as in the previous section, while ...
+The richness and turnover measures used are the same as in the previous section, while the environmental heterogeneity was recalculated in grid
 
 \begin{align*}
   X      & = \{ x_1, x_2, x_3, x_4 \} \\
@@ -795,18 +793,34 @@ plot_grid(plotlist = HDS_richness_models_int_region$plot)
 
 Here, I present my findings with raw R-code, because I don't have the time to format it neatly.
 
-```{r, echo=TRUE}
-# Richness (HDS)
+```{r}
+my_AIC_table <- function(..., caption = "...") {
+  AIC(...) %>%
+    mutate(
+      delta_AIC = AIC - min(AIC),
+      w_Akaike  = exp(-0.5 * delta_AIC) / sum(exp(-0.5 * delta_AIC))
+    ) %>%
+    mutate(model = c("PC1", "PC1+Region", "PC1:Region")) %>%
+    mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+    dplyr::select(model, AIC, delta_AIC, w_Akaike) %>%
+    knitr::kable(
+      caption = caption,
+      col.names = c("Model", "$AIC$", "$\\Delta AIC$", "$w_{Akaike}$"),
+      align = c("lrrr")
+    )
+}
+```
 
-m1 <- lm(HDS_richness ~ PC1,          filter(HDS, n_QDS == 4))
-m2 <- lm(HDS_richness ~ PC1 + region, filter(HDS, n_QDS == 4))
-m3 <- lm(HDS_richness ~ PC1 : region, filter(HDS, n_QDS == 4))
-m4 <- lm(HDS_richness ~ PC1 * region, filter(HDS, n_QDS == 4))
-AIC(m1, m2, m3, m4)
+```{r}
+m1 <- lm(HDS_richness ~ PC1,          HDS)
+m2 <- lm(HDS_richness ~ PC1 + region, HDS)
+m3 <- lm(HDS_richness ~ PC1 * region, HDS)
+my_AIC_table(m1, m2, m3, caption = "Richness (HDS)")
+```
 
-summary(m1)
-
-ggplot(filter(HDS, n_QDS == 4), aes(PC1, HDS_richness)) +
+```{r}
+# Choose m1
+S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
   geom_smooth(method = lm, colour = "grey25") +
   geom_point(aes(fill = region), shape = 21, colour = "black") +
   ylab(bquote(italic("S")["HDS"])) +
@@ -814,64 +828,82 @@ ggplot(filter(HDS, n_QDS == 4), aes(PC1, HDS_richness)) +
 ```
 
 ```{r}
-# Richness (QDS)
-
-m1 <- lm(QDS_richness ~ PC1,          filter(QDS, n_EDS == 4))
-m2 <- lm(QDS_richness ~ PC1 + region, filter(QDS, n_EDS == 4))
-m3 <- lm(QDS_richness ~ PC1 : region, filter(QDS, n_EDS == 4))
-m4 <- lm(QDS_richness ~ PC1 * region, filter(QDS, n_EDS == 4))
-
-AIC(m1, m2, m3, m4)
-
-summary(m2)
-
-visreg::visreg(m2, xvar = "PC1", by = "region", overlay = TRUE)
+m1 <- lm(QDS_richness ~ PC1,          QDS)
+m2 <- lm(QDS_richness ~ PC1 + region, QDS)
+m3 <- lm(QDS_richness ~ PC1 * region, QDS)
+my_AIC_table(m1, m2, m3, caption = "Richness (QDS)")
 ```
 
 ```{r}
-# Turnover
-
-m1 <- lm(add_turnover ~ PC1,          filter(HDS, n_QDS == 4))
-m2 <- lm(add_turnover ~ PC1 + region, filter(HDS, n_QDS == 4))
-m3 <- lm(add_turnover ~ PC1 * region, filter(HDS, n_QDS == 4))
-
-AIC(m1, m2, m3)
-
-summary(m1)
-
-visreg::visreg(m1)
-
-# Turnover (proportional)
-
-m1 <- lm(add_turnover_prop ~ PC1 + PC2,          filter(HDS, n_QDS == 4))
-m2 <- lm(add_turnover_prop ~ PC1 + PC2 + region, filter(HDS, n_QDS == 4))
-m3 <- lm(add_turnover_prop ~ PC1 * region + PC2 * region, filter(HDS, n_QDS == 4))
-
-AIC(m1, m2, m3)
-
-summary(m3)
-
-visreg::visreg(m3, xvar = "PC1", by = "region", overlay = TRUE)
-visreg::visreg(m3, xvar = "PC2", by = "region", overlay = TRUE)
+# Choose m1
+S_QDS_plot <- ggplot(QDS, aes(PC1, QDS_richness)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("S")["QDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
 ```
 
 ```{r}
-HDS %>%
-  filter(n_QDS == 4) %>%
-  gather(metric, value, HDS_richness, add_turnover_prop) %>%
-  ggplot(aes(PC1, value)) +
-    geom_smooth(method = lm, colour = "grey25") +
-    geom_point(aes(fill = region), shape = 21, colour = "black") +
-    scale_fill_manual(name = "Region", values = c("black", "white")) +
-    facet_grid(metric ~ ., scales = "free_y")
-HDS %>%
-  filter(n_QDS == 4) %>%
-  gather(metric, value, HDS_richness, add_turnover) %>%
-  ggplot(aes(PC1, value)) +
-    geom_smooth(method = lm, colour = "grey25") +
-    geom_point(aes(fill = region), shape = 21, colour = "black") +
-    scale_fill_manual(name = "Region", values = c("black", "white")) +
-    facet_grid(metric ~ ., scales = "free_y")
+m1 <- lm(add_turnover ~ PC1,          HDS)
+m2 <- lm(add_turnover ~ PC1 + region, HDS)
+m3 <- lm(add_turnover ~ PC1 * region, HDS)
+my_AIC_table(m1, m2, m3, caption = "Turnover")
+```
+
+```{r}
+# Choose m1
+turnover_plot <- ggplot(HDS, aes(PC1, add_turnover)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("T")["QDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
+```
+
+```{r}
+m1 <- lm(add_turnover_prop ~ PC1 ,         HDS)
+m2 <- lm(add_turnover_prop ~ PC1 + region, HDS)
+m3 <- lm(add_turnover_prop ~ PC1 * region, HDS)
+my_AIC_table(m1, m2, m3, caption = "Turnover (proportional)")
+```
+
+```{r}
+# Choose m3
+# (ggplot() w/ 2x geom_smooth()s produces same fits as visreg::visreg())
+turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
+```
+
+```{r}
+my_plots <- list(
+  S_HDS_plot + theme(
+    axis.title.x = element_blank(),
+    axis.text.x  = element_blank(),
+    axis.ticks.x = element_blank()
+  ),
+  #S_QDS_plot,     # needed?
+  #turnover_plot,  # needed?
+  turnover_prop_plot
+)
+my_legend <- get_legend(my_plots[[1]])
+my_plots %<>% map(~ .x + theme(
+  legend.position = "none",
+  axis.text.y     = element_text(angle = 90)
+))
+
+plot_grid(
+  plot_grid(
+    plotlist = my_plots[1:2],
+    nrow = 2,
+    rel_heights = c(0.9, 1),
+    labels = glue("({letters[1:2]})")
+  ),
+  my_legend,
+  nrow = 1,
+  rel_widths = c(2, 1)
+)
 ```
 
 ## 3.3. Combined-regions models with combinations of variables
