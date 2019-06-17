@@ -32,15 +32,15 @@ In order to determine which region is more environmentally heterogeneous, and wh
 
 Environmental "roughness" in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell $x^*$, the roughness is based on $x_1, x_2, \dots, x_i, \dots, x_8$ neighbour cells as:
 
-\begin{align*}
+$$
   Roughness(x^*) =
     f \left( \begin{matrix}
       x_1 & x_2 & x_3 \\
       x_4 & x^* & x_5 \\
       x_6 & x_7 & x_8
     \end{matrix} \right) =
-    \frac{1}{n} \sum_{i=1}^n |x^* - x_i|
-\end{align*}
+    \frac{1}{8} \sum_{i=1}^8 |x^* - x_i|
+$$
 
 In R, this is implemented this as follows:
 
@@ -232,7 +232,7 @@ CLES_results %>%
   mutate(sig = p.value < 0.001)
 ```
 
-```{r plot-CLES-fits, fig.cap="SImple linear regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity (a--i), and the first principal component of heterogeneity (j; see Figure 1), where the $CLES$ is treated as the effect of GCFR relative to SWAFR values. Only significant or marginally significant fits are plotted (Table 2). Across spatial scales, all $CLES$ values differed significantly from zero following two-sided $t$-tests ($P < 0.001$)."}
+```{r plot-CLES-fits, fig.cap="Simple linear regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity (a--i), and the first principal component of heterogeneity (j; see Figure 1), where the $CLES$ is treated as the effect of GCFR relative to SWAFR values. Only significant or marginally significant fits are plotted (Table 2). Grey bands denote 95% confidence intervals about the fitted lines. Across spatial scales, all $CLES$ values differed significantly from zero following two-sided $t$-tests ($P < 0.001$)."}
 # Neaten variable labels to include panel letters
 CLES_results %<>%
   mutate(
@@ -302,9 +302,13 @@ We can conclude that broad scale species richness (i.e. that at the HDS scale) i
 
 ```{r import-cellular-data, include=FALSE}
 HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
-HDS %<>% filter(n_QDS == 4)
 QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
+
+# Remove cells w/ < 4 sub-cells
+HDS %<>% filter(n_QDS == 4)
 QDS %<>% filter(n_EDS == 4)
+
+# Combine datasets for figure
 HDS_QDS <- as_tibble(rbind(
   HDS %>%
     dplyr::select(region, HDS_richness, add_turnover_prop) %>%
@@ -448,30 +452,35 @@ plot_grid(
 
 Does heterogeneity explain differences in richness and turnover between the regions?
 
-Here I fit various linear regressions of richness and turnover as functions of environmental heterogeneity.
+<!--
+Environmental “roughness” in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell x∗, the roughness is based on x1,x2,...,xi,...,x8 neighbour cells as:
+-->
 
-The richness and turnover measures used are the same as in the previous section, while the environmental heterogeneity was recalculated in grid
+Here I fit various linear regressions of richness and turnover as functions of environmental heterogeneity across the two regions. The richness and turnover measures used are the same as in the previous section, while the environmental heterogeneity was recalculated in the same grid-wise fashion as the richness and turnover measures. These analyses were carried out at both the HDS- and QDS-scales, insofar as species occurrence data from GBIF is only accurate to the QDS-scale. These analyses were only carried out on HDS-scale data for HDS-cells that contained four QDS-cells, and similarly for QDS-scale data for QDS-cells that contained four EDS-cells.
 
-\begin{align*}
-  X      & = \{ x_1, x_2, x_3, x_4 \} \\
-  R(X)   & = \frac{1}{n} \sum_{i=1}^n D(x_i) \\
-  D(x_i) & = \frac{1}{m} \sum_{j=1}^m |x_i - y_j| \\
-  Y      & = X \setminus x_i \\
-  n      & = 4 \\
-  m      & = n - 1
-\end{align*}
+Environmental "roughness" here was calculated for each HDS- and QDS-cell in both regions as the mean of each consituent QDS- and EDS-cell's mean absolute difference in environmental conditions from the other three cells within that HDS- or QDS-cell.
 
-```{r, eval=FALSE}
+In other words, roughness was calculated by first calculating the average absolute-difference in environmental values between each QDS and it's three neighbours in a given HDS. Then, these four values (assuming four QDS in an HDS) are averaged. This roughness index is presented mathematically below. This index allows each of the four values to be similarly independent, and thus more sutiable for our averaging and analyses, as opposed to if it were simly the direct average of pairwise differences [expand?].
+
+$$
+  Roughness_{cellular}(\{ x_1, x_2, x_3, x_4 \}) =
+    \frac{1}{4} \sum_i f(x_i) =
+    \frac{1}{4} \sum_i \left(
+      \frac{1}{3} \sum_{j \neq i} |x_i - x_j|
+    \right)
+$$
+
+In R, this is implemented this as follows:
+
+```{r print-roughness-cellular-body, echo=TRUE, eval=FALSE}
 roughness_cells <- function(x) {
-  out <- vector(length = length(x))
+  out <- vector(mode = "numeric", length = length(x))
   for (i in seq_along(x)) {
     out[[i]] <- mean(abs(x[i] - x[-i]))
   }
   mean(out)
 }
 ```
-
-[Interpretations to follow after meeting.]
 
 ```{r tidy-cellular-data, include=FALSE}
 # log(x + 1) & scale roughness values to match PCAs were done on logged data
@@ -482,15 +491,11 @@ QDS[, str_which(names(QDS), "roughness")] %<>%
   log1p() %>%
   scale()
 
-GCFR_HDS <- filter(HDS, region == "GCFR")
-GCFR_QDS <- filter(QDS, region == "GCFR")
-
+# Make regin-specific subsets for modelling below
+GCFR_HDS  <- filter(HDS, region == "GCFR")
+GCFR_QDS  <- filter(QDS, region == "GCFR")
 SWAFR_HDS <- filter(HDS, region == "SWAFR")
 SWAFR_QDS <- filter(QDS, region == "SWAFR")
-
-predictor_names <- HDS %>%
-  {names(.)[str_which(names(.), "roughness")]} %>%
-  paste(collapse = " + ")
 ```
 
 ```{r explore-normality, include=FALSE}
@@ -524,104 +529,164 @@ predictor_names <- HDS %>%
 
 ## 3.1. Separate-regions models with combinations of variables
 
-```{r}
+```{r fit-sep-region-step-models}
+predictor_names <- HDS %>%
+  {names(.)[str_which(names(.), "roughness")]} %>%
+  paste(collapse = " + ")
 models <- list(
-GCFR_HDS_richness = lm(glue("HDS_richness ~ {predictor_names}"),      GCFR_HDS),
-GCFR_QDS_richness = lm(glue("QDS_richness ~ {predictor_names}"),      GCFR_QDS),
-GCFR_QDS_turnover = lm(glue("add_turnover_prop ~ {predictor_names}"), GCFR_HDS),
-SWAFR_HDS_richness= lm(glue("HDS_richness ~ {predictor_names}"),     SWAFR_HDS),
-SWAFR_QDS_richness= lm(glue("QDS_richness ~ {predictor_names}"),     SWAFR_QDS),
-SWAFR_QDS_turnover= lm(glue("add_turnover_prop ~ {predictor_names}"),SWAFR_HDS)
+  GCFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {predictor_names}"),
+    data    = GCFR_HDS
+  ),
+  GCFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {predictor_names}"),
+    data    = GCFR_QDS
+  ),
+  GCFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {predictor_names}"),
+    data    = GCFR_HDS
+  ),
+  SWAFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {predictor_names}"),
+    data    = SWAFR_HDS
+  ),
+  SWAFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {predictor_names}"),
+    data    = SWAFR_QDS
+  ),
+  SWAFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {predictor_names}"),
+    data    = SWAFR_HDS
+  )
 )
-models %>% 
-  map(step, trace = 0) %>%
-  map_df(tidy, .id = "response") %>%
+# (Forward & reverse ("bi-directional") stepwise regression)
+models %<>% map(step, trace = 0)
+```
+
+```{r summarise-sep-region-models}
+models_summary <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
   dplyr::select(-std.error, -statistic) %>%
   filter(term != "(Intercept)") %>%
+  mutate(term = str_remove_all(term, "_roughness")) %>%
+  separate(response, c("region", "scale", "response")) %>%
+  unite(response, scale, response)
+models_summary_printable <- models_summary %>%
+  dplyr::select(-conf.high, -conf.low) %>%
   mutate(
     response = case_when(
-      response == "GCFR_HDS_richness"  ~ "GCFR $S_{\\mathrm{HDS}}$",
-      response == "GCFR_QDS_richness"  ~ "GCFR $\\overline{S}_{\\mathrm{QDS}}$",
-      response == "GCFR_QDS_turnover"  ~ "GCFR $T_{\\mathrm{QDS}}$",
-      response == "SWAFR_HDS_richness" ~"SWAFR $S_{\\mathrm{HDS}}$",
-      response == "SWAFR_QDS_richness" ~"SWAFR $\\overline{S}_{\\mathrm{QDS}}$",
-      response == "SWAFR_QDS_turnover" ~"SWAFR $T_{\\mathrm{QDS}}$"
+      response == "HDS_richness" ~ "$S_{\\mathrm{HDS}}$",
+      response == "QDS_richness" ~ "$S_{\\mathrm{QDS}}$",
+      response == "QDS_turnover" ~ "$T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$"
     ),
-    term = str_remove_all(term, "_roughness"),
-    sig = ifelse(p.value <= 0.05,
-      "*",
-      ifelse(p.value <= 0.10,
-        ".",
-        ""
-      )
+    sig = case_when(
+      p.value <= 0.05 ~ "*",
+      p.value <= 0.10 ~ ".",
+      TRUE            ~ " "
     )
   ) %>%
-  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
-  knitr::kable(
-    caption = paste(
-      "Results of bi-directional stepwise multiple linear regressions of",
-      "three richness and turnover responses in the against additive",
-      "combinations of environmental heterogeneity variables. The stepwise",
-      "regression procedure started with all variables included.",
-      "(See Figure 5 for a graphical representation.)"
-    ),
-    col.names = c("Response", "Predictor", "Slope", "$P_{slope}$", ""),
-    align = "llrrc"
-  )
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3))
 ```
 
-```{r}
-models %>% 
-  map(step, trace = 0) %>%
+```{r print-sep-region-models-summary}
+knitr::kable(models_summary_printable,
+  caption = paste(
+    "Results of bi-directional stepwise multiple linear regressions of",
+    "three richness and turnover responses in the against additive",
+    "combinations of environmental heterogeneity variables. The stepwise",
+    "regression procedure started with all variables included.",
+    "(See Figure 5 for a graphical representation.)"
+  ),
+  col.names = c("Region", "Response", "Predictor", "Slope", "$P_{slope}$", " "),
+  align = "lllrrc"
+)
+```
+
+```{r R2-sep-region-models}
+models_R2 <- models %>% 
   map_df(.id = "response", glance) %>%
-  mutate(response = case_when(
-    response == "GCFR_HDS_richness"  ~ "GCFR $S_{\\mathrm{HDS}}$",
-    response == "GCFR_QDS_richness"  ~ "GCFR $\\overline{S}_{\\mathrm{QDS}}$",
-    response == "GCFR_QDS_turnover"  ~ "GCFR $T_{\\mathrm{QDS}}$",
-    response == "SWAFR_HDS_richness" ~"SWAFR $S_{\\mathrm{HDS}}$",
-    response == "SWAFR_QDS_richness" ~"SWAFR $\\overline{S}_{\\mathrm{QDS}}$",
-    response == "SWAFR_QDS_turnover" ~"SWAFR $T_{\\mathrm{QDS}}$"
-  )) %>%
   dplyr::select(response, adj.r.squared) %>%
-  mutate(adj.r.squared =
-    format(round(adj.r.squared, digits = 3), nsmall = 3)
+  separate(response, c("region", "scale", "response")) %>%
+  unite(response, scale, response)
+models_R2_printable <- models_R2 %>%
+  mutate(adj.r.squared = adj.r.squared %>%
+    round(digits = 3) %>%
+    format(nsmall = 3)
   ) %>%
-  knitr::kable(
-    caption = "Adjusted $R^2$-values of the models in Table 5.",
-    col.names = c("Response", "${R^2}_{adj.}$")
+  spread(region, adj.r.squared) %>%
+  mutate(response = case_when(
+    response == "HDS_richness" ~ "$S_{\\mathrm{HDS}}$",
+    response == "QDS_richness" ~ "$S_{\\mathrm{QDS}}$",
+    response == "QDS_turnover" ~ "$T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$"
+  ))
+```
+
+```{r print-sep-region-models-R2}
+knitr::kable(models_R2_printable,
+  caption = "Adjusted $R^2$-values of the models in Table 5.",
+  col.names = c(
+    "Response",
+    "GCFR ${R^2}_{\\mathrm{adj.}}$", "SWAFR ${R^2}_{\\mathrm{adj.}}$"
+  ),
+  align = "lrr"
+)
+```
+
+```{r plot-sep-region-models-summary, fig.width=6, fig.height=5, fig.cap="Slopes from Table 5, with error bars denoting 95% confidence intervals about each slope estimate."}
+models_summary_for_plot <- models_summary %>% 
+  mutate(
+    response = case_when(
+      response == "HDS_richness" ~ "(a)~italic(S)[HDS]",
+      response == "QDS_richness" ~ "(b)~italic(S)[QDS]",
+      response == "QDS_turnover" ~ "(c)~italic(T)[QDS]/italic(S)[HDS]"
+    ),
+    term = term %>%
+      str_replace_all("\\.", " ") %>%
+      factor(levels = var_names),
+    sig = case_when(
+      p.value > 0.10 ~ "NS",
+      p.value > 0.05 ~ "AS",
+      TRUE           ~ " "
+    )
+  )
+ggplot(models_summary_for_plot) +
+  aes(term, estimate, fill = region, group = region) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey25") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(
+    shape = 21,
+    position = position_dodge(width = 0.25)
+  ) +
+  geom_text(aes(label = sig), nudge_x = 0.25, size = 2) +
+  labs(x = "Predictor", y = "Slope") +
+  scale_fill_manual(name = "Region", values = c("black", "white")) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  theme(
+    axis.text.x  = element_text(angle = 90),
+    strip.text.x = element_text(angle = 0, hjust = 0)
   )
 ```
 
-```{r, fig.cap="Slopes from Table 5, with error bars denoting 95% confidence intervals about each slope estimate."}
-models %>% 
-  map(step, trace = 0) %>%
-  map_df(.id = "response", tidy, conf.int = TRUE) %>%
-  dplyr::select(-std.error, -statistic, -p.value) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(term = str_remove_all(term, "_roughness")) %>%
-  separate(response, into = c("region", "scale", "response")) %>%
-  unite(response, scale, response, remove = TRUE) %>%
-  mutate(response = case_when(
-    response == "HDS_richness" ~ "italic(S)[HDS]",
-    response == "QDS_richness" ~ "italic(S)[QDS]",
-    response == "QDS_turnover" ~ "italic(T)[QDS]"
-  )) %>%
-  ggplot(aes(term, estimate, colour = region, group = region)) +
-    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey25") +
-    geom_point(position = position_dodge(width = 0.5)) +
-    geom_errorbar(
-      aes(ymin = conf.low, ymax = conf.high),
-      width = 0,
-      position = position_dodge(width = 0.5)
-    ) +
-    labs(x = "Predictor", y = "Slope") +
-    scale_colour_manual(name = "Region", values = my_palette) +
-    facet_grid(response ~ ., scales = "free_y", labeller = label_parsed) +
-    theme(
-      axis.text.x        = element_text(angle = 90),
-      strip.text.y       = element_text(angle = 0),
-      panel.grid.major.y = element_line(colour = "grey"),
-    )
+```{plot-sep-region-models-fits, eval=FALSE}
+tibble(model = models) %>%
+  mutate(
+    vis = map(model, visreg::visreg, gg = TRUE),
+    coefficients = model %>%
+      map("coefficients") %>%
+      map(names) %>%
+      map(~.x[.x != "(Intercept)"])
+  ) %>%
+  mutate(gg = map(vis, map, ~qplot(.x$fit))) %>%
+  dplyr::select(-vis) %>%
+  unnest(gg) %>%
+  pull(gg)
+  map(visreg::visreg) %>%
+  map(str)
+  map(~.x[[1]]$fit)
 ```
 
 \clearpage
@@ -805,7 +870,12 @@ my_AIC_table <- function(..., caption = "...") {
     dplyr::select(model, AIC, delta_AIC, w_Akaike) %>%
     knitr::kable(
       caption = caption,
-      col.names = c("Model", "$AIC$", "$\\Delta AIC$", "$w_{Akaike}$"),
+      col.names = c(
+        "Model", 
+        "$AIC$", 
+        "$\\Delta AIC$", 
+        "$w_{\\mathrm{Akaike}}$"
+      ),
       align = c("lrrr")
     )
 }
@@ -904,6 +974,24 @@ plot_grid(
   nrow = 1,
   rel_widths = c(2, 1)
 )
+```
+
+```{r}
+models <- list(
+  lm(HDS_richness      ~ PC1,          HDS),
+  lm(HDS_richness      ~ PC1 + region, HDS),
+  lm(HDS_richness      ~ PC1 * region, HDS),
+  lm(QDS_richness      ~ PC1,          QDS),
+  lm(QDS_richness      ~ PC1 + region, QDS),
+  lm(QDS_richness      ~ PC1 * region, QDS),
+  lm(add_turnover      ~ PC1,          HDS),
+  lm(add_turnover      ~ PC1 + region, HDS),
+  lm(add_turnover      ~ PC1 * region, HDS),
+  lm(add_turnover_prop ~ PC1 ,         HDS),
+  lm(add_turnover_prop ~ PC1 + region, HDS),
+  lm(add_turnover_prop ~ PC1 * region, HDS)
+)
+str(models[[1]])
 ```
 
 ## 3.3. Combined-regions models with combinations of variables
