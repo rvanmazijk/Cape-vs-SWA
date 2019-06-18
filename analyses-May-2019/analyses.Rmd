@@ -39,7 +39,7 @@ $$
       x_4 & x^* & x_5 \\
       x_6 & x_7 & x_8
     \end{matrix} \right) =
-    \frac{1}{8} \sum_{i=1}^8 |x^* - x_i|
+    \frac{1}{8} \sum_i |x^* - x_i|
 $$
 
 In R, this is implemented this as follows:
@@ -282,8 +282,6 @@ CLES_plots <- empty_plots +
 CLES_plots
 ```
 
-\clearpage
-
 # 2. Species richness & turnover
 
 Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
@@ -446,8 +444,6 @@ plot_grid(
 
 ```
 
-\clearpage
-
 # 3. Relating heterogeneity to species richness & turnover
 
 Does heterogeneity explain differences in richness and turnover between the regions?
@@ -471,6 +467,45 @@ $$
 $$
 
 In R, this is implemented this as follows:
+
+<!--
+```{r print-roughness-cellular-body0, echo=TRUE, eval=FALSE}
+roughness_cells <- function(x) {
+  mean(c(
+    mean(abs(x[1] - x[-1])),
+    mean(abs(x[2] - x[-2])),
+    mean(abs(x[3] - x[-3])),
+    mean(abs(x[4] - x[-4]))
+  ))
+}
+```
+
+```{r print-roughness-cellular-body1, echo=TRUE, eval=FALSE}
+mean_diff <- function(x, i) {
+  mean(abs(x[i] - x[-i]))
+}
+roughness_cells <- function(x) {
+  mean(c(
+    mean_diff(x, 1),
+    mean_diff(x, 2),
+    mean_diff(x, 3),
+    mean_diff(x, 4)
+  ))
+}
+```
+
+```{r print-roughness-cellular-body2, echo=TRUE, eval=FALSE}
+mean_diff <- function(x, i) {
+  mean(abs(x[i] - x[-i]))
+}
+roughness_cells <- function(x) {
+  x %>%
+    seq_along() %>%
+    imap_dbl(function(x, i) mean_diff(x, i)) %>%
+    mean()
+}
+```
+-->
 
 ```{r print-roughness-cellular-body, echo=TRUE, eval=FALSE}
 roughness_cells <- function(x) {
@@ -535,28 +570,22 @@ predictor_names <- HDS %>%
   paste(collapse = " + ")
 models <- list(
   GCFR_HDS_richness = lm(
-    formula = glue("HDS_richness      ~ {predictor_names}"),
-    data    = GCFR_HDS
+    formula = glue("HDS_richness      ~ {predictor_names}"), data = GCFR_HDS
   ),
   GCFR_QDS_richness = lm(
-    formula = glue("QDS_richness      ~ {predictor_names}"),
-    data    = GCFR_QDS
+    formula = glue("QDS_richness      ~ {predictor_names}"), data = GCFR_QDS
   ),
   GCFR_QDS_turnover = lm(
-    formula = glue("add_turnover_prop ~ {predictor_names}"),
-    data    = GCFR_HDS
+    formula = glue("add_turnover_prop ~ {predictor_names}"), data = GCFR_HDS
   ),
   SWAFR_HDS_richness = lm(
-    formula = glue("HDS_richness      ~ {predictor_names}"),
-    data    = SWAFR_HDS
+    formula = glue("HDS_richness      ~ {predictor_names}"), data = SWAFR_HDS
   ),
   SWAFR_QDS_richness = lm(
-    formula = glue("QDS_richness      ~ {predictor_names}"),
-    data    = SWAFR_QDS
+    formula = glue("QDS_richness      ~ {predictor_names}"), data = SWAFR_QDS
   ),
   SWAFR_QDS_turnover = lm(
-    formula = glue("add_turnover_prop ~ {predictor_names}"),
-    data    = SWAFR_HDS
+    formula = glue("add_turnover_prop ~ {predictor_names}"), data = SWAFR_HDS
   )
 )
 # (Forward & reverse ("bi-directional") stepwise regression)
@@ -636,9 +665,9 @@ knitr::kable(models_R2_printable,
 models_summary_for_plot <- models_summary %>% 
   mutate(
     response = case_when(
-      response == "HDS_richness" ~ "(a)~italic(S)[HDS]",
-      response == "QDS_richness" ~ "(b)~italic(S)[QDS]",
-      response == "QDS_turnover" ~ "(c)~italic(T)[QDS]/italic(S)[HDS]"
+      response == "HDS_richness" ~ "(a)~~italic(S)[HDS]",
+      response == "QDS_richness" ~ "(b)~~italic(S)[QDS]",
+      response == "QDS_turnover" ~ "(c)~~italic(T)[QDS]/italic(S)[HDS]"
     ),
     term = term %>%
       str_replace_all("\\.", " ") %>%
@@ -651,7 +680,7 @@ models_summary_for_plot <- models_summary %>%
   )
 ggplot(models_summary_for_plot) +
   aes(term, estimate, fill = region, group = region) +
-  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey25") +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
   geom_errorbar(
     aes(ymin = conf.low, ymax = conf.high),
     position = position_dodge(width = 0.25),
@@ -661,13 +690,13 @@ ggplot(models_summary_for_plot) +
     shape = 21,
     position = position_dodge(width = 0.25)
   ) +
-  geom_text(aes(label = sig), nudge_x = 0.25, size = 2) +
+  geom_text(aes(label = sig), nudge_x = 0.375, size = 3) +
   labs(x = "Predictor", y = "Slope") +
   scale_fill_manual(name = "Region", values = c("black", "white")) +
   facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
   theme(
-    axis.text.x  = element_text(angle = 90),
-    strip.text.x = element_text(angle = 0, hjust = 0)
+    axis.text.x  = element_text(angle = 90, hjust = 1),
+    strip.text.x = element_text(angle =  0, hjust = 0)
   )
 ```
 
