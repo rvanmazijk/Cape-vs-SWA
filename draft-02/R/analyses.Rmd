@@ -564,52 +564,48 @@ SWAFR_QDS <- filter(QDS, region == "SWAFR")
 
 ## 3.1. Separate-regions models with combinations of variables
 
-```{r fit-sep-region-step-models}
+```{r fit-all-sep-region-models}
 predictor_names <- HDS %>%
   {names(.)[str_which(names(.), "roughness")]} %>%
   paste(collapse = " + ")
 models <- list(
   GCFR_HDS_richness = lm(
-    formula = glue("HDS_richness      ~ {predictor_names}"), data = GCFR_HDS
+    formula = glue("HDS_richness      ~ {predictor_names}"),
+    data    = GCFR_HDS
   ),
   GCFR_QDS_richness = lm(
-    formula = glue("QDS_richness      ~ {predictor_names}"), data = GCFR_QDS
+    formula = glue("QDS_richness      ~ {predictor_names}"),
+    data    = GCFR_QDS
   ),
   GCFR_QDS_turnover = lm(
-    formula = glue("add_turnover_prop ~ {predictor_names}"), data = GCFR_HDS
+    formula = glue("add_turnover_prop ~ {predictor_names}"),
+    data    = GCFR_HDS
   ),
   SWAFR_HDS_richness = lm(
-    formula = glue("HDS_richness      ~ {predictor_names}"), data = SWAFR_HDS
+    formula = glue("HDS_richness      ~ {predictor_names}"),
+    data    = SWAFR_HDS
   ),
   SWAFR_QDS_richness = lm(
-    formula = glue("QDS_richness      ~ {predictor_names}"), data = SWAFR_QDS
+    formula = glue("QDS_richness      ~ {predictor_names}"),
+    data    = SWAFR_QDS
   ),
   SWAFR_QDS_turnover = lm(
-    formula = glue("add_turnover_prop ~ {predictor_names}"), data = SWAFR_HDS
+    formula = glue("add_turnover_prop ~ {predictor_names}"),
+    data    = SWAFR_HDS
   )
 )
-# (Forward & reverse ("bi-directional") stepwise regression)
-#models %<>% map(step, trace = 0)
-```
-
-```{r try-olsrr}
-foo <- ols_step_all_possible(models$GCFR_HDS_richness)
-best_preds <- foo %>%
-  as_tibble() %>%
-  mutate(delta_aic = aic - min(aic)) %>%
-  arrange(delta_aic) %>%
-  dplyr::select(predictors, adjr, delta_aic) %>%
-  slice(1) %>%
-  pull(predictors) %>%
-  str_replace_all(" ", " + ")
-new_foo <- lm(glue("HDS_richness ~ {best_preds}"), data = GCFR_HDS)
-tidy(new_foo)
-```
-
-```{r try-olsrr-all}
+# Fit all possible model subsets
 # (WARNING: this takes a while... Only run if haven't already...)
-models %<>% map(ols_step_all_possible)
-# TODO: write_csv(models, ...)
+save_file <- here("draft-02/outputs/fit-all-sep-region-models.RDS")
+if (file.exists(save_file)) {
+  models <- read_rds(save_file)
+} else {
+  models %<>% map(ols_step_all_possible)
+  write_rds(models, save_file)
+}
+```
+
+```{r fit-best-sep-region-models}
 best_preds <- map(models, .id = "model",
   ~ .x %>%
     as_tibble() %>%
@@ -765,14 +761,27 @@ tibble(model = new_models) %>%
       map("coefficients") %>%
       map(names) %>%
       map(~.x[.x != "(Intercept)"])
-  ) %>%
-  mutate(gg = map(vis, map, ~qplot(.x$fit))) %>%
-  dplyr::select(-vis) %>%
-  unnest(gg) %>%
-  pull(gg)
-  map(visreg::visreg) %>%
-  map(str)
-  map(~.x[[1]]$fit)
+  ) #%>%
+  # FIXME:
+  #mutate(gg = map(vis, map, ~qplot(.x$fit))) %>%
+  #dplyr::select(-vis) %>%
+  #unnest(gg) %>%
+  #pull(gg)
+
+plot_partial_fits <- function(m, m_title) {
+  coefficient_names <- names(m$coefficients)[
+    names(m$coefficients) != "(Intercept)"
+  ]
+  plots <- map(coefficient_names, ~visreg::visreg(m, .x, gg = TRUE))
+  plots[-1] %<>% map(~ .x + theme(axis.title.y = element_blank()))
+  plot_grid(plotlist = plots, nrow = 1, labels = m_title)
+}
+#partial_fits <-
+new_models %>%
+  imap(~ plot_partial_fits(
+    .x,
+    paste("(a)", str_extract(.y, "(GCFR|SWAFR)"))
+  ))
 ```
 
 \clearpage
@@ -781,9 +790,9 @@ tibble(model = new_models) %>%
 
 ### 3.2.1. Environmental heterogeneity variables
 
-[Plots of the models referred to in Tables 6--8 can be discussed in a meeting.]
+#### 3.2.1.1. With $S_{\mathrm{HDS}}$ as response
 
-```{r, include=FALSE}
+```{r fit-combined-region-models-S-HDS}
 predictor_names <- names(HDS)[
   str_which(names(HDS), "roughness")
 ]
@@ -840,7 +849,7 @@ HDS_richness_models_int_region <- predictor_names %>%
   )
 ```
 
-```{r}
+```{r print-combined-region-models-1-S-HDS}
 HDS_richness_models_no_region %>%
   dplyr::select(
     predictor,     r_squared,
@@ -861,7 +870,7 @@ HDS_richness_models_no_region %>%
   )
 ```
 
-```{r}
+```{r print-combined-region-models-2-S-HDS}
 HDS_richness_models_add_region %>%
   dplyr::select(
     predictor,      r_squared,
@@ -884,7 +893,7 @@ HDS_richness_models_add_region %>%
   )
 ```
 
-```{r}
+```{r print-combined-region-models-3-S-HDS}
 HDS_richness_models_int_region %>%
   dplyr::select(
     predictor,      r_squared,
@@ -909,7 +918,41 @@ HDS_richness_models_int_region %>%
   )
 ```
 
-```{r, eval=FALSE}
+```{r compare-combined-region-models-S-HDS}
+models <- list(
+  HDS_richness_models_no_region$model,
+  HDS_richness_models_add_region$model,
+  HDS_richness_models_int_region$model
+)
+model_comparion <- models %>%
+  pmap_df(.id = "variable", my_AIC_table) %>%
+  group_by(variable) %>%
+  summarise(
+    best_model =    model[w_Akaike == max(w_Akaike)],
+    w_Akaike   = w_Akaike[w_Akaike == max(w_Akaike)]
+  ) %>%
+  mutate(best_model = factor(best_model, levels = c(
+    "No region",
+    "Add. region",
+    "Int. region"
+  ))) %>%
+  arrange(best_model, desc(w_Akaike)) %>%
+  mutate(variable = variable %>%
+    str_remove("_roughness") %>%
+    str_replace("\\.", " ")
+  )
+knitr::kable(model_comparion,
+  caption = paste(
+    "Comparisons of best-fitting models across separate simple linear",
+    "regressions of $S_{\\mathrm{HDS}}$ against environmental heterogeneity",
+    "variables."
+  ),
+  col.names = c("Variable", "Model", "$w_{\\mathrm{Akaike}}$"),
+  align = "lrr"
+)
+```
+
+```{r plot-combined-region-models-fits, eval=FALSE}
 HDS_richness_models_no_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
   map(~ .x + theme(
     axis.title.y = element_blank(),
@@ -938,101 +981,553 @@ plot_grid(plotlist = HDS_richness_models_add_region$plot)
 plot_grid(plotlist = HDS_richness_models_int_region$plot)
 ```
 
-\clearpage
+#### 3.2.1.2. With $\overline{S}_{\mathrm{QDS}}$ as response
+
+```{r fit-combined-region-models-S-QDS}
+predictor_names <- names(QDS)[
+  str_which(names(QDS), "roughness")
+]
+
+QDS_richness_models_no_region <- predictor_names %>%
+  map(~lm(glue("QDS_richness ~ {.x}"), QDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    r_squared     = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig     = ifelse(slope_p_value <= 0.05, "*", ""),
+    plot          = map(model, visreg::visreg, gg = TRUE)
+  )
+QDS_richness_models_add_region <- predictor_names %>%
+  map(~lm(glue("QDS_richness ~ {.x} + region"), QDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
+    r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+    region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
+  )
+QDS_richness_models_int_region <- predictor_names %>%
+  map(~lm(glue("QDS_richness ~ {.x} * region"), QDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
+    int_p_value    = map_dbl(model, ~tidy(.x)$p.value[[4]]),
+    r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+    region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+    int_sig        = ifelse(int_p_value    <= 0.05, "*", ""),
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
+  )
+```
+
+```{r print-combined-region-models-1-S-QDS}
+QDS_richness_models_no_region %>%
+  dplyr::select(
+    predictor,     r_squared,
+    slope_p_value, slope_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $\\overline{S}_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables",
+      "with no region-term."
+    ),
+    col.names = c(
+      "Predictor",   "$R^2$",
+      "$P_{slope}$", ""
+    ),
+    align = "lrrc"
+  )
+```
+
+```{r print-combined-region-models-2-S-QDS}
+QDS_richness_models_add_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $\\overline{S}_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables",
+      "with an additive region-term."
+    ),
+    col.names = c(
+      "Predictor",    "$R^2$",
+      "$P_{slope}$",  "",
+      "$P_{region}$", ""
+    ),
+    align = "lrrcrc"
+  )
+```
+
+```{r print-combined-region-models-3-S-QDS}
+QDS_richness_models_int_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig,
+    int_p_value,    int_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $\\overline{S}_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables",
+      "with an interaction-region-term."
+    ),
+    col.names = c(
+      "Predictor",          "$R^2$",
+      "$P_{slope}$",        "",
+      "$P_{region}$",       "",
+      "$P_{slope:region}$", ""
+    ),
+    align = "lrrcrcrc"
+  )
+```
+
+```{r compare-combined-region-models-S-QDS}
+models <- list(
+  QDS_richness_models_no_region$model,
+  QDS_richness_models_add_region$model,
+  QDS_richness_models_int_region$model
+)
+model_comparion <- models %>%
+  pmap_df(.id = "variable", my_AIC_table) %>%
+  group_by(variable) %>%
+  summarise(
+    best_model =    model[w_Akaike == max(w_Akaike)],
+    w_Akaike   = w_Akaike[w_Akaike == max(w_Akaike)]
+  ) %>%
+  mutate(best_model = factor(best_model, levels = c(
+    "No region",
+    "Add. region",
+    "Int. region"
+  ))) %>%
+  arrange(best_model, desc(w_Akaike)) %>%
+  mutate(variable = variable %>%
+    str_remove("_roughness") %>%
+    str_replace("\\.", " ")
+  )
+knitr::kable(model_comparion,
+  caption = paste(
+    "Comparisons of best-fitting models across separate simple linear",
+    "regressions of $\\overline{S}_{\\mathrm{QDS}}$ against environmental heterogeneity",
+    "variables."
+  ),
+  col.names = c("Variable", "Model", "$w_{\\mathrm{Akaike}}$"),
+  align = "lrr"
+)
+```
+
+#### 3.2.1.3. With $T_{\mathrm{QDS}}$ as response
+
+```{r fit-combined-region-models-T-QDS}
+predictor_names <- names(HDS)[
+  str_which(names(HDS), "roughness")
+]
+
+add_turnover_models_no_region <- predictor_names %>%
+  map(~lm(glue("add_turnover ~ {.x}"), HDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    r_squared     = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig     = ifelse(slope_p_value <= 0.05, "*", ""),
+    plot          = map(model, visreg::visreg, gg = TRUE)
+  )
+add_turnover_models_add_region <- predictor_names %>%
+  map(~lm(glue("add_turnover ~ {.x} + region"), HDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
+    r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+    region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
+  )
+add_turnover_models_int_region <- predictor_names %>%
+  map(~lm(glue("add_turnover ~ {.x} * region"), HDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
+    int_p_value    = map_dbl(model, ~tidy(.x)$p.value[[4]]),
+    r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+    region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+    int_sig        = ifelse(int_p_value    <= 0.05, "*", ""),
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
+  )
+```
+
+```{r print-combined-region-models-1-T-QDS}
+add_turnover_models_no_region %>%
+  dplyr::select(
+    predictor,     r_squared,
+    slope_p_value, slope_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $T_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables",
+      "with no region-term."
+    ),
+    col.names = c(
+      "Predictor",   "$R^2$",
+      "$P_{slope}$", ""
+    ),
+    align = "lrrc"
+  )
+```
+
+```{r print-combined-region-models-2-T-QDS}
+add_turnover_models_add_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $T_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables",
+      "with an additive region-term."
+    ),
+    col.names = c(
+      "Predictor",    "$R^2$",
+      "$P_{slope}$",  "",
+      "$P_{region}$", ""
+    ),
+    align = "lrrcrc"
+  )
+```
+
+```{r print-combined-region-models-3-T-HDS}
+add_turnover_models_int_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig,
+    int_p_value,    int_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $T_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables",
+      "with an interaction-region-term."
+    ),
+    col.names = c(
+      "Predictor",          "$R^2$",
+      "$P_{slope}$",        "",
+      "$P_{region}$",       "",
+      "$P_{slope:region}$", ""
+    ),
+    align = "lrrcrcrc"
+  )
+```
+
+```{r compare-combined-region-models-T-HDS}
+models <- list(
+  add_turnover_models_no_region$model,
+  add_turnover_models_add_region$model,
+  add_turnover_models_int_region$model
+)
+model_comparion <- models %>%
+  pmap_df(.id = "variable", my_AIC_table) %>%
+  group_by(variable) %>%
+  summarise(
+    best_model =    model[w_Akaike == max(w_Akaike)],
+    w_Akaike   = w_Akaike[w_Akaike == max(w_Akaike)]
+  ) %>%
+  mutate(best_model = factor(best_model, levels = c(
+    "No region",
+    "Add. region",
+    "Int. region"
+  ))) %>%
+  arrange(best_model, desc(w_Akaike)) %>%
+  mutate(variable = variable %>%
+    str_remove("_roughness") %>%
+    str_replace("\\.", " ")
+  )
+knitr::kable(model_comparion,
+  caption = paste(
+    "Comparisons of best-fitting models across separate simple linear",
+    "regressions of $T_{\\mathrm{QDS}}$ against environmental heterogeneity",
+    "variables."
+  ),
+  col.names = c("Variable", "Model", "$w_{\\mathrm{Akaike}}$"),
+  align = "lrr"
+)
+```
+
+#### 3.2.1.4. With $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ as response
+
+```{r fit-combined-region-models-T-QDS-prop}
+predictor_names <- names(HDS)[
+  str_which(names(HDS), "roughness")
+]
+
+add_turnover_prop_models_no_region <- predictor_names %>%
+  map(~lm(glue("add_turnover_prop ~ {.x}"), HDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    r_squared     = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig     = ifelse(slope_p_value <= 0.05, "*", ""),
+    plot          = map(model, visreg::visreg, gg = TRUE)
+  )
+add_turnover_prop_models_add_region <- predictor_names %>%
+  map(~lm(glue("add_turnover_prop ~ {.x} + region"), HDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
+    r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+    region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
+  )
+add_turnover_prop_models_int_region <- predictor_names %>%
+  map(~lm(glue("add_turnover_prop ~ {.x} * region"), HDS)) %>%
+  set_names(predictor_names) %>%
+  {tibble(predictor = names(.), model = .)} %>%
+  mutate(
+    slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[[2]]),
+    region_p_value = map_dbl(model, ~tidy(.x)$p.value[[3]]),
+    int_p_value    = map_dbl(model, ~tidy(.x)$p.value[[4]]),
+    r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+    slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+    region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+    int_sig        = ifelse(int_p_value    <= 0.05, "*", ""),
+    plot = map2(model, predictor,
+      ~ visreg::visreg(.x,
+        xvar    = .y,
+        by      = "region",
+        overlay = TRUE,
+        gg      = TRUE
+      )
+    )
+  )
+```
+
+```{r print-combined-region-models-1-T-QDS-prop}
+add_turnover_prop_models_no_region %>%
+  dplyr::select(
+    predictor,     r_squared,
+    slope_p_value, slope_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables",
+      "with no region-term."
+    ),
+    col.names = c(
+      "Predictor",   "$R^2$",
+      "$P_{slope}$", ""
+    ),
+    align = "lrrc"
+  )
+```
+
+```{r print-combined-region-models-2-T-QDS-prop}
+add_turnover_prop_models_add_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables",
+      "with an additive region-term."
+    ),
+    col.names = c(
+      "Predictor",    "$R^2$",
+      "$P_{slope}$",  "",
+      "$P_{region}$", ""
+    ),
+    align = "lrrcrc"
+  )
+```
+
+```{r print-combined-region-models-3-T-HDS-prop}
+add_turnover_prop_models_int_region %>%
+  dplyr::select(
+    predictor,      r_squared,
+    slope_p_value,  slope_sig,
+    region_p_value, region_sig,
+    int_p_value,    int_sig
+  ) %>%
+  mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of separate simple linear regressions of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables",
+      "with an interaction-region-term."
+    ),
+    col.names = c(
+      "Predictor",          "$R^2$",
+      "$P_{slope}$",        "",
+      "$P_{region}$",       "",
+      "$P_{slope:region}$", ""
+    ),
+    align = "lrrcrcrc"
+  )
+```
+
+```{r compare-combined-region-models-T-HDS-prop}
+models <- list(
+  add_turnover_prop_models_no_region$model,
+  add_turnover_prop_models_add_region$model,
+  add_turnover_prop_models_int_region$model
+)
+model_comparion <- models %>%
+  pmap_df(.id = "variable", my_AIC_table) %>%
+  group_by(variable) %>%
+  summarise(
+    best_model =    model[w_Akaike == max(w_Akaike)],
+    w_Akaike   = w_Akaike[w_Akaike == max(w_Akaike)]
+  ) %>%
+  mutate(best_model = factor(best_model, levels = c(
+    "No region",
+    "Add. region",
+    "Int. region"
+  ))) %>%
+  arrange(best_model, desc(w_Akaike)) %>%
+  mutate(variable = variable %>%
+    str_remove("_roughness") %>%
+    str_replace("\\.", " ")
+  )
+knitr::kable(model_comparion,
+  caption = paste(
+    "Comparisons of best-fitting models across separate simple linear",
+    "regressions of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ against environmental heterogeneity",
+    "variables."
+  ),
+  col.names = c("Variable", "Model", "$w_{\\mathrm{Akaike}}$"),
+  align = "lrr"
+)
+```
 
 ### 3.2.2. PC1 models
 
 Here, I present my findings with raw R-code, because I don't have the time to format it neatly.
 
-```{r}
-my_AIC_table <- function(..., caption = "...") {
-  AIC(...) %>%
-    mutate(
-      delta_AIC = AIC - min(AIC),
-      w_Akaike  = exp(-0.5 * delta_AIC) / sum(exp(-0.5 * delta_AIC))
-    ) %>%
-    mutate(model = c("PC1", "PC1+Region", "PC1:Region")) %>%
-    mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
-    dplyr::select(model, AIC, delta_AIC, w_Akaike) %>%
-    knitr::kable(
-      caption = caption,
-      col.names = c(
-        "Model", 
-        "$AIC$", 
-        "$\\Delta AIC$", 
-        "$w_{\\mathrm{Akaike}}$"
-      ),
-      align = c("lrrr")
-    )
-}
-```
-
-```{r}
+```{r combined-region-PC1-models-1, echo=TRUE}
 m1 <- lm(HDS_richness ~ PC1,          HDS)
 m2 <- lm(HDS_richness ~ PC1 + region, HDS)
 m3 <- lm(HDS_richness ~ PC1 * region, HDS)
 my_AIC_table(m1, m2, m3, caption = "Richness (HDS)")
+# Therefore, "choose" m1 ("no region" model)
 ```
 
-```{r}
-# Choose m1
+```{r combined-region-PC1-models-2, echo=TRUE}
+m1 <- lm(QDS_richness ~ PC1,          QDS)
+m2 <- lm(QDS_richness ~ PC1 + region, QDS)
+m3 <- lm(QDS_richness ~ PC1 * region, QDS)
+my_AIC_table(m1, m2, m3, caption = "Richness (QDS)")
+# Therefore, "choose" m1 ("no region" model) (?)
+```
+
+```{r combined-region-PC1-models-3, echo=TRUE}
+m1 <- lm(add_turnover ~ PC1,          HDS)
+m2 <- lm(add_turnover ~ PC1 + region, HDS)
+m3 <- lm(add_turnover ~ PC1 * region, HDS)
+my_AIC_table(m1, m2, m3, caption = "Turnover")
+# Therefore, "choose" m1 ("no region" model)
+```
+
+```{r combined-region-PC1-models-4, echo=TRUE}
+m1 <- lm(add_turnover_prop ~ PC1 ,         HDS)
+m2 <- lm(add_turnover_prop ~ PC1 + region, HDS)
+m3 <- lm(add_turnover_prop ~ PC1 * region, HDS)
+my_AIC_table(m1, m2, m3, caption = "Turnover (proportional)")
+# Therefore, "choose" m3 ("int. region" model)
+```
+
+```{r plot-combined-region-PC1-models}
 S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
   geom_smooth(method = lm, colour = "grey25") +
   geom_point(aes(fill = region), shape = 21, colour = "black") +
   ylab(bquote(italic("S")["HDS"])) +
   scale_fill_manual(name = "Region", values = c("black", "white"))
-```
 
-```{r}
-m1 <- lm(QDS_richness ~ PC1,          QDS)
-m2 <- lm(QDS_richness ~ PC1 + region, QDS)
-m3 <- lm(QDS_richness ~ PC1 * region, QDS)
-my_AIC_table(m1, m2, m3, caption = "Richness (QDS)")
-```
-
-```{r}
-# Choose m1
 S_QDS_plot <- ggplot(QDS, aes(PC1, QDS_richness)) +
   geom_smooth(method = lm, colour = "grey25") +
   geom_point(aes(fill = region), shape = 21, colour = "black") +
   ylab(bquote(italic("S")["QDS"])) +
   scale_fill_manual(name = "Region", values = c("black", "white"))
-```
 
-```{r}
-m1 <- lm(add_turnover ~ PC1,          HDS)
-m2 <- lm(add_turnover ~ PC1 + region, HDS)
-m3 <- lm(add_turnover ~ PC1 * region, HDS)
-my_AIC_table(m1, m2, m3, caption = "Turnover")
-```
-
-```{r}
-# Choose m1
 turnover_plot <- ggplot(HDS, aes(PC1, add_turnover)) +
   geom_smooth(method = lm, colour = "grey25") +
   geom_point(aes(fill = region), shape = 21, colour = "black") +
   ylab(bquote(italic("T")["QDS"])) +
   scale_fill_manual(name = "Region", values = c("black", "white"))
-```
 
-```{r}
-m1 <- lm(add_turnover_prop ~ PC1 ,         HDS)
-m2 <- lm(add_turnover_prop ~ PC1 + region, HDS)
-m3 <- lm(add_turnover_prop ~ PC1 * region, HDS)
-my_AIC_table(m1, m2, m3, caption = "Turnover (proportional)")
-```
-
-```{r}
-# Choose m3
-# (ggplot() w/ 2x geom_smooth()s produces same fits as visreg::visreg())
 turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
   geom_smooth(method = lm, colour = "grey25") +
   geom_point(aes(fill = region), shape = 21, colour = "black") +
   ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
   scale_fill_manual(name = "Region", values = c("black", "white"))
-```
 
-```{r}
 my_plots <- list(
   S_HDS_plot + theme(
     axis.title.x = element_blank(),
@@ -1062,32 +1557,9 @@ plot_grid(
 )
 ```
 
-```{r}
-models <- list(
-  lm(HDS_richness      ~ PC1,          HDS),
-  lm(HDS_richness      ~ PC1 + region, HDS),
-  lm(HDS_richness      ~ PC1 * region, HDS),
-  lm(QDS_richness      ~ PC1,          QDS),
-  lm(QDS_richness      ~ PC1 + region, QDS),
-  lm(QDS_richness      ~ PC1 * region, QDS),
-  lm(add_turnover      ~ PC1,          HDS),
-  lm(add_turnover      ~ PC1 + region, HDS),
-  lm(add_turnover      ~ PC1 * region, HDS),
-  lm(add_turnover_prop ~ PC1 ,         HDS),
-  lm(add_turnover_prop ~ PC1 + region, HDS),
-  lm(add_turnover_prop ~ PC1 * region, HDS)
-)
-str(models[[1]])
-```
-
 ## 3.3. Combined-regions models with combinations of variables
 
-[To be discussed in meeting.]
-
-```{r}, eval=FALSE, echo=FALSE}
-
-# TODO
-
+```{r, eval=FALSE}
 m_all <- lm(
   HDS_richness ~
     Elevation_mean_value + Elevation_roughness +
@@ -1100,7 +1572,7 @@ m_all <- lm(
   HDS
 )
 summary(m_all)
-m_all_step <- step(m_all)
+m_all_step <- ols_step_all_possible(m_all)
 summary(m_all_step)
 
 m_all_int <- lm(
