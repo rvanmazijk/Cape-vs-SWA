@@ -9,13 +9,6 @@ packrat/lib*/
 *.RDS
 *.log
 
-*/outputs/turnover/GCFR_spp_2018-08-10/
-*/outputs/turnover/SWAFR_spp_2018-08-10/
-*/outputs/turnover/GCFR_spp_2018-08-14/
-*/outputs/turnover/SWAFR_spp_2018-08-14/
-*/outputs/turnover/GCFR_species_2018-08-14/
-*/outputs/turnover/SWAFR_species_2018-08-14/
-*/outputs/turnover/GCFR_species_2019-06-05/
-*/outputs/turnover/SWAFR_species_2019-06-05/
+**/outputs/turnover/*FR_sp*_*/
 
 data/raw-data/ARC-Land-Type-Survey/
