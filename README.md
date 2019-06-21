@@ -8,11 +8,12 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
 <p>
   <img src="logos/UCT-logo.png"       height="100" />
   <img src="logos/BIO-logo.png"       height="100" />
-  <img src="logos/eResearch-logo.png" height="90"  />
-  <img src="logos/DST-logo.png"       height="90"  />
-  <img src="logos/NRF-logo.png"       height="90"  />
-  <img src="logos/SAAB-logo.png"      height="90"  />
+  <img src="logos/eResearch-logo.png" height="80"  />
+  <img src="logos/NRF-logo.png"       height="80"  />
+  <img src="logos/SAAB-logo.png"      height="80"  />
+  <img src="logos/DST-logo.png"       height="80"  />
 </p>
+
 
 This is an open access repository for (some) data-sets, reproducible analyses, conference slides and manuscript drafts for a publication based on my BSc Hons project (in prep. for submission to J. Biogeog.). Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
 
