@@ -95,3 +95,10 @@ var_names <- c(
 
 white_rect <- grid.rect(gp = gpar(col = "white"))
 # Useful when arranging panels
+
+# Record session info ----------------------------------------------------------
+
+capture.output(
+  sessionInfo(),
+  file = here("draft-02/outputs/sessionInfo.txt")
+)
