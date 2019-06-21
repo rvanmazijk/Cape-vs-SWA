@@ -8,10 +8,10 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
 <p>
   <img src="logos/UCT-logo.png"       height="100" />
   <img src="logos/BIO-logo.png"       height="100" />
-  <img src="logos/eResearch-logo.png" height="80"  />
+  <img src="logos/DST-logo.png"       height="80"  />
   <img src="logos/NRF-logo.png"       height="80"  />
   <img src="logos/SAAB-logo.png"      height="80"  />
-  <img src="logos/DST-logo.png"       height="80"  />
+  <img src="logos/eResearch-logo.png" height="80"  />
 </p>
 
 
