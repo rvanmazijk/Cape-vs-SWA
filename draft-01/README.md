@@ -1,12 +1,12 @@
 # First draft
 
 <p>
-  <img src="../logos/UCT-logo.png"       width="100" />
-  <img src="../logos/BIO-logo.png"       width="100" />
-  <img src="../logos/eResearch-logo.png" width="150" />
-  <img src="../logos/DST-logo.png"       width="200" />
-  <img src="../logos/NRF-logo.png"       width="150" />
-  <img src="../logos/SAAB-logo.png"      width="150" />
+  <img src="../logos/UCT-logo.png"       height="100" />
+  <img src="../logos/BIO-logo.png"       height="100" />
+  <img src="../logos/eResearch-logo.png" height="100" />
+  <img src="../logos/DST-logo.png"       height="100" />
+  <img src="../logos/NRF-logo.png"       height="100" />
+  <img src="../logos/SAAB-logo.png"      height="100" />
 </p>
 
 **Note, all directory names references in code and markdown documents here have not been updated to reflect all these files' new positions within this directory (`draft-01/`), and will thus not run or render**
