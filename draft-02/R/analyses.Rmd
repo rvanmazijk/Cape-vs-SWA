@@ -9,7 +9,7 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 library(here)
-source(here("analyses-May-2019/setup.R"))
+source(here("draft-02/R/setup.R"))
 ```
 
 # Preamble/outline
@@ -67,7 +67,7 @@ Both the actual environmental heterogeneity values and the principal component o
 We can see that PDQ, NDVI, pH and, arguably, elevation are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale (Figure 2). The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2). Notably, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2). In general (i.e. regarding PC1; Figure 2), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales.
 
 ```{r import-roughness-matrices, include=FALSE}
-output_path      <- here("outputs/roughness")
+output_path      <- here("draft-02/outputs/roughness")
 resolutions      <- c("base", "EDS", "QDS", "HDS", "3QDS")
 matrix_filenames <- glue("{output_path}/{resolutions}_roughness_matrix.csv")
 
@@ -299,8 +299,8 @@ Additionally, a visualisation of how $S_{\mathrm{HDS}}$ is partitioned into $\ov
 We can conclude that broad scale species richness (i.e. that at the HDS scale) is more strongly driven by turnover between areas (i.e. QDS) than so in the SWAFR.
 
 ```{r import-cellular-data, include=FALSE}
-HDS <- read_csv(here("outputs/QDS_data_cells.csv"))
-QDS <- read_csv(here("outputs/EDS_data_cells.csv"))
+HDS <- read_csv(here("draft-02/outputs/QDS_data_cells.csv"))
+QDS <- read_csv(here("draft-02/outputs/EDS_data_cells.csv"))
 
 # Remove cells w/ < 4 sub-cells
 HDS %<>% filter(n_QDS == 4)

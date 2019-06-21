@@ -38,7 +38,7 @@ library(cowplot)
 # Source helper functions ------------------------------------------------------
 
 function_filenames <- list.files(
-  here("analyses-May-2019/functions"),
+  here("draft-02/R/functions"),
   full.names = TRUE
 )
 walk(function_filenames, source)
