@@ -589,11 +589,68 @@ models <- list(
   )
 )
 # (Forward & reverse ("bi-directional") stepwise regression)
-models %<>% map(step, trace = 0)
+#models %<>% map(step, trace = 0)
+```
+
+```{r try-olsrr}
+foo <- ols_step_all_possible(models$GCFR_HDS_richness)
+best_preds <- foo %>%
+  as_tibble() %>%
+  mutate(delta_aic = aic - min(aic)) %>%
+  arrange(delta_aic) %>%
+  dplyr::select(predictors, adjr, delta_aic) %>%
+  slice(1) %>%
+  pull(predictors) %>%
+  str_replace_all(" ", " + ")
+new_foo <- lm(glue("HDS_richness ~ {best_preds}"), data = GCFR_HDS)
+tidy(new_foo)
+```
+
+```{r try-olsrr-all}
+# (WARNING: this takes a while... Only run if haven't already...)
+models %<>% map(ols_step_all_possible)
+# TODO: write_csv(models, ...)
+best_preds <- map(models, .id = "model",
+  ~ .x %>%
+    as_tibble() %>%
+    mutate(delta_aic = aic - min(aic)) %>%
+    arrange(delta_aic) %>%
+    dplyr::select(predictors, adjr, delta_aic) %>%
+    slice(1) %>%
+    pull(predictors) %>%
+    str_replace_all(" ", " + ")
+)
+best_preds
+new_models <- list(
+  GCFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {best_preds$GCFR_HDS_richness}"),
+    data   = GCFR_HDS
+  ),
+  GCFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {best_preds$GCFR_QDS_richness}"),
+    data    = GCFR_QDS
+  ),
+  GCFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {best_preds$GCFR_QDS_turnover}"),
+    data    = GCFR_HDS
+  ),
+  SWAFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {best_preds$SWAFR_HDS_richness}"),
+    data    = SWAFR_HDS
+  ),
+  SWAFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {best_preds$SWAFR_QDS_richness}"),
+    data    = SWAFR_QDS
+  ),
+  SWAFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {best_preds$SWAFR_QDS_turnover}"),
+    data    = SWAFR_HDS
+  )
+)
 ```
 
 ```{r summarise-sep-region-models}
-models_summary <- models %>%
+models_summary <- new_models %>%
   map_df(.id = "response", tidy, conf.int = TRUE) %>%
   dplyr::select(-std.error, -statistic) %>%
   filter(term != "(Intercept)") %>%
@@ -632,7 +689,7 @@ knitr::kable(models_summary_printable,
 ```
 
 ```{r R2-sep-region-models}
-models_R2 <- models %>% 
+models_R2 <- new_models %>% 
   map_df(.id = "response", glance) %>%
   dplyr::select(response, adj.r.squared) %>%
   separate(response, c("region", "scale", "response")) %>%
@@ -701,7 +758,7 @@ ggplot(models_summary_for_plot) +
 ```
 
 ```{plot-sep-region-models-fits, eval=FALSE}
-tibble(model = models) %>%
+tibble(model = new_models) %>%
   mutate(
     vis = map(model, visreg::visreg, gg = TRUE),
     coefficients = model %>%

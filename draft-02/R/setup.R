@@ -27,6 +27,7 @@ library(MASS)  # for LDA
 library(canprot)  # for CLES
 library(broom)  # to tidy model outputs
 library(vegan)
+library(olsrr)
 
 # Figures
 library(rasterVis)  # for maps
