@@ -6,7 +6,7 @@
 
 library(here)
 source(here("R/setup.R"))
-source(here("R/02_analyses/generate-roughness.R"))
+source(here("R/analyses/generate-roughness.R"))
 
 output_path <- here("outputs/roughness")
 

@@ -21,7 +21,7 @@ source(here("R/analyses/generate-roughness.R"))
 import_region_polygons()
 
 # Aggregate enviro data to QDS-scale
-GCFR_variables_QDS <- map(GCFR_variables, aggregate, 0.25 / 0.05)
+GCFR_variables_QDS  <- map(GCFR_variables,  aggregate, 0.25 / 0.05)
 SWAFR_variables_QDS <- map(SWAFR_variables, aggregate, 0.25 / 0.05)
 
 # Import species data (don't use generate-turnover.R, that is for HDS-scale)
@@ -35,7 +35,7 @@ SWAFR_species <- read_rds(here(
 # .... Get species richness in each QDS ----------------------------------------
 
 # Put QDS geocodes in species SpatialPointsDataFrame
-GCFR_species %<>% get_geocodes(GCFR_QDS[, "qdgc"])
+GCFR_species  %<>% get_geocodes(GCFR_QDS[,  "qdgc"])
 SWAFR_species %<>% get_geocodes(SWAFR_QDS[, "qdgc"])
 
 # Now count no. species by QDS
@@ -47,10 +47,23 @@ SWAFR_richness_values <- SWAFR_species@data %>%
   summarise(QDS_richness = length(unique(species)))
 
 # Put those values in the QDS SpatialPolygonsDataFrame
-GCFR_QDS@data %<>% left_join(GCFR_richness_values)
+GCFR_QDS@data  %<>% left_join(GCFR_richness_values)
 SWAFR_QDS@data %<>% left_join(SWAFR_richness_values)
-GCFR_QDS <- GCFR_QDS[!is.na(GCFR_QDS$QDS_richness), ]
+GCFR_QDS  <- GCFR_QDS[ !is.na(GCFR_QDS$QDS_richness),  ]
 SWAFR_QDS <- SWAFR_QDS[!is.na(SWAFR_QDS$QDS_richness), ]
+# Make lat & lon NUMBERS, not factors
+GCFR_QDS$lat %<>%
+  as.character() %>%
+  as.numeric()
+GCFR_QDS$lon %<>%
+  as.character() %>%
+  as.numeric()
+SWAFR_QDS$lat %<>%
+  as.character() %>%
+  as.numeric()
+SWAFR_QDS$lon %<>%
+  as.character() %>%
+  as.numeric()
 GCFR_richness_QDS <- rasterize(
   GCFR_QDS,
   GCFR_variables_QDS$Elevation,
@@ -61,18 +74,44 @@ SWAFR_richness_QDS <- rasterize(
   SWAFR_variables_QDS$Elevation,
   field = "QDS_richness"
 )
-names(GCFR_richness_QDS) <- "QDS_richness"
+GCFR_lat_QDS <- rasterize(
+  GCFR_QDS,
+  GCFR_variables_QDS$Elevation,
+  field = "lat"
+)
+SWAFR_lat_QDS <- rasterize(
+  SWAFR_QDS,
+  SWAFR_variables_QDS$Elevation,
+  field = "lat"
+)
+GCFR_lon_QDS <- rasterize(
+  GCFR_QDS,
+  GCFR_variables_QDS$Elevation,
+  field = "lon"
+)
+SWAFR_lon_QDS <- rasterize(
+  SWAFR_QDS,
+  SWAFR_variables_QDS$Elevation,
+  field = "lon"
+)
+names(GCFR_richness_QDS)  <- "QDS_richness"
 names(SWAFR_richness_QDS) <- "QDS_richness"
+names(GCFR_lat_QDS)       <- "lat"
+names(SWAFR_lat_QDS)      <- "lat"
+names(GCFR_lon_QDS)       <- "lon"
+names(SWAFR_lon_QDS)      <- "lon"
 
 plot(GCFR_richness_QDS)
 plot(SWAFR_richness_QDS)
 
 # .... Collate richness and environmental data ---------------------------------
 
-names(GCFR_roughness_QDS) %<>% paste0("rough_", .)
-names(SWAFR_roughness_QDS) %<>% paste0("rough_", .)
+names(GCFR_roughness_QDS)  %<>% {paste0("rough_", .)}
+names(SWAFR_roughness_QDS) %<>% {paste0("rough_", .)}
 
 GCFR_data_QDS_stack <- stack(
+  GCFR_lat_QDS,
+  GCFR_lon_QDS,
   GCFR_richness_QDS,
   stack(
     stack(GCFR_variables_QDS),
@@ -80,6 +119,8 @@ GCFR_data_QDS_stack <- stack(
   )
 )
 SWAFR_data_QDS_stack <- stack(
+  SWAFR_lat_QDS,
+  SWAFR_lon_QDS,
   SWAFR_richness_QDS,
   stack(
     stack(SWAFR_variables_QDS),
@@ -100,7 +141,7 @@ names(SWAFR_data_QDS)
 
 # .... Output data for bare-minimum BRT work on UCT HPC ------------------------
 
-write.csv(GCFR_data_QDS, glue("{output_path}/GCFR_variables_QDS.csv"))
+write.csv(GCFR_data_QDS,  glue("{output_path}/GCFR_variables_QDS.csv" ))
 write.csv(SWAFR_data_QDS, glue("{output_path}/SWAFR_variables_QDS.csv"))
 
 # Combine all data at HDS-scale ------------------------------------------------
@@ -113,13 +154,7 @@ output_path <- here(
 )
 
 # Tidy names(<region>_species) after SpatialPointsDataFrame import
-names(GCFR_species) <- c(
-  #"family", "genus", "species",
-  "species", "cell_nos",
-  "qdgc", "hdgc",
-  "HDS_richness", "n_QDS", "mean_QDS_richness", "mean_QDS_turnover"
-)
-names(SWAFR_species) <- c(
+names(GCFR_species) <- names(SWAFR_species) <- c(
   #"family", "genus", "species",
   "species", "cell_nos",
   "qdgc", "hdgc",
@@ -147,6 +182,11 @@ variables_HDS_stacks <- pmap(
 
     # Add raster of HDS richness and mean QDS turnover to data list
     species_rasters <- list(
+      #hdgc = rasterize(
+      #  species,
+      #  vars$Elevation,
+      #  field = "hdgc"
+      #),
       HDS_richness = rasterize(
         species,
         vars$Elevation,
@@ -156,6 +196,11 @@ variables_HDS_stacks <- pmap(
         species,
         vars$Elevation,
         field = "mean_QDS_turnover"
+      ),
+      mean_QDS_richness = rasterize(
+        species,
+        vars$Elevation,
+        field = "mean_QDS_richness"
       )
     )
 
@@ -177,23 +222,27 @@ SWAFR_data_HDS_stack <- variables_HDS_stacks[[2]]
 # .... Output data for bare-minimum BRT work on UCT HPC ------------------------
 
 GCFR_data_HDS_stack %>%
+  rasterToPoints() %>%
   as.data.frame() %>%
+  rename(lon = x, lat = y) %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/GCFR_variables_HDS.csv"))
 SWAFR_data_HDS_stack %>%
+  rasterToPoints() %>%
   as.data.frame() %>%
+  rename(lon = x, lat = y) %>%
   na.exclude() %>%
   write.csv(glue("{output_path}/SWAFR_variables_HDS.csv"))
 
 # Combined-region datasets -----------------------------------------------------
 
-GCFR_data_QDS <- read_csv(glue("{output_path}/GCFR_variables_QDS.csv"))[, -1]
+GCFR_data_QDS  <- read_csv(glue("{output_path}/GCFR_variables_QDS.csv"))[,  -1]
 SWAFR_data_QDS <- read_csv(glue("{output_path}/SWAFR_variables_QDS.csv"))[, -1]
-GCFR_data_HDS <- read_csv(glue("{output_path}/GCFR_variables_HDS.csv"))[, -1]
+GCFR_data_HDS  <- read_csv(glue("{output_path}/GCFR_variables_HDS.csv"))[,  -1]
 SWAFR_data_HDS <- read_csv(glue("{output_path}/SWAFR_variables_HDS.csv"))[, -1]
 
 BOTH_data_QDS <- rbind(
-  cbind(region = "GCFR", GCFR_data_QDS),
+  cbind(region = "GCFR",  GCFR_data_QDS),
   cbind(region = "SWAFR", SWAFR_data_QDS)
 )
 write_csv(
@@ -201,7 +250,7 @@ write_csv(
   glue("{output_path}/BOTH_variables_QDS.csv")
 )
 BOTH_data_HDS <- rbind(
-  cbind(region = "GCFR", GCFR_data_HDS),
+  cbind(region = "GCFR",  GCFR_data_HDS),
   cbind(region = "SWAFR", SWAFR_data_HDS)
 )
 write_csv(
