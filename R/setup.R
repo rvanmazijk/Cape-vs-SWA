@@ -52,7 +52,6 @@ library(scales)
 #library(rasterVis)
 #library(ggspatial)
 
-
 # Record session information ---------------------------------------------------
 
 capture.output(
@@ -99,8 +98,8 @@ my_palette <- c(
 var_colours <- c(
   # <https://colourco.de/>
   "grey50",   # grey   for elevation
-  "#507CC5",  # blue   for climate
   "#37A541",  # greeen for NDVI
+  "#507CC5",  # blue   for climate
   "#BA793E"   # brown  for soils
 )
 var_shapes <- c(
