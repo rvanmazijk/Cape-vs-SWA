@@ -31,10 +31,9 @@ library(vegan)
 # Figures
 library(rasterVis)  # for maps
 library(ggfortify)  # for PCAs
-library(grid)
 # Panelling figures
+library(grid)
 library(cowplot)
-library(patchwork)
 
 # Source helper functions ------------------------------------------------------
 
