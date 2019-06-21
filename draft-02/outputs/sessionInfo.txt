@@ -3,7 +3,7 @@ Platform: x86_64-apple-darwin15.6.0 (64-bit)
 Running under: macOS  10.14.5
 
 Matrix products: default
-BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
 LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 
 locale:
@@ -26,30 +26,37 @@ other attached packages:
 [28] here_0.1           
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-137       lubridate_1.7.4    httr_1.4.0        
- [4] rprojroot_1.3-2    gh_1.0.1           tools_3.5.0       
- [7] backports_1.1.4    R6_2.4.0           rpart_4.1-15      
-[10] nortest_1.0-4      lazyeval_0.2.2     mgcv_1.8-28       
-[13] colorspace_1.4-1   nnet_7.3-12        withr_2.1.2       
-[16] tidyselect_0.2.5   gridExtra_2.3      curl_3.3          
-[19] compiler_3.5.0     cli_1.1.0          rvest_0.3.3       
-[22] xml2_1.2.0         CHNOSZ_1.3.2       scales_1.0.0      
-[25] checkmate_1.9.3    hexbin_1.27.2      goftest_1.1-1     
-[28] digest_0.6.19      foreign_0.8-71     rmarkdown_1.12    
-[31] rio_0.5.16         pkgconfig_2.0.2    htmltools_0.3.6   
-[34] rlang_0.3.4        readxl_1.3.1       rstudioapi_0.10   
-[37] shiny_1.3.2        generics_0.0.2     zoo_1.8-5         
-[40] jsonlite_1.6       zip_2.0.1          car_3.0-2         
-[43] Matrix_1.2-17      Rcpp_1.0.1         munsell_0.5.0     
-[46] abind_1.4-5        stringi_1.4.3      yaml_2.2.0        
-[49] carData_3.0-2      plyr_1.8.4         recipes_0.1.5     
-[52] promises_1.0.1     parallel_3.5.0     crayon_1.3.4      
-[55] haven_2.1.0        splines_3.5.0      hms_0.4.2         
-[58] knitr_1.22         pillar_1.4.0       codetools_0.2-16  
-[61] evaluate_0.13      data.table_1.12.2  modelr_0.1.4      
-[64] httpuv_1.5.1       cellranger_1.1.0   gtable_0.3.0      
-[67] assertthat_0.2.1   xfun_0.6           openxlsx_4.1.0    
-[70] gower_0.2.1        mime_0.6           prodlim_2018.04.18
-[73] xtable_1.8-4       later_0.8.0        viridisLite_0.3.0 
-[76] survival_2.44-1.1  class_7.3-15       timeDate_3043.102 
-[79] lava_1.6.5         cluster_2.0.9      ipred_0.9-9       
+  [1] colorspace_1.4-1   class_7.3-15       rio_0.5.16        
+  [4] rprojroot_1.3-2    rstudioapi_0.10    rstan_2.18.2      
+  [7] hexbin_1.27.2      gh_1.0.1           prodlim_2018.04.18
+ [10] fansi_0.4.0        lubridate_1.7.4    xml2_1.2.0        
+ [13] codetools_0.2-16   splines_3.5.0      knitr_1.22        
+ [16] zeallot_0.1.0      jsonlite_1.6       packrat_0.5.0     
+ [19] cluster_2.0.9      shiny_1.3.2        compiler_3.5.0    
+ [22] httr_1.4.0         backports_1.1.4    assertthat_0.2.1  
+ [25] Matrix_1.2-17      lazyeval_0.2.2     cli_1.1.0         
+ [28] later_0.8.0        prettyunits_1.0.2  htmltools_0.3.6   
+ [31] tools_3.5.0        gtable_0.3.0       reshape2_1.4.3    
+ [34] CHNOSZ_1.3.2       tinytex_0.12       Rcpp_1.0.1        
+ [37] carData_3.0-2      cellranger_1.1.0   visreg_2.5-0      
+ [40] vctrs_0.1.0        nlme_3.1-137       timeDate_3043.102 
+ [43] gower_0.2.1        xfun_0.6           ps_1.3.0          
+ [46] openxlsx_4.1.0     rvest_0.3.3        mime_0.6          
+ [49] goftest_1.1-1      zoo_1.8-5          scales_1.0.0      
+ [52] ipred_0.9-9        hms_0.4.2          promises_1.0.1    
+ [55] parallel_3.5.0     inline_0.3.15      yaml_2.2.0        
+ [58] curl_3.3           gridExtra_2.3      loo_2.1.0         
+ [61] StanHeaders_2.18.1 rpart_4.1-15       stringi_1.4.3     
+ [64] highr_0.8          nortest_1.0-4      checkmate_1.9.3   
+ [67] pkgbuild_1.0.3     zip_2.0.1          lava_1.6.5        
+ [70] matrixStats_0.54.0 rlang_0.3.4        pkgconfig_2.0.2   
+ [73] evaluate_0.13      recipes_0.1.5      labeling_0.3      
+ [76] processx_3.3.1     tidyselect_0.2.5   plyr_1.8.4        
+ [79] R6_2.4.0           generics_0.0.2     pillar_1.4.0      
+ [82] haven_2.1.0        foreign_0.8-71     withr_2.1.2       
+ [85] mgcv_1.8-28        survival_2.44-1.1  abind_1.4-5       
+ [88] nnet_7.3-12        modelr_0.1.4       crayon_1.3.4      
+ [91] car_3.0-2          utf8_1.1.4         rmarkdown_1.12    
+ [94] readxl_1.3.1       data.table_1.12.2  callr_3.2.0       
+ [97] digest_0.6.19      xtable_1.8-4       httpuv_1.5.1      
+[100] stats4_3.5.0       munsell_0.5.0      viridisLite_0.3.0 
