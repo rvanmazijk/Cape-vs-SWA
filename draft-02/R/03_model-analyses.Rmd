@@ -73,6 +73,25 @@ roughness_cells <- function(x) {
 ```
 -->
 
+```{r import-cellular-data-again, include=FALSE}
+HDS <- read_csv(here("draft-02/outputs/QDS_data_cells.csv"))
+QDS <- read_csv(here("draft-02/outputs/EDS_data_cells.csv"))
+
+# Remove cells w/ < 4 sub-cells
+HDS %<>% filter(n_QDS == 4)
+QDS %<>% filter(n_EDS == 4)
+
+# Combine datasets for figure
+HDS_QDS <- as_tibble(rbind(
+  HDS %>%
+    dplyr::select(region, HDS_richness, add_turnover_prop) %>%
+    gather(metric, value, HDS_richness, add_turnover_prop),
+  QDS %>%
+    dplyr::select(region, QDS_richness) %>%
+    gather(metric, value, QDS_richness)
+))
+```
+
 ```{r tidy-cellular-data, include=FALSE}
 # log(x + 1) & scale roughness values to match PCAs were done on logged data
 HDS[, str_which(names(HDS), "roughness")] %<>%
@@ -560,7 +579,7 @@ knitr::kable(add_turnover_prop_models_summary_printable,
 )
 ```
 
-### 3.2.extra. PC1 models
+### 3.1.extra. PC1 models
 
 ```{r plot-combined-region-PC1-models}
 S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
@@ -603,7 +622,7 @@ plot_grid(
 )
 ```
 
-## 3.3. Separate-regions models with combinations of variables
+## 3.2. Separate-regions models with combinations of variables
 
 ```{r fit-all-sep-region-models}
 predictor_names <- HDS %>%
@@ -791,6 +810,15 @@ ggplot(models_summary_for_plot) +
   theme(
     axis.text.x  = element_text(angle = 90, hjust = 1),
     strip.text.x = element_text(angle =  0, hjust = 0)
+  )
+```
+
+```{r}
+models_summary %>%
+  group_by(region, response) %>%
+  summarise(
+    n = n(),
+    terms = paste(glue("{term}_roughness"), collapse = " + ")
   )
 ```
 
