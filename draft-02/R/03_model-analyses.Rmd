@@ -118,6 +118,7 @@ SWAFR_QDS <- filter(QDS, region == "SWAFR")
 ## Conclusion: Logging can't solve everything!
 ```
 
+<!--
 The models I fit here are as follows:
 
 Response                              | Variables | Region term      
@@ -160,6 +161,7 @@ $T_{\mathrm{HDS}} / S_{\mathrm{HDS}}$ | Separate  | Separate
 "                                     | "         | None        
 "                                     | "         | Additive    
 "                                     | "         | Interaction 
+-->
 
 ## 3.1. Separate environmental variable models
 
@@ -558,7 +560,50 @@ knitr::kable(add_turnover_prop_models_summary_printable,
 )
 ```
 
-## 3.x. Separate-regions models with combinations of variables
+### 3.2.extra. PC1 models
+
+```{r plot-combined-region-PC1-models}
+S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("S")["HDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white")) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x  = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
+
+my_legend <- get_legend(S_HDS_plot)
+
+my_plots <- list(
+  S_HDS_plot,
+  turnover_prop_plot
+)
+my_plots %<>% map(~ .x + theme(
+  legend.position = "none",
+  axis.text.y     = element_text(angle = 90)
+))
+
+plot_grid(
+  plot_grid(
+    plotlist = my_plots,
+    nrow = 2,
+    rel_heights = c(0.9, 1),
+    labels = glue("({letters[1:2]})")
+  ),
+  my_legend,
+  nrow = 1,
+  rel_widths = c(2, 1)
+)
+```
+
+## 3.3. Separate-regions models with combinations of variables
 
 ```{r fit-all-sep-region-models}
 predictor_names <- HDS %>%
@@ -780,156 +825,52 @@ new_models %>%
   ))
 ```
 
-## 3.2. Combined-regions models with individual variables
-
-### 3.2.2. PC1 models
-
-Here, I present my findings with raw R-code, because I don't have the time to format it neatly.
-
-```{r combined-region-PC1-models-1, echo=TRUE}
-m1 <- lm(HDS_richness ~ PC1,          HDS)
-m2 <- lm(HDS_richness ~ PC1 + region, HDS)
-m3 <- lm(HDS_richness ~ PC1 * region, HDS)
-my_AIC_table(m1, m2, m3, caption = "Richness (HDS)")
-# Therefore, "choose" m1 ("no region" model)
-```
-
-```{r combined-region-PC1-models-2, echo=TRUE}
-m1 <- lm(QDS_richness ~ PC1,          QDS)
-m2 <- lm(QDS_richness ~ PC1 + region, QDS)
-m3 <- lm(QDS_richness ~ PC1 * region, QDS)
-my_AIC_table(m1, m2, m3, caption = "Richness (QDS)")
-# Therefore, "choose" m1 ("no region" model) (?)
-```
-
-```{r combined-region-PC1-models-3, echo=TRUE}
-m1 <- lm(add_turnover ~ PC1,          HDS)
-m2 <- lm(add_turnover ~ PC1 + region, HDS)
-m3 <- lm(add_turnover ~ PC1 * region, HDS)
-my_AIC_table(m1, m2, m3, caption = "Turnover")
-# Therefore, "choose" m1 ("no region" model)
-```
-
-```{r combined-region-PC1-models-4, echo=TRUE}
-m1 <- lm(add_turnover_prop ~ PC1 ,         HDS)
-m2 <- lm(add_turnover_prop ~ PC1 + region, HDS)
-m3 <- lm(add_turnover_prop ~ PC1 * region, HDS)
-my_AIC_table(m1, m2, m3, caption = "Turnover (proportional)")
-# Therefore, "choose" m3 ("int. region" model)
-```
-
-```{r plot-combined-region-PC1-models}
-S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-
-S_QDS_plot <- ggplot(QDS, aes(PC1, QDS_richness)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("S")["QDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-
-turnover_plot <- ggplot(HDS, aes(PC1, add_turnover)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("T")["QDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-
-turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-
-my_plots <- list(
-  S_HDS_plot + theme(
-    axis.title.x = element_blank(),
-    axis.text.x  = element_blank(),
-    axis.ticks.x = element_blank()
-  ),
-  #S_QDS_plot,     # needed?
-  #turnover_plot,  # needed?
-  turnover_prop_plot
-)
-my_legend <- get_legend(my_plots[[1]])
-my_plots %<>% map(~ .x + theme(
-  legend.position = "none",
-  axis.text.y     = element_text(angle = 90)
-))
-
-plot_grid(
-  plot_grid(
-    plotlist = my_plots[1:2],
-    nrow = 2,
-    rel_heights = c(0.9, 1),
-    labels = glue("({letters[1:2]})")
-  ),
-  my_legend,
-  nrow = 1,
-  rel_widths = c(2, 1)
-)
-```
-
 ## 3.3. Combined-regions models with combinations of variables
 
 ```{r, eval=FALSE}
 m_all <- lm(
   HDS_richness ~
-    Elevation_mean_value + Elevation_roughness +
-    MAP_mean_value       + MAP_roughness +
-    NDVI_mean_value      + NDVI_roughness +
-    PDQ_mean_value       + PDQ_roughness +
-    pH_mean_value        + pH_roughness +
-    Soil.C_mean_value    + Soil.C_roughness +
-    Surface.T_mean_value + Surface.T_roughness,
+    Elevation_roughness +
+    MAP_roughness +
+    NDVI_roughness +
+    PDQ_roughness +
+    pH_roughness +
+    Soil.C_roughness +
+    Surface.T_roughness,
   HDS
 )
 summary(m_all)
 m_all_step <- ols_step_all_possible(m_all)
-summary(m_all_step)
+m_all_step %>%
+  as_tibble() %>%
+  dplyr::select(predictors, adjr, aic) %>%
+  mutate(
+    n_predictors = map_dbl(str_split(predictors, " "), length),
+    delta_aic    = aic - min(aic),
+    best_model   = n_predictors == min(n_predictors[delta_aic < 2])
+  ) %>%
+  arrange(desc(best_model), delta_aic, n_predictors)
 
 m_all_int <- lm(
   HDS_richness ~
-    Elevation_mean_value          + Elevation_roughness +
-    MAP_mean_value                + MAP_roughness +
-    NDVI_mean_value               + NDVI_roughness +
-    PDQ_mean_value                + PDQ_roughness +
-    pH_mean_value                 + pH_roughness +
-    Soil.C_mean_value             + Soil.C_roughness +
-    Surface.T_mean_value          + Surface.T_roughness +
-    Elevation_mean_value * region + Elevation_roughness * region +
-    MAP_mean_value       * region + MAP_roughness       * region +
-    NDVI_mean_value      * region + NDVI_roughness      * region +
-    PDQ_mean_value       * region + PDQ_roughness       * region +
-    pH_mean_value        * region + pH_roughness        * region +
-    Soil.C_mean_value    * region + Soil.C_roughness    * region +
-    Surface.T_mean_value * region + Surface.T_roughness * region,
+    Elevation_roughness +
+    MAP_roughness +
+    NDVI_roughness +
+    PDQ_roughness +
+    pH_roughness +
+    Soil.C_roughness +
+    Surface.T_roughness +
+    Elevation_roughness * region +
+    MAP_roughness       * region +
+    NDVI_roughness      * region +
+    PDQ_roughness       * region +
+    pH_roughness        * region +
+    Soil.C_roughness    * region +
+    Surface.T_roughness * region,
   HDS
 )
-m_all_int2 <- lm(
-  QDS_richness ~
-    Elevation_mean_value          + Elevation_roughness +
-    MAP_mean_value                + MAP_roughness +
-    NDVI_mean_value               + NDVI_roughness +
-    PDQ_mean_value                + PDQ_roughness +
-    pH_mean_value                 + pH_roughness +
-    Soil.C_mean_value             + Soil.C_roughness +
-    Surface.T_mean_value          + Surface.T_roughness +
-    Elevation_mean_value * region + Elevation_roughness * region +
-    MAP_mean_value       * region + MAP_roughness       * region +
-    NDVI_mean_value      * region + NDVI_roughness      * region +
-    PDQ_mean_value       * region + PDQ_roughness       * region +
-    pH_mean_value        * region + pH_roughness        * region +
-    Soil.C_mean_value    * region + Soil.C_roughness    * region +
-    Surface.T_mean_value * region + Surface.T_roughness * region,
-  QDS
-)
 summary(m_all_int)
-summary(m_all_int2)
-m_all_int_step <- step(m_all_int)
-m_all_int_step2 <- step(m_all_int2)
+m_all_int_step <- ols_step_all_possible(m_all_int)
 summary(m_all_int_step)
 summary(m_all_int_step2)
 non_sigs <- m_all_int_step %>%

@@ -4,6 +4,7 @@ subtitle: "Cape vs SWA"
 author: "Ruan van Mazijk"
 date: "`r Sys.Date()`"
 output: pdf_document
+geometry: a4paper, margin=1in
 ---
 
 ```{r setup, include=FALSE}
@@ -32,8 +33,12 @@ The proposed "story" of questions for the analyses is as follows:
 ```{r roughness-analyses, child="01_roughness-analyses.Rmd"}
 ```
 
+\clearpage
+
 ```{r turnover-analyses, child="02_turnover-analyses.Rmd"}
 ```
+
+\clearpage
 
 ```{r model-analyses, child="03_model-analyses.Rmd"}
 ```
