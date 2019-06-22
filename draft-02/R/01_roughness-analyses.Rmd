@@ -140,7 +140,8 @@ if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
     CLES_results,
     glue("{output_path}/CLES_results.csv")
   )
-} else {  # (... Or import from disc.)
+} else {
+  # (... Or import from disc.)
   CLES_results <- read_csv(glue("{output_path}/CLES_results.csv"))
 }
 
