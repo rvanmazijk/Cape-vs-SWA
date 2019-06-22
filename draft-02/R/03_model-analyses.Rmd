@@ -22,8 +22,20 @@ $$
 
 In R, this is implemented this as follows:
 
+```
+roughness_cellular <- function(x) {
+  out <- vector(mode = "numeric", length = length(x))
+  for (i in seq_along(x)) {
+    out[[i]] <- mean(abs(x[i] - x[-i]))
+  }
+  mean(out)
+}
+```
+
 <!--
-```{r print-roughness-cellular-body0, echo=TRUE, eval=FALSE}
+Alternatves:
+
+```
 roughness_cells <- function(x) {
   mean(c(
     mean(abs(x[1] - x[-1])),
@@ -34,7 +46,7 @@ roughness_cells <- function(x) {
 }
 ```
 
-```{r print-roughness-cellular-body1, echo=TRUE, eval=FALSE}
+```
 mean_diff <- function(x, i) {
   mean(abs(x[i] - x[-i]))
 }
@@ -48,7 +60,7 @@ roughness_cells <- function(x) {
 }
 ```
 
-```{r print-roughness-cellular-body2, echo=TRUE, eval=FALSE}
+```
 mean_diff <- function(x, i) {
   mean(abs(x[i] - x[-i]))
 }
@@ -60,16 +72,6 @@ roughness_cells <- function(x) {
 }
 ```
 -->
-
-```{r print-roughness-cellular-body, echo=TRUE, eval=FALSE}
-roughness_cells <- function(x) {
-  out <- vector(mode = "numeric", length = length(x))
-  for (i in seq_along(x)) {
-    out[[i]] <- mean(abs(x[i] - x[-i]))
-  }
-  mean(out)
-}
-```
 
 ```{r tidy-cellular-data, include=FALSE}
 # log(x + 1) & scale roughness values to match PCAs were done on logged data
@@ -115,6 +117,49 @@ SWAFR_QDS <- filter(QDS, region == "SWAFR")
 #
 ## Conclusion: Logging can't solve everything!
 ```
+
+The models I fit here are as follows:
+
+Response                              | Variables | Region term      
+--------------------------------------|-----------|----------------
+$S_{\mathrm{HDS}}$                    | Separate  | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+"                                     | AIC-set   | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+"                                     | PC1       | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+                                      |           | 
+$S_{\mathrm{QDS}}$                    | Separate  | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+"                                     | AIC-set   | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+"                                     | PC1       | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+                                      |           | 
+$T_{\mathrm{HDS}} / S_{\mathrm{HDS}}$ | Separate  | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+"                                     | AIC-set   | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
+"                                     | PC1       | Separate
+"                                     | "         | None        
+"                                     | "         | Additive    
+"                                     | "         | Interaction 
 
 ## 3.1. Separate-regions models with combinations of variables
 

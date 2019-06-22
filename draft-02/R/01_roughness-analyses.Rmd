@@ -18,7 +18,7 @@ $$
 
 In R, this is implemented this as follows:
 
-```{r print-roughness-body, echo=TRUE, eval=FALSE}
+```
 roughness <- function(x) {
   raster::focal(x, matrix(1, nrow = 3, ncol = 3), function(x) {
     focal_cell <- x[5]
