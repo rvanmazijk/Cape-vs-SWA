@@ -167,7 +167,7 @@ $T_{\mathrm{HDS}} / S_{\mathrm{HDS}}$ | Separate  | Separate
 
 ```{r fit-combined-region-HDS-richness-models}
 predictor_names <- names(HDS)[
-  str_which(names(HDS), "roughness")
+  str_which(names(HDS), "(roughness|PC1)")
 ]
 
 HDS_richness_models_no_region <- predictor_names %>%
@@ -237,7 +237,7 @@ HDS_richness_models_summary_printable <- HDS_richness_models_summary %>%
     predictor = predictor %>%
       str_remove("_roughness") %>%
       str_replace_all("\\.", " ") %>%
-      factor(levels = var_names),
+      factor(levels = c(var_names, "PC1")),
     region_term = case_when(
       region_term == "none" ~ "None",
       region_term == "add"  ~ "Additive",
@@ -319,7 +319,7 @@ knitr::kable(HDS_richness_models_summary_printable,
 
 ```{r fit-combined-region-QDS-richness-models}
 predictor_names <- names(QDS)[
-  str_which(names(QDS), "roughness")
+  str_which(names(QDS), "(roughness|PC1)")
 ]
 
 QDS_richness_models_no_region <- predictor_names %>%
@@ -389,7 +389,7 @@ QDS_richness_models_summary_printable <- QDS_richness_models_summary %>%
     predictor = predictor %>%
       str_remove("_roughness") %>%
       str_replace_all("\\.", " ") %>%
-      factor(levels = var_names),
+      factor(levels = c(var_names, "PC1")),
     region_term = case_when(
       region_term == "none" ~ "None",
       region_term == "add"  ~ "Additive",
@@ -441,7 +441,7 @@ knitr::kable(QDS_richness_models_summary_printable,
 
 ```{r fit-combined-region-add-turnover-prop-models}
 predictor_names <- names(HDS)[
-  str_which(names(HDS), "roughness")
+  str_which(names(HDS), "(roughness|PC1)")
 ]
 
 add_turnover_prop_models_no_region <- predictor_names %>%
@@ -511,7 +511,7 @@ add_turnover_prop_models_summary_printable <- add_turnover_prop_models_summary %
     predictor = predictor %>%
       str_remove("_roughness") %>%
       str_replace_all("\\.", " ") %>%
-      factor(levels = var_names),
+      factor(levels = c(var_names, "PC1")),
     region_term = case_when(
       region_term == "none" ~ "None",
       region_term == "add"  ~ "Additive",
@@ -543,7 +543,6 @@ for (pred in unique(add_turnover_prop_models_summary_printable$predictor)) {
     which(predictor == pred)[-1]
   add_turnover_prop_models_summary_printable$predictor[to_remove] <- " "
 }
-
 knitr::kable(add_turnover_prop_models_summary_printable,
   caption = paste(
     "Results of separate simple linear regressions of $T_{\\mathrm{QDS}} /",
