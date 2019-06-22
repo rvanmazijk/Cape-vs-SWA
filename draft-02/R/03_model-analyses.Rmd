@@ -259,9 +259,9 @@ HDS_richness_models_summary_printable <- HDS_richness_models_summary %>%
   )
 HDS_richness_models_summary_printable$predictor %<>% as.character()
 for (pred in unique(HDS_richness_models_summary_printable$predictor)) {
-  HDS_richness_models_summary_printable$predictor[
-    HDS_richness_models_summary_printable$predictor == pred
-  ][-1] <- " "
+  to_remove <- HDS_richness_models_summary_printable %$%
+    which(predictor == pred)[-1]
+  HDS_richness_models_summary_printable$predictor[to_remove] <- " "
 }
 knitr::kable(HDS_richness_models_summary_printable,
   caption = paste(
