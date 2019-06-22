@@ -154,6 +154,7 @@ save_file <- here("draft-02/outputs/fit-all-sep-region-models.RDS")
 if (file.exists(save_file)) {
   models <- read_rds(save_file)
 } else {
+  # (... Or import from disc.)
   models %<>% map(ols_step_all_possible)
   write_rds(models, save_file)
 }
@@ -170,7 +171,6 @@ best_preds <- map(models, .id = "model",
     pull(predictors) %>%
     str_replace_all(" ", " + ")
 )
-best_preds
 new_models <- list(
   GCFR_HDS_richness = lm(
     formula = glue("HDS_richness      ~ {best_preds$GCFR_HDS_richness}"),
