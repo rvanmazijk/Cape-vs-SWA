@@ -338,8 +338,6 @@ new_models %>%
   ))
 ```
 
-\clearpage
-
 ## 3.2. Combined-regions models with individual variables
 
 ### 3.2.1. Environmental heterogeneity variables

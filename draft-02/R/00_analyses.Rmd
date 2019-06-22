@@ -26,11 +26,17 @@ The proposed "story" of questions for the analyses is as follows:
 2. Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
 3. Does heterogeneity explain differences in richness and turnover between the regions?
 
+\clearpage
+
 ```{r roughness-analyses, child="01_roughness-analyses.Rmd"}
 ```
 
+\clearpage
+
 ```{r turnover-analyses, child="02_turnover-analyses.Rmd"}
 ```
+
+\clearpage
 
 ```{r model-analyses, child="03_model-analyses.Rmd"}
 ```
