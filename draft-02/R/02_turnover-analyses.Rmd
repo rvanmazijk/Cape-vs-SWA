@@ -8,9 +8,9 @@ $$
   T_{\mathrm{QDS}} = S_{\mathrm{HDS}} - \overline{S}_{\mathrm{QDS}}
 $$
 
-The distributions of these data are presented in Figure 3. To test for significant differences between GCFR and SWAFR values, I use Mann-Whitney $U$-tests and $CLES$ (Table 3), as most of the variables deviate significantly from normality (Shapiro-Wilk normality test; $P < 0.05$).
+The distributions of these data are presented in Figure 3b. To test for significant differences between GCFR and SWAFR values, I use Mann-Whitney $U$-tests and $CLES$ (Table 3), as most of the variables deviate significantly from normality (Shapiro-Wilk normality test; $P < 0.05$).
 
-Additionally, a visualisation of how $S_{\mathrm{HDS}}$ is partitioned into $\overline{S}_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}}$ is presented in Figure 4.
+Additionally, a visualisation of how $S_{\mathrm{HDS}}$ is partitioned into $\overline{S}_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}}$ is presented in Figure 3a.
 
 We can conclude that broad scale species richness (i.e. that at the HDS scale) is more strongly driven by turnover between areas (i.e. QDS) than so in the SWAFR.
 
@@ -155,6 +155,7 @@ plot_grid(
   partition_plot + coord_flip(),
   hist_plots,
   nrow = 1,
-  rel_widths = c(1, 2)
+  rel_widths = c(1, 2),
+  labels = glue("({letters[1:2]})")
 )
 ```

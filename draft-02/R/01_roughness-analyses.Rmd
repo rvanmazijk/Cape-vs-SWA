@@ -34,11 +34,15 @@ roughness <- function(x) {
 }
 ```
 
-Following this, the various forms environmental heterogeneity were ordinated using principal component analysis (PCA), to summarise a major axis of heterogeneity in each region (Figure 1). Portions of the data matrices for each scale for these PCAs are shown in Table 1.
+Following this, the various forms environmental heterogeneity were ordinated using principal component analysis (PCA), following $log(x + 1)$-transformations to ensure normality, to summarise a major axis of heterogeneity in each region (Figure 1). Portions of the data matrices for each scale for these PCAs are shown in Table 1.
+
+Biplots like those shown in Figure 1 are often used visualise a summary of the multidimensional environmental space encompassed by a geographic area. However, as our data are "roughness" values, it would be more accurate to refer to the biplots in Figure 1 as the heterogeneity spaces or heterogeneity envelopes of each geographic region, at five spatial scales. We can see clear separation between the GCFR and SWAFR in their heterogeneity envelopes across all five spatial scales. Of most importance here is the first principle component (PC1) of these spaces, where the GCFR is almost always as rough or more roughn than the SWAFR (Figure 1). W
 
 Both the actual environmental heterogeneity values and the principal component of heterogeneity were then compared between the GCFR and SWAFR using common language effect sizes ($CLES$). The $CLES$ of GCFR vs SWAFR heterogeneity values was regressed against the spatial scale at which it was calculated using simple linear regression (Figure 2, Table 2).
 
-We can see that PDQ, NDVI, pH and, arguably, elevation are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale (Figure 2). The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2). Notably, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2). In general (i.e. regarding PC1; Figure 2), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales.
+We can see that PDQ, NDVI, pH and, arguably, elevation (Figure 2a,c,e,i) are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale (Figure 2). The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2b,d,f,h). Notably bucking the trend, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2)---perhaps something to do with the Succulent Karoo vs CFR?. In general (i.e. regarding PC1; Figure 2j), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales.
+
+We can conclude, then, that the GCFR is more environmentally heterogeneous than the SWAFR, across multiple environmental axes. Generally, the GCFR is more finely scaled in its heterogeneity, though some variables show no scale-dependence, and heterogeneity in clay is greatest in the GCFR at broad scales.
 
 ```{r import-roughness-matrices, include=FALSE}
 output_path      <- here("draft-02/outputs/roughness")
@@ -88,7 +92,7 @@ roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
 )
 ```
 
-```{r plot-PCA, fig.height=8, fig.cap="Scatter plots of the first and second principal components (PC1, PC2) of environmental heterogeneity following principal components analyses (PCAs) of the various forms of environmental heterogeneity, repeated at the five spatial scales. The proportion of variation accounted for by each axis is denoted in parentheses. Arrows (labelled) denote the rotational loading of a given form of environmental heterogeneity. Note, the signs of loadings on PC1 have been forced to be positive, while the signs of loadings on PC2 are arbitrary."}
+```{r plot-PCA, fig.height=8, fig.cap="Scatter plots of the first and second principal components (PC1, PC2) of environmental heterogeneity following principal components analyses (PCA) of the various forms of environmental heterogeneity, $log(x + 1)$-transformed (Table 1), repeated at the five spatial scales. The proportion of variation accounted for by each axis is denoted in parentheses. Arrows (labelled) denote the rotational loading of a given form of environmental heterogeneity. Note, the signs of loadings on PC1 have been forced to be positive, while the signs of loadings on PC2 are arbitrary. Here, greater values along PC1 represent greater overall environmental heterogeneity in an area. An area's PC2 value distinguishes the environmental axes most responsible for its overall observed heterogeneity."}
 roughness_PCA_plots <- map2(roughness_PCAs, roughness_matrices,
   ~ autoplot(.x,
       data = .y, colour = "region", alpha = 0.25,

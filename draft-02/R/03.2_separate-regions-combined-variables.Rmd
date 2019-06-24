@@ -1,0 +1,166 @@
+## 3.2. Separate-regions models with combinations of variables
+
+```{r fit-all-sep-region-models}
+predictor_names <- HDS %>%
+  {names(.)[str_which(names(.), "roughness")]} %>%
+  paste(collapse = " + ")
+models <- list(
+  GCFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {predictor_names}"),
+    data    = GCFR_HDS
+  ),
+  GCFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {predictor_names}"),
+    data    = GCFR_QDS
+  ),
+  GCFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {predictor_names}"),
+    data    = GCFR_HDS
+  ),
+  SWAFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {predictor_names}"),
+    data    = SWAFR_HDS
+  ),
+  SWAFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {predictor_names}"),
+    data    = SWAFR_QDS
+  ),
+  SWAFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {predictor_names}"),
+    data    = SWAFR_HDS
+  )
+)
+# Fit all possible model subsets
+# (WARNING: this takes a while... Only run if haven't already...)
+save_file <- here("draft-02/outputs/fit-all-sep-region-models.RDS")
+if (file.exists(save_file)) {
+  models <- read_rds(save_file)
+} else {
+  # (... Or import from disc.)
+  models %<>% map(ols_step_all_possible)
+  write_rds(models, save_file)
+}
+```
+
+```{r fit-best-sep-region-models}
+best_preds <- map(models, .id = "model",
+  ~ .x %>%
+    as_tibble() %>%
+    mutate(delta_aic = aic - min(aic)) %>%
+    arrange(delta_aic) %>%
+    dplyr::select(predictors, adjr, delta_aic) %>%
+    slice(1) %>%
+    pull(predictors) %>%
+    str_replace_all(" ", " + ")
+)
+new_models <- list(
+  GCFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {best_preds$GCFR_HDS_richness}"),
+    data    = GCFR_HDS
+  ),
+  GCFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {best_preds$GCFR_QDS_richness}"),
+    data    = GCFR_QDS
+  ),
+  GCFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {best_preds$GCFR_QDS_turnover}"),
+    data    = GCFR_HDS
+  ),
+  SWAFR_HDS_richness = lm(
+    formula = glue("HDS_richness      ~ {best_preds$SWAFR_HDS_richness}"),
+    data    = SWAFR_HDS
+  ),
+  SWAFR_QDS_richness = lm(
+    formula = glue("QDS_richness      ~ {best_preds$SWAFR_QDS_richness}"),
+    data    = SWAFR_QDS
+  ),
+  SWAFR_QDS_turnover = lm(
+    formula = glue("add_turnover_prop ~ {best_preds$SWAFR_QDS_turnover}"),
+    data    = SWAFR_HDS
+  )
+)
+```
+
+```{r summarise-sep-region-models}
+models_summary <- new_models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(term = str_remove_all(term, "_roughness"))
+models_R2 <- new_models %>%
+  map_df(.id = "response", glance) %>%
+  dplyr::select(response, adj.r.squared)
+models_summary %<>% full_join(models_R2)
+```
+
+```{r plot-sep-region-models-summary, fig.width=5, fig.height=5}
+models_summary_for_plot <- models_summary %>%
+  separate(response, c("region", "scale", "response")) %>%
+  unite(response, scale, response) %>%
+  mutate(
+    response = case_when(
+      response == "HDS_richness" ~ "(a)~~italic(S)[HDS]",
+      response == "QDS_richness" ~ "(b)~~italic(S)[QDS]",
+      response == "QDS_turnover" ~ "(c)~~italic(T)[QDS]/italic(S)[HDS]"
+    ),
+    term = term %>%
+      str_replace_all("\\.", " ") %>%
+      factor(levels = var_names),
+    sig = case_when(
+      p.value < 0.05 ~ " ",
+      p.value < 0.10 ~ "AS",
+      TRUE           ~ "NS"
+    )
+  )
+ggplot(models_summary_for_plot) +
+  aes(term, estimate, fill = region, group = region) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(
+    shape = 21,
+    position = position_dodge(width = 0.25)
+  ) +
+  geom_text(aes(label = sig), nudge_x = 0.375, size = 3) +
+  labs(x = "Heterogeneity predictor", y = "Slope") +
+  scale_fill_manual(name = "Region", values = c("black", "white")) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  theme(
+    axis.text.x  = element_text(angle = 90, hjust = 1),
+    strip.text.x = element_text(angle =  0, hjust = 0)
+  )
+```
+
+```{plot-sep-region-models-fits, eval=FALSE}
+tibble(model = new_models) %>%
+  mutate(
+    vis = map(model, visreg::visreg, gg = TRUE),
+    coefficients = model %>%
+      map("coefficients") %>%
+      map(names) %>%
+      map(~.x[.x != "(Intercept)"])
+  ) #%>%
+  # FIXME:
+  #mutate(gg = map(vis, map, ~qplot(.x$fit))) %>%
+  #dplyr::select(-vis) %>%
+  #unnest(gg) %>%
+  #pull(gg)
+
+plot_partial_fits <- function(m, m_title) {
+  coefficient_names <- names(m$coefficients)[
+    names(m$coefficients) != "(Intercept)"
+  ]
+  plots <- map(coefficient_names, ~visreg::visreg(m, .x, gg = TRUE))
+  plots[-1] %<>% map(~ .x + theme(axis.title.y = element_blank()))
+  plot_grid(plotlist = plots, nrow = 1, labels = m_title)
+}
+#partial_fits <-
+new_models %>%
+  imap(~ plot_partial_fits(
+    .x,
+    paste("(a)", str_extract(.y, "(GCFR|SWAFR)"))
+  ))
+```

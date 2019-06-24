@@ -1,0 +1,514 @@
+## 3.3. Combined-regions models with combinations of variables
+
+Using variables selected in section 3.2.:
+
+```{r}
+preds <- models_summary %>%
+  separate(response, c("region", "scale", "response")) %>%
+  unite(response, scale, response) %>%
+  group_by(response) %>%
+  summarise(
+    n = term %>%
+      unique() %>%
+      length(),
+    terms = term %>%
+      unique() %>%
+      {glue("{.}_roughness")} %>%
+      paste(collapse = " + ")
+  ) %>%
+  ungroup() %>%
+  mutate(response = ifelse(response == "QDS_turnover",
+    "add_turnover_prop",
+    response
+  ))
+```
+
+```{r}
+#fit_multivariate_model <- function(response) {
+#  stopifnot(exprs = {
+#    response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
+#    # Datasets must be loaded before running this function
+#    exists("HDS")
+#    exists("QDS")
+#  })
+#  model_preds <- preds$terms[preds$response == response]
+#  model_preds %<>% paste(
+#    "+", str_replace_all(model_preds, "\\+", "*region +"), "*region"
+#  )
+#  print(response)
+#  m <- lm(as.character(glue("{response} ~ {model_preds}")), if (response == #"QDS_richness") QDS else HDS)
+#  m_terms <- tidy(m)$term
+#  #m_step <- ols_step_all_possible(m)
+#  m_step <- step(m, direction = "both", trace = 0)
+#  m_step_terms <- tidy(m_step)$term
+#  message(
+#    "Dropped predictors",
+#    paste(m_step_terms[!(m_step_terms %in% m_terms)], collapse = "\n")
+#  )
+#  m_step
+#}
+```
+
+```{r}
+#fit_multivariate_model("HDS_richness")
+#fit_multivariate_model("QDS_richness")
+#fit_multivariate_model("add_turnover_prop")
+```
+
+```{r fit-all-combined-region-HDS-richness-models}
+HDS_richness_preds <- preds$terms[preds$response == "HDS_richness"]
+HDS_richness_preds %<>% paste(
+  "+", str_replace_all(HDS_richness_preds, "\\+", "*region +"), "*region"
+)
+m <- lm(glue("HDS_richness ~ {HDS_richness_preds}"), HDS)
+m_terms <- tidy(m)$term
+save_file <-
+  here("draft-02/outputs/fit-all-combined-region-HDS-richness-models.RDS")
+if (file.exists(save_file)) {
+  m_step <- read_rds(save_file)
+} else {
+  # (... Or import from disc.)
+  m_step <- ols_step_all_possible(m)
+  #m_step <- step(m, direction = "both", trace = 0)
+  write_rds(m_step, save_file)
+}
+m_step_terms <- m_step %>%
+  as_tibble() %>%
+  dplyr::select(predictors, adjr, aic) %>%
+  mutate(
+    predictors = predictors %>%
+      str_split(" ") %>%
+      map(sort),
+    n_predictors = map_dbl(predictors, length),
+    delta_aic  = aic - min(aic)
+  ) %>%
+  mutate(predictors = map_chr(predictors, paste, collapse = " ")) %>%
+  distinct() %>%
+  filter(delta_aic < 2) %>%
+  filter(n_predictors == min(n_predictors)) %>%
+  pull(predictors)
+
+m_step_terms %<>%
+  {str_split(.[1], " ")[[1]]} %>%
+  paste(collapse = " + ")
+m <- lm(glue("HDS_richness ~ {m_step_terms}"), HDS)
+summary(m)
+m_step_terms <- m %>%
+  tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(term = term %>%
+    str_remove_all(":") %>%
+    str_remove_all("region(GCFR|SWAFR)")
+  ) %>%
+  pull(term) %>%
+  {.[. != ""]} %>%
+  unique()
+partial_fit_plots <- map(m_step_terms, ~
+  visreg::visreg(m,
+    xvar = .x,
+    by = "region", overlay = TRUE,
+    gg = TRUE
+  )
+)
+names(partial_fit_plots) <- m_step_terms
+my_legend <- get_legend(partial_fit_plots[[1]])
+partial_fit_plots %<>% map(~ .x + theme(
+  legend.position = "none"
+))
+partial_fit_plots %<>% c(list(my_legend = my_legend))
+plot_grid(plotlist = partial_fit_plots)
+```
+
+```{r fit-all-combined-region-QDS-richness-models}
+QDS_richness_preds <- preds$terms[preds$response == "QDS_richness"]
+QDS_richness_preds %<>% paste(
+  "+", str_replace_all(QDS_richness_preds, "\\+", "*region +"), "*region"
+)
+m <- lm(glue("QDS_richness ~ {QDS_richness_preds}"), QDS)
+m_terms <- tidy(m)$term
+#save_file <-
+#  here("draft-02/outputs/fit-all-combined-region-QDS-richness-models.RDS")
+#if (file.exists(save_file)) {
+#  m_step <- read_rds(save_file)
+#} else {
+  # (... Or import from disc.)
+  #m_step <- ols_step_all_possible(m)
+  m_step <- step(m, direction = "both", trace = 0)
+  summary(m_step)
+#  write_rds(m_step, save_file)
+#}
+#m_step_terms <- m_step %>%
+#  as_tibble() %>%
+#  dplyr::select(predictors, adjr, aic) %>%
+#  mutate(
+#    predictors = predictors %>%
+#      str_split(" ") %>%
+#      map(sort),
+#    n_predictors = map_dbl(predictors, length),
+#    delta_aic  = aic - min(aic)
+#  ) %>%
+#  mutate(predictors = map_chr(predictors, paste, collapse = " ")) %>%
+#  distinct() %>%
+#  filter(delta_aic < 2) %>%
+#  filter(n_predictors == min(n_predictors)) %>%
+#  pull(predictors)
+#
+#m_step_terms %<>%
+#  {str_split(.[1], " ")[[1]]} %>%
+#  paste(collapse = " + ")
+#m <- lm(glue("QDS_richness ~ {m_step_terms}"), QDS)
+#m_step_terms <- m %>%
+#  tidy() %>%
+#  filter(term != "(Intercept)") %>%
+#  mutate(term = term %>%
+#    str_remove_all(":") %>%
+#    str_remove_all("region(GCFR|SWAFR)")
+#  ) %>%
+#  pull(term) %>%
+#  {.[. != ""]} %>%
+#  unique()
+#partial_fit_plots <- map(m_step_terms, ~
+#  visreg::visreg(m,
+#    xvar = .x,
+#    by = "region", overlay = TRUE,
+#    gg = TRUE
+#  )
+#)
+#names(partial_fit_plots) <- m_step_terms
+#my_legend <- get_legend(partial_fit_plots[[1]])
+#partial_fit_plots %<>% map(~ .x + theme(
+#  legend.position = "none"
+#))
+#partial_fit_plots %<>% c(list(my_legend = my_legend))
+#plot_grid(plotlist = partial_fit_plots)
+```
+
+```{r fit-all-combined-region-add-turnover-prop-models}
+add_turnover_prop_preds <- preds$terms[preds$response == "add_turnover_prop"]
+add_turnover_prop_preds %<>% paste(
+  "+", str_replace_all(HDS_richness_preds, "\\+", "*region +"), "*region"
+)
+m <- lm(glue("add_turnover_prop ~ {add_turnover_prop_preds}"), HDS)
+m_terms <- tidy(m)$term
+#save_file <-
+#  here("draft-02/outputs/fit-all-combined-region-add-turnover-prop-models.RDS")
+#if (file.exists(save_file)) {
+#  m_step <- read_rds(save_file)
+#} else {
+#  # (... Or import from disc.)
+  #m_step <- ols_step_all_possible(m)
+  m_step <- step(m, direction = "both", trace = 0)
+  summary(m_step)
+#  write_rds(m_step, save_file)
+#}
+#m_step_terms <- m_step %>%
+#  as_tibble() %>%
+#  dplyr::select(predictors, adjr, aic) %>%
+#  mutate(
+#    predictors = predictors %>%
+#      str_split(" ") %>%
+#      map(sort),
+#    n_predictors = map_dbl(predictors, length),
+#    delta_aic  = aic - min(aic)
+#  ) %>%
+#  mutate(predictors = map_chr(predictors, paste, collapse = " ")) %>%
+#  distinct() %>%
+#  filter(delta_aic < 2) %>%
+#  filter(n_predictors == min(n_predictors)) %>%
+#  pull(predictors)
+#
+#m_step_terms %<>%
+#  {str_split(.[1], " ")[[1]]} %>%
+#  paste(collapse = " + ")
+#m <- lm(glue("add_turnover_prop ~ {m_step_terms}"), HDS)
+#m_step_terms <- m %>%
+#  tidy() %>%
+#  filter(term != "(Intercept)") %>%
+#  mutate(term = term %>%
+#    str_remove_all(":") %>%
+#    str_remove_all("region(GCFR|SWAFR)")
+#  ) %>%
+#  pull(term) %>%
+#  {.[. != ""]} %>%
+#  unique()
+#partial_fit_plots <- map(m_step_terms, ~
+#  visreg::visreg(m,
+#    xvar = .x,
+#    by = "region", overlay = TRUE,
+#    gg = TRUE
+#  )
+#)
+#names(partial_fit_plots) <- m_step_terms
+#my_legend <- get_legend(partial_fit_plots[[1]])
+#partial_fit_plots %<>% map(~ .x + theme(
+#  legend.position = "none"
+#))
+#partial_fit_plots %<>% c(list(my_legend = my_legend))
+#plot_grid(plotlist = partial_fit_plots)
+```
+
+
+```{r, eval=FALSE}
+# (*) Plots --------------------------------------------------------------------
+
+ggplot(HDS, aes(PC1, HDS_richness)) +
+  geom_point(aes(colour = region)) +
+  geom_smooth(method = lm, colour = "black")
+ggplot(QDS, aes(PC1, QDS_richness)) +
+  geom_point(aes(colour = region)) +
+  geom_smooth(method = lm, colour = "black")
+m <- lm(HDS_richness ~ PC1, HDS)
+#plot(m)
+ggplot(HDS, aes(Elevation_mean_value, HDS_richness)) +
+  geom_point(aes(colour = region)) +
+  geom_smooth(method = lm, colour = "black")
+ggplot(HDS, aes(Elevation_roughness, HDS_richness)) +
+  geom_point(aes(colour = region)) +
+  geom_smooth(method = lm, colour = "black")
+
+ggplot(HDS, aes(PC1, Elevation_roughness, colour = region)) +
+  geom_point()
+ggplot(HDS, aes(PC2, Elevation_roughness, colour = region)) +
+  geom_point()
+
+ggplot(QDS, aes(lon, lat, colour = PC1)) +
+  geom_point(size = 3) +
+  facet_grid(~region, scales = "free_x") +
+  scale_colour_viridis_c()
+
+ggplot(HDS, aes(lon, lat, colour = PC1)) +
+  geom_point(size = 3) +
+  facet_wrap(~region, scales = "free") +
+  scale_colour_viridis_c()
+ggplot(HDS, aes(lon, lat, colour = PC2)) +
+  geom_point(size = 3) +
+  facet_wrap(~region, scales = "free")
+
+# (...) PCA biplots again ------------------------------------------------------
+
+HDS_PCA      <- read_rds(here("outputs/QDS_roughness_cells_PCA.RDS"))
+HDS_PCA_data <- read_csv(here("outputs/QDS_roughness_cells_prepped.csv"))
+QDS_PCA      <- read_rds(here("outputs/EDS_roughness_cells_PCA.RDS"))
+QDS_PCA_data <- read_csv(here("outputs/EDS_roughness_cells_prepped.csv"))
+
+# Log to match PCA
+HDS_PCA_data[, -c(1, 2)] %<>% log()
+QDS_PCA_data[, -c(1, 2)] %<>% log()
+
+autoplot(HDS_PCA,
+  data            = HDS_PCA_data,
+  colour          = "region",
+  loadings        = TRUE,
+  loadings.colour = "blue",
+  loadings.label  = TRUE
+)
+autoplot(QDS_PCA,
+  data            = QDS_PCA_data,
+  colour          = "region",
+  loadings        = TRUE,
+  loadings.colour = "blue",
+  loadings.label  = TRUE
+)
+
+HDS %>%
+  filter(n_QDS == 4) %>%
+  dplyr::select(region, PC1, PC2) %>%
+  group_by(region) %>%
+  summarise_all(.funs = list(mean = mean, sd = sd)) %>%
+  mutate(
+    PC1_upp = PC1_mean + PC1_sd,
+    PC1_low = PC1_mean - PC1_sd,
+    PC2_upp = PC2_mean + PC2_sd,
+    PC2_low = PC2_mean - PC2_sd
+  ) %>%
+  ggplot(aes(PC1_mean, PC2_mean, colour = region)) +
+    geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_point() +
+    geom_errorbar( aes(ymin = PC2_low, ymax = PC2_upp), width  = 0) +
+    geom_errorbarh(aes(xmin = PC1_low, xmax = PC1_upp), height = 0) +
+    geom_point(
+      data    = filter(HDS, n_QDS == 4),
+      mapping = aes(PC1, PC2, colour = region),
+      alpha   = 0.5
+    ) +
+    theme_minimal()
+
+QDS %>%
+  filter(n_EDS == 4) %>%
+  dplyr::select(region, PC1, PC2) %>%
+  group_by(region) %>%
+  summarise_all(.funs = list(mean = mean, sd = sd)) %>%
+  mutate(
+    PC1_upp = PC1_mean + PC1_sd,
+    PC1_low = PC1_mean - PC1_sd,
+    PC2_upp = PC2_mean + PC2_sd,
+    PC2_low = PC2_mean - PC2_sd
+  ) %>%
+  ggplot(aes(PC1_mean, PC2_mean, colour = region)) +
+    geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_point() +
+    geom_errorbar( aes(ymin = PC2_low, ymax = PC2_upp), width  = 0) +
+    geom_errorbarh(aes(xmin = PC1_low, xmax = PC1_upp), height = 0) +
+    geom_point(
+      data    = filter(QDS, n_EDS == 4),
+      mapping = aes(PC1, PC2, colour = region),
+      alpha   = 0.25
+    ) +
+    theme_minimal()
+
+ggplot(HDS, aes(PC1, PC2, colour = PC2 > 0)) +
+  geom_point()
+
+HDS %>%
+  split(.$region) %>%
+  map(~.x %$% table(PC2 > 0, PC1 > 0))
+
+my_PCA_plot <- function(data) {
+  get_lim <- function(x) {
+    lim <- ceiling(max(x))
+    c(-lim, lim)
+  }
+  plot_xlim <- get_lim(data$PC1)
+  plot_ylim <- get_lim(data$PC2)
+  no_legend_no_grid <- theme(
+    legend.position  = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+  white_rect <- grid::grid.rect(gp = grid::gpar(col = "white"))
+
+  PC1_histograms <- ggplot(data, aes(PC1, fill = region)) +
+    geom_histogram(bins = 20, position = "dodge") +
+    xlim(plot_xlim) +
+    theme_minimal() +
+    theme(
+      axis.title.x       = element_blank(),
+      axis.text.x        = element_blank(),
+      axis.text.y        = element_text(angle = 90),
+      axis.line.x.bottom = element_blank(),
+      axis.line.x.top    = element_blank(),
+      axis.line.y.right  = element_blank()
+    ) +
+    no_legend_no_grid
+  PC2_histograms <- ggplot(data, aes(PC2, fill = region)) +
+    geom_histogram(bins = 20, position = "dodge") +
+    xlim(plot_ylim) +
+    coord_flip() +
+    theme_minimal() +
+    theme(
+      axis.title.y       = element_blank(),
+      axis.text.y        = element_blank(),
+      axis.line.y.right  = element_blank(),
+      axis.line.y.left   = element_blank(),
+      axis.line.x.top    = element_blank()
+    ) +
+    no_legend_no_grid
+
+  PCA_biplot <- ggplot(data, aes(PC1, PC2, colour = region)) +
+    geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+    geom_point() +
+    lims(x = plot_xlim, y = plot_ylim) +
+    theme_bw() +
+    theme(axis.text.y = element_text(angle = 90)) +
+    no_legend_no_grid
+
+  cowplot::plot_grid(
+    PC1_histograms, white_rect,
+    PCA_biplot,     PC2_histograms,
+    ncol = 2,
+    rel_widths = c(4, 1), rel_heights = c(1, 4)
+  )
+}
+foo <- my_PCA_plot(HDS)
+foo
+PC1_histograms <- ggplot(QDS, aes(PC1, fill = region)) +
+  xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.x = element_blank(),
+                                  axis.text.x = element_blank(),
+                                  axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC2_histograms <- ggplot(QDS, aes(PC2, fill = region)) +
+  xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.y = element_blank(),
+                                  axis.text.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC_biplot <- ggplot(QDS, aes(PC1, PC2, colour = region)) +
+  lims(x = c(-5, 5), y = c(-5, 5)) +
+  geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none", axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+white_rect <- grid::grid.rect(gp = grid::gpar(col = "white"))
+cowplot::plot_grid(
+  PC1_histograms, white_rect,
+  PC_biplot,      PC2_histograms,
+  ncol = 2,
+  rel_widths = c(4, 1), rel_heights = c(1, 4)
+)
+
+PC1_histograms <- ggplot(HDS, aes(PC1, fill = region)) +
+  #xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.x = element_blank(),
+                                  axis.text.x = element_blank(),
+                                  axis.title.y = element_blank(),
+                                  axis.text.y = element_blank(),
+                                  #axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC2_histograms <- ggplot(HDS, aes(PC2, fill = region)) +
+  #xlim(-5, 5) +
+  geom_histogram(bins = 20, position = "dodge") +
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.y = element_blank(),
+                                  axis.text.y = element_blank(),
+                                  axis.title.x = element_blank(),
+                                  axis.text.x = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+PC_biplot <- ggplot(HDS, aes(PC1, PC2, colour = region)) +
+  #lims(x = c(-5, 5), y = c(-5, 5)) +
+  geom_hline(yintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_vline(xintercept = 0, lty = "dashed", colour = "grey25") +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none", axis.text.y = element_text(angle = 90),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+white_rect <- grid::grid.rect(gp = grid::gpar(col = "white"))
+cowplot::plot_grid(
+  PC1_histograms, white_rect,
+  PC_biplot,      PC2_histograms,
+  ncol = 2,
+  rel_widths = c(4, 1), rel_heights = c(1, 4)
+)
+
+all_PCA_data <- rbind(
+  cbind(scale = "HDS", HDS_PCA_data[, -2]),
+  cbind(scale = "QDS", QDS_PCA_data[, -2])
+)
+
+foo <- prcomp(all_PCA_data[, -c(1, 2)], scale. = TRUE)
+if (all(foo$rotation[, 1] <= 0)) {
+  foo$rotation[, 1] %<>% multiply_by(-1)
+  foo$x[, 1]        %<>% multiply_by(-1)
+}
+autoplot(foo, data = unite(all_PCA_data, region_scale, region, scale), colour = "region_scale", alpha = 0.25)
+```

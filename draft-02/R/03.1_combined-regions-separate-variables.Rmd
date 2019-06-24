@@ -1,0 +1,278 @@
+## 3.1. Separate environmental variable models
+
+Tables 5--7 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of each of the three response variables ($S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ respectively). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
+
+For $S_{\mathrm{HDS}}$ (Table 5), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
+
+- If there is no need for any information concerning the region a cell belongs to, then the environmental roughness "rule" is followed well across the two regions in a similar way.
+- If the region-effect is significant, but not the roughness effect, then that roughness axis isn't doing a very good job of explaining anything, and must defer to the region-effect.
+- When both the region- and roughness-effect are significant, this represents a softer version of the above, where the roughness axis can explain some variance, but not all.
+- When there is a significant interaction between region and roughness, then each region is playing a whole new game with that axes in terms of how richness is being driven.
+
+At the QDS-scale, concerning $S_{\mathrm{QDS}}$ (Table 6), it is noteworthy that all axes best-supported to have an additive region term only also had non-significant roughness-effects [expand?].
+
+Regarding the species turnover partition of richness ($T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$; Table 7), all roughness axes presented evidence of the inclusion of either an additive region-term or an interaction region-term, the majority being the latter. As with $S_{\mathrm{HDS}}$, heterogeneity in clay and NDVI had significant region-effects and roughness-effects, while heterogeneity in CEC and pH lacked evidence for roughness-effects in light of region-effects. Notably, heterogeneity in MAP was found to be additive here, as opposed to interaction as with $S_{\mathrm{HDS}}$ [expand?].
+
+```{r helper-functions}
+fit_combined_region_models <- function(response) {
+  stopifnot(exprs = {
+    response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
+    # Datasets must be loaded before running this function
+    exists("HDS")
+    exists("QDS")
+  })
+  dataset <- if (response == "QDS_richness") QDS else HDS
+  
+  # Select roughness & PC1 predictor names
+  predictor_names <- names(dataset)[
+    str_which(names(dataset), "(roughness|PC1)")
+  ]
+  
+  # Fit no-region, additive & interaction models & summarise w/ broom::
+  models_no_region <- predictor_names %>%
+    map(~lm(glue("{response} ~ {.x}"), dataset)) %>%
+    set_names(predictor_names) %>%
+    {tibble(predictor = names(.), model = .)} %>%
+    mutate(
+      slope         = map_dbl(model, ~tidy(.x)$estimate[2]),
+      slope_p_value = map_dbl(model, ~tidy(.x)$p.value[ 2]),
+      r_squared     = map_dbl(model, ~glance(.x)$r.squared),
+      slope_sig     = ifelse(slope_p_value <= 0.05, "*", "")
+    )
+  models_add_region <- predictor_names %>%
+    map(~lm(glue("{response} ~ {.x} + region"), dataset)) %>%
+    set_names(predictor_names) %>%
+    {tibble(predictor = names(.), model = .)} %>%
+    mutate(
+      slope          = map_dbl(model, ~tidy(.x)$estimate[2]),
+      slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[ 2]),
+      region_coeff   = map_dbl(model, ~tidy(.x)$estimate[3]),
+      region_p_value = map_dbl(model, ~tidy(.x)$p.value[ 3]),
+      r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+      slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+      region_sig     = ifelse(region_p_value <= 0.05, "*", "")
+    )
+  models_int_region <- predictor_names %>%
+    map(~lm(glue("{response} ~ {.x} * region"), dataset)) %>%
+    set_names(predictor_names) %>%
+    {tibble(predictor = names(.), model = .)} %>%
+    mutate(
+      slope          = map_dbl(model, ~tidy(.x)$estimate[2]),
+      slope_p_value  = map_dbl(model, ~tidy(.x)$p.value[ 2]),
+      region_coeff   = map_dbl(model, ~tidy(.x)$estimate[3]),
+      region_p_value = map_dbl(model, ~tidy(.x)$p.value[ 3]),
+      int_coeff      = map_dbl(model, ~tidy(.x)$estimate[4]),
+      int_p_value    = map_dbl(model, ~tidy(.x)$p.value[ 4]),
+      r_squared      = map_dbl(model, ~glance(.x)$r.squared),
+      slope_sig      = ifelse(slope_p_value  <= 0.05, "*", ""),
+      region_sig     = ifelse(region_p_value <= 0.05, "*", ""),
+      int_sig        = ifelse(int_p_value    <= 0.05, "*", "")
+    )
+  
+  # Neaten up & return
+  models_no_region[c(
+    "region_coeff", "region_p_value", "region_sig",
+    "int_coeff",    "int_p_value",    "int_sig"
+  )] <- NA
+  models_add_region[c(
+    "int_coeff",    "int_p_value",    "int_sig"
+  )] <- NA
+  models <- as_tibble(rbind(
+    cbind(region_term = "none", models_no_region),
+    cbind(region_term = "add",  models_add_region),
+    cbind(region_term = "int",  models_int_region)
+  ))
+  models$response <- response
+  models
+}
+
+check_region_effects_all_same <- function(models) {
+  check <- models %>%
+    mutate(region_term_name = model %>%
+      map(~tidy(.x)$term) %>%
+      map_chr(paste, collapse = ", ")
+    ) %>%
+    pull(region_term_name) %>%
+    str_detect("GCFR") %>%
+    any()
+  if (check) print("Uh-oh! Some region-terms are for GCFR")
+}
+
+compare_combined_region_models <- function(models, response = NULL) {
+  if (is.null(response)) {
+    response <- unique(models$response)
+  }
+  
+  # Get AICs etc.
+  models_summary <- models %>%
+    group_by(predictor) %>%
+    mutate(aic = map_dbl(model, AIC)) %>%
+    mutate(
+      model_rank = as.numeric(region_term),
+      delta_aic  = aic - min(aic),
+      # Choose the "best" ^ "simplest" model
+      best_model = (model_rank == min(model_rank[delta_aic < 2]))
+    ) %>%
+    ungroup() 
+
+  # Make pretty
+  models_summary_printable <- models_summary %>%
+    mutate(
+      predictor = predictor %>%
+        str_remove("_roughness") %>%
+        str_replace_all("\\.", " ") %>%
+        factor(levels = c(var_names, "PC1")),
+      region_term = case_when(
+        region_term == "none" ~ "None",
+        region_term == "add"  ~ "Additive",
+        region_term == "int"  ~ "Interaction",
+      ),
+      best_model = ifelse(best_model, "*", " ")
+    ) %>%
+    arrange(predictor) %>%
+    mutate_at(c("slope_p_value", "region_p_value", "int_p_value"),
+      ~ case_when(
+        .x < 0.05 ~ "*",
+        .x < 0.10 ~ ".",
+        TRUE      ~ " "
+      )
+    ) %>%
+    mutate_if(is.numeric, ~ case_when(
+      is.na(.x) ~ " ",
+      TRUE      ~ format(round(.x, digits = 2), nsmall = 2)
+    )) %>%
+    mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
+    dplyr::select(
+      predictor, region_term, delta_aic, best_model,
+      slope,        slope_p_value,
+      region_coeff, region_p_value,
+      int_coeff,    int_p_value
+    )
+
+  # Remove variable names after first mention in table
+  models_summary_printable$predictor %<>% as.character()
+  for (pred in unique(models_summary_printable$predictor)) {
+    to_remove <- which(models_summary_printable$predictor == pred)[-1]
+    models_summary_printable$predictor[to_remove] <- " "
+  }
+  
+  # Print summary table
+  response <- case_when(
+    response == "HDS_richness"      ~ "$S_{\\mathrm{HDS}}$",
+    response == "QDS_richness"      ~ "$S_{\\mathrm{QDS}}$",
+    response == "add_turnover_prop" ~ "$T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$"
+  )
+  knitr::kable(models_summary_printable,
+    caption = glue(
+      "Results of separate simple linear regressions of {response} \\
+      against environmental heterogeneity variables. Asterisks beside each \\
+      $\\Delta AIC$ denote the simples model with $\\Delta AIC < 2$. \\
+      Asterisks beside regression coefficients denote $P$-values < 0.05, \\
+      while periods (\".\") denote $P$-values > 0.05 but < 0.10."
+    ),
+    col.names = c(
+      "Heterogeneity predictor", "Region-term",
+      "$\\Delta AIC$", " ",
+      "Slope",         " ",
+      "SWAFR effect", " ",
+      "Slope:SWAFR",  " "
+    ),
+    align = "llrlrlrlrl"
+  )
+}
+```
+
+```{r combined-region-HDS-richness-models}
+combined_region_models <- fit_combined_region_models("HDS_richness")
+check_region_effects_all_same(combined_region_models)
+compare_combined_region_models(combined_region_models)
+```
+
+\clearpage
+
+```{r combined-region-QDS-richness-models}
+combined_region_models <- fit_combined_region_models("QDS_richness")
+check_region_effects_all_same(combined_region_models)
+compare_combined_region_models(combined_region_models)
+```
+
+\clearpage
+
+```{r combined-region-add-turnover-prop-models}
+combined_region_models <- fit_combined_region_models("add_turnover_prop")
+check_region_effects_all_same(combined_region_models)
+compare_combined_region_models(combined_region_models)
+```
+
+```{r plot-combined-region-models-fits}
+# TODO: neaten these plots
+#HDS_richness_models_no_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
+#  map(~ .x + theme(
+#    axis.title.y = element_blank(),
+#    axis.text.y  = element_blank(),
+#    axis.ticks.y = element_blank()
+#  ))
+#HDS_richness_models_add_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
+#  map(~ .x + theme(
+#    axis.title.y = element_blank(),
+#    axis.text.y  = element_blank(),
+#    axis.ticks.y = element_blank()
+#  ))
+#HDS_richness_models_add_region$plot[c(1, 2, 4, 5, 7, 8)] %<>%
+#  map(~ .x + theme(legend.position = "none"))
+#HDS_richness_models_int_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
+#  map(~ .x + theme(
+#    axis.title.y = element_blank(),
+#    axis.text.y  = element_blank(),
+#    axis.ticks.y = element_blank()
+#  ))
+#HDS_richness_models_int_region$plot[c(1, 2, 4, 5, 7, 8)] %<>%
+#  map(~ .x + theme(legend.position = "none"))
+#
+#plot_grid(plotlist = HDS_richness_models_no_region$plot)
+#plot_grid(plotlist = HDS_richness_models_add_region$plot)
+#plot_grid(plotlist = HDS_richness_models_int_region$plot)
+```
+
+### Extra: PC1 models
+
+```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6}
+S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("S")["HDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white")) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x  = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
+  geom_smooth(method = lm, colour = "grey25") +
+  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
+
+my_legend <- get_legend(S_HDS_plot)
+
+my_plots <- list(
+  S_HDS_plot,
+  turnover_prop_plot
+)
+my_plots %<>% map(~ .x + theme(
+  legend.position = "none",
+  axis.text.y     = element_text(angle = 90)
+))
+
+plot_grid(
+  plot_grid(
+    plotlist = my_plots,
+    nrow = 2,
+    rel_heights = c(0.9, 1),
+    labels = glue("({letters[1:2]})")
+  ),
+  my_legend,
+  nrow = 1,
+  rel_widths = c(2, 1)
+)
+```
