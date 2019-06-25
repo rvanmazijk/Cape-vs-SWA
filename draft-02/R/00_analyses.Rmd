@@ -9,10 +9,10 @@ geometry: a4paper, margin=1in
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo     = FALSE,
-  message  = FALSE,
-  warning  = FALSE,
-  fig.path = "figures/"
+	echo = FALSE,
+	fig.path = "figures/",
+	message = FALSE,
+	warning = FALSE
 )
 library(here)
 source(here("draft-02/R/setup.R"))

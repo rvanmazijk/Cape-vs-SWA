@@ -1,7 +1,5 @@
 ## 3.3. Combined-regions models with combinations of variables
 
-Using variables selected in section 3.2.:
-
 ```{r}
 preds <- models_summary %>%
   separate(response, c("region", "scale", "response")) %>%
@@ -24,229 +22,143 @@ preds <- models_summary %>%
 ```
 
 ```{r}
-#fit_multivariate_model <- function(response) {
-#  stopifnot(exprs = {
-#    response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
-#    # Datasets must be loaded before running this function
-#    exists("HDS")
-#    exists("QDS")
-#  })
-#  model_preds <- preds$terms[preds$response == response]
-#  model_preds %<>% paste(
-#    "+", str_replace_all(model_preds, "\\+", "*region +"), "*region"
+fit_multivariate_model <- function(response) {
+  stopifnot(exprs = {
+    response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
+    # Datasets must be loaded before running this function
+    exists("HDS")
+    exists("QDS")
+  })
+  
+  dataset <- if (response == "QDS_richness") QDS else HDS
+  
+  model_preds <- preds$terms[preds$response == response]
+  model_preds %<>% paste(
+    "+", str_replace_all(model_preds, "\\+", "*region +"), "*region"
+  )
+  
+  m <- lm(as.character(glue("{response} ~ {model_preds}")), dataset)
+  m_terms <- tidy(m)$term
+  
+  m %<>% step(direction = "backward", trace = 0)
+  m_step_terms <- tidy(m)$term
+  
+  list(
+    dropped_preds = m_step_terms[!(m_step_terms %in% m_terms)],
+    model         = m
+  )
+}
+```
+
+```{r}
+HDS_richness_model      <- fit_multivariate_model("HDS_richness")
+QDS_richness_model      <- fit_multivariate_model("QDS_richness")
+add_turnover_prop_model <- fit_multivariate_model("add_turnover_prop")
+```
+
+```{r}
+HDS_richness_model$dropped_preds
+QDS_richness_model$dropped_preds
+add_turnover_prop_model$dropped_preds
+```
+
+```{r}
+HDS_richness_model      <- HDS_richness_model$model
+QDS_richness_model      <- QDS_richness_model$model
+add_turnover_prop_model <- add_turnover_prop_model$model
+```
+
+```{r}
+HDS$predicted_HDS_richness      <- HDS_richness_model$fitted.values
+HDS$residual_HDS_richness       <- HDS_richness_model$residuals
+QDS$predicted_QDS_richness      <- QDS_richness_model$fitted.values
+QDS$residual_QDS_richness       <- QDS_richness_model$residuals
+HDS$predicted_add_turnover_prop <- add_turnover_prop_model$fitted.values
+HDS$residual_add_turnover_prop  <- add_turnover_prop_model$residuals
+```
+
+```{r}
+#function() {
+#  m_terms <- m %>%
+#    tidy() %>%
+#    filter(term != "(Intercept)") %>%
+#    mutate(term = term %>%
+#      str_remove_all(":") %>%
+#      str_remove_all("region(GCFR|SWAFR)")
+#    ) %>%
+#    pull(term) %>%
+#    {.[. != ""]} %>%
+#    unique()
+#  partial_fit_plots <- map(m_terms,
+#    ~ visreg::visreg(m,
+#      xvar = .x,
+#      by = "region", overlay = TRUE,
+#      gg = TRUE
+#    )
 #  )
-#  print(response)
-#  m <- lm(as.character(glue("{response} ~ {model_preds}")), if (response == #"QDS_richness") QDS else HDS)
-#  m_terms <- tidy(m)$term
-#  #m_step <- ols_step_all_possible(m)
-#  m_step <- step(m, direction = "both", trace = 0)
-#  m_step_terms <- tidy(m_step)$term
-#  message(
-#    "Dropped predictors",
-#    paste(m_step_terms[!(m_step_terms %in% m_terms)], collapse = "\n")
-#  )
-#  m_step
+#  names(partial_fit_plots) <- m_terms
+#  my_legend <- get_legend(partial_fit_plots[[1]])
+#  partial_fit_plots %<>% map(~ .x + theme(
+#    legend.position = "none"
+#  ))
+#  partial_fit_plots %<>% c(list(my_legend = my_legend))
+#  plot_grid(plotlist = partial_fit_plots)
 #}
 ```
 
 ```{r}
-#fit_multivariate_model("HDS_richness")
-#fit_multivariate_model("QDS_richness")
-#fit_multivariate_model("add_turnover_prop")
+ggplot(QDS, aes(predicted_QDS_richness, QDS_richness, fill = region)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
+ggplot(HDS, aes(predicted_HDS_richness, HDS_richness, fill = region)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
+ggplot(HDS, aes(predicted_add_turnover_prop, add_turnover_prop, fill = region)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
 ```
 
-```{r fit-all-combined-region-HDS-richness-models}
-HDS_richness_preds <- preds$terms[preds$response == "HDS_richness"]
-HDS_richness_preds %<>% paste(
-  "+", str_replace_all(HDS_richness_preds, "\\+", "*region +"), "*region"
-)
-m <- lm(glue("HDS_richness ~ {HDS_richness_preds}"), HDS)
-m_terms <- tidy(m)$term
-save_file <-
-  here("draft-02/outputs/fit-all-combined-region-HDS-richness-models.RDS")
-if (file.exists(save_file)) {
-  m_step <- read_rds(save_file)
-} else {
-  # (... Or import from disc.)
-  m_step <- ols_step_all_possible(m)
-  #m_step <- step(m, direction = "both", trace = 0)
-  write_rds(m_step, save_file)
-}
-m_step_terms <- m_step %>%
-  as_tibble() %>%
-  dplyr::select(predictors, adjr, aic) %>%
-  mutate(
-    predictors = predictors %>%
-      str_split(" ") %>%
-      map(sort),
-    n_predictors = map_dbl(predictors, length),
-    delta_aic  = aic - min(aic)
-  ) %>%
-  mutate(predictors = map_chr(predictors, paste, collapse = " ")) %>%
-  distinct() %>%
-  filter(delta_aic < 2) %>%
-  filter(n_predictors == min(n_predictors)) %>%
-  pull(predictors)
-
-m_step_terms %<>%
-  {str_split(.[1], " ")[[1]]} %>%
-  paste(collapse = " + ")
-m <- lm(glue("HDS_richness ~ {m_step_terms}"), HDS)
-summary(m)
-m_step_terms <- m %>%
-  tidy() %>%
-  filter(term != "(Intercept)") %>%
-  mutate(term = term %>%
-    str_remove_all(":") %>%
-    str_remove_all("region(GCFR|SWAFR)")
-  ) %>%
-  pull(term) %>%
-  {.[. != ""]} %>%
-  unique()
-partial_fit_plots <- map(m_step_terms, ~
-  visreg::visreg(m,
-    xvar = .x,
-    by = "region", overlay = TRUE,
-    gg = TRUE
-  )
-)
-names(partial_fit_plots) <- m_step_terms
-my_legend <- get_legend(partial_fit_plots[[1]])
-partial_fit_plots %<>% map(~ .x + theme(
-  legend.position = "none"
-))
-partial_fit_plots %<>% c(list(my_legend = my_legend))
-plot_grid(plotlist = partial_fit_plots)
+```{r}
+ggplot(QDS, aes(residual_QDS_richness, QDS_richness, fill = region)) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
+ggplot(HDS, aes(residual_HDS_richness, HDS_richness, fill = region)) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
+ggplot(HDS, aes(residual_add_turnover_prop, add_turnover_prop, fill = region)) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
 ```
 
-```{r fit-all-combined-region-QDS-richness-models}
-QDS_richness_preds <- preds$terms[preds$response == "QDS_richness"]
-QDS_richness_preds %<>% paste(
-  "+", str_replace_all(QDS_richness_preds, "\\+", "*region +"), "*region"
-)
-m <- lm(glue("QDS_richness ~ {QDS_richness_preds}"), QDS)
-m_terms <- tidy(m)$term
-#save_file <-
-#  here("draft-02/outputs/fit-all-combined-region-QDS-richness-models.RDS")
-#if (file.exists(save_file)) {
-#  m_step <- read_rds(save_file)
-#} else {
-  # (... Or import from disc.)
-  #m_step <- ols_step_all_possible(m)
-  m_step <- step(m, direction = "both", trace = 0)
-  summary(m_step)
-#  write_rds(m_step, save_file)
-#}
-#m_step_terms <- m_step %>%
-#  as_tibble() %>%
-#  dplyr::select(predictors, adjr, aic) %>%
-#  mutate(
-#    predictors = predictors %>%
-#      str_split(" ") %>%
-#      map(sort),
-#    n_predictors = map_dbl(predictors, length),
-#    delta_aic  = aic - min(aic)
-#  ) %>%
-#  mutate(predictors = map_chr(predictors, paste, collapse = " ")) %>%
-#  distinct() %>%
-#  filter(delta_aic < 2) %>%
-#  filter(n_predictors == min(n_predictors)) %>%
-#  pull(predictors)
-#
-#m_step_terms %<>%
-#  {str_split(.[1], " ")[[1]]} %>%
-#  paste(collapse = " + ")
-#m <- lm(glue("QDS_richness ~ {m_step_terms}"), QDS)
-#m_step_terms <- m %>%
-#  tidy() %>%
-#  filter(term != "(Intercept)") %>%
-#  mutate(term = term %>%
-#    str_remove_all(":") %>%
-#    str_remove_all("region(GCFR|SWAFR)")
-#  ) %>%
-#  pull(term) %>%
-#  {.[. != ""]} %>%
-#  unique()
-#partial_fit_plots <- map(m_step_terms, ~
-#  visreg::visreg(m,
-#    xvar = .x,
-#    by = "region", overlay = TRUE,
-#    gg = TRUE
-#  )
-#)
-#names(partial_fit_plots) <- m_step_terms
-#my_legend <- get_legend(partial_fit_plots[[1]])
-#partial_fit_plots %<>% map(~ .x + theme(
-#  legend.position = "none"
-#))
-#partial_fit_plots %<>% c(list(my_legend = my_legend))
-#plot_grid(plotlist = partial_fit_plots)
+```{r}
+ggplot(QDS, aes(lon, lat, fill = residual_QDS_richness)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
+ggplot(QDS, aes(lon, lat, fill = QDS_richness)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
+ggplot(HDS, aes(lon, lat, fill = residual_HDS_richness)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
+ggplot(HDS, aes(lon, lat, fill = HDS_richness)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
+ggplot(HDS, aes(lon, lat, fill = residual_add_turnover_prop)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
+ggplot(HDS, aes(lon, lat, fill = add_turnover_prop)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
 ```
-
-```{r fit-all-combined-region-add-turnover-prop-models}
-add_turnover_prop_preds <- preds$terms[preds$response == "add_turnover_prop"]
-add_turnover_prop_preds %<>% paste(
-  "+", str_replace_all(HDS_richness_preds, "\\+", "*region +"), "*region"
-)
-m <- lm(glue("add_turnover_prop ~ {add_turnover_prop_preds}"), HDS)
-m_terms <- tidy(m)$term
-#save_file <-
-#  here("draft-02/outputs/fit-all-combined-region-add-turnover-prop-models.RDS")
-#if (file.exists(save_file)) {
-#  m_step <- read_rds(save_file)
-#} else {
-#  # (... Or import from disc.)
-  #m_step <- ols_step_all_possible(m)
-  m_step <- step(m, direction = "both", trace = 0)
-  summary(m_step)
-#  write_rds(m_step, save_file)
-#}
-#m_step_terms <- m_step %>%
-#  as_tibble() %>%
-#  dplyr::select(predictors, adjr, aic) %>%
-#  mutate(
-#    predictors = predictors %>%
-#      str_split(" ") %>%
-#      map(sort),
-#    n_predictors = map_dbl(predictors, length),
-#    delta_aic  = aic - min(aic)
-#  ) %>%
-#  mutate(predictors = map_chr(predictors, paste, collapse = " ")) %>%
-#  distinct() %>%
-#  filter(delta_aic < 2) %>%
-#  filter(n_predictors == min(n_predictors)) %>%
-#  pull(predictors)
-#
-#m_step_terms %<>%
-#  {str_split(.[1], " ")[[1]]} %>%
-#  paste(collapse = " + ")
-#m <- lm(glue("add_turnover_prop ~ {m_step_terms}"), HDS)
-#m_step_terms <- m %>%
-#  tidy() %>%
-#  filter(term != "(Intercept)") %>%
-#  mutate(term = term %>%
-#    str_remove_all(":") %>%
-#    str_remove_all("region(GCFR|SWAFR)")
-#  ) %>%
-#  pull(term) %>%
-#  {.[. != ""]} %>%
-#  unique()
-#partial_fit_plots <- map(m_step_terms, ~
-#  visreg::visreg(m,
-#    xvar = .x,
-#    by = "region", overlay = TRUE,
-#    gg = TRUE
-#  )
-#)
-#names(partial_fit_plots) <- m_step_terms
-#my_legend <- get_legend(partial_fit_plots[[1]])
-#partial_fit_plots %<>% map(~ .x + theme(
-#  legend.position = "none"
-#))
-#partial_fit_plots %<>% c(list(my_legend = my_legend))
-#plot_grid(plotlist = partial_fit_plots)
-```
-
 
 ```{r, eval=FALSE}
 # (*) Plots --------------------------------------------------------------------

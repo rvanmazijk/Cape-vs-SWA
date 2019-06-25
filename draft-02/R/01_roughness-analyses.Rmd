@@ -100,8 +100,8 @@ roughness_PCA_plots <- map2(roughness_PCAs, roughness_matrices,
       loadings.label = TRUE, loadings.label.colour = "black",
       loadings.label.hjust = -0.25
     ) +
-    geom_hline(yintercept = 0, lty = "dashed", alpha = 0.5) +
-    geom_vline(xintercept = 0, lty = "dashed", alpha = 0.5)
+    geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+    geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
 )
 # Get legend to use as panel
 my_legend <- get_legend(roughness_PCA_plots[[1]])

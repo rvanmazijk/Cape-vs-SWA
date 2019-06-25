@@ -17,10 +17,6 @@ In Tables 5--7, I also regressed against PC1. Like heterogeneity in elevation an
 
 It is worth noting that PC1 is representatve of (ca. 45% of) the multivariate trends of species richness and turnover versus environmental heterogeneity. Some of the individual roughness variables show similar trends, some not, and to varying extents [expand].
 
-## 3.2. Separate-regions models with combinations of variables
-
-See Figure 5.
-
 ```{r helper-functions}
 fit_combined_region_models <- function(response) {
   stopifnot(exprs = {
@@ -283,4 +279,30 @@ plot_grid(
   nrow = 1,
   rel_widths = c(2, 1)
 )
+```
+
+```{r plot-combined-region-PC1-model-residuals}
+richness_m <- lm(HDS_richness ~ PC1, HDS)
+HDS$predicted_HDS_richness <- richness_m$fitted.values
+HDS$residual_HDS_richness <- richness_m$residuals
+
+ggplot(HDS, aes(HDS_richness, predicted_HDS_richness, fill = region)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
+  geom_point(shape = 21) +
+  lims(x = range(HDS$HDS_richness), y = range(HDS$HDS_richness)) +
+  scale_fill_manual("Region", values = c("black", "white"))
+
+ggplot(HDS, aes(HDS_richness, residual_HDS_richness, fill = region)) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
+
+ggplot(HDS, aes(PC1, residual_HDS_richness, fill = region)) +
+  geom_point(shape = 21) +
+  scale_fill_manual("Region", values = c("black", "white"))
+
+ggplot(HDS, aes(lon, lat, fill = residual_HDS_richness)) +
+  geom_tile() +
+  facet_grid(~ region, scales = "free_x") +
+  scale_fill_viridis_c()
+
 ```

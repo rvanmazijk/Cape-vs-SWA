@@ -20,8 +20,6 @@ $$
     \right)
 $$
 
-\clearpage
-
 In R, this is implemented this as follows:
 
 ```
@@ -110,13 +108,32 @@ SWAFR_QDS <- filter(QDS, region == "SWAFR")
 ## Conclusion: Logging can't solve everything!
 ```
 
+The PCA used here, done only at the QDS- and HDS-scales, looks almost exactly like the ones in Figure 1 for those scales:
+
+```{r plot-this-PCA}
+PCA_data <- rbind(
+  cbind(scale = "HDS", HDS[, c("lon", "lat", "region", "PC1", "PC2")]),
+  cbind(scale = "QDS", QDS[, c("lon", "lat", "region", "PC1", "PC2")])
+)
+ggplot(PCA_data, aes(PC1, PC2, colour = region)) +
+  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
+  geom_point() +
+  facet_grid(scale ~ " ") +
+  theme(legend.position = "left")
+ggplot(PCA_data, aes(lon, lat, colour = PC1)) +
+  geom_point() +
+  facet_grid(scale ~ region, scales = "free_x") +
+  scale_colour_viridis_c()
+```
+
+That's encouraging!
+
 ```{r combined-regions-separate-variables, child="03.1_combined-regions-separate-variables.Rmd"}
 ```
 
 ```{r separate-regions-combined-variables, child="03.2_separate-regions-combined-variables.Rmd"}
 ```
 
-\clearpage
-
-```{r combined-regions-combined-variables, child="03.3_combined-regions-combined-variables.Rmd", eval=FALSE}
+```{r combined-regions-combined-variables, child="03.3_combined-regions-combined-variables.Rmd"}
 ```

@@ -33,6 +33,37 @@ HDS_QDS <- as_tibble(rbind(
 ))
 ```
 
+```{r plot-richness-and-turnover-maps}
+richness_data <- rbind(
+  QDS %>%
+    dplyr::select(lon, lat, region, QDS_richness) %>%
+    rename(response_value = QDS_richness) %>%
+    mutate(response = "italic(S)[QDS]"),
+  HDS %>%
+    dplyr::select(lon, lat, region, HDS_richness) %>%
+    rename(response_value = HDS_richness) %>%
+    mutate(response = "italic(S)[HDS]"),
+  HDS %>%
+    dplyr::select(lon, lat, region, add_turnover_prop) %>%
+    rename(response_value = add_turnover_prop) %>%
+    mutate(response = "italic(T)[QDS]/italic(S)[HDS]")
+)
+richness_data %<>%
+  mutate(response = factor(response, levels = c(
+    "italic(S)[QDS]",
+    "italic(S)[HDS]",
+    "italic(T)[QDS]/italic(S)[HDS]"
+  ))) %>%
+  group_by(response) %>%
+  mutate(response_value = scale(response_value)) %>%
+  filter(response != "italic(S)[QDS]")
+ggplot(richness_data, aes(lon, lat, colour = response_value)) +
+  geom_point() +
+  facet_grid(response ~ region, scales = "free_x", labeller = label_parsed) +
+  scale_colour_viridis_c() +
+  theme(strip.text.y = element_text(angle = 0))
+```
+
 ```{r test-richness-turnover-univariate}
 HDS_QDS %>%
   mutate(metric = case_when(

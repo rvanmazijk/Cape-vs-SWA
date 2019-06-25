@@ -1,3 +1,7 @@
+## 3.2. Separate-regions models with combinations of variables
+
+See Figure 5.
+
 ```{r fit-all-sep-region-models}
 predictor_names <- HDS %>%
   {names(.)[str_which(names(.), "roughness")]} %>%
@@ -28,64 +32,16 @@ models <- list(
     data    = SWAFR_HDS
   )
 )
-# Fit all possible model subsets
-# (WARNING: this takes a while... Only run if haven't already...)
-save_file <- here("draft-02/outputs/fit-all-sep-region-models.RDS")
-if (file.exists(save_file)) {
-  models <- read_rds(save_file)
-} else {
-  # (... Or import from disc.)
-  models %<>% map(ols_step_all_possible)
-  write_rds(models, save_file)
-}
-```
-
-```{r fit-best-sep-region-models}
-best_preds <- map(models, .id = "model",
-  ~ .x %>%
-    as_tibble() %>%
-    mutate(delta_aic = aic - min(aic)) %>%
-    arrange(delta_aic) %>%
-    dplyr::select(predictors, adjr, delta_aic) %>%
-    slice(1) %>%
-    pull(predictors) %>%
-    str_replace_all(" ", " + ")
-)
-new_models <- list(
-  GCFR_HDS_richness = lm(
-    formula = glue("HDS_richness      ~ {best_preds$GCFR_HDS_richness}"),
-    data    = GCFR_HDS
-  ),
-  GCFR_QDS_richness = lm(
-    formula = glue("QDS_richness      ~ {best_preds$GCFR_QDS_richness}"),
-    data    = GCFR_QDS
-  ),
-  GCFR_QDS_turnover = lm(
-    formula = glue("add_turnover_prop ~ {best_preds$GCFR_QDS_turnover}"),
-    data    = GCFR_HDS
-  ),
-  SWAFR_HDS_richness = lm(
-    formula = glue("HDS_richness      ~ {best_preds$SWAFR_HDS_richness}"),
-    data    = SWAFR_HDS
-  ),
-  SWAFR_QDS_richness = lm(
-    formula = glue("QDS_richness      ~ {best_preds$SWAFR_QDS_richness}"),
-    data    = SWAFR_QDS
-  ),
-  SWAFR_QDS_turnover = lm(
-    formula = glue("add_turnover_prop ~ {best_preds$SWAFR_QDS_turnover}"),
-    data    = SWAFR_HDS
-  )
-)
+models %<>% map(step, direction = "backward", trace = 0)
 ```
 
 ```{r summarise-sep-region-models}
-models_summary <- new_models %>%
+models_summary <- models %>%
   map_df(.id = "response", tidy, conf.int = TRUE) %>%
   dplyr::select(-std.error, -statistic) %>%
   filter(term != "(Intercept)") %>%
   mutate(term = str_remove_all(term, "_roughness"))
-models_R2 <- new_models %>%
+models_R2 <- models %>%
   map_df(.id = "response", glance) %>%
   dplyr::select(response, adj.r.squared)
 models_summary %<>% full_join(models_R2)
