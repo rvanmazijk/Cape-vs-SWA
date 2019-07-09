@@ -281,7 +281,7 @@ plot_grid(
 )
 ```
 
-```{r plot-combined-region-PC1-model-residuals}
+```{r plot-combined-region-PC1-model-residuals, eval=FALSE}
 richness_m <- lm(HDS_richness ~ PC1, HDS)
 HDS$predicted_HDS_richness <- richness_m$fitted.values
 HDS$residual_HDS_richness <- richness_m$residuals
@@ -304,5 +304,4 @@ ggplot(HDS, aes(lon, lat, fill = residual_HDS_richness)) +
   geom_tile() +
   facet_grid(~ region, scales = "free_x") +
   scale_fill_viridis_c()
-
 ```
