@@ -189,25 +189,134 @@ compare_combined_region_models <- function(models, response = NULL) {
 \clearpage
 
 ```{r combined-region-HDS-richness-models}
-combined_region_models <- fit_combined_region_models("HDS_richness")
-check_region_effects_all_same(combined_region_models)
-compare_combined_region_models(combined_region_models)
+combined_region_HDS_models <- fit_combined_region_models("HDS_richness")
+check_region_effects_all_same(combined_region_HDS_models)
+compare_combined_region_models(combined_region_HDS_models)
 ```
 
 \clearpage
 
 ```{r combined-region-QDS-richness-models}
-combined_region_models <- fit_combined_region_models("QDS_richness")
-check_region_effects_all_same(combined_region_models)
-compare_combined_region_models(combined_region_models)
+combined_region_QDS_models <- fit_combined_region_models("QDS_richness")
+check_region_effects_all_same(combined_region_QDS_models)
+compare_combined_region_models(combined_region_QDS_models)
 ```
 
 \clearpage
 
 ```{r combined-region-add-turnover-prop-models}
-combined_region_models <- fit_combined_region_models("add_turnover_prop")
-check_region_effects_all_same(combined_region_models)
-compare_combined_region_models(combined_region_models)
+combined_region_TO_models <- fit_combined_region_models("add_turnover_prop")
+check_region_effects_all_same(combined_region_TO_models)
+compare_combined_region_models(combined_region_TO_models)
+```
+
+\clearpage
+
+### What Tony wants (`r Sys.Date()`)
+
+Plotting the relationships of:
+
+1. $S_HDS \sim MAP * region$
+2. $S_HDS \sim NDVI + region$
+3. $S_HDS \sim clay + region$
+4. $S_QDS \sim PDQ * region$
+5. $S_QDS \sim NDVI * region$
+6. $S_QDS \sim soil C * region$
+
+NOTE:
+
+- For (1.), the interaction & main effects are both significant so the fitted slopes & intercepts need to be estimated separately for each region.
+- For (2., 3.), only the main effects are significant, implying a common slope but different intercepts.
+- For (4.--6.) The slopes and intercepts need to be estimated separately for the two regions.
+
+```{r plot-models-Tony-asked-for, fig.width=10}
+m1 <- combined_region_HDS_models %>%
+  filter(region_term == "int", predictor == "MAP_roughness") %>%
+  pull(model)
+m1[[1]]$data <- HDS
+m1_plot <- visreg::visreg(m1[[1]],
+  xvar    = "MAP_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+m2 <- combined_region_HDS_models %>%
+  filter(region_term == "add", predictor == "NDVI_roughness") %>%
+  pull(model)
+m2[[1]]$data <- HDS
+m2_plot <- visreg::visreg(m2[[1]],
+  xvar    = "NDVI_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+m3 <- combined_region_HDS_models %>%
+  filter(region_term == "add", predictor == "Clay_roughness") %>%
+  pull(model)
+m3[[1]]$data <- HDS
+m3_plot <- visreg::visreg(m3[[1]],
+  xvar    = "Clay_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+
+m4 <- combined_region_QDS_models %>%
+  filter(region_term == "int", predictor == "PDQ_roughness") %>%
+  pull(model)
+m4[[1]]$data <- QDS
+m4_plot <- visreg::visreg(m4[[1]],
+  xvar    = "PDQ_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+m5 <- combined_region_QDS_models %>%
+  filter(region_term == "int", predictor == "NDVI_roughness") %>%
+  pull(model)
+m5[[1]]$data <- QDS
+m5_plot <- visreg::visreg(m5[[1]],
+  xvar    = "NDVI_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+m6 <- combined_region_QDS_models %>%
+  filter(region_term == "int", predictor == "Soil.C_roughness") %>%
+  pull(model)
+m6[[1]]$data <- QDS
+m6_plot <- visreg::visreg(m6[[1]],
+  xvar    = "Soil.C_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+
+m_plots <- list(
+  m1_plot,
+  m2_plot,
+  m3_plot,
+  m4_plot,
+  m5_plot,
+  m6_plot
+)
+m_legend <- get_legend(m_plots[[1]])
+m_plots %<>% map(~ .x + theme(legend.position = "none"))
+m_plots[1:3] %<>% map(~ .x + ylim(-100, 3100))
+m_plots[4:6] %<>% map(~ .x + ylim(-100, 2600))
+
+# Make points transparent manually
+m_plots %<>% map(function(x) {
+  x$layers[[3]]$aes_params$alpha <- 0.2
+  x
+})
+
+plot_grid(
+  plot_grid(plotlist = m_plots),
+  m_legend,
+  nrow = 1,
+  rel_widths = c(1, 0.25)
+)
 ```
 
 ```{r plot-combined-region-models-fits}
