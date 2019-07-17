@@ -1,6 +1,42 @@
 ## 3.3. Combined-regions models with combinations of variables
 
 ```{r}
+roughness_var_names <- var_names %>%
+  str_replace_all(" ", ".") %>%
+  paste0("_roughness") %>%
+  {c(., paste(., "* region"))}
+roughness_formula <- paste(roughness_var_names, collapse = " + ")
+
+fit_combined_region_multivariate <- function(response) {
+  stopifnot(exists("roughness_formula"))
+  roughness_formula <- glue("{response} ~ {roughness_formula}")
+  dataset <- if (response == "QDS_richness") QDS else HDS
+  m <- lm(roughness_formula, dataset)
+  # TODO: Use ols_step_all_possible() in final version
+  #ols_step_all_possible(m)
+  step(m)
+}
+
+m_HDS_richness      <- fit_combined_region_multivariate("HDS_richness")
+m_QDS_richness      <- fit_combined_region_multivariate("QDS_richness")
+m_add_turnover_prop <- fit_combined_region_multivariate("add_turnover_prop")
+
+m_HDS_richness$data <- HDS
+m_QDS_richness$data <- QDS
+m_HDS_richness$data <- HDS
+
+visreg::visreg(m_HDS_richness,
+  xvar    = "Elevation_roughness",
+  by      = "region",
+  overlay = TRUE,
+  gg      = TRUE
+)
+
+# WIP
+
+```
+
+```{r}
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
