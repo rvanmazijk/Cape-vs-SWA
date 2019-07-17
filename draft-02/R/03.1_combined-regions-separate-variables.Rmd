@@ -18,14 +18,35 @@ In Tables 5--7, I also regressed against PC1. Like heterogeneity in elevation an
 It is worth noting that PC1 is representatve of (ca. 45% of) the multivariate trends of species richness and turnover versus environmental heterogeneity. Some of the individual roughness variables show similar trends, some not, and to varying extents [expand].
 
 ```{r helper-functions}
-fit_combined_region_models <- function(response) {
+rm_high_richness <- function(x, cutoff_quantile = 0.95) {
+  responses <- c("HDS_richness", "QDS_richness")
+  responses_present <- (responses %in% colnames(x))
+  stopifnot(any(responses_present))
+  response_column_name <- responses[which(responses_present)]
+  cutoff <- as.numeric(quantile(x[[response_column_name]], cutoff_quantile))
+  response_column_name <- rlang::ensym(response_column_name)
+  filter(x, !!response_column_name <= cutoff)
+}
+
+fit_combined_region_models <- function(response, rm_high_richness_pts=FALSE) {
   stopifnot(exprs = {
     response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
     # Datasets must be loaded before running this function
     exists("HDS")
     exists("QDS")
   })
+  
   dataset <- if (response == "QDS_richness") QDS else HDS
+  
+  if ((rm_high_richness_pts) & (response != "add_turnover_prop")) {
+    dataset %<>% rm_high_richness()
+  }
+  if ((rm_high_richness_pts) & (response == "add_turnover_prop")) {
+    message(
+      "Response is not richness
+      Not removing any points"
+    )
+  }
   
   # Select roughness & PC1 predictor names
   predictor_names <- names(dataset)[
