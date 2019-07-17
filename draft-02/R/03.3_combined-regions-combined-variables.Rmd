@@ -1,6 +1,10 @@
 ## 3.3. Combined-regions models with combinations of variables
 
 ```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
 preds <- models_summary %>%
   separate(response, c("region", "scale", "response")) %>%
   unite(response, scale, response) %>%
