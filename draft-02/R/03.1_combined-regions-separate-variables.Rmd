@@ -446,36 +446,6 @@ plot_grid(
 )
 ```
 
-```{r plot-combined-region-models-fits}
-# TODO: neaten these plots
-#HDS_richness_models_no_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
-#  map(~ .x + theme(
-#    axis.title.y = element_blank(),
-#    axis.text.y  = element_blank(),
-#    axis.ticks.y = element_blank()
-#  ))
-#HDS_richness_models_add_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
-#  map(~ .x + theme(
-#    axis.title.y = element_blank(),
-#    axis.text.y  = element_blank(),
-#    axis.ticks.y = element_blank()
-#  ))
-#HDS_richness_models_add_region$plot[c(1, 2, 4, 5, 7, 8)] %<>%
-#  map(~ .x + theme(legend.position = "none"))
-#HDS_richness_models_int_region$plot[c(2, 3, 5, 6, 8, 9)] %<>%
-#  map(~ .x + theme(
-#    axis.title.y = element_blank(),
-#    axis.text.y  = element_blank(),
-#    axis.ticks.y = element_blank()
-#  ))
-#HDS_richness_models_int_region$plot[c(1, 2, 4, 5, 7, 8)] %<>%
-#  map(~ .x + theme(legend.position = "none"))
-#
-#plot_grid(plotlist = HDS_richness_models_no_region$plot)
-#plot_grid(plotlist = HDS_richness_models_add_region$plot)
-#plot_grid(plotlist = HDS_richness_models_int_region$plot)
-```
-
 ```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6, fig.cap="The fits of (a) the common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 5) and (b) the interaction regression of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ against PC1 (Table 7). Grey bands denote 95% confidence intervals. In (b) two fits are shown: one for the baseline (GCFR) and one using the interaction term (SWAFR). The common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 6; not shown here) looks similar to (a)."}
 S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
   geom_smooth(method = lm, colour = "grey25") +
@@ -515,29 +485,4 @@ plot_grid(
   nrow = 1,
   rel_widths = c(2, 1)
 )
-```
-
-```{r plot-combined-region-PC1-model-residuals, eval=FALSE}
-richness_m <- lm(HDS_richness ~ PC1, HDS)
-HDS$predicted_HDS_richness <- richness_m$fitted.values
-HDS$residual_HDS_richness <- richness_m$residuals
-
-ggplot(HDS, aes(HDS_richness, predicted_HDS_richness, fill = region)) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed", alpha = 0.5) +
-  geom_point(shape = 21) +
-  lims(x = range(HDS$HDS_richness), y = range(HDS$HDS_richness)) +
-  scale_fill_manual("Region", values = c("black", "white"))
-
-ggplot(HDS, aes(HDS_richness, residual_HDS_richness, fill = region)) +
-  geom_point(shape = 21) +
-  scale_fill_manual("Region", values = c("black", "white"))
-
-ggplot(HDS, aes(PC1, residual_HDS_richness, fill = region)) +
-  geom_point(shape = 21) +
-  scale_fill_manual("Region", values = c("black", "white"))
-
-ggplot(HDS, aes(lon, lat, fill = residual_HDS_richness)) +
-  geom_tile() +
-  facet_grid(~ region, scales = "free_x") +
-  scale_fill_viridis_c()
 ```
