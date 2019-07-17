@@ -136,9 +136,11 @@ compare_combined_region_models <- function(models, response = NULL) {
     arrange(predictor) %>%
     mutate_at(c("slope_p_value", "region_p_value", "int_p_value"),
       ~ case_when(
-        .x < 0.05 ~ "*",
-        .x < 0.10 ~ ".",
-        TRUE      ~ " "
+        .x < 0.001 ~ "***",
+        .x < 0.010 ~ "**",
+        .x < 0.050 ~ "*",
+        .x < 0.100 ~ ".",
+        TRUE       ~ " "
       )
     ) %>%
     mutate_if(is.numeric, ~ case_when(
