@@ -87,34 +87,3 @@ ggplot(models_summary_for_plot) +
     strip.text.x = element_text(angle =  0, hjust = 0)
   )
 ```
-
-```{plot-sep-region-models-fits, eval=FALSE}
-tibble(model = new_models) %>%
-  mutate(
-    vis = map(model, visreg::visreg, gg = TRUE),
-    coefficients = model %>%
-      map("coefficients") %>%
-      map(names) %>%
-      map(~.x[.x != "(Intercept)"])
-  ) #%>%
-  # FIXME:
-  #mutate(gg = map(vis, map, ~qplot(.x$fit))) %>%
-  #dplyr::select(-vis) %>%
-  #unnest(gg) %>%
-  #pull(gg)
-
-plot_partial_fits <- function(m, m_title) {
-  coefficient_names <- names(m$coefficients)[
-    names(m$coefficients) != "(Intercept)"
-  ]
-  plots <- map(coefficient_names, ~visreg::visreg(m, .x, gg = TRUE))
-  plots[-1] %<>% map(~ .x + theme(axis.title.y = element_blank()))
-  plot_grid(plotlist = plots, nrow = 1, labels = m_title)
-}
-#partial_fits <-
-new_models %>%
-  imap(~ plot_partial_fits(
-    .x,
-    paste("(a)", str_extract(.y, "(GCFR|SWAFR)"))
-  ))
-```

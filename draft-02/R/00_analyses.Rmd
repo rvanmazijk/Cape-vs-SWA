@@ -1,18 +1,18 @@
 ---
-title: "Analyses for 2^nd^ draft"
-subtitle: "Cape vs SWA"
-author: "Ruan van Mazijk"
-date: "`r Sys.Date()`"
-output: pdf_document
-geometry: a4paper, margin=1in
+title    : "Analyses for 2^nd^ draft"
+subtitle : "Cape vs SWA"
+author   : "Ruan van Mazijk"
+date     : "`r Sys.Date()`"
+output   : pdf_document
+geometry : a4paper, margin=1in
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-	echo = FALSE,
+	echo     = FALSE,
 	fig.path = "figures/",
-	message = FALSE,
-	warning = FALSE
+	message  = FALSE,
+	warning  = FALSE
 )
 library(here)
 source(here("draft-02/R/setup.R"))
