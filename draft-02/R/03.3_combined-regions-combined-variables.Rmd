@@ -1,29 +1,52 @@
 ## 3.3. Combined-regions models with combinations of variables
 
 ```{r}
-roughness_var_names <- var_names %>%
-  str_replace_all(" ", ".") %>%
-  paste0("_roughness") %>%
-  {c(., paste(., "* region"))}
-roughness_formula <- paste(roughness_var_names, collapse = " + ")
+fit_combined_region_multivariate <- function(response,
+                                             rm_high_richness_pts = FALSE) {
+  stopifnot(exists("var_names"))
 
-fit_combined_region_multivariate <- function(response) {
-  stopifnot(exists("roughness_formula"))
-  roughness_formula <- glue("{response} ~ {roughness_formula}")
   dataset <- if (response == "QDS_richness") QDS else HDS
+  if ((rm_high_richness_pts) & (response != "add_turnover_prop")) {
+    dataset %<>% rm_high_richness()
+  }
+  if ((rm_high_richness_pts) & (response == "add_turnover_prop")) {
+    message(
+      "Response is not richness
+      Not removing any points"
+    )
+  }
+  
+  roughness_var_names <- var_names %>%
+    str_replace_all(" ", ".") %>%
+    paste0("_roughness") %>%
+    {c(., paste(., "*region"))}
+  roughness_formula <- paste(roughness_var_names, collapse = " + ")
+  roughness_formula <- glue("{response} ~ {roughness_formula}")
+  
   m <- lm(roughness_formula, dataset)
-  # TODO: Use ols_step_all_possible() in final version
+  # TODO: Use ols_step_all_possible() etc. in final version
   #ols_step_all_possible(m)
+  #ols_step_backward_aic(m)
   step(m)
 }
 
 m_HDS_richness      <- fit_combined_region_multivariate("HDS_richness")
+m_HDS_richness2      <- fit_combined_region_multivariate("HDS_richness", TRUE)
 m_QDS_richness      <- fit_combined_region_multivariate("QDS_richness")
+m_QDS_richness2      <- fit_combined_region_multivariate("QDS_richness", TRUE)
 m_add_turnover_prop <- fit_combined_region_multivariate("add_turnover_prop")
 
 m_HDS_richness$data <- HDS
+m_HDS_richness2$data <- rm_high_richness(HDS)
 m_QDS_richness$data <- QDS
-m_HDS_richness$data <- HDS
+m_QDS_richness2$data <- rm_high_richness(QDS)
+m_add_turnover_prop$data <- HDS
+
+summary(m_HDS_richness)
+summary(m_HDS_richness2)
+summary(m_QDS_richness)
+summary(m_QDS_richness2)
+summary(m_add_turnover_prop)
 
 visreg::visreg(m_HDS_richness,
   xvar    = "Elevation_roughness",
@@ -33,7 +56,6 @@ visreg::visreg(m_HDS_richness,
 )
 
 # WIP
-
 ```
 
 ```{r}

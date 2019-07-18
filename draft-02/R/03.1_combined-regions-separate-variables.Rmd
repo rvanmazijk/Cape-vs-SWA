@@ -28,7 +28,8 @@ rm_high_richness <- function(x, cutoff_quantile = 0.95) {
   filter(x, !!response_column_name <= cutoff)
 }
 
-fit_combined_region_models <- function(response, rm_high_richness_pts=FALSE) {
+fit_combined_region_models <- function(response,
+                                       rm_high_richness_pts = FALSE) {
   stopifnot(exprs = {
     response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
     # Datasets must be loaded before running this function
@@ -37,7 +38,6 @@ fit_combined_region_models <- function(response, rm_high_richness_pts=FALSE) {
   })
   
   dataset <- if (response == "QDS_richness") QDS else HDS
-  
   if ((rm_high_richness_pts) & (response != "add_turnover_prop")) {
     dataset %<>% rm_high_richness()
   }
