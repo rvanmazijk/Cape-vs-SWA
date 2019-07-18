@@ -18,18 +18,7 @@ In Tables 5--7, I also regressed against PC1. Like heterogeneity in elevation an
 It is worth noting that PC1 is representatve of (ca. 45% of) the multivariate trends of species richness and turnover versus environmental heterogeneity. Some of the individual roughness variables show similar trends, some not, and to varying extents [expand].
 
 ```{r helper-functions}
-rm_high_richness <- function(x, cutoff_quantile = 0.95) {
-  responses <- c("HDS_richness", "QDS_richness")
-  responses_present <- (responses %in% colnames(x))
-  stopifnot(any(responses_present))
-  response_column_name <- responses[which(responses_present)]
-  cutoff <- as.numeric(quantile(x[[response_column_name]], cutoff_quantile))
-  response_column_name <- rlang::ensym(response_column_name)
-  filter(x, !!response_column_name <= cutoff)
-}
-
-fit_combined_region_models <- function(response,
-                                       rm_high_richness_pts = FALSE) {
+fit_combined_region_models <- function(response) {
   stopifnot(exprs = {
     response %in% c("HDS_richness", "QDS_richness", "add_turnover_prop")
     # Datasets must be loaded before running this function
@@ -38,15 +27,6 @@ fit_combined_region_models <- function(response,
   })
   
   dataset <- if (response == "QDS_richness") QDS else HDS
-  if ((rm_high_richness_pts) & (response != "add_turnover_prop")) {
-    dataset %<>% rm_high_richness()
-  }
-  if ((rm_high_richness_pts) & (response == "add_turnover_prop")) {
-    message(
-      "Response is not richness
-      Not removing any points"
-    )
-  }
   
   # Select roughness & PC1 predictor names
   predictor_names <- names(dataset)[
@@ -219,26 +199,10 @@ compare_combined_region_models(combined_region_HDS_models)
 
 \clearpage
 
-```{r combined-region-HDS-richness-models2}
-combined_region_HDS_models2 <- fit_combined_region_models("HDS_richness", TRUE)
-check_region_effects_all_same(combined_region_HDS_models2)
-compare_combined_region_models(combined_region_HDS_models2)
-```
-
-\clearpage
-
 ```{r combined-region-QDS-richness-models}
 combined_region_QDS_models <- fit_combined_region_models("QDS_richness")
 check_region_effects_all_same(combined_region_QDS_models)
 compare_combined_region_models(combined_region_QDS_models)
-```
-
-\clearpage
-
-```{r combined-region-QDS-richness-models2}
-combined_region_QDS_models2 <- fit_combined_region_models("QDS_richness", TRUE)
-check_region_effects_all_same(combined_region_QDS_models2)
-compare_combined_region_models(combined_region_QDS_models2)
 ```
 
 \clearpage
@@ -249,7 +213,7 @@ check_region_effects_all_same(combined_region_TO_models)
 compare_combined_region_models(combined_region_TO_models)
 ```
 
-\clearpage
+<!--
 
 ### What Tony wants (`r Sys.Date()`)
 
@@ -268,7 +232,7 @@ NOTE:
 - For (2., 3.), only the main effects are significant, implying a common slope but different intercepts.
 - For (4.--6.) The slopes and intercepts need to be estimated separately for the two regions.
 
-```{r plot-models-Tony-asked-for, fig.width=10}
+{r plot-models-Tony-asked-for, fig.width=10}
 m1 <- combined_region_HDS_models %>%
   filter(region_term == "int", predictor == "MAP_roughness") %>%
   pull(model)
@@ -360,7 +324,8 @@ plot_grid(
   nrow = 1,
   rel_widths = c(1, 0.25)
 )
-```
+
+-->
 
 ```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6, fig.cap="The fits of (a) the common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 5) and (b) the interaction regression of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ against PC1 (Table 7). Grey bands denote 95% confidence intervals. In (b) two fits are shown: one for the baseline (GCFR) and one using the interaction term (SWAFR). The common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 6; not shown here) looks similar to (a)."}
 S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +

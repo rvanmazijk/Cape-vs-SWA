@@ -135,5 +135,5 @@ That's encouraging!
 ```{r separate-regions-combined-variables, child="03.2_separate-regions-combined-variables.Rmd"}
 ```
 
-```{r combined-regions-combined-variables, child="03.3_combined-regions-combined-variables.Rmd", eval=FALSE}
+```{r combined-regions-combined-variables, child="03.3_combined-regions-combined-variables.Rmd"}
 ```

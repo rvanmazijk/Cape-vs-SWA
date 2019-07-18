@@ -47,7 +47,7 @@ models_R2 <- models %>%
 models_summary %<>% full_join(models_R2)
 ```
 
-```{r plot-sep-region-models-summary, fig.width=5, fig.height=6, fig.cap="Slope estimates of the six multiple linear regressions of (a) $S_{\\mathrm{HDS}}$, (b) $S_{\\mathrm{QDS}}$ and (c) $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ againt environmental heterogeneity variables. Each model was simplified using `olsrr::ols_step_all_possible()`. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
+```{r plot-sep-region-models-summary, fig.width=5, fig.height=6, fig.cap="Slope estimates of the six multiple linear regressions of (a) $S_{\\mathrm{HDS}}$, (b) $S_{\\mathrm{QDS}}$ and (c) $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ againt environmental heterogeneity variables. Each model was simplified using reverse stepwise regression model selection using $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
 models_summary_for_plot <- models_summary %>%
   separate(response, c("region", "scale", "response")) %>%
   unite(response, scale, response) %>%

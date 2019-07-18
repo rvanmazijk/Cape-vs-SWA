@@ -1,8 +1,9 @@
 ## 3.3. Combined-regions models with combinations of variables
 
-```{r}
-fit_combined_region_multivariate <- function(response,
-                                             rm_high_richness_pts = FALSE) {
+See Figure 6 and Table 8.
+
+```{r, fig.width=7, fig.height=6, fig.cap="Slope estimates of the three multiple linear regressions of (a) $S_{\\mathrm{HDS}}$, (b) $S_{\\mathrm{QDS}}$ and (c) $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ againt environmental heterogeneity variables interacting with region. Each model was simplified using reverse stepwise regression model selection using $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
+fit_combined_region_multivariate <- function(response) {
   stopifnot(exists("var_names"))
 
   dataset <- if (response == "QDS_richness") QDS else HDS
@@ -10,12 +11,12 @@ fit_combined_region_multivariate <- function(response,
   roughness_var_names <- var_names %>%
     str_replace_all(" ", ".") %>%
     paste0("_roughness") %>%
-    {c(., paste(., "*region"))}
+    {c(., paste(., "* region"))}
   roughness_formula <- paste(roughness_var_names, collapse = " + ")
   roughness_formula <- glue("{response} ~ {roughness_formula}")
   
   m <- lm(roughness_formula, dataset)
-  step(m, direction = "backwards")
+  step(m, direction = "backward", trace = 0)
 }
 
 m_HDS_richness      <- fit_combined_region_multivariate("HDS_richness")
@@ -26,19 +27,107 @@ m_HDS_richness$data      <- HDS
 m_QDS_richness$data      <- QDS
 m_add_turnover_prop$data <- HDS
 
-summary(m_HDS_richness)
-summary(m_QDS_richness)
-summary(m_add_turnover_prop)
+models <- list(m_HDS_richness, m_QDS_richness, m_add_turnover_prop)
+names(models) <- c("HDS_richness", "QDS_richness", "QDS_turnover")
 
-visreg::visreg(m_HDS_richness,
-  xvar    = "Elevation_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
+models_summary <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(term = str_remove_all(term, "_roughness"))
+models_R2 <- models %>%
+  map_df(.id = "response", glance) %>%
+  dplyr::select(response, adj.r.squared)
+models_summary %<>% full_join(models_R2)
 
-# WIP
+models_summary_for_plot <- models_summary %>%
+  mutate(
+    response = case_when(
+      response == "HDS_richness" ~ "(a)~~italic(S)[HDS]",
+      response == "QDS_richness" ~ "(b)~~italic(S)[QDS]",
+      response == "QDS_turnover" ~ "(c)~~italic(T)[QDS]/italic(S)[HDS]"
+    ),
+    term_type = ifelse(str_detect(term, "\\:regionSWAFR"),
+      "Interaction (SWAFR)", 
+      "Main"
+    ),
+    term = term %>%
+      str_replace_all("\\.", " ") %>%
+      str_remove_all(":regionSWAFR") %>%
+      factor(levels = c(var_names, "regionSWAFR")),
+    sig = case_when(
+      p.value < 0.05 ~ " ",
+      p.value < 0.10 ~ "AS",
+      TRUE           ~ "NS"
+    )
+  )
+ggplot(models_summary_for_plot) +
+  aes(term, estimate, fill = term_type, group = term_type) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(
+    shape = 21,
+    position = position_dodge(width = 0.25)
+  ) +
+  geom_text(aes(label = sig), nudge_x = 0.375, size = 3) +
+  labs(x = "Heterogeneity predictor", y = "Slope") +
+  scale_fill_manual(name = "Effect type", values = c("white", "black")) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  theme(
+    axis.text.x  = element_text(angle = 90, hjust = 1),
+    strip.text.x = element_text(angle =  0, hjust = 0)
+  )
 ```
+
+\clearpage
+
+```{r}
+models_summary_printable <- models_summary %>%
+  dplyr::select(response, term, estimate, p.value, adj.r.squared) %>%
+  mutate_at(c("estimate", "adj.r.squared"),
+    ~format(round(.x, 2), nsmall = 2)
+  ) %>%
+  mutate(sig = case_when(
+    p.value < 0.001 ~ "***",
+    p.value < 0.010 ~ "**",
+    p.value < 0.050 ~ "*",
+    p.value < 0.100 ~ ".",
+    TRUE            ~ " "
+  )) %>%
+  dplyr::select(response, adj.r.squared, term, estimate, sig)
+replace_if_repeat <- function(x, r = " ") {
+  for (i in 2:length(x)) {
+    if (x[[i]] %in% x[1:(i - 1)]) {
+      x[[i]] <- r
+    }
+  }
+  x
+}
+models_summary_printable$response      %<>% replace_if_repeat()
+models_summary_printable$adj.r.squared %<>% replace_if_repeat()
+knitr::kable(models_summary_printable,
+  caption = paste(
+    "See Figure 6.",
+    "Significance is denoted with asterisks as follows:",
+    "\"\\*\\*\\*\", $P < 0.001$;",
+    "\"\\*\\*\", $0.001 < P < 0.01$;",
+    "\"\\*\", $0.01 < P < 0.05$;",
+    "\".\", $0.05 < P < 0.1$;
+    and non-significant results ($P \\geq 0.1$) being left blank."
+  ),
+  col.names = c(
+    "Response", "${R^2}_{adj}$",
+    "Heterogeneity predictor", "Slope", " "
+  ),
+  align = "lllrl"
+)
+```
+
+<!-- Junk/WIP figures -->
 
 ```{r}
 knitr::opts_chunk$set(eval = FALSE)
