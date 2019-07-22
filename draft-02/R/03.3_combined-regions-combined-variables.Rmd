@@ -127,6 +127,64 @@ knitr::kable(models_summary_printable,
 )
 ```
 
+Try removing some predictors that are not significant?
+
+```{r}
+remove_predictors <- function(m, ...) {
+  to_remove <- c(...)
+  old_coeff <- m %$%
+    coefficients %>%
+    names() %>%
+    sort()
+  stopifnot(all(to_remove %in% old_coeff))
+  n_coeff <- length(old_coeff)
+  coeff_nos <- format(1:n_coeff, justify = "right")
+  old_coeff %<>%
+    {glue("  {coeff_nos}. {.}")} %>%
+    paste(collapse = "\n")
+  message(glue(
+    "Model has coefficients:
+    {old_coeff}"
+  ))
+  response <- colnames(models$HDS_richness$model)[[1]]
+  data <- if (response == "QDS_richness") QDS else HDS
+  to_remove %<>%
+    {paste("-", .)} %>%
+    paste(collapse = " ")
+  message(glue(
+    "Removing coefficients:
+    {to_remove}"
+  ))
+  print(glue(". ~ . {to_remove}"))
+  update(m,
+    formula = glue(". ~ . {to_remove}"),
+    data    = data
+  )
+}
+
+compare_models_wawo <- function(m, ...) {
+  # Compare models With And WithOut (WAWO) some variables w/ AIC
+  AIC(m, remove_predictors(m, ...))
+}
+```
+
+Try removing elevational roughness & its interaction with region from the $S_{\mathrm{HDS}}$-model:
+
+```{r}
+compare_models_wawo(models$HDS_richness,
+  "Elevation_roughness",
+  "Elevation_roughness:regionSWAFR"
+)
+compare_models_wawo(models$HDS_richness,
+  "CEC_roughness",
+  "CEC_roughness:regionSWAFR"
+)
+compare_models_wawo(models$HDS_richness,
+  "Soil.C_roughness",
+  "Soil.C_roughness:regionSWAFR"
+)
+```
+
 <!-- Junk/WIP figures -->
 
 ```{r}
