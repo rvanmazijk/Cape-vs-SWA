@@ -130,21 +130,18 @@ knitr::kable(models_summary_printable,
 Try removing some predictors that are not significant?
 
 ```{r}
-remove_predictors <- function(m, pred_to_remove) {
-  stopifnot(length(pred_to_remove) == 1)
-  
+remove_predictor <- function(m, pred) {
   response <- colnames(m$model)[[1]]
   data <- if (response == "QDS_richness") QDS else HDS
-
   update(m,
-    formula = glue(". ~ . -{pred_to_remove}*region"),
+    formula = glue(". ~ . -{pred}*region"),
     data    = data
   )
 }
-
-compare_models_wawo <- function(m, pred_to_remove) {
+compare_models_wawo <- function(m, pred) {
   # Compare models With And WithOut (WAWO) some variables w/ AIC
-  AIC(m, remove_predictors(m, pred_to_remove))
+  AIC(m, remove_predictor(m, pred)) %>%
+    mutate(Delta_AIC = AIC - min(AIC))
 }
 ```
 
