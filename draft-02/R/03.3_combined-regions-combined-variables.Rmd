@@ -31,6 +31,8 @@ models <- list(m_HDS_richness, m_QDS_richness, m_add_turnover_prop)
 names(models) <- c("HDS_richness", "QDS_richness", "QDS_turnover")
 ```
 
+\clearpage
+
 ### Manual model simplification
 
 Try removing interaction terms from the $S_{\mathrm{HDS}}$-model:
@@ -59,28 +61,25 @@ sans_all <- update(
     "-CEC_roughness:region",
     "-Soil.C_roughness:region"
   ),
-  data    = HDS
+  data = HDS
 )
 AIC(step_model, sans_elev, sans_CEC, sans_soilC, sans_all) %>%
-  mutate(
+  transmute(
     Delta_AIC     = AIC - min(AIC),
     relative_L    = exp(-0.5 * Delta_AIC),
     Akaike_weight = relative_L / sum(relative_L)
   ) %>%
+  mutate_if(is.numeric, round, 2) %>%
   set_rownames(c(
     "`step(model)`",
-    "Sans $Elevation_{R}:Region$",
-    "Sans $CEC_{R}:Region$",
-    "Sans $Soil~C_{R}:Region$",
+    "Sans Elevation:Region",
+    "Sans CEC:Region",
+    "Sans Soil C:Region",
     "Sans all 3"
   )) %>%
   knitr::kable(
-    caption   = "...",
     row.names = TRUE,
-    col.names = c(
-      "$k$","$AIC$", "$\\Delta AIC$",
-      "Relative $L$", "$w_{\\mathrm{Akaike}}$"
-    )
+    col.names = c("$\\Delta AIC$", "Relative $L$", "$w_{\\mathrm{Akaike}}$")
   )
 ```
 
@@ -116,30 +115,27 @@ sans_all <- update(
     "-CEC_roughness:region",
     "-Soil.C_roughness:region"
   ),
-  data    = HDS
+  data = HDS
 )
 
 AIC(step_model, sans_PDQ, sans_surfT, sans_CEC, sans_soilC, sans_all) %>%
-  mutate(
+  transmute(
     Delta_AIC     = AIC - min(AIC),
     relative_L    = exp(-0.5 * Delta_AIC),
     Akaike_weight = relative_L / sum(relative_L)
   ) %>%
+  mutate_if(is.numeric, round, 2) %>%
   set_rownames(c(
     "`step(model)`",
-    "Sans $PDQ_{R}:Region$",
-    "Sans $Surface~T_{R}:Region$",
-    "Sans $CEC_{R}:Region$",
-    "Sans $Soil~C_{R}:Region$",
-    "Sans all 3"
+    "Sans PDQ:Region",
+    "Sans Surface T:Region",
+    "Sans CEC:Region",
+    "Sans Soil C~:Region",
+    "Sans all 4"
   )) %>%
   knitr::kable(
-    caption   = "...",
     row.names = TRUE,
-    col.names = c(
-      "$k$","$AIC$", "$\\Delta AIC$",
-      "Relative $L$", "$w_{\\mathrm{Akaike}}$"
-    )
+    col.names = c("$\\Delta AIC$", "Relative $L$", "$w_{\\mathrm{Akaike}}$")
   )
 ```
 
@@ -166,12 +162,14 @@ reparameterise <- function(m) {
   )
 }
 # Test
-a <- models$HDS_richness
-b <- reparameterise(models$HDS_richness)
-AIC(a, b) # same model! :)
+#a <- models$HDS_richness
+#b <- reparameterise(models$HDS_richness)
+#AIC(a, b) # same model! :)
 
 models %<>% map(reparameterise)
 ```
+
+\clearpage
 
 ```{r summarise-combined-region-multivariate-models}
 models_summary <- models %>%
