@@ -30,6 +30,34 @@ m_add_turnover_prop$data <- HDS
 models <- list(m_HDS_richness, m_QDS_richness, m_add_turnover_prop)
 names(models) <- c("HDS_richness", "QDS_richness", "QDS_turnover")
 
+# Reparameterise models to {*}:regionGCFR & {*}:regionSWAFR
+# a.o.t. {*}*region, so that the figure of the effects actually represents
+# each region, not the baseline (GCFR) and "relative SWAFR"
+# (and that would cause inconsistencies too when their is no interaction with
+# region term for a roughness variable).
+reparameterise <- function(m) {
+  response <- colnames(m$model)[[1]]
+  data <- if (response == "QDS_richness") QDS else HDS
+  preds_w_interactions <- m %$%
+    coefficients %>%
+    names() %>%
+    magrittr::extract(str_which(., ":regionSWAFR"))
+  reparameterisation <- preds_w_interactions %<>%
+    str_remove(":regionSWAFR") %>%
+    {glue("-{.}")} %>%
+    paste(collapse = " ")
+  update(m,
+    formula = glue(". ~ . {reparameterisation}"),
+    data    = data
+  )
+}
+# Test
+a <- models$HDS_richness
+b <- reparameterise(models$HDS_richness)
+AIC(a, b) # same model! :)
+
+models %<>% map(reparameterise)
+
 models_summary <- models %>%
   map_df(.id = "response", tidy, conf.int = TRUE) %>%
   dplyr::select(-std.error, -statistic) %>%
@@ -47,13 +75,17 @@ models_summary_for_plot <- models_summary %>%
       response == "QDS_richness" ~ "(b)~~italic(S)[QDS]",
       response == "QDS_turnover" ~ "(c)~~italic(T)[QDS]/italic(S)[HDS]"
     ),
-    term_type = ifelse(str_detect(term, "\\:regionSWAFR"),
-      "Interaction (SWAFR)", 
-      "Main"
-    ),
+    region = 
+      case_when(
+        str_detect(term, "regionSWAFR") ~ "SWAFR", 
+        str_detect(term, "regionGCFR")  ~ "GCFR",
+        TRUE                             ~ "Main effect only"
+      ) %>%
+      factor(levels = c("Main effect only", "GCFR", "SWAFR")),
     term = term %>%
       str_replace_all("\\.", " ") %>%
-      str_remove_all(":regionSWAFR") %>%
+      str_remove_all("regionSWAFR:") %>%
+      str_remove_all("regionGCFR:") %>%
       factor(levels = c(var_names, "regionSWAFR")),
     sig = case_when(
       p.value < 0.05 ~ " ",
@@ -62,7 +94,7 @@ models_summary_for_plot <- models_summary %>%
     )
   )
 ggplot(models_summary_for_plot) +
-  aes(term, estimate, fill = term_type, group = term_type) +
+  aes(term, estimate, fill = region, group = region) +
   geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
   geom_errorbar(
     aes(ymin = conf.low, ymax = conf.high),
@@ -75,7 +107,7 @@ ggplot(models_summary_for_plot) +
   ) +
   geom_text(aes(label = sig), nudge_x = 0.375, size = 3) +
   labs(x = "Heterogeneity predictor", y = "Slope") +
-  scale_fill_manual(name = "Effect type", values = c("white", "black")) +
+  scale_fill_manual(name = "Effect type", values = c("grey", "black", "white")) +
   facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
   theme(
     axis.text.x  = element_text(angle = 90, hjust = 1),
@@ -155,7 +187,7 @@ compare_models_wawo(models$HDS_richness, "Soil.C_roughness")
 
 Try removing terms & their interactions with region from the $S_{\mathrm{QDS}}$-model:
 
-_NA; all are signficant_
+> _NA as all are signficant_
 
 Try removing terms & their interactions with region from the $T_{\mathrm{QDS}}/S_{\mathrm{HDS}}$-model:
 
