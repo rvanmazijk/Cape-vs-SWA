@@ -130,7 +130,7 @@ AIC(step_model, sans_PDQ, sans_surfT, sans_CEC, sans_soilC, sans_all) %>%
     "Sans PDQ:Region",
     "Sans Surface T:Region",
     "Sans CEC:Region",
-    "Sans Soil C~:Region",
+    "Sans Soil C:Region",
     "Sans all 4"
   )) %>%
   knitr::kable(
@@ -165,7 +165,6 @@ reparameterise <- function(m) {
 #a <- models$HDS_richness
 #b <- reparameterise(models$HDS_richness)
 #AIC(a, b) # same model! :)
-
 models %<>% map(reparameterise)
 ```
 
@@ -265,7 +264,10 @@ ggplot(models_summary_for_plot) +
   ) +
   geom_text(aes(label = sig), nudge_x = 0.375, size = 3) +
   labs(x = "Heterogeneity predictor", y = "Slope") +
-  scale_fill_manual(name = "Effect type", values = c("grey", "black", "white")) +
+  scale_fill_manual(
+    name   = "Effect type",
+    values = c("grey50", "black", "white")
+  ) +
   facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
   theme(
     axis.text.x  = element_text(angle = 90, hjust = 1),
