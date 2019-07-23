@@ -1,6 +1,6 @@
 ## 3.3. Combined-regions models with combinations of variables
 
-See Figure 6 and Table 8.
+See Figure 6 and Table 10.
 
 ```{r fit-combined-region-multivariate-models}
 fit_combined_region_multivariate <- function(response) {
