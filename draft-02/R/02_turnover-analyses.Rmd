@@ -22,6 +22,15 @@ QDS <- read_csv(here("draft-02/outputs/EDS_data_cells.csv"))
 HDS %<>% filter(n_QDS == 4)
 QDS %<>% filter(n_EDS == 4)
 
+# log(x + 1) & scale roughness values to match PCAs were done on logged data
+# (See section 3)
+HDS[, str_which(names(HDS), "roughness")] %<>%
+  log1p() %>%
+  scale()
+QDS[, str_which(names(QDS), "roughness")] %<>%
+  log1p() %>%
+  scale()
+
 # Combine datasets for figure
 HDS_QDS <- as_tibble(rbind(
   HDS %>%

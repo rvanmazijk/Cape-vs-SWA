@@ -19,124 +19,14 @@ fit_combined_region_multivariate <- function(response) {
   step(m, direction = "backward", trace = 0)
 }
 
-m_HDS_richness      <- fit_combined_region_multivariate("HDS_richness")
-m_QDS_richness      <- fit_combined_region_multivariate("QDS_richness")
-m_add_turnover_prop <- fit_combined_region_multivariate("add_turnover_prop")
+m_HDS_richness <- fit_combined_region_multivariate("HDS_richness")
+m_QDS_richness <- fit_combined_region_multivariate("QDS_richness")
 
-m_HDS_richness$data      <- HDS
-m_QDS_richness$data      <- QDS
-m_add_turnover_prop$data <- HDS
+m_HDS_richness$data <- HDS
+m_QDS_richness$data <- QDS
 
-models <- list(m_HDS_richness, m_QDS_richness, m_add_turnover_prop)
-names(models) <- c("HDS_richness", "QDS_richness", "QDS_turnover")
-```
-
-\clearpage
-
-### Manual model simplification
-
-Try removing interaction terms from the $S_{\mathrm{HDS}}$-model:
-
-```{r simplify-HDS-richness-model}
-step_model <- models$HDS_richness
-sans_elev <- update(
-  models$HDS_richness,
-  formula = ". ~ . -Elevation_roughness:region",
-  data    = HDS
-)
-sans_CEC <- update(
-  models$HDS_richness,
-  formula = ". ~ . -CEC_roughness:region",
-  data    = HDS
-)
-sans_soilC <- update(
-  models$HDS_richness,
-  formula = ". ~ . -Soil.C_roughness:region",
-  data    = HDS
-)
-sans_all <- update(
-  models$HDS_richness,
-  formula = paste(". ~ .",
-    "-Elevation_roughness:region",
-    "-CEC_roughness:region",
-    "-Soil.C_roughness:region"
-  ),
-  data = HDS
-)
-AIC(step_model, sans_elev, sans_CEC, sans_soilC, sans_all) %>%
-  transmute(
-    Delta_AIC     = AIC - min(AIC),
-    relative_L    = exp(-0.5 * Delta_AIC),
-    Akaike_weight = relative_L / sum(relative_L)
-  ) %>%
-  mutate_if(is.numeric, round, 2) %>%
-  set_rownames(c(
-    "`step(model)`",
-    "Sans Elevation:Region",
-    "Sans CEC:Region",
-    "Sans Soil C:Region",
-    "Sans all 3"
-  )) %>%
-  knitr::kable(
-    row.names = TRUE,
-    col.names = c("$\\Delta AIC$", "Relative $L$", "$w_{\\mathrm{Akaike}}$")
-  )
-```
-
-Try removing terms & their interactions with region from the $T_{\mathrm{QDS}}/S_{\mathrm{HDS}}$-model:
-
-```{r simplify-QDS-turnover-model}
-step_model <- models$QDS_turnover
-sans_PDQ <- update(
-  models$QDS_turnover,
-  formula = ". ~ . -PDQ_roughness:region",
-  data    = HDS
-)
-sans_surfT <- update(
-  models$QDS_turnover,
-  formula = ". ~ . -Surface.T_roughness:region",
-  data    = HDS
-)
-sans_CEC <- update(
-  models$QDS_turnover,
-  formula = ". ~ . -CEC_roughness:region",
-  data    = HDS
-)
-sans_soilC <- update(
-  models$QDS_turnover,
-  formula = ". ~ . -Soil.C_roughness:region",
-  data    = HDS
-)
-sans_all <- update(
-  models$QDS_turnover,
-  formula = paste(". ~ .",
-    "-PDQ_roughness:region",
-    "-Surface.T_roughness:region",
-    "-CEC_roughness:region",
-    "-Soil.C_roughness:region"
-  ),
-  data = HDS
-)
-
-AIC(step_model, sans_PDQ, sans_surfT, sans_CEC, sans_soilC, sans_all) %>%
-  transmute(
-    Delta_AIC     = AIC - min(AIC),
-    relative_L    = exp(-0.5 * Delta_AIC),
-    Akaike_weight = relative_L / sum(relative_L)
-  ) %>%
-  mutate_if(is.numeric, round, 2) %>%
-  set_rownames(c(
-    "`step(model)`",
-    "Sans PDQ:Region",
-    "Sans Surface T:Region",
-    "Sans CEC:Region",
-    "Sans Soil C:Region",
-    "Sans all 4"
-  )) %>%
-  knitr::kable(
-    row.names = TRUE,
-    col.names = c("$\\Delta AIC$", "Relative $L$", "$w_{\\mathrm{Akaike}}$")
-  )
+models <- list(m_HDS_richness, m_QDS_richness)
+names(models) <- c("HDS_richness", "QDS_richness")
 ```
 
 ```{r reparamaterise-models}
@@ -224,7 +114,7 @@ knitr::kable(models_summary_printable,
 )
 ```
 
-```{r plot-combined-region-multivariate-models, fig.width=7, fig.height=6, fig.cap="Slope estimates of the three multiple linear regressions of (a) $S_{\\mathrm{HDS}}$, (b) $S_{\\mathrm{QDS}}$ and (c) $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ againt environmental heterogeneity variables interacting with region. Each model was simplified using reverse stepwise regression model selection using $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
+```{r plot-combined-region-multivariate-models, fig.width=7, fig.height=6, fig.cap="Slope estimates of the three multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ againt environmental heterogeneity variables interacting with region. Each model was simplified using reverse stepwise regression model selection using $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
