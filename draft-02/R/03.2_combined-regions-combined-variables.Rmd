@@ -1,4 +1,4 @@
-## 3.3. Combined-regions models with combinations of variables
+## 3.2. Combined-regions models with combinations of variables
 
 See Figure 6 and Table 10.
 
