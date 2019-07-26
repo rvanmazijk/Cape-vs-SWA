@@ -122,25 +122,43 @@ models_summary_printable <- models_summary %>%
     )
   ) %>%
   dplyr::select(response, term, estimate, sig)
-replace_if_repeat <- function(x, r = " ") {
-  for (i in 2:length(x)) {
-    if (x[[i]] %in% x[1:(i - 1)]) {
-      x[[i]] <- r
-    }
-  }
-  x
-}
-models_summary_printable$response      %<>% replace_if_repeat()
-knitr::kable(models_summary_printable,
-  caption = paste(
-    "Significance is denoted with asterisks as follows:",
-    "\"\\*\\*\\*\", $P < 0.001$;",
-    "\"\\*\\*\", $0.001 < P < 0.01$;",
-    "\"\\*\", $0.01 < P < 0.05$;",
-    "\".\", $0.05 < P < 0.1$;
-    and non-significant results ($P \\geq 0.1$) being left blank."
-  ),
-  col.names = c("Response", "Heterogeneity predictor", "Slope", " "),
-  align = "llrl"
-)
+```
+
+```{r}
+models_summary_printable %>%
+  filter(response == "$S_{\\mathrm{HDS}}$") %>%
+  dplyr::select(-response) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of multiple simple linear regressions of $S_{\\mathrm{HDS}}$",
+      "against environmental heterogeneity variables. Significance is denoted",
+      "with asterisks as follows:",
+      "\"\\*\\*\\*\", $P < 0.001$;",
+      "\"\\*\\*\", $0.001 < P < 0.01$;",
+      "\"\\*\", $0.01 < P < 0.05$;",
+      "\".\", $0.05 < P < 0.1$;
+      and non-significant results ($P \\geq 0.1$) being left blank."
+    ),
+    col.names = c("Heterogeneity predictor", "Slope", " "),
+    align = "lrl"
+  )
+```
+
+```{r}
+models_summary_printable %>%
+  filter(response == "$S_{\\mathrm{QDS}}$") %>%
+  dplyr::select(-response) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of multiple simple linear regressions of $S_{\\mathrm{QDS}}$",
+      "against environmental heterogeneity variables. Significance is denoted",
+      "\"\\*\\*\\*\", $P < 0.001$;",
+      "\"\\*\\*\", $0.001 < P < 0.01$;",
+      "\"\\*\", $0.01 < P < 0.05$;",
+      "\".\", $0.05 < P < 0.1$;
+      and non-significant results ($P \\geq 0.1$) being left blank."
+    ),
+    col.names = c("Heterogeneity predictor", "Slope", " "),
+    align = "lrl"
+  )
 ```

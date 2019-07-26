@@ -1,5 +1,7 @@
 ## 3.2. Combined-regions models with combinations of variables
 
+See Figures 6 and 7.
+
 ```{r fit-combined-region-multivariate-models}
 roughness_var_names <- var_names %>%
   str_replace_all(" ", ".") %>%
@@ -122,7 +124,7 @@ ggplot(models_summary_for_plot) +
   )
 ```
 
-```{r map-combined-region-multivariate-model-residuals, fig.width=6, fig.height=5, fig.cap="..."}
+```{r map-combined-region-multivariate-model-residuals, fig.width=6, fig.height=5, fig.cap="Residuals from the models in Figure 5, mapped geographically."}
 HDS$multivariate_model_residual <- residuals(m_HDS_richness)
 HDS$multivariate_model_fit      <- fitted.values(m_HDS_richness)
 
