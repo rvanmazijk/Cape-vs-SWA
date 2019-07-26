@@ -1,0 +1,63 @@
+\clearpage
+
+# Appendix {-}
+
+```{r}
+compare_combined_region_models_APPENDIX(combined_region_HDS_models)
+```
+
+\clearpage
+
+```{r}
+compare_combined_region_models_APPENDIX(combined_region_QDS_models)
+```
+
+\clearpage
+
+```{r}
+models_summary_printable <- models_summary %>%
+  dplyr::select(response, term, estimate, p.value, adj.r.squared) %>%
+  mutate_at(c("estimate", "adj.r.squared"),
+    ~format(round(.x, 2), nsmall = 2)
+  ) %>%
+  mutate(
+    response = case_when(
+      response == "HDS_richness" ~ "$S_{\\mathrm{HDS}}$",
+      response == "QDS_richness" ~ "$S_{\\mathrm{QDS}}$"
+    ),
+    sig = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.010 ~ "**",
+      p.value < 0.050 ~ "*",
+      p.value < 0.100 ~ ".",
+      TRUE            ~ " "
+    )
+  ) %>%
+  dplyr::select(response, adj.r.squared, term, estimate, sig)
+replace_if_repeat <- function(x, r = " ") {
+  for (i in 2:length(x)) {
+    if (x[[i]] %in% x[1:(i - 1)]) {
+      x[[i]] <- r
+    }
+  }
+  x
+}
+models_summary_printable$response      %<>% replace_if_repeat()
+models_summary_printable$adj.r.squared %<>% replace_if_repeat()
+knitr::kable(models_summary_printable,
+  caption = paste(
+    "[FOR APPENDIX]",
+    "Significance is denoted with asterisks as follows:",
+    "\"\\*\\*\\*\", $P < 0.001$;",
+    "\"\\*\\*\", $0.001 < P < 0.01$;",
+    "\"\\*\", $0.01 < P < 0.05$;",
+    "\".\", $0.05 < P < 0.1$;
+    and non-significant results ($P \\geq 0.1$) being left blank."
+  ),
+  col.names = c(
+    "Response", "${R^2}_{adj}$",
+    "Heterogeneity predictor", "Slope", " "
+  ),
+  align = "lllrl"
+)
+```

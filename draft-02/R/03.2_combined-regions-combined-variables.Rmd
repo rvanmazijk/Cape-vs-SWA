@@ -44,8 +44,6 @@ m_HDS_richness %<>% reparameterise()
 m_QDS_richness %<>% reparameterise()
 ```
 
-\clearpage
-
 ```{r summarise-combined-region-multivariate-models}
 models <- list(
   HDS_richness = m_HDS_richness,
@@ -62,52 +60,6 @@ models_R2 <- models %>%
   dplyr::select(response, adj.r.squared)
 
 models_summary %<>% full_join(models_R2)
-
-models_summary_printable <- models_summary %>%
-  dplyr::select(response, term, estimate, p.value, adj.r.squared) %>%
-  mutate_at(c("estimate", "adj.r.squared"),
-    ~format(round(.x, 2), nsmall = 2)
-  ) %>%
-  mutate(
-    response = case_when(
-      response == "HDS_richness" ~ "$S_{\\mathrm{HDS}}$",
-      response == "QDS_richness" ~ "$S_{\\mathrm{QDS}}$"
-    ),
-    sig = case_when(
-      p.value < 0.001 ~ "***",
-      p.value < 0.010 ~ "**",
-      p.value < 0.050 ~ "*",
-      p.value < 0.100 ~ ".",
-      TRUE            ~ " "
-    )
-  ) %>%
-  dplyr::select(response, adj.r.squared, term, estimate, sig)
-replace_if_repeat <- function(x, r = " ") {
-  for (i in 2:length(x)) {
-    if (x[[i]] %in% x[1:(i - 1)]) {
-      x[[i]] <- r
-    }
-  }
-  x
-}
-models_summary_printable$response      %<>% replace_if_repeat()
-models_summary_printable$adj.r.squared %<>% replace_if_repeat()
-knitr::kable(models_summary_printable,
-  caption = paste(
-    "[FOR APPENDIX]",
-    "Significance is denoted with asterisks as follows:",
-    "\"\\*\\*\\*\", $P < 0.001$;",
-    "\"\\*\\*\", $0.001 < P < 0.01$;",
-    "\"\\*\", $0.01 < P < 0.05$;",
-    "\".\", $0.05 < P < 0.1$;
-    and non-significant results ($P \\geq 0.1$) being left blank."
-  ),
-  col.names = c(
-    "Response", "${R^2}_{adj}$",
-    "Heterogeneity predictor", "Slope", " "
-  ),
-  align = "lllrl"
-)
 ```
 
 ```{r plot-combined-region-multivariate-models, fig.width=6, fig.height=4, fig.cap="Slope estimates of the multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ againt environmental heterogeneity variables for the combined-region dataset. Each model was simplified, from a starting model with all predictors and their interactions with region, using reverse stepwise regression model selection based on $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. Estimates illustrated in black were significant ($P < 0.05$), while those in grey were not."}
