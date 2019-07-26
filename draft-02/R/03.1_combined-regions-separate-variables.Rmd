@@ -354,3 +354,60 @@ HDS_QDS %>%
       strip.text        = element_text(hjust = 0)
     )
 ```
+
+```{r explore-combined-region-PC1-model-residuals, eval=FALSE}
+HDS$PC1_model_residual <- combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  residuals()
+HDS$PC1_model_fit <- combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  fitted.values()
+
+QDS$PC1_model_residual <- combined_region_QDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  residuals()
+QDS$PC1_model_fit <- combined_region_QDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  fitted.values()
+
+ggplot(HDS, aes(HDS_richness, PC1_model_fit, colour = region)) +
+  geom_abline(
+    slope = 1, intercept = 0,
+    linetype = "dashed", colour = "grey75"
+  ) +
+  geom_point() +
+  lims(x = c(0, 3100), y = c(0, 3100))
+
+ggplot(HDS, aes(PC1_model_fit, PC1_model_residual)) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_point()
+
+ggplot(HDS, aes(lon, lat, fill = PC1_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  scale_fill_viridis_c()
+
+ggplot(QDS, aes(lon, lat, fill = PC1_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  scale_fill_viridis_c()
+
+
+op <- par()
+par(mfrow = c(2, 2))
+combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  plot()
+par(op)
+
+```

@@ -106,7 +106,7 @@ knitr::kable(models_summary_printable,
 )
 ```
 
-```{r plot-combined-region-multivariate-models, fig.width=7, fig.height=6, fig.cap="Slope estimates of the three multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ againt environmental heterogeneity variables interacting with region. Each model was simplified using reverse stepwise regression model selection using $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
+```{r plot-combined-region-multivariate-models, fig.width=6, fig.height=4, fig.cap="Slope estimates of the three multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ againt environmental heterogeneity variables interacting with region. Each model was simplified using reverse stepwise regression model selection using $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. All estimates were significant ($P < 0.05$) unless otherwise stated ($0.10 > P > 0.05$, almost significant, \"AS\"; $P > 0.05$, not significant, \"NS\")."}
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
@@ -125,32 +125,36 @@ models_summary_for_plot <- models_summary %>%
       str_replace_all("\\.", " ") %>%
       str_remove_all("regionSWAFR:") %>%
       str_remove_all("regionGCFR:") %>%
-      factor(levels = c(var_names, "regionSWAFR")),
-    sig = case_when(
-      p.value < 0.05 ~ " ",
-      p.value < 0.10 ~ "AS",
-      TRUE           ~ "NS"
-    )
+      str_replace_all("regionSWAFR", "SWAFR") %>%
+      factor(levels = c(var_names, "SWAFR")),
+    sig = (p.value < 0.05)
   )
 ggplot(models_summary_for_plot) +
-  aes(term, estimate, fill = region, group = region) +
+  aes(
+    term, estimate,
+    fill = region, group = region, shape = region,
+    alpha = sig
+  ) +
   geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
   geom_errorbar(
     aes(ymin = conf.low, ymax = conf.high),
     position = position_dodge(width = 0.25),
     width = 0
   ) +
-  geom_point(
-    shape = 21,
-    position = position_dodge(width = 0.25)
-  ) +
-  geom_text(aes(label = sig), nudge_x = 0.375, size = 3) +
-  labs(x = "Heterogeneity predictor", y = "Slope") +
-  scale_fill_manual(
-    name   = "Effect type",
-    values = c("grey50", "black", "white")
-  ) +
+  geom_point(position = position_dodge(width = 0.25)) +
+  labs(x = "Term", y = "Slope") +
+  scale_fill_manual(values = c(NA, "black", "white")) +
+  scale_shape_manual(values = c(4, 21, 21)) +
+  scale_alpha_manual(values = c(0.25, 1)) +
   facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  guides(
+    fill = FALSE,
+    shape = guide_legend(
+      title = "Effect type",
+      override.aes = list(fill = c(NA, "black", "white"))
+    ), 
+    alpha = FALSE
+  ) +
   theme(
     axis.text.x  = element_text(angle = 90, hjust = 1),
     strip.text.x = element_text(angle =  0, hjust = 0)
