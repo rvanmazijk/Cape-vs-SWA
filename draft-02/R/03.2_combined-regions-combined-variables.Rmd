@@ -62,7 +62,12 @@ models_R2 <- models %>%
 models_summary %<>% full_join(models_R2)
 ```
 
-```{r plot-combined-region-multivariate-models, fig.width=6, fig.height=4, fig.cap="Slope estimates of the multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ againt environmental heterogeneity variables for the combined-region dataset. Each model was simplified, from a starting model with all predictors and their interactions with region, using reverse stepwise regression model selection based on $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. Estimates illustrated in black were significant ($P < 0.05$), while those in grey were not."}
+```{r look-at-combined-region-multivariate-models-adj-r-squareds, include=FALSE}
+glance(m_HDS_richness)
+glance(m_QDS_richness)
+```
+
+```{r plot-combined-region-multivariate-models, fig.width=6, fig.height=4, fig.cap="Slope estimates of the multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ (${R^2}_{adj} = 0.54$) and (b) $S_{\\mathrm{QDS}}$ (${R^2}_{adj} = 0.34$) againt environmental heterogeneity variables for the combined-region dataset. Each model was simplified, from a starting model with all predictors and their interactions with region, using reverse stepwise regression model selection based on $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. Estimates illustrated in black were significant ($P < 0.05$), while those in grey were not."}
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(

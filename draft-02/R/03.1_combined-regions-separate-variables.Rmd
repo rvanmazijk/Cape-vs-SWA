@@ -280,7 +280,29 @@ check_region_effects_all_same(combined_region_QDS_models)
 compare_combined_region_models_SUMMARY(combined_region_QDS_models)
 ```
 
-```{r plot-combined-region-PC1-models, fig.width=6, fig.height=3, fig.cap="Fits of simple linear regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ against each respective scale's PC1 scores for the combined-region dataset. These models are described in the last rows of Tables 4 and 5 respectively. Grey bands denote 95% confidence intervals."}
+```{r import-cellular-PCA-results, include=FALSE}
+QDS_PCA <- read_rds(here("draft-02/outputs/EDS_roughness_cells_PCA.RDS"))
+HDS_PCA <- read_rds(here("draft-02/outputs/QDS_roughness_cells_PCA.RDS"))
+summary(QDS_PCA)$importance[2, 1]
+summary(HDS_PCA)$importance[2, 1]
+```
+
+```{r look-at-combined-region-PC1-model-r-squareds, include=FALSE}
+combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  glance() %>%
+  pull(r.squared)
+combined_region_QDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  glance() %>%
+  pull(r.squared)
+```
+
+```{r plot-combined-region-PC1-models, fig.width=6, fig.height=3, fig.cap="Fits of simple linear regressions of (a) $S_{\\mathrm{HDS}}$ ($R^2 = 0.23$) and (b) $S_{\\mathrm{QDS}}$ ($R^2 = 0.15$) against each respective scale's PC1 scores for the combined-region dataset. These models are described in the last rows of Tables 4 and 5 respectively. Grey bands denote 95% confidence intervals. PC1 at the QDS-scale explained 39.86% of the variation in environmental heterogeneity. PC1 at the HDS-scale explained 41.55% of the variation in environmental heterogeneity."}
 translucent_white <- rgb(1, 1, 1, 0.5)
 HDS_QDS %>%
   filter(metric %in% c("HDS_richness", "QDS_richness")) %>%
