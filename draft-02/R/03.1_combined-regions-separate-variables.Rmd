@@ -2,7 +2,7 @@
 
 Tables 5--7 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of each of the three response variables ($S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ respectively). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
 
-For $S_{\mathrm{HDS}}$ (Table 5), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
+For $S_{\mathrm{HDS}}$ (Table 4), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
 
 - If there is no need for any information concerning the region a cell belongs to, then the environmental roughness "rule" is followed well across the two regions in a similar way.
 - If the region-effect is significant, but not the roughness effect, then that roughness axis isn't doing a very good job of explaining anything, and must defer to the region-effect.
@@ -11,9 +11,9 @@ For $S_{\mathrm{HDS}}$ (Table 5), there is evidence for a great difference in th
 
 <!--
 At the QDS-scale, concerning $S_{\mathrm{QDS}}$ (Table 6), it is noteworthy that all axes best-supported to have an additive region term only also had non-significant roughness-effects [expand?].
-
-In Tables 5--7, I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ and $S_{\mathrm{QDS}}$, but had a highly interaction with region in regressions of $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$. The fits of the common regression of $S_{\mathrm{HDS}}$ against PC1 and the interaction regression of $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ against PC1 are shown in Figure 4. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR). When it comes to drivers of turnover, though, the rules change. The portion of HDS-scale species richness attributed to species turnover is invariant (Slope = 0.00; Table 7) with environmental heterogeneity (PC1). Meanwhile, in the SWAFR, the portion attributed to turnover is greater in areas of lesser environmental heterogeneity (PC1). This is perplexing... [expand]. [It should be noted that the slope of the SWAFR fit in Figure 4b is only -0.02 (Table 7). Is this biologically significant, in spite of its statistical significance?]
 -->
+
+In Tables 4 and 5, I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ (also see Figure 4) and $S_{\mathrm{QDS}}$. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
 
 It is worth noting that PC1 is representatve of (ca. 45% of) the multivariate trends of species richness and turnover versus environmental heterogeneity. Some of the individual roughness variables show similar trends, some not, and to varying extents [expand].
 
@@ -444,40 +444,39 @@ plot_grid(
 
 -->
 
-```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6, fig.cap="The fits of (a) the common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 5) and (b) the interaction regression of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ against PC1 (Table 7). Grey bands denote 95% confidence intervals. In (b) two fits are shown: one for the baseline (GCFR) and one using the interaction term (SWAFR). The common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 6; not shown here) looks similar to (a)."}
+```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6, fig.cap="The fits of the common regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ against each respective scale's PC1 scores (Table 4 and 5). Grey bands denote 95% confidence intervals."}
 S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
+  geom_smooth(method = lm, colour = "black") +
+  geom_point(aes(fill = region), shape = 21, colour = "black", stroke = 0.4) +
   ylab(bquote(italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
+  scale_fill_manual(name = "Region", values = c("black", NA)) +
   theme(
-    axis.title.x = element_blank(),
-    axis.text.x  = element_blank(),
-    axis.ticks.x = element_blank()
+    legend.position = "none",
+    axis.title.x    = element_blank(),
+    axis.text.x     = element_blank(),
+    axis.ticks.x    = element_blank(),
+    axis.text.y     = element_text(angle = 90)
   )
-turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
 
-my_legend <- get_legend(S_HDS_plot)
+translucent_white <- rgb(1, 1, 1, 0.5)
+S_QDS_plot <- ggplot(QDS, aes(PC1, QDS_richness, colour = region)) +
+  geom_smooth(method = lm, colour = "black") +
+  geom_point(aes(fill = region), colour = "black", shape = 21) +
+  ylab(bquote(italic("S")["QDS"])) +
+  scale_fill_manual(name = "Region", values = c("black", translucent_white)) +
+  theme(axis.text.y = element_text(angle = 90))
 
-my_plots <- list(
-  S_HDS_plot,
-  turnover_prop_plot
-)
-my_plots %<>% map(~ .x + theme(
-  legend.position = "none",
-  axis.text.y     = element_text(angle = 90)
-))
+my_legend <- get_legend(S_QDS_plot)
+
+S_QDS_plot <- S_QDS_plot +
+  theme(legend.position = "none")
 
 plot_grid(
   plot_grid(
-    plotlist = my_plots,
+    S_HDS_plot, S_QDS_plot,
     nrow = 2,
     rel_heights = c(0.9, 1),
-    labels = glue("({letters[1:2]})")
+    labels = c("(a)", "(b)")
   ),
   my_legend,
   nrow = 1,

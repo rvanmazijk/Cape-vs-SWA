@@ -31,7 +31,7 @@ QDS[, str_which(names(QDS), "roughness")] %<>%
   log1p() %>%
   scale()
 
-# Combine datasets for figure
+# Combine datasets for figures
 HDS_QDS <- as_tibble(rbind(
   HDS %>%
     dplyr::select(region, HDS_richness, add_turnover_prop) %>%

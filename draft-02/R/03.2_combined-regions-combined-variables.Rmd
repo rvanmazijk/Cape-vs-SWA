@@ -3,30 +3,17 @@
 See Figure 6 and Table 10.
 
 ```{r fit-combined-region-multivariate-models}
-fit_combined_region_multivariate <- function(response) {
-  stopifnot(exists("var_names"))
-
-  dataset <- if (response == "QDS_richness") QDS else HDS
-
-  roughness_var_names <- var_names %>%
-    str_replace_all(" ", ".") %>%
-    paste0("_roughness") %>%
-    {c(., paste(., "* region"))}
-  roughness_formula <- paste(roughness_var_names, collapse = " + ")
-  roughness_formula <- glue("{response} ~ {roughness_formula}")
+roughness_var_names <- var_names %>%
+  str_replace_all(" ", ".") %>%
+  paste0("_roughness") %>%
+  {c(., paste(., "* region"))} %>%
+  paste(collapse = " + ")
   
-  m <- lm(roughness_formula, dataset)
-  step(m, direction = "backward", trace = 0)
-}
+m_HDS_richness <- lm(glue("HDS_richness ~ {roughness_var_names}"), HDS)
+m_HDS_richness %<>% step(direction = "backward", trace = 0)
 
-m_HDS_richness <- fit_combined_region_multivariate("HDS_richness")
-m_QDS_richness <- fit_combined_region_multivariate("QDS_richness")
-
-m_HDS_richness$data <- HDS
-m_QDS_richness$data <- QDS
-
-models <- list(m_HDS_richness, m_QDS_richness)
-names(models) <- c("HDS_richness", "QDS_richness")
+m_QDS_richness <- lm(glue("QDS_richness ~ {roughness_var_names}"), QDS)
+m_QDS_richness %<>% step(direction = "backward", trace = 0)
 ```
 
 ```{r reparamaterise-models}
@@ -51,16 +38,21 @@ reparameterise <- function(m) {
     data    = data
   )
 }
-# Test
-#a <- models$HDS_richness
-#b <- reparameterise(models$HDS_richness)
-#AIC(a, b) # same model! :)
-models %<>% map(reparameterise)
+# Test:
+#   a <- m_HDS_richness
+#   b <- reparameterise(m_HDS_richness)
+#   AIC(a, b) # same model! :)
+m_HDS_richness %<>% reparameterise()
+m_QDS_richness %<>% reparameterise()
 ```
 
 \clearpage
 
 ```{r summarise-combined-region-multivariate-models}
+models <- list(
+  HDS_richness = m_HDS_richness,
+  QDS_richness = m_QDS_richness
+)
 models_summary <- models %>%
   map_df(.id = "response", tidy, conf.int = TRUE) %>%
   dplyr::select(-std.error, -statistic) %>%
