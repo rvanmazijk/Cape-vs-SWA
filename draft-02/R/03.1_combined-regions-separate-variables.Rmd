@@ -1,19 +1,19 @@
 ## 3.1. Separate environmental variable models
 
-Tables 5--7 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of each of the three response variables ($S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ respectively). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
+Tables 4 and 5 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of each of the three response variables ($S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ respectively). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
 
-For $S_{\mathrm{HDS}}$ (Table 5), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
+For $S_{\mathrm{HDS}}$ (Table 4), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
 
 - If there is no need for any information concerning the region a cell belongs to, then the environmental roughness "rule" is followed well across the two regions in a similar way.
 - If the region-effect is significant, but not the roughness effect, then that roughness axis isn't doing a very good job of explaining anything, and must defer to the region-effect.
 - When both the region- and roughness-effect are significant, this represents a softer version of the above, where the roughness axis can explain some variance, but not all.
 - When there is a significant interaction between region and roughness, then each region is playing a whole new game with that axes in terms of how richness is being driven.
 
+<!--
 At the QDS-scale, concerning $S_{\mathrm{QDS}}$ (Table 6), it is noteworthy that all axes best-supported to have an additive region term only also had non-significant roughness-effects [expand?].
+-->
 
-Regarding the species turnover partition of richness ($T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$; Table 7), all roughness axes presented evidence for the inclusion of either an additive region-term or an interaction region-term, the majority being the latter. As with $S_{\mathrm{HDS}}$, heterogeneity in clay and NDVI had significant region-effects and roughness-effects, while heterogeneity in CEC and pH lacked evidence for roughness-effects in light of region-effects. Notably, heterogeneity in MAP was found to be additive here, as opposed to interaction as with $S_{\mathrm{HDS}}$ [expand?].
-
-In Tables 5--7, I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ and $S_{\mathrm{QDS}}$, but had a highly interaction with region in regressions of $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$. The fits of the common regression of $S_{\mathrm{HDS}}$ against PC1 and the interaction regression of $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ against PC1 are shown in Figure 4. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR). When it comes to drivers of turnover, though, the rules change. The portion of HDS-scale species richness attributed to species turnover is invariant (Slope = 0.00; Table 7) with environmental heterogeneity (PC1). Meanwhile, in the SWAFR, the portion attributed to turnover is greater in areas of lesser environmental heterogeneity (PC1). This is perplexing... [expand]. [It should be noted that the slope of the SWAFR fit in Figure 4b is only -0.02 (Table 7). Is this biologically significant, in spite of its statistical significance?]
+In Tables 4 and 5, I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ (also see Figure 4) and $S_{\mathrm{QDS}}$. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
 
 It is worth noting that PC1 is representatve of (ca. 45% of) the multivariate trends of species richness and turnover versus environmental heterogeneity. Some of the individual roughness variables show similar trends, some not, and to varying extents [expand].
 
@@ -118,23 +118,31 @@ compare_combined_region_models <- function(models, response = NULL) {
       # Choose the "best" ^ "simplest" model
       best_model = (model_rank == min(model_rank[delta_aic < 2]))
     ) %>%
-    ungroup() 
-
-  # Make pretty
+    ungroup()
+  
   models_summary_printable <- models_summary %>%
+    filter(best_model) %>%
     mutate(
+      model_type = 
+        case_when(
+          region_term == "none"                        ~ "Main effect only",
+          region_term == "add" & slope_p_value <  0.05 ~ "Main effect + region",
+          region_term == "add" & slope_p_value >= 0.05 ~ "Region only",
+          region_term == "int"                 ~ "Main effect $\\times$ region"
+        ) %>%
+        factor(levels = c(
+          "Main effect $\\times$ region",
+          "Main effect + region",
+          "Main effect only",
+          "Region only"
+        )),
       predictor = predictor %>%
-        str_remove("_roughness") %>%
-        str_replace_all("\\.", " ") %>%
-        factor(levels = c(var_names, "PC1")),
-      region_term = case_when(
-        region_term == "none" ~ "None",
-        region_term == "add"  ~ "Additive",
-        region_term == "int"  ~ "Interaction",
-      ),
-      best_model = ifelse(best_model, "*", " ")
+        str_remove_all("_roughness") %>%
+        str_replace_all("\\.", " "),
+      slope_sign  = ifelse(slope        > 0, "+", "-"),
+      region_sign = ifelse(region_coeff > 0, "+", "-"),
+      int_sign    = ifelse(int_coeff    > 0, "+", "-")
     ) %>%
-    arrange(predictor) %>%
     mutate_at(c("slope_p_value", "region_p_value", "int_p_value"),
       ~ case_when(
         .x < 0.001 ~ "***",
@@ -144,25 +152,22 @@ compare_combined_region_models <- function(models, response = NULL) {
         TRUE       ~ " "
       )
     ) %>%
-    mutate_if(is.numeric, ~ case_when(
-      is.na(.x) ~ " ",
-      TRUE      ~ format(round(.x, digits = 2), nsmall = 2)
-    )) %>%
     mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
     dplyr::select(
-      predictor, region_term, delta_aic, best_model,
-      slope,        slope_p_value,
-      region_coeff, region_p_value,
-      int_coeff,    int_p_value
-    )
-
-  # Remove variable names after first mention in table
-  models_summary_printable$predictor %<>% as.character()
-  for (pred in unique(models_summary_printable$predictor)) {
-    to_remove <- which(models_summary_printable$predictor == pred)[-1]
-    models_summary_printable$predictor[to_remove] <- " "
-  }
+      model_type,  predictor,
+      slope_sign,  slope_p_value,
+      region_sign, region_p_value,
+      int_sign,    int_p_value
+    ) %>%
+    arrange(model_type)
   
+  # Remove variable names after first mention in table
+  models_summary_printable$model_type %<>% as.character()
+  for (pred in unique(models_summary_printable$model_type)) {
+    to_remove <- which(models_summary_printable$model_type == pred)[-1]
+    models_summary_printable$model_type[to_remove] <- " "
+  }
+
   # Print summary table
   response <- case_when(
     response == "HDS_richness"      ~ "$S_{\\mathrm{HDS}}$",
@@ -171,25 +176,19 @@ compare_combined_region_models <- function(models, response = NULL) {
   )
   knitr::kable(models_summary_printable,
     caption = glue(
-      "Results of separate simple linear regressions of {response} \\
-      against environmental heterogeneity variables. Asterisks beside each \\
-      $\\Delta AIC$ denote the simples model with $\\Delta AIC < 2$. \\
-      Asterisks beside regression coefficients denote $P$-values < 0.05, \\
-      while periods (\".\") denote $P$-values > 0.05 but < 0.10."
+      "Summarised results of the best fitting separate simple linear \\
+      regressions of {response} against environmental heterogeneity variables."
     ),
     col.names = c(
-      "Heterogeneity predictor", "Region-term",
-      "$\\Delta AIC$", " ",
-      "Slope",         " ",
+      "Model type", "Heterogeneity predictor",
+      "Slope",        " ",
       "SWAFR effect", " ",
       "Slope:SWAFR",  " "
     ),
-    align = "llrlrlrlrl"
+    align = "llclclcl"
   )
 }
 ```
-
-\clearpage
 
 ```{r combined-region-HDS-richness-models}
 combined_region_HDS_models <- fit_combined_region_models("HDS_richness")
@@ -197,173 +196,109 @@ check_region_effects_all_same(combined_region_HDS_models)
 compare_combined_region_models(combined_region_HDS_models)
 ```
 
-\clearpage
-
 ```{r combined-region-QDS-richness-models}
 combined_region_QDS_models <- fit_combined_region_models("QDS_richness")
 check_region_effects_all_same(combined_region_QDS_models)
 compare_combined_region_models(combined_region_QDS_models)
 ```
 
-\clearpage
-
-```{r combined-region-add-turnover-prop-models}
-combined_region_TO_models <- fit_combined_region_models("add_turnover_prop")
-check_region_effects_all_same(combined_region_TO_models)
-compare_combined_region_models(combined_region_TO_models)
+```{r import-cellular-PCA-results, include=FALSE}
+QDS_PCA <- read_rds(here("draft-02/outputs/EDS_roughness_cells_PCA.RDS"))
+HDS_PCA <- read_rds(here("draft-02/outputs/QDS_roughness_cells_PCA.RDS"))
+summary(QDS_PCA)$importance[2, 1]
+summary(HDS_PCA)$importance[2, 1]
 ```
 
-<!--
+```{r look-at-combined-region-PC1-model-r-squareds, include=FALSE}
+combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  glance() %>%
+  pull(r.squared)
+combined_region_QDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  glance() %>%
+  pull(r.squared)
+```
 
-### What Tony wants (`r Sys.Date()`)
+```{r plot-combined-region-PC1-models, fig.width=6, fig.height=3, fig.cap="Fits of simple linear regressions of (a) $S_{\\mathrm{HDS}}$ ($R^2 = 0.23$) and (b) $S_{\\mathrm{QDS}}$ ($R^2 = 0.15$) against each respective scale's PC1 scores for the combined-region dataset. These models are described in the last rows of Tables 4 and 5 respectively. Grey bands denote 95% confidence intervals. PC1 at the QDS-scale explained 39.86% of the variation in environmental heterogeneity. PC1 at the HDS-scale explained 41.55% of the variation in environmental heterogeneity."}
+translucent_white <- rgb(1, 1, 1, 0.5)
+HDS_QDS %>%
+  filter(metric %in% c("HDS_richness", "QDS_richness")) %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness" ~ "(a) HDS-scale",
+    metric == "QDS_richness" ~ "(b) QDS-scale"
+  )) %>%
+  rename(scale = metric) %>%
+  ggplot(aes(PC1, value)) +
+    geom_smooth(method = lm, colour = "black") +
+    geom_point(aes(fill = region), shape = 21, colour = "black") +
+    ylab(bquote(italic("S"))) +
+    scale_fill_manual(name = "Region", values = c("black", translucent_white)) +
+    facet_grid(~scale) +
+    theme(
+      legend.background = element_rect(fill = NA),
+      axis.text.y       = element_text(angle = 90),
+      strip.text        = element_text(hjust = 0)
+    )
+```
 
-Plotting the relationships of:
+```{r map-combined-region-PC1-model-residuals, fig.width=6, fig.height=5, fig.cap="..."}
+HDS$PC1_model_residual <- combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  residuals()
+HDS$PC1_model_fit <- combined_region_HDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  fitted.values()
 
-1. $S_HDS \sim MAP * region$
-2. $S_HDS \sim NDVI + region$
-3. $S_HDS \sim clay + region$
-4. $S_QDS \sim PDQ * region$
-5. $S_QDS \sim NDVI * region$
-6. $S_QDS \sim soil C * region$
+QDS$PC1_model_residual <- combined_region_QDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  residuals()
+QDS$PC1_model_fit <- combined_region_QDS_models %>%
+  filter(predictor == "PC1" & region_term == "none") %>%
+  pull(model) %>%
+  extract2(1) %>%
+  fitted.values()
 
-NOTE:
-
-- For (1.), the interaction & main effects are both significant so the fitted slopes & intercepts need to be estimated separately for each region.
-- For (2., 3.), only the main effects are significant, implying a common slope but different intercepts.
-- For (4.--6.) The slopes and intercepts need to be estimated separately for the two regions.
-
-{r plot-models-Tony-asked-for, fig.width=10}
-m1 <- combined_region_HDS_models %>%
-  filter(region_term == "int", predictor == "MAP_roughness") %>%
-  pull(model)
-m1[[1]]$data <- HDS
-m1_plot <- visreg::visreg(m1[[1]],
-  xvar    = "MAP_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
-
-m2 <- combined_region_HDS_models %>%
-  filter(region_term == "add", predictor == "NDVI_roughness") %>%
-  pull(model)
-m2[[1]]$data <- HDS
-m2_plot <- visreg::visreg(m2[[1]],
-  xvar    = "NDVI_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
-
-m3 <- combined_region_HDS_models %>%
-  filter(region_term == "add", predictor == "Clay_roughness") %>%
-  pull(model)
-m3[[1]]$data <- HDS
-m3_plot <- visreg::visreg(m3[[1]],
-  xvar    = "Clay_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
-
-m4 <- combined_region_QDS_models %>%
-  filter(region_term == "int", predictor == "PDQ_roughness") %>%
-  pull(model)
-m4[[1]]$data <- QDS
-m4_plot <- visreg::visreg(m4[[1]],
-  xvar    = "PDQ_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
-
-m5 <- combined_region_QDS_models %>%
-  filter(region_term == "int", predictor == "NDVI_roughness") %>%
-  pull(model)
-m5[[1]]$data <- QDS
-m5_plot <- visreg::visreg(m5[[1]],
-  xvar    = "NDVI_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
-
-m6 <- combined_region_QDS_models %>%
-  filter(region_term == "int", predictor == "Soil.C_roughness") %>%
-  pull(model)
-m6[[1]]$data <- QDS
-m6_plot <- visreg::visreg(m6[[1]],
-  xvar    = "Soil.C_roughness",
-  by      = "region",
-  overlay = TRUE,
-  gg      = TRUE
-)
-
-m_plots <- list(
-  m1_plot,
-  m2_plot,
-  m3_plot,
-  m4_plot,
-  m5_plot,
-  m6_plot
-)
-m_legend <- get_legend(m_plots[[1]])
-m_plots %<>% map(~ .x + theme(legend.position = "none"))
-m_plots[1:3] %<>% map(~ .x + ylim(-100, 3100))
-m_plots[4:6] %<>% map(~ .x + ylim(-100, 2600))
-
-# Make points transparent manually
-m_plots %<>% map(function(x) {
-  x$layers[[3]]$aes_params$alpha <- 0.2
-  x
-})
-
-plot_grid(
-  plot_grid(plotlist = m_plots),
-  m_legend,
-  nrow = 1,
-  rel_widths = c(1, 0.25)
-)
-
--->
-
-```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6, fig.cap="The fits of (a) the common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 5) and (b) the interaction regression of $T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$ against PC1 (Table 7). Grey bands denote 95% confidence intervals. In (b) two fits are shown: one for the baseline (GCFR) and one using the interaction term (SWAFR). The common regression of $S_{\\mathrm{HDS}}$ against PC1 (Table 6; not shown here) looks similar to (a)."}
-S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x  = element_blank(),
-    axis.ticks.x = element_blank()
-  )
-turnover_prop_plot <- ggplot(HDS, aes(PC1, add_turnover_prop, group = region)) +
-  geom_smooth(method = lm, colour = "grey25") +
-  geom_point(aes(fill = region), shape = 21, colour = "black") +
-  ylab(bquote(italic("T")["QDS"] / italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-
-my_legend <- get_legend(S_HDS_plot)
-
-my_plots <- list(
-  S_HDS_plot,
-  turnover_prop_plot
-)
-my_plots %<>% map(~ .x + theme(
-  legend.position = "none",
-  axis.text.y     = element_text(angle = 90)
+lon_scale <- scale_x_continuous(breaks = c(
+  18, 20, 22, 24, 26,
+  114, 116, 118, 120, 122, 124, 126
 ))
 
-plot_grid(
-  plot_grid(
-    plotlist = my_plots,
-    nrow = 2,
-    rel_heights = c(0.9, 1),
-    labels = glue("({letters[1:2]})")
-  ),
-  my_legend,
-  nrow = 1,
-  rel_widths = c(2, 1)
-)
+HDS_map <- ggplot(HDS, aes(lon, lat, fill = PC1_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["HDS"])) +
+  theme(axis.title.x = element_blank()) +
+  lon_scale
+
+QDS_map <- ggplot(QDS, aes(lon, lat, fill = PC1_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["QDS"])) +
+  theme(strip.text  = element_blank()) +
+  lon_scale
+
+plot_grid(HDS_map, QDS_map, nrow = 2)
+```
+
+```{r, eval=FALSE}
+ggplot(HDS, aes(HDS_richness, PC1_model_fit, colour = region)) +
+  geom_abline(
+    slope = 1, intercept = 0,
+    linetype = "dashed", colour = "grey75"
+  ) +
+  geom_point() +
+  lims(x = c(0, 3100), y = c(0, 3100))
 ```

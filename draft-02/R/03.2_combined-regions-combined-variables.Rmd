@@ -1,0 +1,150 @@
+## 3.2. Combined-regions models with combinations of variables
+
+```{r fit-combined-region-multivariate-models}
+roughness_var_names <- var_names %>%
+  str_replace_all(" ", ".") %>%
+  paste0("_roughness") %>%
+  {c(., paste(., "* region"))} %>%
+  paste(collapse = " + ")
+  
+m_HDS_richness <- lm(glue("HDS_richness ~ {roughness_var_names}"), HDS)
+m_HDS_richness %<>% step(direction = "backward", trace = 0)
+
+m_QDS_richness <- lm(glue("QDS_richness ~ {roughness_var_names}"), QDS)
+m_QDS_richness %<>% step(direction = "backward", trace = 0)
+```
+
+```{r reparamaterise-models}
+# Reparameterise models to {*}:regionGCFR & {*}:regionSWAFR
+# a.o.t. {*}*region, so that the figure of the effects actually represents
+# each region, not the baseline (GCFR) and "relative SWAFR"
+# (and that would cause inconsistencies too when their is no interaction with
+# region term for a roughness variable).
+reparameterise <- function(m) {
+  response <- colnames(m$model)[[1]]
+  data <- if (response == "QDS_richness") QDS else HDS
+  preds_w_interactions <- m %$%
+    coefficients %>%
+    names() %>%
+    magrittr::extract(str_which(., ":regionSWAFR"))
+  reparameterisation <- preds_w_interactions %<>%
+    str_remove(":regionSWAFR") %>%
+    {glue("-{.}")} %>%
+    paste(collapse = " ")
+  update(m,
+    formula = glue(". ~ . {reparameterisation}"),
+    data    = data
+  )
+}
+# Test:
+#   a <- m_HDS_richness
+#   b <- reparameterise(m_HDS_richness)
+#   AIC(a, b) # same model! :)
+m_HDS_richness %<>% reparameterise()
+m_QDS_richness %<>% reparameterise()
+```
+
+```{r summarise-combined-region-multivariate-models}
+models <- list(
+  HDS_richness = m_HDS_richness,
+  QDS_richness = m_QDS_richness
+)
+models_summary <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(term = str_remove_all(term, "_roughness"))
+
+models_R2 <- models %>%
+  map_df(.id = "response", glance) %>%
+  dplyr::select(response, adj.r.squared)
+
+models_summary %<>% full_join(models_R2)
+```
+
+```{r look-at-combined-region-multivariate-models-adj-r-squareds, include=FALSE}
+glance(m_HDS_richness)
+glance(m_QDS_richness)
+```
+
+```{r plot-combined-region-multivariate-models, fig.width=6, fig.height=4, fig.cap="Slope estimates of the multiple linear regressions of (a) $S_{\\mathrm{HDS}}$ (${R^2}_{adj} = 0.49$) and (b) $S_{\\mathrm{QDS}}$ (${R^2}_{adj} = 0.33$) againt environmental heterogeneity variables for the combined-region dataset. Each model was simplified, from a starting model with all predictors and their interactions with region, using reverse stepwise regression model selection based on $AIC$-scores. Points with error bars denote slope estimates and their 95% confidence intervals. Estimates illustrated in black were significant ($P < 0.05$), while those in grey were not."}
+models_summary_for_plot <- models_summary %>%
+  mutate(
+    response = case_when(
+      response == "HDS_richness" ~ "(a)~~italic(S)[HDS]",
+      response == "QDS_richness" ~ "(b)~~italic(S)[QDS]",
+      response == "QDS_turnover" ~ "(c)~~italic(T)[QDS]/italic(S)[HDS]"
+    ),
+    region = 
+      case_when(
+        str_detect(term, "regionSWAFR") ~ "SWAFR", 
+        str_detect(term, "regionGCFR")  ~ "GCFR",
+        TRUE                            ~ "Main effect only"
+      ) %>%
+      factor(levels = c("Main effect only", "GCFR", "SWAFR")),
+    term = term %>%
+      str_replace_all("\\.", " ") %>%
+      str_remove_all("regionSWAFR:") %>%
+      str_remove_all("regionGCFR:") %>%
+      str_replace_all("regionSWAFR", "SWAFR") %>%
+      factor(levels = c(var_names, "SWAFR")),
+    sig = (p.value < 0.05)
+  )
+ggplot(models_summary_for_plot) +
+  aes(
+    term, estimate,
+    fill = region, group = region, shape = region,
+    alpha = sig
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(position = position_dodge(width = 0.25)) +
+  labs(x = "Term", y = "Slope") +
+  scale_fill_manual(values = c(NA, "black", "white")) +
+  scale_shape_manual(values = c(4, 21, 21)) +
+  scale_alpha_manual(values = c(0.25, 1)) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  guides(
+    fill = FALSE,
+    shape = guide_legend(
+      title = "Effect type",
+      override.aes = list(fill = c(NA, "black", "white"))
+    ), 
+    alpha = FALSE
+  ) +
+  theme(
+    axis.text.x  = element_text(angle = 90, hjust = 1),
+    strip.text.x = element_text(angle =  0, hjust = 0)
+  )
+```
+
+```{r map-combined-region-multivariate-model-residuals, fig.width=6, fig.height=5, fig.cap="..."}
+HDS$multivariate_model_residual <- residuals(m_HDS_richness)
+HDS$multivariate_model_fit      <- fitted.values(m_HDS_richness)
+
+QDS$multivariate_model_residual <- residuals(m_QDS_richness)
+QDS$multivariate_model_fit      <- fitted.values(m_QDS_richness)
+
+HDS_map <- ggplot(HDS, aes(lon, lat, fill = multivariate_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["HDS"])) +
+  theme(axis.title.x = element_blank()) +
+  lon_scale
+
+QDS_map <- ggplot(QDS, aes(lon, lat, fill = multivariate_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["QDS"])) +
+  theme(strip.text  = element_blank()) +
+  lon_scale
+
+plot_grid(HDS_map, QDS_map, nrow = 2)
+```
+

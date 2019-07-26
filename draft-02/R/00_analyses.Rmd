@@ -38,3 +38,6 @@ The proposed "story" of questions for the analyses is as follows:
 
 ```{r model-analyses, child="03_model-analyses.Rmd"}
 ```
+
+```{r appendix, child="04_appendix.Rmd"}
+```

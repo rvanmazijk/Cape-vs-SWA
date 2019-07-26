@@ -47,37 +47,7 @@ roughness_cells <- function(x) {
 
 For all analyses in this section, roughness values were $log(x + 1)$-transformed to ensure normality for linear regressions. Indeed, I also repeated the PCA on these transformed data. The PC1 values from this PCA are used in the analyses in this section.
 
-In order to understand the relationships between environmental heterogeneity and species richness and turnover, and how those relationships differ between the GCFR and the SWAFR, I fit both simple and multiple linear regression models of $S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ as functions of environmental roughness values. I use datasets separated by region and with both regions in common models. The rationale behind the univariate models is to describe empirical patterns of covariance between roughness axes and species richness and turnover. The multivariate models allow us to account for differences in richness and turnover across multiple roughness axes.
-
-The models I fit, for each response ($S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$) are layed out in Table 4.
-
-Predictors   | Region      | Section
--------------|-------------|--------
-Univariate   | Common      | 3.1.
-"            | Additive    | "
-"            | Interaction | "
-Multivariate | Separately  | 3.2.
-"            | Common      | 3.3.
-"            | Additive    | "
-"            | Interaction | "
-
-Table: The optimal predictor sets (sensu $AIC$) in the separate regional multivariate models inform the predictors chosen to compare in the common (i.e. no region term), additive and interaction mutlivariate models. With both the univariate and multivariate models, the common, additive and interaction forms were compared using $AIC$ also.
-
-```{r tidy-cellular-data, include=FALSE}
-# log(x + 1) & scale roughness values to match PCAs were done on logged data
-HDS[, str_which(names(HDS), "roughness")] %<>%
-  log1p() %>%
-  scale()
-QDS[, str_which(names(QDS), "roughness")] %<>%
-  log1p() %>%
-  scale()
-
-# Make regin-specific subsets for modelling below
-GCFR_HDS  <- filter(HDS, region == "GCFR")
-GCFR_QDS  <- filter(QDS, region == "GCFR")
-SWAFR_HDS <- filter(HDS, region == "SWAFR")
-SWAFR_QDS <- filter(QDS, region == "SWAFR")
-```
+In order to understand the relationships between environmental heterogeneity and species richness and turnover, and how those relationships differ between the GCFR and the SWAFR, I fit both simple and multiple linear regression models of $S_{\mathrm{HDS}}$ and $S_{\mathrm{QDS}}$ as functions of environmental roughness values. The rationale behind the univariate models is to describe empirical patterns of covariance between roughness axes and species richness. The multivariate models allow us to account for differences in richness across multiple roughness axes.
 
 ```{r explore-normality, include=FALSE}
 ## Explore normality of data
@@ -108,9 +78,10 @@ SWAFR_QDS <- filter(QDS, region == "SWAFR")
 ## Conclusion: Logging can't solve everything!
 ```
 
+<!--
 The PCA used here, done only at the QDS- and HDS-scales, looks almost exactly like the ones in Figure 1 for those scales:
 
-```{r plot-this-PCA}
+```{r plot-this-PCA, eval=FALSE}
 PCA_data <- rbind(
   cbind(scale = "HDS", HDS[, c("lon", "lat", "region", "PC1", "PC2")]),
   cbind(scale = "QDS", QDS[, c("lon", "lat", "region", "PC1", "PC2")])
@@ -128,12 +99,10 @@ ggplot(PCA_data, aes(lon, lat, colour = PC1)) +
 ```
 
 That's encouraging!
+-->
 
 ```{r combined-regions-separate-variables, child="03.1_combined-regions-separate-variables.Rmd"}
 ```
 
-```{r separate-regions-combined-variables, child="03.2_separate-regions-combined-variables.Rmd"}
-```
-
-```{r combined-regions-combined-variables, child="03.3_combined-regions-combined-variables.Rmd"}
+```{r combined-regions-combined-variables, child="03.2_combined-regions-combined-variables.Rmd"}
 ```
