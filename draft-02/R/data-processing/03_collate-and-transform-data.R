@@ -7,7 +7,7 @@
 
 # Load packages and functions
 library(here)
-source(here("analyses-May-2019/setup.R"))
+source(here("draft-02/R/setup.R"))
 
 # Import processed environmental data
 var_names <- c(
@@ -100,7 +100,7 @@ roughness_matrices <- map2(
 # Save all to disc
 iwalk(roughness_matrices,
   ~ write_csv(.x, here(
-    "outputs/roughness",
+    "draft-02/outputs/roughness",
     glue("{.y}_roughness_matrix.csv")
   ))
 )
@@ -411,8 +411,8 @@ autoplot(EDS_roughness_cells_PCA,
   data   = EDS_roughness_cells_prepped,
   colour = "region"
 )
-write_csv(EDS_roughness_cells_prepped, here("outputs/EDS_roughness_cells_prepped.csv"))
-write_rds(EDS_roughness_cells_PCA, here("outputs/EDS_roughness_cells_PCA.RDS"))
+write_csv(EDS_roughness_cells_prepped, here("draft-02/outputs/EDS_roughness_cells_prepped.csv"))
+write_rds(EDS_roughness_cells_PCA, here("draft-02/outputs/EDS_roughness_cells_PCA.RDS"))
 
 # Store PC1--2 in the original data, for later modelling etc.
 #EDS_roughness_cells$PC1 <- EDS_roughness_cells_PCA$x[, 1]
@@ -511,7 +511,7 @@ QDS_data_cells <- QDS_roughness_cells %>%
 
 QDS_data_cells
 
-write_csv(QDS_data_cells, here("outputs/QDS_data_cells.csv"))
+write_csv(QDS_data_cells, here("draft-02/outputs/QDS_data_cells.csv"))
 
 #ggplot(QDS_data_cells, aes(lon, lat, colour = HDS_richness)) +
 #  geom_point(size = 3) +
@@ -615,7 +615,7 @@ EDS_data_cells <- EDS_roughness_cells %>%
 
 EDS_data_cells
 
-write_csv(EDS_data_cells, here("outputs/EDS_data_cells.csv"))
+write_csv(EDS_data_cells, here("draft-02/outputs/EDS_data_cells.csv"))
 
 #ggplot(EDS_data_cells, aes(lon, lat, colour = QDS_richness)) +
 #  geom_point(size = 3) +

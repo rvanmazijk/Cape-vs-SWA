@@ -27,19 +27,19 @@ library(MASS)  # for LDA
 library(canprot)  # for CLES
 library(broom)  # to tidy model outputs
 library(vegan)
+library(olsrr)
 
 # Figures
 library(rasterVis)  # for maps
 library(ggfortify)  # for PCAs
-library(grid)
 # Panelling figures
+library(grid)
 library(cowplot)
-library(patchwork)
 
 # Source helper functions ------------------------------------------------------
 
 function_filenames <- list.files(
-  here("analyses-May-2019/functions"),
+  here("draft-02/R/functions"),
   full.names = TRUE
 )
 walk(function_filenames, source)
@@ -95,3 +95,10 @@ var_names <- c(
 
 white_rect <- grid.rect(gp = gpar(col = "white"))
 # Useful when arranging panels
+
+# Record session info ----------------------------------------------------------
+
+capture.output(
+  sessionInfo(),
+  file = here("draft-02/outputs/sessionInfo.txt")
+)

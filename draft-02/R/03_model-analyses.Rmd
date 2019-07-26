@@ -1,0 +1,108 @@
+# 3. Relating heterogeneity to species richness & turnover
+
+Does heterogeneity explain differences in richness and turnover between the regions?
+
+<!--
+Environmental “roughness” in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell x∗, the roughness is based on x1,x2,...,xi,...,x8 neighbour cells as:
+-->
+
+Here I fit various linear regressions of richness and turnover as functions of environmental heterogeneity across the two regions. The richness and turnover measures used are the same as in the previous section, while the environmental heterogeneity was recalculated in the same grid-wise fashion as the richness and turnover measures. These analyses were carried out at both the HDS- and QDS-scales, insofar as species occurrence data from GBIF is only accurate to the QDS-scale. These analyses were only carried out on HDS-scale data for HDS-cells that contained four QDS-cells, and similarly for QDS-scale data for QDS-cells that contained four EDS-cells.
+
+Environmental "roughness" here was calculated for each HDS- and QDS-cell in both regions as the mean of each consituent QDS- and EDS-cell's mean absolute difference in environmental conditions from the other three cells within that HDS- or QDS-cell.
+
+In other words, roughness was calculated by first calculating the average absolute-difference in environmental values between each QDS and it's three neighbours in a given HDS. Then, these four values (assuming four QDS in an HDS) are averaged. This roughness index is presented mathematically below. This index allows each of the four values to be similarly independent, and thus more sutiable for our averaging and analyses, as opposed to if it were simly the direct average of pairwise differences [expand?].
+
+$$
+  Roughness_{cellular}(\{ x_1, x_2, x_3, x_4 \}) =
+    \frac{1}{4} \sum_i f(x_i) =
+    \frac{1}{4} \sum_i \left(
+      \frac{1}{3} \sum_{j \neq i} |x_i - x_j|
+    \right)
+$$
+
+In R, this is implemented this as follows:
+
+```
+roughness_cellular <- function(x) {
+  out <- vector(mode = "numeric", length = length(x))
+  for (i in seq_along(x)) {
+    out[[i]] <- mean(abs(x[i] - x[-i]))
+  }
+  mean(out)
+}
+```
+
+Or:
+
+```
+roughness_cells <- function(x) {
+  mean(c(
+    mean(abs(x[1] - x[-1])),
+    mean(abs(x[2] - x[-2])),
+    mean(abs(x[3] - x[-3])),
+    mean(abs(x[4] - x[-4]))
+  ))
+}
+```
+
+For all analyses in this section, roughness values were $log(x + 1)$-transformed to ensure normality for linear regressions. Indeed, I also repeated the PCA on these transformed data. The PC1 values from this PCA are used in the analyses in this section.
+
+In order to understand the relationships between environmental heterogeneity and species richness and turnover, and how those relationships differ between the GCFR and the SWAFR, I fit both simple and multiple linear regression models of $S_{\mathrm{HDS}}$ and $S_{\mathrm{QDS}}$ as functions of environmental roughness values. The rationale behind the univariate models is to describe empirical patterns of covariance between roughness axes and species richness. The multivariate models allow us to account for differences in richness across multiple roughness axes.
+
+```{r explore-normality, include=FALSE}
+## Explore normality of data
+#
+#non_normal_vars <- HDS[, str_which(names(HDS), "(region|mean_value)")] %>%
+#  split(.$region) %>%
+#  map(dplyr::select, -region) %>%
+#  map(map, shapiro.test) %>%
+#  map(map_df, tidy, .id = "variable") %>%
+#  bind_rows(.id = "region") %>%
+#  as_tibble() %>%
+#  dplyr::select(-statistic, -method) %>%
+#  mutate(sig = p.value <= 0.05) %>%
+#  filter(sig)
+#
+#HDS[, str_which(names(HDS), "(region|mean_value)")] %>%
+#  split(.$region) %>%
+#  map(dplyr::select, -region) %>%
+#  map(map, log) %>%  # !!!
+#  map(map, shapiro.test) %>%
+#  map(map_df, tidy, .id = "variable") %>%
+#  bind_rows(.id = "region") %>%
+#  as_tibble() %>%
+#  dplyr::select(-statistic, -method) %>%
+#  mutate(sig = p.value <= 0.05) %>%
+#  filter(sig)
+#
+## Conclusion: Logging can't solve everything!
+```
+
+<!--
+The PCA used here, done only at the QDS- and HDS-scales, looks almost exactly like the ones in Figure 1 for those scales:
+
+```{r plot-this-PCA, eval=FALSE}
+PCA_data <- rbind(
+  cbind(scale = "HDS", HDS[, c("lon", "lat", "region", "PC1", "PC2")]),
+  cbind(scale = "QDS", QDS[, c("lon", "lat", "region", "PC1", "PC2")])
+)
+ggplot(PCA_data, aes(PC1, PC2, colour = region)) +
+  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
+  geom_point() +
+  facet_grid(scale ~ " ") +
+  theme(legend.position = "left")
+ggplot(PCA_data, aes(lon, lat, colour = PC1)) +
+  geom_point() +
+  facet_grid(scale ~ region, scales = "free_x") +
+  scale_colour_viridis_c()
+```
+
+That's encouraging!
+-->
+
+```{r combined-regions-separate-variables, child="03.1_combined-regions-separate-variables.Rmd"}
+```
+
+```{r combined-regions-combined-variables, child="03.2_combined-regions-combined-variables.Rmd"}
+```

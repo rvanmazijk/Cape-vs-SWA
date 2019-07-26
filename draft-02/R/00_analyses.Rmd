@@ -1,0 +1,43 @@
+---
+title    : "Analyses for 2^nd^ draft"
+subtitle : "Cape vs SWA"
+author   : "Ruan van Mazijk"
+date     : "`r Sys.Date()`"
+output   : pdf_document
+geometry : a4paper, margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo     = FALSE,
+	fig.path = "figures/",
+	message  = FALSE,
+	warning  = FALSE
+)
+library(here)
+source(here("draft-02/R/setup.R"))
+```
+
+# Preamble/outline
+
+Here I layout the "new", second incarnation of the analyses as discussed over the course of May/June 2019, following the first draft of the manuscript.
+
+To reiterate that manuscript, we hypothesise that the greater vascular plant species richness of the GCFR compared to that of the SWAFR is explained by the regions' difference in environmental heterogeneity.
+
+The proposed "story" of questions for the analyses is as follows:
+
+1. Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
+2. Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
+3. Does heterogeneity explain differences in richness and turnover between the regions?
+
+```{r roughness-analyses, child="01_roughness-analyses.Rmd"}
+```
+
+```{r turnover-analyses, child="02_turnover-analyses.Rmd"}
+```
+
+```{r model-analyses, child="03_model-analyses.Rmd"}
+```
+
+```{r appendix, child="04_appendix.Rmd"}
+```

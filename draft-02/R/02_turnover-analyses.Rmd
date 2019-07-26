@@ -1,0 +1,201 @@
+# 2. Species richness & turnover
+
+Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
+
+To tackle this question, I compare measures of species richness and turnover between the regions. Species richness at the HDS-scale ($S_{\mathrm{HDS}}$) can be partitioned into the average richness of the constituent QDS in HDS ($\overline{S}_{\mathrm{QDS}}$) and species turnover ($T_{\mathrm{QDS}}$) defined^[following Whittaker's original additive definition: $\gamma = \alpha + \beta$] as:
+
+$$
+  T_{\mathrm{QDS}} = S_{\mathrm{HDS}} - \overline{S}_{\mathrm{QDS}}
+$$
+
+The distributions of these data are presented in Figure 3b. To test for significant differences between GCFR and SWAFR values, I use Mann-Whitney $U$-tests and $CLES$ (Table 3), as most of the variables deviate significantly from normality (Shapiro-Wilk normality test; $P < 0.05$).
+
+Additionally, a visualisation of how $S_{\mathrm{HDS}}$ is partitioned into $\overline{S}_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}}$ is presented in Figure 3a.
+
+We can conclude that broad scale species richness (i.e. that at the HDS scale) is more strongly driven by turnover between areas (i.e. QDS) than so in the SWAFR.
+
+```{r import-cellular-data, include=FALSE}
+HDS <- read_csv(here("draft-02/outputs/QDS_data_cells.csv"))
+QDS <- read_csv(here("draft-02/outputs/EDS_data_cells.csv"))
+
+# Remove cells w/ < 4 sub-cells
+HDS %<>% filter(n_QDS == 4)
+QDS %<>% filter(n_EDS == 4)
+
+# log(x + 1) & scale roughness values to match PCAs were done on logged data
+# (See section 3)
+HDS[, str_which(names(HDS), "roughness")] %<>%
+  log1p() %>%
+  scale()
+QDS[, str_which(names(QDS), "roughness")] %<>%
+  log1p() %>%
+  scale()
+
+# Combine datasets for figures
+HDS_QDS <- as_tibble(rbind(
+  HDS %>%
+    dplyr::select(region, HDS_richness, add_turnover_prop, PC1) %>%
+    gather(metric, value, HDS_richness, add_turnover_prop, -PC1),
+  QDS %>%
+    dplyr::select(region, QDS_richness, PC1) %>%
+    gather(metric, value, QDS_richness, -PC1)
+))
+```
+
+```{r plot-richness-and-turnover-maps, eval=FALSE}
+richness_data <- rbind(
+  QDS %>%
+    dplyr::select(lon, lat, region, QDS_richness) %>%
+    rename(response_value = QDS_richness) %>%
+    mutate(response = "italic(S)[QDS]"),
+  HDS %>%
+    dplyr::select(lon, lat, region, HDS_richness) %>%
+    rename(response_value = HDS_richness) %>%
+    mutate(response = "italic(S)[HDS]"),
+  HDS %>%
+    dplyr::select(lon, lat, region, add_turnover_prop) %>%
+    rename(response_value = add_turnover_prop) %>%
+    mutate(response = "italic(T)[QDS]/italic(S)[HDS]")
+)
+richness_data %<>%
+  mutate(response = factor(response, levels = c(
+    "italic(S)[QDS]",
+    "italic(S)[HDS]",
+    "italic(T)[QDS]/italic(S)[HDS]"
+  ))) %>%
+  group_by(response) %>%
+  mutate(response_value = scale(response_value)) %>%
+  filter(response != "italic(S)[QDS]")
+ggplot(richness_data, aes(lon, lat, colour = response_value)) +
+  geom_point() +
+  facet_grid(response ~ region, scales = "free_x", labeller = label_parsed) +
+  scale_colour_viridis_c() +
+  theme(strip.text.y = element_text(angle = 0))
+```
+
+```{r test-richness-turnover-univariate}
+HDS_QDS %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness"      ~ "$S_{\\mathrm{HDS}}$",
+    metric == "QDS_richness"      ~ "$S_{\\mathrm{QDS}}$",
+    metric == "add_turnover_prop" ~ "$T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$"
+  )) %>%
+  mutate(metric = factor(metric, levels = c(
+    "$S_{\\mathrm{HDS}}$",
+    "$S_{\\mathrm{QDS}}$",
+    "$T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$"
+  ))) %>%
+  group_by(metric) %>%
+  summarise(
+    P = wilcox.test(value[region == "SWAFR"], value[region == "GCFR"])$p.value,
+    CLES_value = CLES(value[region == "SWAFR"], value[region == "GCFR"])
+  ) %>%
+  mutate_if(is.numeric, ~ifelse(.x < 0.001,
+    "$< 0.001$",
+    format(round(.x, digits = 3), nsmall = 3)
+  )) %>%
+  dplyr::select(metric, CLES_value, P) %>%
+  knitr::kable(
+    caption = paste(
+      "Results of Mann-Whitney $U$-tests and the $CLES$ of GCFR vs SWAFR",
+      "for various species richness and turnover metrics."
+    ),
+    col.names = c("Metric", "$CLES$", "$P_U$"),
+    align = "lrr"
+  )
+```
+
+```{r test-richness-turnover-normality, include=FALSE}
+# Also show how I tested for metrics deviating from normality
+HDS_QDS %>%
+  group_by(metric) %>%
+  summarise(
+    P_GCFR  = shapiro.test(value[region == "GCFR"])$p.value,
+    P_SWAFR = shapiro.test(value[region == "SWAFR"])$p.value
+  ) %>%
+  mutate_at(c("P_GCFR", "P_SWAFR"), list(sig = ~ . < 0.05))
+```
+
+```{r visualise-partitions, fig.width=9, fig.height=3, fig.cap="(a) Scatter plot of mean QDS-scale richness ($\\overline{S}_{\\mathrm{QDS}}$) and turnover ($T_{\\mathrm{QDS}}$) with contour lines denoting the $S_{\\mathrm{HDS}}$ that would arise as their sum (i.e. increasing from lower-left to upper-right). Distributions of (a) HDS-scale species richness ($S_{\\mathrm{HDS}}$) and (b) the turnover partition of that richness ($T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$)."}
+hist_plots <- HDS_QDS %>%
+  filter(metric %in% c("HDS_richness", "add_turnover_prop")) %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness"      ~ "italic(S)[HDS]",
+    metric == "add_turnover_prop" ~ "italic(T)[QDS]/italic(S)[HDS]"
+  )) %>%
+  mutate(metric = factor(metric, levels = c(
+    "italic(S)[HDS]",
+    "italic(T)[QDS]/italic(S)[HDS]"
+  ))) %>%
+  ggplot(aes(value, fill = region)) +
+    geom_histogram(bins = 20, position = "dodge", colour = "black") +
+    scale_fill_manual(name = "Region", values = c("black", "white")) +
+    labs(
+      # Cheat-x-axis-labels
+      x = bquote(
+        italic("S")["HDS"]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  # 50 spaces
+        italic("T")["QDS"]/italic("S")["HDS"]
+      ),
+      y = "No. HDS"
+    ) +
+    facet_grid(~metric, scales = "free_x", labeller = label_parsed) +
+    theme(axis.text.y = element_text(angle = 90), strip.text = element_blank())
+
+plot_edges <- HDS %$%
+  ceiling(max(c(mean_QDS_richness, add_turnover))) + 10
+
+S_HDS_background <- plot_edges %>%
+  {seq(from = 0, to = ., by = 10)} %>%
+  {expand.grid(x = ., y = .)} %>%
+  mutate(z = x + y)
+S_HDS_background_plot <- ggplot(S_HDS_background) +
+  lims(x = c(0, plot_edges), y = c(0, plot_edges)) +
+  geom_contour(
+    mapping     = aes(x, y, z = z),
+    binwidth    = 500,
+    colour      = "grey90",
+    show.legend = TRUE
+  ) +
+  geom_abline(
+    intercept = 0, slope = 1,
+    linetype = "dashed", colour = "grey25"
+  ) +
+  labs(
+    x = bquote(italic("T")["QDS"]),
+    y = bquote(bar(italic("S"))["QDS"])
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.y     = element_text(angle = 90)
+  )
+
+partition_plot <- S_HDS_background_plot +
+  geom_point(
+    data    = HDS,
+    mapping = aes(add_turnover, mean_QDS_richness, fill = region),
+    shape   = 21
+  ) +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
+
+# Add labels to S_HDS contours manually
+partition_plot <- partition_plot + geom_text(
+  data = tibble(
+    add_turnover      = c( 10,   10,   10,  360,  860, 1360),
+    mean_QDS_richness = c(500, 1000, 1500, 1650, 1650, 1650),
+    HDS_richness      = c(500, 1000, 1500, 2000, 2500, 3000)
+  ),
+  mapping = aes(add_turnover, mean_QDS_richness, label = HDS_richness),
+  angle = -45, vjust = -0.5, colour = "grey50", size = 2.5
+)
+
+# Plot panels
+plot_grid(
+  # Flip partition plot to get axes to line up across panels (b/o text heights)
+  partition_plot + coord_flip(),
+  hist_plots,
+  nrow = 1,
+  rel_widths = c(1, 2),
+  labels = glue("({letters[1:2]})")
+)
+```

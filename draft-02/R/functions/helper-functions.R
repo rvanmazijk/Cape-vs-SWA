@@ -182,3 +182,24 @@ get_geocodes <- function(flora_points, QDS_polygon) {
   )
   flora_points
 }
+
+my_AIC_table <- function(..., caption = "...") {
+  AIC(...) %>%
+    mutate(
+      delta_AIC = AIC - min(AIC),
+      w_Akaike  = exp(-0.5 * delta_AIC) / sum(exp(-0.5 * delta_AIC))
+    ) %>%
+    mutate(model = c("No region", "Add. region", "Int. region")) %>%
+    mutate_if(is.numeric, ~format(round(.x, digits = 3), nsmall = 3)) %>%
+    dplyr::select(model, AIC, delta_AIC, w_Akaike) #%>%
+    #knitr::kable(
+    #  caption = caption,
+    #  col.names = c(
+    #    "Model",
+    #    "$AIC$",
+    #    "$\\Delta AIC$",
+    #    "$w_{\\mathrm{Akaike}}$"
+    #  ),
+    #  align = c("lrrr")
+    #)
+}
