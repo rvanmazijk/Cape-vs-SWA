@@ -34,11 +34,11 @@ QDS[, str_which(names(QDS), "roughness")] %<>%
 # Combine datasets for figures
 HDS_QDS <- as_tibble(rbind(
   HDS %>%
-    dplyr::select(region, HDS_richness, add_turnover_prop) %>%
-    gather(metric, value, HDS_richness, add_turnover_prop),
+    dplyr::select(region, HDS_richness, add_turnover_prop, PC1) %>%
+    gather(metric, value, HDS_richness, add_turnover_prop, -PC1),
   QDS %>%
-    dplyr::select(region, QDS_richness) %>%
-    gather(metric, value, QDS_richness)
+    dplyr::select(region, QDS_richness, PC1) %>%
+    gather(metric, value, QDS_richness, -PC1)
 ))
 ```
 

@@ -444,42 +444,25 @@ plot_grid(
 
 -->
 
-```{r plot-combined-region-PC1-models, fig.width=5, fig.height=6, fig.cap="The fits of the common regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ against each respective scale's PC1 scores (Table 4 and 5). Grey bands denote 95% confidence intervals."}
-S_HDS_plot <- ggplot(HDS, aes(PC1, HDS_richness)) +
-  geom_smooth(method = lm, colour = "black") +
-  geom_point(aes(fill = region), shape = 21, colour = "black", stroke = 0.4) +
-  ylab(bquote(italic("S")["HDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", NA)) +
-  theme(
-    legend.position = "none",
-    axis.title.x    = element_blank(),
-    axis.text.x     = element_blank(),
-    axis.ticks.x    = element_blank(),
-    axis.text.y     = element_text(angle = 90)
-  )
-
+```{r plot-combined-region-PC1-models, fig.width=6, fig.height=3.5, fig.cap="The fits of the common regressions of (a) $S_{\\mathrm{HDS}}$ and (b) $S_{\\mathrm{QDS}}$ against each respective scale's PC1 scores (Table 4 and 5). Grey bands denote 95% confidence intervals."}
 translucent_white <- rgb(1, 1, 1, 0.5)
-S_QDS_plot <- ggplot(QDS, aes(PC1, QDS_richness, colour = region)) +
-  geom_smooth(method = lm, colour = "black") +
-  geom_point(aes(fill = region), colour = "black", shape = 21) +
-  ylab(bquote(italic("S")["QDS"])) +
-  scale_fill_manual(name = "Region", values = c("black", translucent_white)) +
-  theme(axis.text.y = element_text(angle = 90))
-
-my_legend <- get_legend(S_QDS_plot)
-
-S_QDS_plot <- S_QDS_plot +
-  theme(legend.position = "none")
-
-plot_grid(
-  plot_grid(
-    S_HDS_plot, S_QDS_plot,
-    nrow = 2,
-    rel_heights = c(0.9, 1),
-    labels = c("(a)", "(b)")
-  ),
-  my_legend,
-  nrow = 1,
-  rel_widths = c(2, 1)
-)
+HDS_QDS %>%
+  filter(metric %in% c("HDS_richness", "QDS_richness")) %>%
+  mutate(metric = case_when(
+    metric == "HDS_richness" ~ "(a) HDS-scale",
+    metric == "QDS_richness" ~ "(b) QDS-scale"
+  )) %>%
+  rename(scale = metric) %>%
+  ggplot(aes(PC1, value)) +
+    geom_smooth(method = lm, colour = "black") +
+    geom_point(aes(fill = region), shape = 21, colour = "black") +
+    ylab(bquote(italic("S"))) +
+    scale_fill_manual(name = "Region", values = c("black", translucent_white)) +
+    facet_grid(~scale) +
+    theme(
+      legend.position   = c(0.1, 0.8),
+      legend.background = element_rect(fill = NA),
+      axis.text.y       = element_text(angle = 90),
+      strip.text        = element_text(hjust = 0)
+    )
 ```
