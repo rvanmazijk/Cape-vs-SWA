@@ -103,7 +103,7 @@ check_region_effects_all_same <- function(models) {
   if (check) print("Uh-oh! Some region-terms are for GCFR")
 }
 
-compare_combined_region_models_SUMMARY <- function(models, response = NULL) {
+compare_combined_region_models <- function(models, response = NULL) {
   if (is.null(response)) {
     response <- unique(models$response)
   }
@@ -123,12 +123,19 @@ compare_combined_region_models_SUMMARY <- function(models, response = NULL) {
   models_summary_printable <- models_summary %>%
     filter(best_model) %>%
     mutate(
-      model_type = case_when(
-        region_term == "none"                        ~ "Main effect only",
-        region_term == "add" & slope_p_value <  0.05 ~ "Main effect + region",
-        region_term == "add" & slope_p_value >= 0.05 ~ "Region only",
-        region_term == "int"                 ~ "Main effect $\\times$ region"
-      ),
+      model_type = 
+        case_when(
+          region_term == "none"                        ~ "Main effect only",
+          region_term == "add" & slope_p_value <  0.05 ~ "Main effect + region",
+          region_term == "add" & slope_p_value >= 0.05 ~ "Region only",
+          region_term == "int"                 ~ "Main effect $\\times$ region"
+        ) %>%
+        factor(levels = c(
+          "Main effect $\\times$ region",
+          "Main effect + region",
+          "Main effect only",
+          "Region only"
+        )),
       predictor = predictor %>%
         str_remove_all("_roughness") %>%
         str_replace_all("\\.", " "),
@@ -181,103 +188,18 @@ compare_combined_region_models_SUMMARY <- function(models, response = NULL) {
     align = "llclclcl"
   )
 }
-compare_combined_region_models_APPENDIX <- function(models, response = NULL) {
-  if (is.null(response)) {
-    response <- unique(models$response)
-  }
-  
-  # Get AICs etc.
-  models_summary <- models %>%
-    group_by(predictor) %>%
-    mutate(aic = map_dbl(model, AIC)) %>%
-    mutate(
-      model_rank = as.numeric(region_term),
-      delta_aic  = aic - min(aic),
-      # Choose the "best" ^ "simplest" model
-      best_model = (model_rank == min(model_rank[delta_aic < 2]))
-    ) %>%
-    ungroup() 
-
-  # Make pretty
-  models_summary_printable <- models_summary %>%
-    mutate(
-      predictor = predictor %>%
-        str_remove("_roughness") %>%
-        str_replace_all("\\.", " ") %>%
-        factor(levels = c(var_names, "PC1")),
-      region_term = case_when(
-        region_term == "none" ~ "None",
-        region_term == "add"  ~ "Additive",
-        region_term == "int"  ~ "Interaction",
-      ),
-      best_model = ifelse(best_model, "*", " ")
-    ) %>%
-    arrange(predictor) %>%
-    mutate_at(c("slope_p_value", "region_p_value", "int_p_value"),
-      ~ case_when(
-        .x < 0.001 ~ "***",
-        .x < 0.010 ~ "**",
-        .x < 0.050 ~ "*",
-        .x < 0.100 ~ ".",
-        TRUE       ~ " "
-      )
-    ) %>%
-    mutate_if(is.numeric, ~ case_when(
-      is.na(.x) ~ " ",
-      TRUE      ~ format(round(.x, digits = 2), nsmall = 2)
-    )) %>%
-    mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
-    dplyr::select(
-      predictor, region_term, delta_aic, best_model,
-      slope,        slope_p_value,
-      region_coeff, region_p_value,
-      int_coeff,    int_p_value
-    )
-
-  # Remove variable names after first mention in table
-  models_summary_printable$predictor %<>% as.character()
-  for (pred in unique(models_summary_printable$predictor)) {
-    to_remove <- which(models_summary_printable$predictor == pred)[-1]
-    models_summary_printable$predictor[to_remove] <- " "
-  }
-  
-  # Print summary table
-  response <- case_when(
-    response == "HDS_richness"      ~ "$S_{\\mathrm{HDS}}$",
-    response == "QDS_richness"      ~ "$S_{\\mathrm{QDS}}$"
-  )
-  knitr::kable(models_summary_printable,
-    caption = glue(
-      "[FOR APPENDIX] \\
-      Results of separate simple linear regressions of {response} \\
-      against environmental heterogeneity variables. Asterisks beside each \\
-      $\\Delta AIC$ denote the simples model with $\\Delta AIC < 2$. \\
-      Asterisks beside regression coefficients denote $P$-values < 0.05, \\
-      while periods (\".\") denote $P$-values > 0.05 but < 0.1."
-    ),
-    col.names = c(
-      "Heterogeneity predictor", "Region-term",
-      "$\\Delta AIC$", " ",
-      "Slope",         " ",
-      "SWAFR effect", " ",
-      "Slope:SWAFR",  " "
-    ),
-    align = "llrlrlrlrl"
-  )
-}
-
 ```
 
 ```{r combined-region-HDS-richness-models}
 combined_region_HDS_models <- fit_combined_region_models("HDS_richness")
 check_region_effects_all_same(combined_region_HDS_models)
-compare_combined_region_models_SUMMARY(combined_region_HDS_models)
+compare_combined_region_models(combined_region_HDS_models)
 ```
 
 ```{r combined-region-QDS-richness-models}
 combined_region_QDS_models <- fit_combined_region_models("QDS_richness")
 check_region_effects_all_same(combined_region_QDS_models)
-compare_combined_region_models_SUMMARY(combined_region_QDS_models)
+compare_combined_region_models(combined_region_QDS_models)
 ```
 
 ```{r import-cellular-PCA-results, include=FALSE}
