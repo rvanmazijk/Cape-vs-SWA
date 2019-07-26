@@ -324,7 +324,7 @@ HDS_QDS %>%
     )
 ```
 
-```{r explore-combined-region-PC1-model-residuals, eval=FALSE}
+```{r map-combined-region-PC1-model-residuals, fig.width=6, fig.height=5, fig.cap="..."}
 HDS$PC1_model_residual <- combined_region_HDS_models %>%
   filter(predictor == "PC1" & region_term == "none") %>%
   pull(model) %>%
@@ -347,6 +347,31 @@ QDS$PC1_model_fit <- combined_region_QDS_models %>%
   extract2(1) %>%
   fitted.values()
 
+lon_scale <- scale_x_continuous(breaks = c(
+  18, 20, 22, 24, 26,
+  114, 116, 118, 120, 122, 124, 126
+))
+
+HDS_map <- ggplot(HDS, aes(lon, lat, fill = PC1_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["HDS"])) +
+  theme(axis.title.x = element_blank()) +
+  lon_scale
+
+QDS_map <- ggplot(QDS, aes(lon, lat, fill = PC1_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["QDS"])) +
+  theme(strip.text  = element_blank()) +
+  lon_scale
+
+plot_grid(HDS_map, QDS_map, nrow = 2)
+```
+
+```{r, eval=FALSE}
 ggplot(HDS, aes(HDS_richness, PC1_model_fit, colour = region)) +
   geom_abline(
     slope = 1, intercept = 0,
@@ -354,27 +379,4 @@ ggplot(HDS, aes(HDS_richness, PC1_model_fit, colour = region)) +
   ) +
   geom_point() +
   lims(x = c(0, 3100), y = c(0, 3100))
-
-ggplot(HDS, aes(PC1_model_fit, PC1_model_residual)) +
-  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
-  geom_point()
-
-ggplot(HDS, aes(lon, lat, fill = PC1_model_residual)) +
-  geom_tile() +
-  facet_grid(~region, scales = "free") +
-  scale_fill_viridis_c()
-
-ggplot(QDS, aes(lon, lat, fill = PC1_model_residual)) +
-  geom_tile() +
-  facet_grid(~region, scales = "free") +
-  scale_fill_viridis_c()
-
-op <- par()
-par(mfrow = c(2, 2))
-combined_region_HDS_models %>%
-  filter(predictor == "PC1" & region_term == "none") %>%
-  pull(model) %>%
-  extract2(1) %>%
-  plot()
-par(op)
 ```

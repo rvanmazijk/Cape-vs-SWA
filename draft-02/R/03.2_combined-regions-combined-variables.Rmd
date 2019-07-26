@@ -121,3 +121,30 @@ ggplot(models_summary_for_plot) +
     strip.text.x = element_text(angle =  0, hjust = 0)
   )
 ```
+
+```{r map-combined-region-multivariate-model-residuals, fig.width=6, fig.height=5, fig.cap="..."}
+HDS$multivariate_model_residual <- residuals(m_HDS_richness)
+HDS$multivariate_model_fit      <- fitted.values(m_HDS_richness)
+
+QDS$multivariate_model_residual <- residuals(m_QDS_richness)
+QDS$multivariate_model_fit      <- fitted.values(m_QDS_richness)
+
+HDS_map <- ggplot(HDS, aes(lon, lat, fill = multivariate_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["HDS"])) +
+  theme(axis.title.x = element_blank()) +
+  lon_scale
+
+QDS_map <- ggplot(QDS, aes(lon, lat, fill = multivariate_model_residual)) +
+  geom_tile() +
+  facet_grid(~region, scales = "free") +
+  labs(x = "Longitude (º)", y = "Latitude (º)") +
+  scale_fill_viridis_c(name = bquote("Residual"~italic("S")["QDS"])) +
+  theme(strip.text  = element_blank()) +
+  lon_scale
+
+plot_grid(HDS_map, QDS_map, nrow = 2)
+```
+
