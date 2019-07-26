@@ -1,6 +1,6 @@
 ## 3.1. Separate environmental variable models
 
-Tables 4 and 5 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of each of the three response variables ($S_{\mathrm{HDS}}$, $S_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}} / S_{\mathrm{HDS}}$ respectively). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
+Tables 4 and 5 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of vascular plant species richness at the HDS-scale ($S_{\mathrm{HDS}}$) and QDS-scale ($S_{\mathrm{QDS}}$). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
 
 For $S_{\mathrm{HDS}}$ (Table 4), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
 
@@ -13,9 +13,7 @@ For $S_{\mathrm{HDS}}$ (Table 4), there is evidence for a great difference in th
 At the QDS-scale, concerning $S_{\mathrm{QDS}}$ (Table 6), it is noteworthy that all axes best-supported to have an additive region term only also had non-significant roughness-effects [expand?].
 -->
 
-In Tables 4 and 5, I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ (also see Figure 4) and $S_{\mathrm{QDS}}$. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
-
-It is worth noting that PC1 is representatve of (ca. 45% of) the multivariate trends of species richness and turnover versus environmental heterogeneity. Some of the individual roughness variables show similar trends, some not, and to varying extents [expand].
+I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ (also see Figure 4) and $S_{\mathrm{QDS}}$. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
 
 ```{r helper-functions}
 fit_combined_region_models <- function(response) {
@@ -246,7 +244,7 @@ HDS_QDS %>%
     )
 ```
 
-```{r map-combined-region-PC1-model-residuals, fig.width=6, fig.height=5, fig.cap="..."}
+```{r map-combined-region-PC1-model-residuals, fig.width=6, fig.height=5, fig.cap="Residuals from the models in Figure 4, mapped geographically."}
 HDS$PC1_model_residual <- combined_region_HDS_models %>%
   filter(predictor == "PC1" & region_term == "none") %>%
   pull(model) %>%

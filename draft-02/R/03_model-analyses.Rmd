@@ -45,7 +45,7 @@ roughness_cells <- function(x) {
 }
 ```
 
-For all analyses in this section, roughness values were $log(x + 1)$-transformed to ensure normality for linear regressions. Indeed, I also repeated the PCA on these transformed data. The PC1 values from this PCA are used in the analyses in this section.
+For all analyses in this section, roughness values were $log(x + 1)$-transformed to ensure residual normality for linear regressions. Indeed, I also repeated the PCA on these transformed data. The PC1 values from this PCA are used in the analyses in this section.
 
 In order to understand the relationships between environmental heterogeneity and species richness and turnover, and how those relationships differ between the GCFR and the SWAFR, I fit both simple and multiple linear regression models of $S_{\mathrm{HDS}}$ and $S_{\mathrm{QDS}}$ as functions of environmental roughness values. The rationale behind the univariate models is to describe empirical patterns of covariance between roughness axes and species richness. The multivariate models allow us to account for differences in richness across multiple roughness axes.
 
