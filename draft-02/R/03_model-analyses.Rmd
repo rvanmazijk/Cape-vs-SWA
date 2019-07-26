@@ -78,9 +78,10 @@ In order to understand the relationships between environmental heterogeneity and
 ## Conclusion: Logging can't solve everything!
 ```
 
+<!--
 The PCA used here, done only at the QDS- and HDS-scales, looks almost exactly like the ones in Figure 1 for those scales:
 
-```{r plot-this-PCA}
+```{r plot-this-PCA, eval=FALSE}
 PCA_data <- rbind(
   cbind(scale = "HDS", HDS[, c("lon", "lat", "region", "PC1", "PC2")]),
   cbind(scale = "QDS", QDS[, c("lon", "lat", "region", "PC1", "PC2")])
@@ -98,6 +99,7 @@ ggplot(PCA_data, aes(lon, lat, colour = PC1)) +
 ```
 
 That's encouraging!
+-->
 
 ```{r combined-regions-separate-variables, child="03.1_combined-regions-separate-variables.Rmd"}
 ```

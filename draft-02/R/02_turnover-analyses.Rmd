@@ -42,7 +42,7 @@ HDS_QDS <- as_tibble(rbind(
 ))
 ```
 
-```{r plot-richness-and-turnover-maps}
+```{r plot-richness-and-turnover-maps, eval=FALSE}
 richness_data <- rbind(
   QDS %>%
     dplyr::select(lon, lat, region, QDS_richness) %>%
