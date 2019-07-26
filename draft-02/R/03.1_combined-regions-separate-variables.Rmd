@@ -124,10 +124,10 @@ compare_combined_region_models_SUMMARY <- function(models, response = NULL) {
     filter(best_model) %>%
     mutate(
       model_type = case_when(
-        region_term == "none"                        ~ "Main effect",
+        region_term == "none"                        ~ "Main effect only",
         region_term == "add" & slope_p_value <  0.05 ~ "Main effect + region",
         region_term == "add" & slope_p_value >= 0.05 ~ "Region only",
-        region_term == "int"                         ~ "Region interaction"
+        region_term == "int"                 ~ "Main effect $\\times$ region"
       ),
       predictor = predictor %>%
         str_remove_all("_roughness") %>%
