@@ -1,0 +1,90 @@
+---
+bibliography: Cape-vs-SWA.bib
+csl: journal-of-biogeography.csl
+link-citations: true
+---
+
+# Materials and methods
+
+<!--
+Following a chat w. Tony (on 2019-08-08), the structure in the introduction to be mirrored across the rest of the ms is as follows:
+
+1. Comparison of regions' physical heterogeneity 
+2. Comparison of regions' species richness & its decomposition
+3. Heterogeneity as an explanation of species richness
+
+NOTE: Re: 3., **not** species turnover---we have abandoned, rightly, that analysis due to it's circularity/redundancy in light of the species richness analysis.
+-->
+
+## Comparing regions' environmental heterogeneity
+
+In order to compare the EH in both regions, we acquired a broad suite of geospatially-explicit environmental data, in the form of raster layers, for both regions (Table 1). The GCFR was treated here as the area occupied by the Succulent Karoo and Fynbos biomes in the current delineation of South Africa's biome boundaries [@Mucina2006]. The SWAFR was treated as the areas occupied by the Southwest Australia savanna, Swan Coastal Plain Scrub and Woodlands, Jarrah-Karri forest and shrublands, Southwest Australia woodlands, Esperance mallee, and Coolgardie woodlands in the World Wildlife Fund Terrestrial Ecoregions dataset [@Olson2001] in order to closely match the currently delineated SWAFR [@Gioia2017, @Hopper2004].
+
+We used satellite-derived environmental data as far as possible in this work to minimise differences in data quality and methodologies between the GCFR and SWAFR. SRTM and MODIS are entirely derived from satellite measurements (refs), whereas CHIRPS is interpolated from weather station data with satellite-derived radiometric measurements (refs). SoilGrids250m is a machine-learning derived product, based on soil measurements as a function of many covariates, including MODIS and STRM sources, using gradient-boosting [see @Hengl2017; other refs]. For the soil data used here, we used the depth-interval weighted average values for each particular soil variable. We summarised climatic and spectral data with their mean annual values. Pronounced seasonality of rainfall is a known feature of mediterranean systems (ref). Consequently, we describe this seasonality by computing computing the precipitation in the driest quarter (PDQ), as in the "biovars" function in the R package "dismo" (ref). These data were re-projected to a common coordinate reference system (WGS84; ref) using the "rgdal" [@Bivand2017] package in R [@RCoreTeam2018]. All data were then re-sampled to 0.05º resolution using the "resample" function in the R package "raster" [@Hijmans2016], with the "bilinear" method.
+
+We developed an index of EH that would account for the spatial configuration of different environmental conditions. Our environmental "roughness" index, as applied to raster data, employs a function of a moving-window of nine pixels (i.e. eight neighbours about a focal pixel $x^*$). Our index represents the average magnitude of the difference between pixels' conditions and that of their neighbours, as follows:
+
+$$
+  Roughness(x^*) =
+    f \left( \begin{matrix}
+      x_1 & x_2 & x_3 \\
+      x_4 & x^* & x_5 \\
+      x_6 & x_7 & x_8
+    \end{matrix} \right) =
+    \frac{1}{8} \sum_i |x^* - x_i|,
+$$
+
+when a pixel has eight neighbours. We only applied this index when pixels had at least one neighbour pixel. We implemented this using the "focal" function in the R package "raster" [@Hijmans2016].
+
+Accounting for the spatial scale of measurements is an important consideration in ecological studies (refs). As such, we compared EH in both regions across five principal spatial scales: 0.05º x 0.05º squares (the finest common resolution among the environmental data sources used), eighth degree squares (EDS), quarter degree squares (QDS), half degree squares (HDS) and three-quarter degree squares (3QDS) [sensu @Larsen2009]. To do this, the absolute environmental raster data were aggregated to broader spatial scales from 0.05º x 0.05º, using the "aggregate" function in the R package "raster" [@Hijmans2016], and then converted to rasters of "roughness" using Equation 1. 
+
+Finally, we also summarised the overall EH in both regions using principle component analysis (PCA). At each of the five scales, rasters of EH were ordinated following log(x + 1)-transformations to ensure normality. The first principle component (PC1) from each of the five PCAs represents the major axis of heterogeneity among the environmental axes considered here. We then also compared these PC1-values between both regions.
+
+## Comparing and decomposing regions' species richness
+
+In order to compare the species richness and turnover of both regions' floras, we downloaded geospatially-explicit records of vascular plant occurrences from the Global Biodiversity Information Facility (GBIF, see Table 1). Queries were made for tracheophyte records from within the borders of the GCFR and SWAFR as treated here. Only records with defined species and intra-specific ranks were kept. Intra-specific occurrences were treated as simply being representative of their species. This resulted in XXX and XXX unique species names in the GCFR and SWAFR respectively.
+
+We cleaned these data using the R package "taxise" [@Chamberlain2016; @R-taxize] to check that these species names had accepted-status among taxonomic databases. We queried two major taxonomic databases: the Global Name Resolver (GNR) and the Taxonomic Name Resolution Service (TNRS). Should either one of these services return at least one match for a given name, then that name was accepted. Those names for which no full binomial matches were found in either database were excluded from the final list of species. The number of species names excluded totalled at XXX and XXX for the GCFR and SWAFR respectively. Especially for the SWAFR, these numbers may be deemed appreciably high. But, the occurrence records that would be dropped, as a consequence of these names' removals, appeared randomly distributed in geographic space in both regions <!-- TODO: make this map? or at least quote a stat..? -->. As such, any effect of the loss of these records in this analysis is likely uniform within the two regions. After the unaccepted names were removed, it was important to ensure that a species was not listed under multiple synonyms in different areas. Such cases would skew estimates of species richness and turnover in this study. In light of this, the remaining names were queried in the Tropicos and Integrated Taxonomic Information System (ITIS) databases for their known synonyms, again using "taxize". These were used to amend species' names in the occurrence dataset. We also removed all records of invasive alien or non-indigenous species from both regions, based on existing lists of invasive plants for South Africa and Australia from the IUCN's Global Invasive Species Database (<http://www.iucngisd.org/gisd/>). The final total plant species richness in each region was XXX and XXX for the GCFR and SWAFR respectively.
+
+We converted these final collections of species occurrence records to raster-layers in R, where pixels' values represent he species richness of vascular plants. These rasters were produced at the QDS, HDS and 3QDS [sensu @Larsen2009] scales only, as most plant locality data is only recorded to the QDS-scale. These richness values (_S_) were compared across both regions. Additionally, we decomposed the richness of pixels (e.g. $S_{\mathrm{HDS}}$), following Whittaker's (ref) original additive formulation of $\gamma$-diversity ($\gamma = \alpha + \beta$). The difference between a pixel's richness and the average richness of its constituent pixels (e.g. $\overline{S}_{\mathrm{QDS}}$) represents the floristic turnover ($T_{\mathrm{QDS}}$), as follows from:
+
+$$
+   S_{\mathrm{HDS}} = \overline{S}_{\mathrm{QDS}} + T_{\mathrm{QDS}}.
+$$
+
+## Environmental heterogeneity as an explanation of species richness
+
+We investigate the explanatory power of various forms of EH with linear models of species richness as a function of EH. [...]
+
+<!--
+Here I fit various linear regressions of richness and turnover as functions of environmental heterogeneity across the two regions. The richness and turnover measures used are the same as in the previous section, while the environmental heterogeneity was recalculated in the same grid-wise fashion as the richness and turnover measures. These analyses were carried out at both the HDS- and QDS-scales, insofar as species occurrence data from GBIF is only accurate to the QDS-scale. These analyses were only carried out on HDS-scale data for HDS-cells that contained four QDS-cells, and similarly for QDS-scale data for QDS-cells that contained four EDS-cells.
+-->
+
+Environmental "roughness" here was re-calculated for each HDS- and QDS-cell [sensu @Larsen2009] in both regions as the mean of each consituent QDS- and EDS-cell's mean absolute difference in environmental conditions from the other three cells within that HDS- or QDS-cell.
+
+In other words, roughness was calculated by first calculating the average absolute-difference in environmental values between each QDS and it's three neighbours in a given HDS. Then, these four values (assuming four QDS in an HDS) are averaged. This roughness index is presented mathematically below. This index allows each of the four values to be similarly independent, and thus more sutiable for our averaging and analyses, as opposed to if it were simly the direct average of pairwise differences [expand?].
+
+$$
+  Roughness_{cellular}(\{ x_1, x_2, x_3, x_4 \}) =
+    \frac{1}{4} \sum_i f(x_i) =
+    \frac{1}{4} \sum_i \left(
+      \frac{1}{3} \sum_{j \neq i} |x_i - x_j|
+    \right)
+$$
+
+| Dataset                   | Source                          | Temporal extent        | Citation(s)         |
+|:--------------------------|:--------------------------------|:-----------------------|:--------------------|
+| Elevation                 | SRTM v2.0                       |                        | @Farr2007           |
+| NDVI                      | MODIS (MOD13C2)                 | Feb. 2000 to Apr. 2017 | @MOD13C2            |
+| Surface temperature       | MODIS (MOD11C3)                 | Feb. 2000 to Apr. 2017 | @MOD11C3            |
+| MAP                       | CHIRPS v2.0                     | Jan. 1981 to Feb. 2017 | @Funk2015           |
+| PDQ                       | CHIRPS v2.0                     | Jan. 1981 to Feb. 2017 | @Funk2015           |
+| CEC                       | SoilGrids250m ("CECSOL M 250m") |                        | @Hengl2017          |
+| Clay                      | SoilGrids250m ("CLYPPT M 250m") |                        |                     |
+| Soil carbon               | SoilGrids250m ("OCDENS M 250m") |                        |                     |
+| pH                        | SoilGrids250m ("PHIKCL M 250m") |                        |                     |
+| Plant species occurrences | GBIF                            | <!-- Needed? -->       | @GBIFCape, @GBIFSWA |
+
+Table: Georeferenced environmental data and vascular plant species occurence data sources used in this study. Data were acquired for the GCFR and SWAFR regions, with the temporal extent of data products used described where applicable. Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity. <!-- The environmental data used in this study were derived from NASA's SRTM digital elevation model [@Farr2007], NASA's MODIS/Terra spectroradiometric data for land surface temperature and NDVI, the Climate Hazards Group's CHIRPS rainfall dataset [@Funk2015], and the International Soil Reference and Information Centre's SoilGrids250m edaphic dataset [@Hengl2017; Table 1] -->
+
+## References
