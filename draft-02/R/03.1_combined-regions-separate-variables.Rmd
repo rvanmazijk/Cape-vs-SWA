@@ -239,7 +239,7 @@ HDS_QDS %>%
     facet_grid(~scale) +
     theme(
       legend.background = element_rect(fill = NA),
-      axis.text.y       = element_text(angle = 90),
+      axis.text.y       = element_text(angle = 90, hjust = 0.5),
       strip.text        = element_text(hjust = 0)
     )
 ```
