@@ -187,8 +187,8 @@ partition_plot <- partition_plot + theme(legend.position = "none")
 label1500 <- bquote(italic("S")["HDS"] == 1500)
 partition_plot <- partition_plot + geom_text(
   data = tibble(
-    add_turnover      = c( 10,   10,        10,  360,  860, 1360),
-    mean_QDS_richness = c(500, 1000,      1500, 1650, 1650, 1650),
+    add_turnover      = c( 10,   10,        60,  360,  860, 1360),
+    mean_QDS_richness = c(500, 1000,      1450, 1650, 1650, 1650),
     HDS_richness      = c(500, 1000, label1500, 2000, 2500, 3000)
   ),
   mapping = aes(add_turnover, mean_QDS_richness, label = HDS_richness),
@@ -203,6 +203,6 @@ plot_grid(
   hist_plots,
   my_legend,
   nrow = 1,
-  rel_widths = c(1, 2, 0.5)
+  rel_widths = c(1.15, 2, 0.5)
 )
 ```
