@@ -1,7 +1,9 @@
 ---
-bibliography: Cape-vs-SWA.bib
-csl: journal-of-biogeography.csl
-link-citations: true
+output: 
+  word_document:
+    reference_docx : style.docx
+bibliography       : Cape-vs-SWA.bib
+csl                : journal-of-biogeography.csl
 ---
 
 # Materials and methods
@@ -49,7 +51,7 @@ We cleaned these data using the R package "taxise" [@Chamberlain2016; @R-taxize]
 We converted these final collections of species occurrence records to raster-layers in R, where pixels' values represent he species richness of vascular plants. These rasters were produced at the QDS, HDS and 3QDS [sensu @Larsen2009] scales only, as most plant locality data is only recorded to the QDS-scale. These richness values (_S_) were compared across both regions. Additionally, we decomposed the richness of pixels (e.g. $S_{\mathrm{HDS}}$), following Whittaker's (ref) original additive formulation of $\gamma$-diversity ($\gamma = \alpha + \beta$). The difference between a pixel's richness and the average richness of its constituent pixels (e.g. $\overline{S}_{\mathrm{QDS}}$) represents the floristic turnover ($T_{\mathrm{QDS}}$), as follows from:
 
 $$
-   S_{\mathrm{HDS}} = \overline{S}_{\mathrm{QDS}} + T_{\mathrm{QDS}}.
+  S_{\mathrm{HDS}} = \overline{S}_{\mathrm{QDS}} + T_{\mathrm{QDS}}.
 $$
 
 ## Environmental heterogeneity as an explanation of species richness
@@ -65,7 +67,10 @@ Environmental "roughness" here was re-calculated for each HDS- and QDS-cell [sen
 In other words, roughness was calculated by first calculating the average absolute-difference in environmental values between each QDS and it's three neighbours in a given HDS. Then, these four values (assuming four QDS in an HDS) are averaged. This roughness index is presented mathematically below. This index allows each of the four values to be similarly independent, and thus more sutiable for our averaging and analyses, as opposed to if it were simly the direct average of pairwise differences [expand?].
 
 $$
-  Roughness_{cellular}(\{ x_1, x_2, x_3, x_4 \}) =
+  Roughness \left( \begin{matrix}
+    x_1 & x_2 \\
+    x_3 & x_4
+  \end{matrix} \right) =
     \frac{1}{4} \sum_i f(x_i) =
     \frac{1}{4} \sum_i \left(
       \frac{1}{3} \sum_{j \neq i} |x_i - x_j|
