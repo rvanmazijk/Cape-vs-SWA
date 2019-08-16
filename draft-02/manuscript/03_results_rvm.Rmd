@@ -10,15 +10,18 @@ csl                : journal-of-biogeography.csl
 
 ## Comparing regions' environmental heterogeneity
 
-We compared both the various forms of EH's values and PC1 of EH between the GCFR and SWAFR using common language effect sizes (_CLES_; ref). The _CLES_ of GCFR vs SWAFR heterogeneity values was regressed against the spatial scale at which it was calculated using OLS linear regression (Figure 1). PDQ, NDVI, pH and, arguably, elevation (Figure 1a,c,e,i) are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale. The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2b,d,f,h). Notably, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2g)---perhaps something to do with the Succulent Karoo vs CFR?. In general (see PC1; Figure 2j), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales. The GCFR is more finely scaled in its heterogeneity, though some variables show no scale-dependence, and heterogeneity in clay is greatest in the GCFR at broad scales.
+We compared both the various forms of EH's values and PC1 of EH between the GCFR and SWAFR using common language effect sizes (_CLES_; ref) [Move this to methods? NOTE: _CLES_ = the proportion of pairwise comparisons where the value from one category is greater than that of the other.]. The _CLES_ of GCFR vs SWAFR heterogeneity values was regressed against the spatial scale at which it was calculated using OLS linear regression (Figure 1) [Move this to methods too?]. PDQ, NDVI, pH and, arguably, elevation (Figure 1a,c,e,i) are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale. The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2b,d,f,h). Notably, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2g) [NOTE: perhaps something to do with the Succulent Karoo vs CFR? TODO: expand in discussion. TODO: add maps to go with this idea]. In general (see PC1; Figure 2j), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales. The GCFR is more finely scaled in its heterogeneity, though some variables show no scale-dependence, and heterogeneity in clay is greatest in the GCFR at broad scales.
 
 ## Comparing and decomposing regions' species richness
 
-Using Whittaker's definition of additive turnover (ref), we partitioned _S_~HDS~ into it's $\alpha$- and $\beta$-components ($\overline{S}$~QDS~ and _T_~QDS~ respectively). Using this method, we can see that almost all HDS in both the GCFR and SWAFR are composed of QDS that only account for no more than ca. 50% of _S_~HDS~ (Figure 2a). Accounting for the generally greater _S_~HDS~ in the GCFR (Figure 2b), _S_~HDS~ in the GCFR is more attributable to floristic turnover than that in the SWAFR (Figure 2c).
+Using Whittaker's definition of additive turnover (ref), we partitioned _S_~HDS~ into it's $\alpha$- and $\beta$-components ($\overline{S}$~QDS~ and _T_~QDS~ respectively). Using this method, we can see that almost all HDS in both the GCFR and SWAFR are composed of QDS that only account for no more than ca. 50% of _S_~HDS~ (Figure 2a). After accounting for the generally greater _S_~HDS~ in the GCFR (Figure 2b), _S_~HDS~ is more attributable to floristic turnover in in the GCFR than it is in the SWAFR (Figure 2c).
 
 ## Environmental heterogeneity as an explanation of species richness
 
-We regressed vascular plant species richness (_S_) against each axis of EH separately (Table 2, Figure 3) and in a multivariate model (Figure 4), at both HDS- (Table 2a, Figure 4a) and QDS-scales (Table 2b, Figure 4b). At the HDS-scale (i.e. for _S_~HDS~; Table 2a), there is evidence a difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with _S_~HDS~, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' _S_~HDS~ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
+We regressed vascular plant species richness (_S_) against each axis of EH separately (Table 2, Figure 3) and in multivariate models (Figure 4) at both HDS- (Table 2a, Figure 4a) and QDS-scales (Table 2b, Figure 4b). Heterogeneity in elevation and mean annual surface temperature were consistently positively "main effect only" across scales when considered in univariate models (Table 2). This pattern is mirrored by the major axis of EH: PC1 (Figure 3), though there is scale-dependence in the slope of that relationship. <!-- positive relationship between _S_ and PC1--> In a univariate context, all other EH-variables showed varying degrees of covariance with _S_ (Table 2).
+
+<!--
+At the HDS-scale (i.e. for _S_~HDS~; Table 2a), there is evidence for a difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with _S_~HDS~, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' _S_~HDS~ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
 
 - If there is no need for any information concerning the region a cell belongs to, then the environmental roughness "rule" is followed well across the two regions in a similar way.
 - If the region-effect is significant, but not the roughness effect, then that roughness axis isn't doing a very good job of explaining anything, and must defer to the region-effect.
@@ -28,33 +31,55 @@ We regressed vascular plant species richness (_S_) against each axis of EH separ
 At the QDS-scale (i.e. for _S_~QDS~; Table 2b), it is noteworthy that all axes best-supported to have an additive region term only also had non-significant roughness-effects [expand?].
 
 I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for _S_~HDS~ (also see Figure 3) and _S_~QDS~. Figure 3 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
+-->
 
+## Tables
+
+<!--                                                                         Model term
+                                                      ------------------------------------------------------ -->
 | Response     | Model type           | EH predictor | Slope |     | SWAFR effect |     | Slope:SWAFR |     |
 |:-------------|:---------------------|:-------------|:-----:|:----|:------------:|:----|:-----------:|:----|
-| (a) _S_~HDS~ | Main effect × region | MAP          |   +   | *** |      +       |     |      -      | **  |
-|              | Main effect + region | Clay         |   +   | *   |      -       | **  |             |     |
-|              |                      | NDVI         |   +   | *** |      -       | *   |             |     |
+| (a) _S_~HDS~ | Main effect × region | MAP          |   +   | *** |      +       |     |      --     | **  |
+|              | Main effect + region | Clay         |   +   | *   |      --      | **  |             |     |
+|              |                      | NDVI         |   +   | *** |      --      | *   |             |     |
 |              | Main effect only     | Elevation    |   +   | *** |              |     |             |     |
 |              |                      | PDQ          |   +   | *** |              |     |             |     |
 |              |                      | Soil C       |   +   | *** |              |     |             |     |
 |              |                      | Surface T    |   +   | *** |              |     |             |     |
 |              |                      | PC1          |   +   | *** |              |     |             |     |
-|              | Region only          | CEC          |   -   |     |      -       | **  |             |     |
-|              |                      | pH           |   +   |     |      -       | **  |             |     |
-| (b) _S_~QDS~ | Main effect × region | NDVI         |   +   | *** |      -       | **  |      -      | *** |
+|              | Region only          | CEC          |   --  |     |      --      | **  |             |     |
+|              |                      | pH           |   +   |     |      --      | **  |             |     |
+| (b) _S_~QDS~ | Main effect × region | NDVI         |   +   | *** |      --      | **  |      --     | *** |
 |              |                      | PDQ          |   +   | *** |      +       |     |      +      | *** |
-|              |                      | Soil C       |   +   | *** |      -       |     |      -      | **  |
+|              |                      | Soil C       |   +   | *** |      --      |     |      --     | **  |
 |              | Main effect only     | Elevation    |   +   | *** |              |     |             |     |
 |              |                      | MAP          |   +   | *** |              |     |             |     |
 |              |                      | Surface T    |   +   | *** |              |     |             |     |
 |              |                      | PC1          |   +   | *** |              |     |             |     |
-|              | Region only          | CEC          |   -   |     |      -       | *** |             |     |
-|              |                      | Clay         |   +   |     |      -       | *** |             |     |
-|              |                      | pH           |   -   |     |      -       | *** |             |     |
+|              | Region only          | CEC          |   --  |     |      --      | *** |             |     |
+|              |                      | Clay         |   +   |     |      --      | *** |             |     |
+|              |                      | pH           |   --  |     |      --      | *** |             |     |
 
-Table: Table 2: Results of univariate regressions of vascular plant species richness against various axes of EH and overall EH (PC1) across the GCFR and SWAFR, at both (a) HDS- and (b) QDS-scale. For each axis of EH, we fit three univariate models: _S_ as a function of EH, _S_ as a function of EH with an additive term describing region and _S_ as a of EH with an interaction term for region. We used Akaike's information criterion (_AIC_; ref) to select which of these three model types fit best for each EH predictor variable. In each case, the best-fitting model (those presented) was selected as the simplest model with $\Delta$_AIC_ < 2---i.e. a more complex model was only justified when it had the lowest _AIC_-score by more than 2 _AIC_-units. Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity; T, temperature.
+Table: Table 2: Results of univariate regressions of vascular plant species richness against various axes of EH and overall EH (PC1) across the GCFR and SWAFR, at both (a) HDS- and (b) QDS-scale. For each axis of EH, we fit three univariate models: _S_ as a function of EH, _S_ as a function of EH with an additive term describing region and _S_ as a of EH with an interaction term for region. We used Akaike's information criterion (_AIC_; ref) to select which of these three model types fit best for each EH predictor variable. In each case, the best-fitting model (those presented) was selected as the simplest model with _∆AIC_ < 2. <!-- I.e. a more complex model was only justified when it had the lowest _AIC_-score by more than 2 _AIC_-units --> Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity; T, temperature.
 
-![Figure 1: Simple linear regressions of the common language effect size (_CLES_; ref) of (a--i) various forms of EH and (j) the first principal component of EH (PC1), where the _CLES_ is treated as the effect of GCFR relative to SWAFR values. Only significant (_P_ ≤ 0.05) fits are plotted, with the exception of the fit for CEC, which was plotted in light of its marginal significance (_P_ = 0.06). Grey bands denote 95% confidence intervals about the fitted lines. Across the five spatial scales, all _CLES_-values differed significantly from zero following two-sided $t$-tests (_P_ < 0.001). PC1 accounted for between 43.64 and 46.40% of the variation in EH values across the five spatial scales at which it was calculated.](figures/fig-1-CLES-EH-fits.pdf)
+| Response | More important in GCFR | Common effect       | More important in SWAFR only |
+|:---------|:-----------------------|:--------------------|:-----------------------------|
+| _S_~HDS~ | MAP, clay, pH          |                     | Elevation, PDQ, CEC          |
+| _S_~QDS~ | NDVI, soil C, pH       | Elevation, MAP, CEC | PDQ, surface T               |
+
+Table: Table 4: Summary of Figure 4.
+
+| Scale-dependence | GCFR         | SWAFR |
+|:----------------:|:-------------|:------|
+|        +         | Clay, pH     |       |
+|       None       |              | CEC   |
+|        --        | NDVI, soil C | PDQ   |
+
+Table: Table 4: Interpretation of region-specific scale-dependencies in Figure 4. Positive scale-dependence (+) means a greater magnitude of effect on _S_ at broader spatial scales; negative scale-dependence (--) means a greater magnitude of effect on _S_ at smaller spatial scales.
+
+## Figures
+
+![Figure 1: Simple linear regressions of the common language effect size (_CLES_; ref) of (a--i) various forms of EH and (j) the first principal component of EH (PC1), where the _CLES_ is treated as the effect of GCFR relative to SWAFR values. Only significant (_P_ ≤ 0.05) fits are plotted, with the exception of the fit for CEC, which was plotted in light of its marginal significance (_P_ = 0.06). Grey bands denote 95% confidence intervals about the fitted lines. Across the five spatial scales, all _CLES_-values differed significantly from zero following two-sided _t_-tests (_P_ < 0.001). PC1 accounted for between 43.64 and 46.40% of the variation in EH values across the five spatial scales at which it was calculated.](figures/fig-1-CLES-EH-fits.pdf)
 
 ![Figure 2: (a) Scatter plot of mean QDS-scale richness ($\overline{S}$~QDS~) and turnover (_T_~QDS~) with contour lines denoting the _S_~HDS~ that would arise as their sum (i.e. increasing from lower-left to upper-right). Distributions of (a) HDS-scale species richness (_S_~HDS~) and (b) the turnover partition of that richness expressed as a proportion (_T_~QDS~ / _S_~HDS~). _CLES_-values inset are for comparisons where GCFR EH-values are greater than SWAFR EH-values; _P_-values inset are from Mann-Whitney _U_-tests. Not shown here, when comparing raw QDS-scale species richness values (_S_~QDS~), the results are as follows: _CLES_ = 0.60, _P_ < 0.001.](figures/fig-2-partition-richness_manual-edit.png)
 
