@@ -33,6 +33,17 @@ At the QDS-scale (i.e. for _S_~QDS~; Table 2b), it is noteworthy that all axes b
 I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for _S_~HDS~ (also see Figure 3) and _S_~QDS~. Figure 3 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
 -->
 
+Considering the multivariate models of _S_~HDS~ (Figure 4a) and _S_~QDS~ (Figure 4b), the importance of different axes of EH varies between the HDS- and QDS-scales (Table 3). At the HDS-scale, the GCFR and SWAFR share no "common effects" of EH on _S_, while at the QDS-scale the relationships between _S_ and heterogeneity in elevation, MAP and CEC are common to the two regions.
+
+<!--
+| Response | More important in GCFR | Common effect       | More important in SWAFR only |
+|:---------|:-----------------------|:--------------------|:-----------------------------|
+| _S_~HDS~ | MAP, clay, pH          |                     | Elevation, PDQ, CEC          |
+| _S_~QDS~ | NDVI, soil C, pH       | Elevation, MAP, CEC | PDQ, surface T               |
+
+Table: Summary of Figure 4.
+-->
+
 ## Tables
 
 <!--                                                                         Model term
@@ -62,20 +73,13 @@ I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1
 
 Table: Table 2: Results of univariate regressions of vascular plant species richness against various axes of EH and overall EH (PC1) across the GCFR and SWAFR, at both (a) HDS- and (b) QDS-scale. For each axis of EH, we fit three univariate models: _S_ as a function of EH, _S_ as a function of EH with an additive term describing region and _S_ as a of EH with an interaction term for region. We used Akaike's information criterion (_AIC_; ref) to select which of these three model types fit best for each EH predictor variable. In each case, the best-fitting model (those presented) was selected as the simplest model with _∆AIC_ < 2. <!-- I.e. a more complex model was only justified when it had the lowest _AIC_-score by more than 2 _AIC_-units --> Abbreviations are as follows: MAP, mean annual precipitation; PDQ, precipitation in the driest quarter; CEC, cation exchange capacity; T, temperature.
 
-| Response | More important in GCFR | Common effect       | More important in SWAFR only |
-|:---------|:-----------------------|:--------------------|:-----------------------------|
-| _S_~HDS~ | MAP, clay, pH          |                     | Elevation, PDQ, CEC          |
-| _S_~QDS~ | NDVI, soil C, pH       | Elevation, MAP, CEC | PDQ, surface T               |
-
-Table: Table 4: Summary of Figure 4.
-
 | Scale-dependence | GCFR         | SWAFR |
 |:----------------:|:-------------|:------|
 |        +         | Clay, pH     |       |
 |       None       |              | CEC   |
 |        --        | NDVI, soil C | PDQ   |
 
-Table: Table 4: Interpretation of region-specific scale-dependencies in Figure 4. Positive scale-dependence (+) means a greater magnitude of effect on _S_ at broader spatial scales; negative scale-dependence (--) means a greater magnitude of effect on _S_ at smaller spatial scales.
+Table: Table 3: Interpretation of region-specific scale-dependencies in Figure 4. Positive scale-dependence (+) means a greater magnitude of effect on _S_ at broader spatial scales; negative scale-dependence (--) means a greater magnitude of effect on _S_ at smaller spatial scales.
 
 ## Figures
 
