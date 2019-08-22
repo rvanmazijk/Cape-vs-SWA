@@ -232,8 +232,8 @@ HDS_QDS %>%
   )) %>%
   rename(scale = metric) %>%
   ggplot(aes(PC1, value)) +
-    geom_smooth(method = lm, colour = "black") +
     geom_point(aes(fill = region), shape = 21, colour = "black") +
+    geom_smooth(method = lm, colour = "black") +
     ylab(bquote(italic("S"))) +
     scale_fill_manual(name = "Region", values = c("black", translucent_white)) +
     facet_grid(~scale) +
@@ -277,7 +277,10 @@ HDS_map <- ggplot(HDS, aes(lon, lat, fill = PC1_model_residual)) +
   facet_grid(~region, scales = "free") +
   labs(x = "Longitude (º)", y = "Latitude (º)") +
   scale_fill_viridis_c(name = bquote("Residual"~italic("S")["HDS"])) +
-  theme(axis.title.x = element_blank()) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.y  = element_text(angle = 90, hjust = 0.5)
+  ) +
   lon_scale
 
 QDS_map <- ggplot(QDS, aes(lon, lat, fill = PC1_model_residual)) +
@@ -285,7 +288,10 @@ QDS_map <- ggplot(QDS, aes(lon, lat, fill = PC1_model_residual)) +
   facet_grid(~region, scales = "free") +
   labs(x = "Longitude (º)", y = "Latitude (º)") +
   scale_fill_viridis_c(name = bquote("Residual"~italic("S")["QDS"])) +
-  theme(strip.text  = element_blank()) +
+  theme(
+    axis.text.y = element_text(angle = 90, hjust = 0.5),
+    strip.text  = element_blank()
+  ) +
   lon_scale
 
 plot_grid(HDS_map, QDS_map, nrow = 2)

@@ -110,41 +110,40 @@ HDS_QDS %>%
 HDS_QDS %>%
   group_by(metric) %>%
   summarise(
-    P_GCFR  = shapiro.test(value[region == "GCFR"])$p.value,
+    P_GCFR  = shapiro.test(value[region == "GCFR" ])$p.value,
     P_SWAFR = shapiro.test(value[region == "SWAFR"])$p.value
   ) %>%
   mutate_at(c("P_GCFR", "P_SWAFR"), list(sig = ~ . < 0.05))
 ```
 
-```{r visualise-partitions, fig.width=9, fig.height=3, fig.cap="(a) Scatter plot of mean QDS-scale richness ($\\overline{S}_{\\mathrm{QDS}}$) and turnover ($T_{\\mathrm{QDS}}$) with contour lines denoting the $S_{\\mathrm{HDS}}$ that would arise as their sum (i.e. increasing from lower-left to upper-right). Distributions of (a) HDS-scale species richness ($S_{\\mathrm{HDS}}$) and (b) the turnover partition of that richness ($T_{\\mathrm{QDS}} / S_{\\mathrm{HDS}}$)."}
-hist_plots <- HDS_QDS %>%
-  filter(metric %in% c("HDS_richness", "add_turnover_prop")) %>%
-  mutate(metric = case_when(
-    metric == "HDS_richness"      ~ "italic(S)[HDS]",
-    metric == "add_turnover_prop" ~ "italic(T)[QDS]/italic(S)[HDS]"
-  )) %>%
-  mutate(metric = factor(metric, levels = c(
-    "italic(S)[HDS]",
-    "italic(T)[QDS]/italic(S)[HDS]"
-  ))) %>%
+```{r visualise-partitions, fig.width=6, fig.height=6, fig.cap="..."}
+hist_plots <- map(unique(HDS_QDS$metric), ~ HDS_QDS %>%
+  filter(metric == .x) %>%
   ggplot(aes(value, fill = region)) +
     geom_histogram(bins = 20, position = "dodge", colour = "black") +
     scale_fill_manual(name = "Region", values = c("black", "white")) +
     labs(
-      # Cheat-x-axis-labels
-      x = bquote(
-        italic("S")["HDS"]
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  # 50 spaces
-        italic("T")["QDS"]/italic("S")["HDS"]
+      x = case_when(
+        .x == "HDS_richness" ~
+          bquote(italic("S")["HDS"]),
+        .x == "QDS_richness" ~ 
+          bquote(italic("S")["QDS"]),
+        .x == "add_turnover_prop" ~
+          bquote(italic("T")["QDS"]/italic("S")["HDS"])
       ),
-      y = "No. HDS"
+      y = case_when(
+        .x == "QDS_richness" ~ "No. QDS",
+        TRUE                 ~ "No. HDS",
+      )
     ) +
-    facet_grid(~metric, scales = "free_x", labeller = label_parsed) +
     theme(
-      legend.position = "none",
-      axis.text.y     = element_text(angle = 90, hjust = 0.5),
-      strip.text      = element_blank()
+      legend.position      = c(0.9, 0.9),
+      legend.justification = c(1,   1),
+      axis.text.y          = element_text(angle = 90, hjust = 0.5)
     )
+)
+names(hist_plots) <- unique(HDS_QDS$metric)
+hist_plots[1:2] %<>% map(~.x + theme(legend.position = "none"))
 
 plot_edges <- HDS %$%
   ceiling(max(c(mean_QDS_richness, add_turnover))) + 10
@@ -177,32 +176,31 @@ partition_plot <- S_HDS_background_plot +
     mapping = aes(add_turnover, mean_QDS_richness, fill = region),
     shape   = 21
   ) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
-  guides(fill = guide_legend(override.aes = list(linetype = 0)))
-
-my_legend <- get_legend(partition_plot)
-partition_plot <- partition_plot + theme(legend.position = "none")
+  scale_fill_manual(values = c("black", "white")) +
+  theme(legend.position = "none")
 
 # Add labels to S_HDS contours manually
 label1500 <- bquote(italic("S")["HDS"] == 1500)
-partition_plot <- partition_plot + geom_text(
-  data = tibble(
-    add_turnover      = c( 10,   10,        60,  360,  860, 1360),
-    mean_QDS_richness = c(500, 1000,      1450, 1650, 1650, 1650),
-    HDS_richness      = c(500, 1000, label1500, 2000, 2500, 3000)
-  ),
-  mapping = aes(add_turnover, mean_QDS_richness, label = HDS_richness),
-  angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
-  parse = TRUE
-)
+partition_plot <- partition_plot +
+  geom_text(
+    data = tibble(
+      add_turnover      = c( 10,   10,        60,  360,  860, 1360),
+      mean_QDS_richness = c(500, 1000,      1450, 1650, 1650, 1650),
+      HDS_richness      = c(500, 1000, label1500, 2000, 2500, 3000)
+    ),
+    mapping = aes(add_turnover, mean_QDS_richness, label = HDS_richness),
+    angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
+    parse = TRUE
+  ) +
+  # Flip partition plot to get axes to line up across panels (b/o text heights)
+  coord_flip()
 
 # Plot panels
-plot_grid(
-  # Flip partition plot to get axes to line up across panels (b/o text heights)
-  partition_plot + coord_flip(),
-  hist_plots,
-  my_legend,
-  nrow = 1,
-  rel_widths = c(1.15, 2, 0.5)
+hist_plots %$% plot_grid(
+  HDS_richness,   QDS_richness,
+  partition_plot, add_turnover_prop,
+  nrow = 2,
+  labels = glue("({letters[1:4]})"),
+  label_x = 0.125, label_y = 0.975
 )
 ```
