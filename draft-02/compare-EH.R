@@ -84,7 +84,10 @@ if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
     .id = "resolution",  # for every spatial resolution,
     ~ map2_df(.x, .y,
       .id = "variable",  # for every variable in each region,
-      ~tibble(CLES_value = CLES(.y, .x))
+      ~tibble(
+        CLES_value = CLES(.y, .x),
+        P_U        = wilcox.test(.y, .x)$p.value
+      )
     )
   )
   # Save results to disc
@@ -99,7 +102,6 @@ if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
 
 # Tidy up the results
 CLES_results %<>%
-  filter(variable != "region", variable != "PC2") %>%
   mutate(resolution = case_when(
     resolution == "base" ~ 0.05,
     resolution == "EDS"  ~ 0.125,
@@ -114,24 +116,6 @@ CLES_results %<>%
     "CEC", "Clay", "Soil.C", "pH",
     "PC1"
   )))
-
-# Tested for CLES being different to 0.5 across scales
-CLES_results2 <- CLES_results %>%
-  split(.$variable) %>%
-  map(pull, CLES_value)
-# Test for normality first
-CLES_results2 %>%
-  map(shapiro.test) %>%
-  map_df(.id = "variable", tidy) %>%
-  dplyr::select(variable, p.value) %>%
-  mutate(sig = p.value < 0.05)
-# Result: All normally distributed (P ≥ 0.05)
-# Now test for different to 0.5 with two-sided t-tests
-CLES_results2 %>%
-  map(t.test, mu = 0.5) %>%
-  map_df(.id = "variable", tidy) %>%
-  dplyr::select(variable, p.value) %>%
-  mutate(sig = p.value < 0.05)
 
 # Fit linear models of CLES ~ spatial scale for each variable
 CLES_models <- CLES_results %>%
@@ -152,5 +136,58 @@ CLES_model_summaries <- CLES_models %>%
   )) %>%
   mutate_if(is.numeric, round, digits = 3) %>%
   dplyr::select(variable, estimate, p.value, sig)
-# Have a loog at the table
+# Have a look at the table
 as.data.frame(CLES_model_summaries)
+
+# Plot CLES fits ---------------------------------------------------------------
+
+# Neaten variable labels to include panel letters
+CLES_results %<>%
+  mutate(
+    variable = variable %>%
+      as.character() %>%
+      str_replace_all("\\.", " "),
+    letters = rep(letters[1:10], 5),
+    label = glue("({letters}) {variable}")
+  )
+
+# Create empty panels
+empty_plots <- ggplot(CLES_results, aes(resolution, CLES_value)) +
+  geom_hline(yintercept = 0.5, lty = "dashed") +
+  facet_wrap(~label, nrow = 2) +
+  scale_x_continuous(
+    name   = "Scale",
+    breaks = c(0.05,   0.125, 0.25,  0.50,  0.75),
+    labels = c("0.05º", "EDS", "QDS", "HDS", "3QDS")
+  ) +
+  scale_y_continuous(
+    name   = bquote(italic("CLES")~~~"(GCFR > SWAFR)"),
+    breaks = c(0.50, 0.75, 1.00)
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x     = element_text(angle = 90, vjust = 0.5),
+    axis.text.y     = element_text(angle = 90, hjust = 0.5),
+    strip.text.x    = element_text(hjust = 0)
+  )
+# Create dataset without data for NS regressions (above),
+# so that geom_smooth() can't plot for those variables
+CLES_results_sans_NS <- mutate(CLES_results,
+  CLES_value = ifelse(variable %in% c("NDVI", "PDQ", "pH"),
+    NA,
+    CLES_value
+  )
+)
+# Add fits to empty plots
+CLES_plots <- empty_plots +
+  geom_smooth(
+    data    = CLES_results_sans_NS,
+    mapping = aes(group = label),
+    method  = lm,
+    colour  = "grey25"
+  ) +
+  # Plot full dataset on top of fits for clarity
+  geom_point(data = CLES_results, aes(shape = P_U <= 0.05)) +
+  scale_shape_manual(values = c(1, 19))
+
+CLES_plots
