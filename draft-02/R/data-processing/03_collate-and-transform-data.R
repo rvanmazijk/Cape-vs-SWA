@@ -10,18 +10,6 @@ library(here)
 source(here("draft-02/R/setup.R"))
 
 # Import processed environmental data
-var_names <- c(
-  # Environmental variable names in nice order
-  "Elevation",
-  "MAP",
-  "PDQ",
-  "Surface T",
-  "NDVI",
-  "CEC",
-  "Clay",
-  "Soil C",
-  "pH"
-)
 data_dir <- here("data/derived-data/May-2019")
 GCFR_variables_masked2 <- map(var_names,
   ~raster(glue("{data_dir}/GCFR_{.x}_masked2.tif"))
