@@ -140,7 +140,10 @@ if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
     .id = "resolution",  # for every spatial resolution,
     ~ map2_df(.x, .y,
       .id = "variable",  # for every variable in each region,
-      ~tibble(CLES_value = CLES(.y, .x))
+      ~tibble(
+        CLES_value = CLES(.y, .x),
+        P_U        = wilcox.test(.y, .x)$p.value
+      )
     )
   )
   # Save results to disc
@@ -155,7 +158,6 @@ if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
 
 # Tidy
 CLES_results %<>%
-  filter(variable != "region", variable != "PC2") %>%
   mutate(resolution = case_when(
     resolution == "base" ~ 0.05,
     resolution == "EDS"  ~ 0.125,
@@ -202,17 +204,6 @@ knitr::kable(CLES_model_summaries,
   col.names = c("Variable", "Slope", "$P$", " "),
   align = "lrrc"
 )
-```
-
-```{r test-CLES-against-zero, include=FALSE}
-# Also show how I tested for CLES different to zero
-CLES_results %>%
-  split(.$variable) %>%
-  map(pull, CLES_value) %>%
-  map(t.test) %>%
-  map_df(.id = "variable", tidy) %>%
-  dplyr::select(variable, p.value) %>%
-  mutate(sig = p.value < 0.001)
 ```
 
 ```{r plot-CLES-fits, fig.cap="Simple linear regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity (a--i), and the first principal component of heterogeneity (j; see Figure 1), where the $CLES$ is treated as the effect of GCFR relative to SWAFR values. Only significant or marginally significant fits are plotted (Table 2). Grey bands denote 95% confidence intervals about the fitted lines. Across spatial scales, all $CLES$ values differed significantly from zero following two-sided $t$-tests ($P < 0.001$)."}
@@ -262,7 +253,8 @@ CLES_plots <- empty_plots +
     colour  = "grey25"
   ) +
   # Plot full dataset on top of fits for clarity
-  geom_point(data = CLES_results)
+  geom_point(data = CLES_results, aes(shape = P_U < 0.05)) +
+  scale_shape_manual(values = c(1, 19))
 
 CLES_plots
 ```

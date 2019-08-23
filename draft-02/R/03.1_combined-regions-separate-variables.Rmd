@@ -200,7 +200,7 @@ check_region_effects_all_same(combined_region_QDS_models)
 compare_combined_region_models(combined_region_QDS_models)
 ```
 
-```{r import-cellular-PCA-results, include=FALSE}
+```{r import-cellular-PCA-results, eval=FALSE}
 QDS_PCA <- read_rds(here("draft-02/outputs/EDS_roughness_cells_PCA.RDS"))
 HDS_PCA <- read_rds(here("draft-02/outputs/QDS_roughness_cells_PCA.RDS"))
 summary(QDS_PCA)$importance[2, 1]
