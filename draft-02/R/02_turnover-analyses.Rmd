@@ -73,6 +73,20 @@ ggplot(richness_data, aes(lon, lat, colour = response_value)) +
   theme(strip.text.y = element_text(angle = 0))
 ```
 
+```{r test-richness-normality, include=FALSE}
+HDS_QDS %>% 
+  group_by(metric, region) %>% 
+  summarise(
+    P_SW     = shapiro.test(value)$p.value,
+    P_SW_log = shapiro.test(log(value))$p.value
+  ) %>%
+  mutate(
+    normal     = P_SW     > 0.05, 
+    log_normal = P_SW_log > 0.05
+  )
+# Conclusion: Rather use Mann-Whitney U-test
+```
+
 ```{r test-richness-turnover-univariate}
 HDS_QDS %>%
   mutate(metric = case_when(
@@ -103,17 +117,6 @@ HDS_QDS %>%
     col.names = c("Metric", "$CLES$", "$P_U$"),
     align = "lrr"
   )
-```
-
-```{r test-richness-turnover-normality, include=FALSE}
-# Also show how I tested for metrics deviating from normality
-HDS_QDS %>%
-  group_by(metric) %>%
-  summarise(
-    P_GCFR  = shapiro.test(value[region == "GCFR" ])$p.value,
-    P_SWAFR = shapiro.test(value[region == "SWAFR"])$p.value
-  ) %>%
-  mutate_at(c("P_GCFR", "P_SWAFR"), list(sig = ~ . < 0.05))
 ```
 
 ```{r visualise-partitions, fig.width=6, fig.height=6, fig.cap="..."}
