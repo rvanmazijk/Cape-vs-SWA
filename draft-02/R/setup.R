@@ -63,8 +63,7 @@ theme_set(theme_bw() + theme(
   panel.grid = element_blank()
 ))
 
-white_rect <- grid.rect(gp = gpar(col = "white"))
-# Useful when arranging panels
+white_rect <- grid.rect(gp = gpar(col = "white")) # useful when arranging panels
 
 # Record session info ----------------------------------------------------------
 
