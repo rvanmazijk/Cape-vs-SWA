@@ -1,0 +1,1317 @@
+---
+title    : "(2^nd^) Analyses for 2^nd^ draft"
+subtitle : "GCFR vs SWAFR manuscript"
+author   : "Ruan van Mazijk"
+date     : "`r Sys.Date()`"
+output   : pdf_document
+geometry : a4paper, margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo     = TRUE,
+	fig.path = "figures/",
+	message  = FALSE,
+	warning  = FALSE
+)
+```
+
+```{r load-pkgs}
+# General programming
+library(tidyverse)
+library(here)  # for more reliable file paths
+library(glue)  # better than paste()
+library(magrittr)  # for %<>% & %$%
+
+# GIS
+library(raster)
+library(rgdal)
+
+# Analyses
+library(canprot)  # for CLES
+library(broom)  # to tidy model outputs
+
+# Figures
+library(cowplot)  # for panelling
+library(ggfortify)  # for autoplot() of PCAs
+```
+
+```{r set-global-variables}
+# Environmental variable names in nice order
+var_names <- c(
+  "Elevation",
+  "MAP",
+  "PDQ",
+  "Surface T",
+  "NDVI",
+  "CEC",
+  "Clay",
+  "Soil C",
+  "pH"
+)
+
+# Preserve clean plotting environment
+op <- par()
+
+# Global ggplot2 theme settings
+theme_set(theme_bw() + theme(
+  strip.background = element_blank(),
+  panel.grid = element_blank()
+))
+```
+
+# Preamble/outline
+
+Here I layout (another) the "new", second incarnation of the analyses as discussed in August 2019, during the writing of the second draft of the manuscript.
+
+To reiterate that manuscript, we hypothesise that the greater vascular plant species richness of the GCFR compared to that of the SWAFR is explained by the regions' difference in environmental heterogeneity.
+
+The proposed "story" of questions for the analyses is as follows:
+
+1. Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
+2. Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness (_S_~HDS~), does the explanatory power of mean QDS richness (_S_~QDS~) and turnover (_T_~QDS~) differ between the regions?
+3. Does heterogeneity explain differences in richness and turnover between the regions?
+
+# 1. Comparing regions' environmental heterogeneity
+
+Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
+
+In order to determine which region is more environmentally heterogeneous, and what scales heterogeneity is most pronounced, we calculated environmental heterogeneity at various spatial scales. We treated environmental heterogeneity (_EH_) as the variance of twentieth, eighth- (EDS), quarter- (QDS) and half- (HDS) degree-squares' environmental conditions in tenth- (TDS), QDS, HDS and one-degree-squares (DS) respectively. More generally, for pixels _X_ at some broad scale _b_, _EH_ is based on the values of the _N_ sub-pixels _x~i~_ at the finer scale _f_ as follows:
+
+$$
+  EH(X_b) = \mathrm{Var}(X_f) = \frac{1}{N} \sum_{i=1}^N ({x_f}_i - \overline{x_f})^2.
+$$
+
+For our purposes, _EH_ is thus defined for the nine environmental variables _X_ at the four spatial scales as follows:
+
+$$
+  EH(X_\mathrm{DS}) = \mathrm{Var}(X_\mathrm{HDS}),
+$$
+
+$$
+  EH(X_\mathrm{HDS}) = \mathrm{Var}(X_\mathrm{QDS})
+$$
+
+$$
+  EH(X_\mathrm{QDS}) = \mathrm{Var}(X_\mathrm{EDS})
+$$
+
+$$
+  EH(X_\mathrm{TDS}) = \mathrm{Var}(X_{\frac{1}{20}\mathrm{DS}})
+$$
+
+...
+
+```{r import-processed-environmental-data}
+data_dir <- here("data/derived-data/May-2019")
+GCFR_file_names  <- glue("{data_dir}/GCFR_{var_names}_masked2.tif")
+SWAFR_file_names <- glue("{data_dir}/SWAFR_{var_names}_masked2.tif")
+GCFR_variables  <- stack(GCFR_file_names)
+SWAFR_variables <- stack(SWAFR_file_names)
+names(GCFR_variables)  <- str_replace_all(var_names, " ", "_")
+names(SWAFR_variables) <- str_replace_all(var_names, " ", "_")
+GCFR_variables
+SWAFR_variables
+```
+
+```{r plot-0.05-environmental-data}
+par(mfrow = c(3, 3))
+plot(GCFR_variables)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(SWAFR_variables)
+par(op)
+```
+
+```{r resample-environmental-data-from-0.05-to-EDS}
+EDS_template_raster <- GCFR_variables$Elevation %>%
+  aggregate(fact = 5) %>%  # aggregate up to QDS
+  disaggregate(fact = 2)   # disaggregate down to EDS
+GCFR_variables_EDS <- resample(
+  GCFR_variables, EDS_template_raster,
+  method = "bilinear"
+)
+GCFR_variables_EDS
+
+EDS_template_raster <- SWAFR_variables$Elevation %>%
+  aggregate(fact = 5) %>%
+  disaggregate(fact = 2)
+SWAFR_variables_EDS <- resample(
+  SWAFR_variables, EDS_template_raster,
+  method = "bilinear"
+)
+SWAFR_variables_EDS
+```
+
+```{r plot-EDS-environmental-data}
+par(mfrow = c(3, 3))
+plot(GCFR_variables_EDS)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(SWAFR_variables_EDS)
+par(op)
+```
+
+```{r generate-heterogeneity-data}
+scales <- c(1, 2, 4)
+
+GCFR_heterogeneity <- map(scales,
+  ~ GCFR_variables_EDS %>%
+    aggregate(fact = .x) %>%
+    aggregate(fun = var)
+)
+names(GCFR_heterogeneity) <- c("QDS", "HDS", "DS")
+GCFR_heterogeneity %<>% {c(point1 = aggregate(GCFR_variables, fun = var), .)}
+
+SWAFR_heterogeneity <- map(scales,
+  ~ SWAFR_variables_EDS %>%
+    aggregate(fact = .x) %>%
+    aggregate(fun = var)
+)
+names(SWAFR_heterogeneity) <- c("QDS", "HDS", "DS")
+SWAFR_heterogeneity %<>% {c(point1 = aggregate(SWAFR_variables, fun = var), .)}
+```
+
+```{r plot-heterogeneity-data}
+par(mfrow = c(3, 3))
+plot(GCFR_heterogeneity$point1)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(GCFR_heterogeneity$QDS)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(GCFR_heterogeneity$HDS)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(GCFR_heterogeneity$DS)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(SWAFR_heterogeneity$point1)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(SWAFR_heterogeneity$QDS)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(SWAFR_heterogeneity$HDS)
+par(op)
+
+par(mfrow = c(3, 3))
+plot(SWAFR_heterogeneity$DS)
+par(op)
+```
+
+```{r tidy-heterogeneity-data}
+# Join regions' datasets
+heterogeneity <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
+  ~ na.exclude(rbind(
+    cbind(region = "GCFR",  as.data.frame(log10(.x))),
+    cbind(region = "SWAFR", as.data.frame(log10(.y)))
+  ))
+)
+```
+
+```{r generate-PC1-of-EH}
+heterogeneity_PCAs <- map(heterogeneity,
+  ~ prcomp(
+    .x[, -1], 
+    center = TRUE, 
+    scale. = TRUE
+  )
+)
+map(heterogeneity_PCAs, summary)
+
+# Force PC1 scores to be positive if all vars rotations are negative
+heterogeneity_PCAs %<>% map(function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+})
+```
+
+```{r plot-PC1-of-EH}
+plot_grid(plotlist = map2(
+  .x = heterogeneity_PCAs,
+  .y = heterogeneity,
+  .f =
+    ~ autoplot(.x, data = .y, colour = "region",
+      alpha = 0.25,
+      loadings       = TRUE, loadings.colour      = "black",
+      loadings.label = TRUE, loadings.label.colour = "black",
+      loadings.label.hjust = -0.25
+    ) +
+    ggtitle(unique(.y$scale)) +
+    geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+    geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
+))
+```
+
+```{r add-PC1-to-heterogeneity-data}
+PC1s <- map(heterogeneity_PCAs, ~tibble(PC1 = .x$x[, 1]))
+heterogeneity %<>% map2(PC1s, ~cbind(.x, .y))
+```
+
+```{r CLES-analysis}
+CLES_results <- map2_dfr(
+  .x = heterogeneity %>%
+    map(filter, region == "GCFR") %>%
+    map(dplyr::select, -region),
+  .y = heterogeneity %>%
+    map(filter, region == "SWAFR") %>%
+    map(dplyr::select, -region),
+  .id = "scale",  # for every spatial scale,
+  ~ map2_df(
+    .x = .x,
+    .y = .y,
+    .id = "variable",  # for every variable in each region,
+    ~ tibble(
+      CLES_value = CLES(.y, .x),  # calculate the CLES,
+      U_test = wilcox.test(.x, .y, conf.int = TRUE) %>%  # & Mann-Whitney U-test
+        tidy() %>%
+        list()
+    )
+  )
+)
+CLES_results %<>% mutate(
+  variable = factor(variable, levels = var_names %>%
+    str_replace_all(" ", "_") %>%
+    c("PC1")
+  ),
+  scale = case_when(
+    scale == "point1" ~ 0.10,
+    scale == "QDS"    ~ 0.25,
+    scale == "HDS"    ~ 0.50,
+    scale == "DS"     ~ 1.00
+  ),
+  diff  = map_dbl(U_test, "estimate"),
+  P_U   = map_dbl(U_test, "p.value"),
+  U_low = map_dbl(U_test, "conf.low"),
+  U_upp = map_dbl(U_test, "conf.high")
+)
+CLES_results
+```
+
+```{r fit-lms-of-CLES-vs-scale-for-each-variable}
+CLES_models <- CLES_results %>%
+  split(.$variable) %>%
+  map(~lm(CLES_value ~ scale, .x))
+CLES_models$Elevation
+
+# Summarise those models
+CLES_model_summaries <- CLES_models %>%
+  map_df(.id = "variable", tidy) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(sig = case_when(
+    p.value <= 0.05 ~ "*",
+    p.value <= 0.10 ~ ".",
+    TRUE            ~ " "
+  )) %>%
+  mutate(variable = factor(variable, levels = var_names %>%
+     str_replace_all(" ", "_") %>%
+     c("PC1")
+  )) %>%
+  mutate_if(is.numeric, round, digits = 3) %>%
+  dplyr::select(variable, estimate, p.value, sig)
+CLES_model_summaries
+```
+
+```{r plot-heterogeneity-distributions}
+heterogeneity %>%  #heterogeneity_df %>%
+  bind_rows(.id = "scale") %>%
+  gather(
+    variable, heterogeneity_value,
+    -region, -scale#, -lon, -lat
+  ) %>%
+  mutate(variable = factor(variable, levels = var_names %>%
+    str_replace_all(" ", "_") %>%
+    c("PC1")
+  )) %>%
+  ggplot(aes(as.factor(scale), heterogeneity_value, fill = region)) +
+    geom_boxplot() +
+    facet_wrap(~variable, nrow = 2)
+```
+
+```{r plot-CLES}
+ggplot(CLES_results) +
+  aes(scale, CLES_value, group = variable) +
+  geom_hline(yintercept = 0.5, lty = "dashed") +
+  geom_line() +
+  geom_point(aes(shape = P_U < 0.05)) +
+  scale_shape_manual(name = bquote(italic("P"["U"]) < 0.05), values = c(1, 19)) +
+  facet_wrap(~variable, nrow = 2)
+```
+
+```{r plot-U-test-estimated-diffs}
+ggplot(CLES_results) +
+  aes(scale, diff, group = variable) +
+  geom_hline(yintercept = 0.0, lty = "dashed") +
+  geom_line() +
+  geom_errorbar(aes(ymin = U_low, ymax = U_upp), width = 0) +
+  geom_point(aes(shape = P_U < 0.05)) +
+  scale_shape_manual(name = bquote(italic("P"["U"]) < 0.05), values = c(1, 19)) +
+  facet_wrap(~variable, nrow = 2)
+```
+
+# 2. Comparing & decomposing regions' species richness
+
+<!-- From R/00_analyses.pdf
+Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness ($S_{HDS}$), does the explanatory power of mean QDS richness ($S_{QDS}$) and turnover ($T_{QDS}$) differ between the regions?
+
+To tackle this question, I compare measures of species richness and turnover between the regions. Species richness at the HDS-scale ($S_{\mathrm{HDS}}$) can be partitioned into the average richness of the constituent QDS in HDS ($\overline{S}_{\mathrm{QDS}}$) and species turnover ($T_{\mathrm{QDS}}$) defined^[following Whittaker's original additive definition: $\gamma = \alpha + \beta$] as:
+
+$$
+  T_{\mathrm{QDS}} = S_{\mathrm{HDS}} - \overline{S}_{\mathrm{QDS}}
+$$
+
+The distributions of these data are presented in Figure 3b. To test for significant differences between GCFR and SWAFR values, I use Mann-Whitney $U$-tests and $CLES$ (Table 3), as most of the variables deviate significantly from normality (Shapiro-Wilk normality test; $P < 0.05$).
+
+Additionally, a visualisation of how $S_{\mathrm{HDS}}$ is partitioned into $\overline{S}_{\mathrm{QDS}}$ and $T_{\mathrm{QDS}}$ is presented in Figure 3a.
+
+We can conclude that broad scale species richness (i.e. that at the HDS scale) is more strongly driven by turnover between areas (i.e. QDS) than so in the SWAFR.
+-->
+
+```{r more-helper-functions}
+# Assign a variable to the global environment,
+# not simply the parent environment (as with <<-),
+# with the same name
+assign_global <- function(x) {
+  assign(
+    x     = deparse(substitute(x)),
+    value = x,
+    envir = .GlobalEnv
+  )
+}
+
+# Read in and assign all polygon objects to global environment
+import_region_polygons <- function(borders_dir =
+                                     here("data/derived-data/borders")) {
+
+  # GCFR -----------------------------------------------------------------------
+
+  GCFR_border          <- readOGR(glue("{borders_dir}/GCFR_border"))
+  GCFR_border_buffered <- readOGR(glue("{borders_dir}/GCFR_border_buffered"))
+  GCFR_box             <- readOGR(glue("{borders_dir}/GCFR_box"))
+  GCFR_QDS             <- readOGR(glue("{borders_dir}/GCFR_QDS"))
+  assign_global(GCFR_border)
+  assign_global(GCFR_border_buffered)
+  assign_global(GCFR_box)
+  assign_global(GCFR_QDS)
+
+  # SWAFR ----------------------------------------------------------------------
+
+  SWAFR_border          <- readOGR(glue("{borders_dir}/SWBP_Mike-Cramer"))
+  SWAFR_border_buffered <- readOGR(glue("{borders_dir}/SWAFR_border_buffered"))
+  SWAFR_box             <- readOGR(glue("{borders_dir}/SWAFR_box"))
+  SWAFR_QDS             <- readOGR(glue("{borders_dir}/SWAFR_QDS"))
+  assign_global(SWAFR_border)
+  assign_global(SWAFR_border_buffered)
+  assign_global(SWAFR_box)
+  assign_global(SWAFR_QDS)
+
+  # FIXME: Why are these shapefile imports throwing non-fatal errors/warnings?
+  # TODO: Add GIS-std-checkers here too
+}
+
+# Include lon/lat when converting from Raster* to data.frame
+raster2df <- function(r) {
+  lon_lat <- xyFromCell(r, 1:ncell(r))
+  colnames(lon_lat) <- c("lon", "lat")
+  df <- as.data.frame(log10(r))
+  df <- cbind(lon_lat, df)
+  df
+}
+
+```
+
+```{r import-region-polygons}
+import_region_polygons()
+Larsen_grid <- rbind(GCFR_QDS, SWAFR_QDS)
+Larsen_grid$hdgc <- str_remove(Larsen_grid$qdgc, ".$")
+Larsen_grid$dgc  <- str_remove(Larsen_grid$hdgc, ".$")
+```
+
+```{r}
+heterogeneity_w_coords <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
+  ~ na.exclude(rbind(
+    cbind(region = "GCFR",  raster2df(.x)),
+    cbind(region = "SWAFR", raster2df(.y))
+  ))
+)
+heterogeneity <- map2(heterogeneity, heterogeneity_w_coords, full_join)
+
+heterogeneity$QDS$QDS <- heterogeneity$QDS %$%
+  SpatialPoints(
+    coords      = data.frame(x = lon, y = lat),
+    proj4string = crs(Larsen_grid)
+  ) %over%
+  Larsen_grid %>%
+  pull(qdgc)
+
+heterogeneity$HDS$HDS <- heterogeneity$HDS %$%
+  SpatialPoints(
+    coords      = data.frame(x = lon, y = lat),
+    proj4string = crs(Larsen_grid)
+  ) %over%
+  Larsen_grid %>%
+  pull(hdgc)
+
+heterogeneity$DS$DS <- heterogeneity$DS %$%
+  SpatialPoints(
+    coords      = data.frame(x = lon, y = lat),
+    proj4string = crs(Larsen_grid)
+  ) %over%
+  Larsen_grid %>%
+  pull(dgc) 
+```
+
+```{r}
+GCFR_species_occ <- read_rds(here(
+  "data/derived-data/flora",
+  "trimmed_GCFR_clean_flora_spdf_species"
+))
+SWAFR_species_occ <- read_rds(here(
+  "data/derived-data/flora",
+  "trimmed_SWAFR_clean_flora_spdf_species"
+))
+species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
+
+species_occ$QDS <- species_occ %over%
+  Larsen_grid %>%
+  pull(qdgc)
+species_occ@data$QDS %<>% as.character()
+species_occ$HDS <- str_remove(species_occ$QDS, ".$")
+species_occ$DS  <- str_remove(species_occ$HDS, ".$")
+
+QDS_richness <- species_occ@data %>%
+  group_by(QDS) %>%
+  summarise(QDS_richness = length(unique(species)))
+mean_QDS_richness <- QDS_richness %>%
+  mutate(HDS = str_remove(QDS, ".$")) %>%
+  group_by(HDS) %>%
+  summarise(mean_QDS_richness = mean(QDS_richness))
+HDS_richness <- species_occ@data %>%
+  group_by(HDS) %>%
+  summarise(HDS_richness = length(unique(species)))
+mean_HDS_richness <- HDS_richness %>%
+  mutate(DS = str_remove(HDS, ".$")) %>%
+  group_by(DS) %>%
+  summarise(mean_HDS_richness = mean(HDS_richness))
+mean_QDS_richness2 <- QDS_richness %>%
+  mutate(DS = str_remove(QDS, ".{2}$")) %>%
+  group_by(DS) %>%
+  summarise(mean_QDS_richness2 = mean(QDS_richness))
+DS_richness <- species_occ@data %>%
+  group_by(DS) %>%
+  summarise(DS_richness = length(unique(species)))
+
+data <- heterogeneity[-1]
+data$QDS %<>%
+  as_tibble() %>%
+  full_join(QDS_richness) %>%
+  na.exclude()
+data$HDS %<>%
+  as_tibble() %>%
+  full_join(mean_QDS_richness) %>%
+  full_join(HDS_richness) %>%
+  na.exclude() %>%
+  mutate(
+    QDS_turnover      = HDS_richness - mean_QDS_richness,
+    QDS_turnover_prop = QDS_turnover / HDS_richness
+  )
+data$DS %<>%
+  as_tibble() %>%
+  full_join(mean_HDS_richness) %>%
+  full_join(mean_QDS_richness2) %>%
+  full_join(DS_richness) %>%
+  na.exclude() %>%
+  mutate(
+    HDS_turnover       = DS_richness - mean_HDS_richness,
+    HDS_turnover2      = DS_richness - mean_QDS_richness2,
+    HDS_turnover_prop  = HDS_turnover/DS_richness,
+    HDS_turnover2_prop = HDS_turnover2/DS_richness
+  )
+```
+
+```{r}
+m1 <- lm(QDS_richness ~ PC1, data$QDS)
+m2 <- lm(log(QDS_richness) ~ PC1, data$QDS)
+m3 <- lm(log10(QDS_richness) ~ PC1, data$QDS)
+AIC(m1, m2, m3)
+# Choose m3
+m4 <- lm(log10(QDS_richness) ~ PC1 + region, data$QDS)
+m5 <- lm(log10(QDS_richness) ~ PC1 * region, data$QDS)
+AIC(m3, m4, m5)
+# Choose m4
+visreg::visreg(m4,
+  xvar = "PC1", by = "region", overlay = TRUE,
+  gg = TRUE
+)
+#ggplot(data$QDS, aes(PC1, QDS_richness)) +
+#  geom_smooth(method = lm, formula = y ~ x + colour) +
+#  geom_point(aes(colour = region)) +
+#  scale_y_log10()
+
+m1 <- lm(HDS_richness ~ PC1, data$HDS)
+m2 <- lm(log(HDS_richness) ~ PC1, data$HDS)
+m3 <- lm(log10(HDS_richness) ~ PC1, data$HDS)
+AIC(m1, m2, m3)
+# Choose m3
+m4 <- lm(log10(HDS_richness) ~ PC1 + region, data$HDS)
+m5 <- lm(log10(HDS_richness) ~ PC1 * region, data$HDS)
+AIC(m3, m4, m5)
+# Choose m4
+visreg::visreg(m4,
+  xvar = "PC1", by = "region", overlay = TRUE,
+  gg = TRUE
+)
+#ggplot(data$HDS, aes(PC1, HDS_richness, colour = region)) +
+#  geom_smooth(method = lm, formula = y ~ x) +
+#  geom_point() +
+#  scale_y_log10()
+
+m1 <- lm(DS_richness ~ PC1, data$DS)
+m2 <- lm(log(DS_richness) ~ PC1, data$DS)
+m3 <- lm(log10(DS_richness) ~ PC1, data$DS)
+AIC(m1, m2, m3)
+# Choose m3 (m2, but marginally, so m3 for consistency)
+m4 <- lm(log10(DS_richness) ~ PC1 + region, data$DS)
+m5 <- lm(log10(DS_richness) ~ PC1 * region, data$DS)
+AIC(m3, m4, m5)
+# Choose m3 still
+ggplot(data$DS, aes(PC1, log10(DS_richness))) +
+  geom_smooth(method = lm, colour = "black") +
+  geom_point(aes(colour = region))
+```
+
+```{r}
+ggplot(data$HDS, aes(mean_QDS_richness, QDS_turnover, colour = region)) +
+  geom_abline(intercept = 0, slope = 1) +
+  geom_point()
+ggplot(data$DS, aes(mean_HDS_richness, HDS_turnover, colour = region)) +
+  geom_abline(intercept = 0, slope = 1) +
+  geom_point()
+ggplot(data$DS, aes(mean_QDS_richness2, HDS_turnover2, colour = region)) +
+  geom_abline(intercept = 0, slope = 1) +
+  geom_point()
+```
+
+```{r}
+ggplot(data$QDS, aes(QDS_richness, fill = region)) +
+  geom_histogram(bins = 30, position = "dodge")
+
+ggplot(data$HDS, aes(HDS_richness, fill = region)) +
+  geom_histogram(bins = 20, position = "dodge")
+ggplot(data$HDS, aes(QDS_turnover_prop, fill = region)) +
+  geom_histogram(bins = 20, position = "dodge")
+
+ggplot(data$DS, aes(DS_richness, fill = region)) +
+  geom_histogram(bins = 10, position = "dodge")
+ggplot(data$DS, aes(HDS_turnover_prop, fill = region)) +
+  geom_histogram(bins = 10, position = "dodge")
+ggplot(data$DS, aes(HDS_turnover2_prop, fill = region)) +
+  geom_histogram(bins = 10, position = "dodge")
+```
+
+```{r}
+wilcox.test(QDS_richness ~ region, data$QDS)
+wilcox.test(HDS_richness ~ region, data$HDS)
+wilcox.test(DS_richness  ~ region, data$DS)
+
+wilcox.test(QDS_turnover       ~ region, data$HDS)
+wilcox.test(QDS_turnover_prop  ~ region, data$HDS)
+wilcox.test(HDS_turnover       ~ region, data$DS)
+wilcox.test(HDS_turnover_prop  ~ region, data$DS)
+wilcox.test(HDS_turnover2_prop ~ region, data$DS)
+```
+
+```{r}
+#data %>% 
+#  bind_rows(.id = "scale")
+```
+
+# 3. Environmental heterogeneity as an explanation of species richness
+
+## 3.1. Univariate models
+
+<!-- From R/00_analyses.pdf
+Tables 4 and 5 present the results of simple linear regressions of each form of environmental heterogeneity separately as predictors of vascular plant species richness at the HDS-scale ($S_{\mathrm{HDS}}$) and QDS-scale ($S_{\mathrm{QDS}}$). In each table, the "best" model (sensu $AIC$) was select as the simplest model with $\Delta AIC < 2$---i.e. a more complex model was only justified when it had the lowest $AIC$-score by more than 2 $AIC$-units.
+
+For $S_{\mathrm{HDS}}$ (Table 4), there is evidence for a great difference in the slopes of the GCFR and SWAFR's relationships with heterogeneity in MAP. Heterogneity in NDVI and clay only present evidence for the same slope in each region, but differing intercepts. Heterogeneity in CEC and pH have non-significant slopes and signficiant region-effects---suggesting that these variables values' have weak relationships with $S_{\mathrm{HDS}}$, and that the region-effect explains more of the variance. Other variables (heterogeneity in elevation, PDQ, surface T and soil C) only present evidence for a continuous effect of that heterogeneity, explaining the difference in the regions' $S_{\mathrm{HDS}}$ in terms of the roughness values themselves, without the need to invoke a region term. Think of it this way:
+
+- If there is no need for any information concerning the region a cell belongs to, then the environmental roughness "rule" is followed well across the two regions in a similar way.
+- If the region-effect is significant, but not the roughness effect, then that roughness axis isn't doing a very good job of explaining anything, and must defer to the region-effect.
+- When both the region- and roughness-effect are significant, this represents a softer version of the above, where the roughness axis can explain some variance, but not all.
+- When there is a significant interaction between region and roughness, then each region is playing a whole new game with that axes in terms of how richness is being driven.
+
+<!-
+At the QDS-scale, concerning $S_{\mathrm{QDS}}$ (Table 6), it is noteworthy that all axes best-supported to have an additive region term only also had non-significant roughness-effects [expand?].
+->
+
+I also regressed against PC1. Like heterogeneity in elevation and surface T, PC1 was the only explanatory variable "needed" in regressions for $S_{\mathrm{HDS}}$ (also see Figure 4) and $S_{\mathrm{QDS}}$. Figure 4 shows quite nicely how, in general, the GCFR and SWAFR are following the same "rule" (species richness increases with increasing environmental heterogeneity (PC1)) but occupy different areas along that relationship (the GCFR being more rich and more rough than the SWAFR).
+-->
+
+```{r}
+predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
+
+models_non_region <- map(predictor_names,
+  ~lm(paste("QDS_richness ~", .x), data$QDS)
+)
+names(models_non_region) <- predictor_names
+models_add_region <- map(predictor_names,
+  ~lm(paste("QDS_richness ~", .x, "+ region"), data$QDS)
+)
+names(models_add_region) <- predictor_names
+models_int_region <- map(predictor_names,
+  ~lm(paste("QDS_richness ~", .x, "* region"), data$QDS)
+)
+names(models_int_region) <- predictor_names
+knitr::kable(pmap_dfr(
+  .l  = list(models_non_region, models_add_region, models_int_region),
+  .id = "variable",
+  .f  = ~ AIC(..1, ..2, ..3) %>%
+    mutate(
+      model_rank = 1:3,
+      model_type = c(" ", "+", "x")[model_rank],
+      delta_AIC  = AIC - min(AIC),
+      best_model = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    dplyr::select(-df, -AIC, -model_rank, -best_model)
+))
+
+models_non_region <- map(predictor_names,
+  ~lm(paste("HDS_richness ~", .x), data$HDS)
+)
+names(models_non_region) <- predictor_names
+models_add_region <- map(predictor_names,
+  ~lm(paste("HDS_richness ~", .x, "+ region"), data$HDS)
+)
+names(models_add_region) <- predictor_names
+models_int_region <- map(predictor_names,
+  ~lm(paste("HDS_richness ~", .x, "* region"), data$HDS)
+)
+names(models_int_region) <- predictor_names
+pmap_dfr(
+  .l  = list(models_non_region, models_add_region, models_int_region),
+  .id = "variable",
+  .f  = ~ AIC(..1, ..2, ..3) %>%
+    mutate(
+      model_rank = 1:3,
+      model_type = c(" ", "+", "x")[model_rank],
+      delta_AIC  = AIC - min(AIC),
+      best_model = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    dplyr::select(-df, -AIC, -model_rank, -best_model)
+)
+
+models_non_region <- map(predictor_names,
+  ~lm(glue("DS_richness ~", .x), data$DS)
+)
+names(models_non_region) <- predictor_names
+models_add_region <- map(predictor_names,
+  ~lm(paste("DS_richness ~", .x, "+ region"), data$DS)
+)
+names(models_add_region) <- predictor_names
+models_int_region <- map(predictor_names,
+  ~lm(paste("DS_richness ~", .x, "* region"), data$DS)
+)
+names(models_int_region) <- predictor_names
+pmap_dfr(
+  .l  = list(models_non_region, models_add_region, models_int_region),
+  .id = "variable",
+  .f  = ~ AIC(..1, ..2, ..3) %>%
+    mutate(
+      model_rank = 1:3,
+      model_type = c(" ", "+", "x")[model_rank],
+      delta_AIC  = AIC - min(AIC),
+      best_model = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    dplyr::select(-df, -AIC, -model_rank, -best_model)
+)
+```
+
+## 3.2. Multivariate models
+
+...
+
+```{r}
+full_formula <- predictor_names[predictor_names != "PC1"] %>%
+  {c(., paste(., "* region"))} %>%
+  paste(collapse = " + ")
+  
+m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data$QDS)
+m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data$HDS)
+m_DS_richness  <- lm(glue("DS_richness ~ {full_formula}"), data$DS)
+
+m_QDS_richness %<>% step(direction = "backward", trace = 0)
+m_HDS_richness %<>% step(direction = "backward", trace = 0)
+m_DS_richness  %<>% step(direction = "backward", trace = 0)
+```
+
+```{r reparamaterise-models}
+# Reparameterise models to {*}:regionGCFR & {*}:regionSWAFR
+# a.o.t. {*}*region, so that the figure of the effects actually represents
+# each region, not the baseline (GCFR) and "relative SWAFR"
+# (and that would cause inconsistencies too when their is no interaction with
+# region term for a roughness variable).
+reparameterise <- function(m) {
+  response <- colnames(m$model)[[1]]
+  data <- data %$% {
+    if      (response == "QDS_richness") QDS
+    else if (response == "HDS_richness") HDS
+    else if (response == "DS_richness")  DS
+  }
+  preds_w_interactions <- m %$%
+    coefficients %>%
+    names() %>%
+    magrittr::extract(str_which(., ":regionSWAFR"))
+  reparameterisation <- preds_w_interactions %<>%
+    str_remove(":regionSWAFR") %>%
+    {glue("-{.}")} %>%
+    paste(collapse = " ")
+  update(m,
+    formula = glue(". ~ . {reparameterisation}"),
+    data    = data
+  )
+}
+# Test:
+#   a <- m_HDS_richness
+#   b <- reparameterise(m_HDS_richness)
+#   AIC(a, b) # same model! :)
+m_QDS_richness %<>% reparameterise()
+m_HDS_richness %<>% reparameterise()
+m_DS_richness  %<>% reparameterise()
+```
+
+```{r}
+models <- list(
+  QDS_richness = m_QDS_richness,
+  HDS_richness = m_HDS_richness,
+  DS_richness  = m_DS_richness
+)
+models_summary <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)")
+
+models_R2 <- models %>%
+  map_df(.id = "response", glance) %>%
+  dplyr::select(response, adj.r.squared)
+
+models_summary %<>% full_join(models_R2)
+
+glance(m_QDS_richness)
+glance(m_HDS_richness)
+glance(m_DS_richness)
+```
+
+```{r}
+models_summary_for_plot <- models_summary %>%
+  mutate(
+    response = case_when(
+      response == "QDS_richness" ~ "(a)~~italic(S)[QDS]",
+      response == "HDS_richness" ~ "(b)~~italic(S)[HDS]",
+      response == "DS_richness"  ~ "(c)~~italic(S)[DS]"
+    ),
+    region = 
+      case_when(
+        str_detect(term, "regionSWAFR") ~ "SWAFR", 
+        str_detect(term, "regionGCFR")  ~ "GCFR",
+        TRUE                            ~ "Main effect only"
+      ) %>%
+      factor(levels = c("Main effect only", "GCFR", "SWAFR")),
+    term = term %>%
+      str_replace_all("\\.", " ") %>%
+      str_remove_all("regionSWAFR:") %>%
+      str_remove_all("regionGCFR:") %>%
+      str_replace_all("regionSWAFR", "SWAFR") %>%
+      factor(levels = c(str_replace_all(var_names, " ", "_"), "SWAFR")),
+    sig = (p.value < 0.05)
+  )
+ggplot(models_summary_for_plot) +
+  aes(
+    term, estimate,
+    fill = region, group = region, shape = region,
+    alpha = sig
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(position = position_dodge(width = 0.25)) +
+  labs(x = "Term", y = "Slope") +
+  scale_fill_manual(values = c(NA, "black", "white")) +
+  scale_shape_manual(values = c(4, 21, 21)) +
+  scale_alpha_manual(values = c(0.25, 1)) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  guides(
+    fill = FALSE,
+    shape = guide_legend(
+      title = "Effect type",
+      override.aes = list(fill = c(NA, "black", "white"))
+    ), 
+    alpha = FALSE
+  ) +
+  theme(
+    axis.text.x  = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    strip.text.x = element_text(angle =  0, hjust = 0)
+  )
+```
+
+```{r}
+GCFR_heterogeneity2 <- list(
+  QDS = aggregate(GCFR_variables, fact =  5, fun = sd),
+  HDS = aggregate(GCFR_variables, fact = 10, fun = sd),
+  DS  = aggregate(GCFR_variables, fact = 20, fun = sd)
+)
+map(GCFR_heterogeneity2, plot)
+SWAFR_heterogeneity2 <- list(
+  QDS = aggregate(SWAFR_variables, fact =  5, fun = sd),
+  HDS = aggregate(SWAFR_variables, fact = 10, fun = sd),
+  DS  = aggregate(SWAFR_variables, fact = 20, fun = sd)
+)
+map(SWAFR_heterogeneity2, plot)
+# Join regions' datasets
+heterogeneity2 <- map2(GCFR_heterogeneity2, SWAFR_heterogeneity2,
+  ~ na.exclude(rbind(
+    cbind(region = "GCFR",  as.data.frame(log10(.x))),
+    cbind(region = "SWAFR", as.data.frame(log10(.y)))
+  ))
+)
+heterogeneity2_PCAs <- map(heterogeneity2,
+  ~prcomp(.x[, -1], center = TRUE, scale. = TRUE)
+)
+map(heterogeneity2_PCAs, summary)
+
+# Force PC1 scores to be positive if all vars rotations are negative
+heterogeneity2_PCAs %<>% map(function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+})
+plot_grid(plotlist = map2(
+  .x = heterogeneity2_PCAs,
+  .y = heterogeneity2,
+  .f =
+    ~ autoplot(.x, data = .y, colour = "region",
+      alpha = 0.25,
+      loadings       = TRUE, loadings.colour      = "black",
+      loadings.label = TRUE, loadings.label.colour = "black",
+      loadings.label.hjust = -0.25
+    ) +
+    ggtitle(unique(.y$scale)) +
+    geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+    geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
+))
+PC1s2 <- map(heterogeneity2_PCAs, ~tibble(PC1 = .x$x[, 1]))
+heterogeneity2 %<>% map2(PC1s2, ~cbind(.x, .y))
+CLES2_results <- map2_dfr(
+  .x = heterogeneity2 %>%
+    map(filter, region == "GCFR") %>%
+    map(dplyr::select, -region),
+  .y = heterogeneity2 %>%
+    map(filter, region == "SWAFR") %>%
+    map(dplyr::select, -region),
+  .id = "scale",  # for every spatial scale,
+  ~ map2_df(
+    .x = .x,
+    .y = .y,
+    .id = "variable",  # for every variable in each region,
+    ~ tibble(
+      CLES_value = CLES(.y, .x),  # calculate the CLES,
+      U_test = wilcox.test(.x, .y, conf.int = TRUE) %>%  # & Mann-Whitney U-test
+        tidy() %>%
+        list()
+    )
+  )
+)
+CLES2_results %<>% mutate(
+  variable = factor(variable, levels = var_names %>%
+    str_replace_all(" ", "_") %>%
+    c("PC1")
+  ),
+  scale = case_when(
+    scale == "point1" ~ 0.10,
+    scale == "QDS"    ~ 0.25,
+    scale == "HDS"    ~ 0.50,
+    scale == "DS"     ~ 1.00
+  ),
+  diff  = map_dbl(U_test, "estimate"),
+  P_U   = map_dbl(U_test, "p.value"),
+  U_low = map_dbl(U_test, "conf.low"),
+  U_upp = map_dbl(U_test, "conf.high")
+)
+CLES2_results
+
+CLES2_models <- CLES2_results %>%
+  split(.$variable) %>%
+  map(~lm(CLES_value ~ scale, .x))
+CLES2_models$Elevation
+
+# Summarise those models
+CLES2_model_summaries <- CLES2_models %>%
+  map_df(.id = "variable", tidy) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(sig = case_when(
+    p.value <= 0.05 ~ "*",
+    p.value <= 0.10 ~ ".",
+    TRUE            ~ " "
+  )) %>%
+  mutate(variable = factor(variable, levels = var_names %>%
+     str_replace_all(" ", "_") %>%
+     c("PC1")
+  )) %>%
+  mutate_if(is.numeric, round, digits = 3) %>%
+  dplyr::select(variable, estimate, p.value, sig)
+CLES2_model_summaries
+
+heterogeneity2 %>%  #heterogeneity_df %>%
+  bind_rows(.id = "scale") %>%
+  gather(
+    variable, heterogeneity_value,
+    -region, -scale#, -lon, -lat
+  ) %>%
+  mutate(variable = factor(variable, levels = var_names %>%
+    str_replace_all(" ", "_") %>%
+    c("PC1")
+  )) %>%
+  ggplot(aes(as.factor(scale), heterogeneity_value, fill = region)) +
+    geom_boxplot() +
+    facet_wrap(~variable, nrow = 2)
+
+ggplot(CLES2_results) +
+  aes(scale, CLES_value, group = variable) +
+  geom_hline(yintercept = 0.5, lty = "dashed") +
+  geom_line() +
+  geom_point(aes(shape = P_U < 0.05)) +
+  scale_shape_manual(name = bquote(italic("P"["U"]) < 0.05), values = c(1, 19)) +
+  facet_wrap(~variable, nrow = 2)
+
+ggplot(CLES2_results) +
+  aes(scale, diff, group = variable) +
+  geom_hline(yintercept = 0.0, lty = "dashed") +
+  geom_line() +
+  geom_errorbar(aes(ymin = U_low, ymax = U_upp), width = 0) +
+  geom_point(aes(shape = P_U < 0.05)) +
+  scale_shape_manual(name = bquote(italic("P"["U"]) < 0.05), values = c(1, 19)) +
+  facet_wrap(~variable, nrow = 2)
+
+heterogeneity2_w_coords <- map2(GCFR_heterogeneity2, SWAFR_heterogeneity2,
+  ~ na.exclude(rbind(
+    cbind(region = "GCFR",  raster2df(.x)),
+    cbind(region = "SWAFR", raster2df(.y))
+  ))
+)
+heterogeneity2 <- map2(heterogeneity2, heterogeneity2_w_coords, full_join)
+
+heterogeneity2$QDS$QDS <- heterogeneity2$QDS %$%
+  SpatialPoints(
+    coords      = data.frame(x = lon, y = lat),
+    proj4string = crs(Larsen_grid)
+  ) %over%
+  Larsen_grid %>%
+  pull(qdgc)
+
+heterogeneity2$HDS$HDS <- heterogeneity2$HDS %$%
+  SpatialPoints(
+    coords      = data.frame(x = lon, y = lat),
+    proj4string = crs(Larsen_grid)
+  ) %over%
+  Larsen_grid %>%
+  pull(hdgc)
+
+heterogeneity2$DS$DS <- heterogeneity2$DS %$%
+  SpatialPoints(
+    coords      = data.frame(x = lon, y = lat),
+    proj4string = crs(Larsen_grid)
+  ) %over%
+  Larsen_grid %>%
+  pull(dgc) 
+
+data2 <- heterogeneity2
+data2$QDS %<>%
+  as_tibble() %>%
+  full_join(QDS_richness) %>%
+  na.exclude()
+data2$HDS %<>%
+  as_tibble() %>%
+  full_join(mean_QDS_richness) %>%
+  full_join(HDS_richness) %>%
+  na.exclude() %>%
+  mutate(
+    QDS_turnover      = HDS_richness - mean_QDS_richness,
+    QDS_turnover_prop = QDS_turnover / HDS_richness
+  )
+data2$DS %<>%
+  as_tibble() %>%
+  full_join(mean_HDS_richness) %>%
+  full_join(mean_QDS_richness2) %>%
+  full_join(DS_richness) %>%
+  na.exclude() %>%
+  mutate(
+    HDS_turnover       = DS_richness - mean_HDS_richness,
+    HDS_turnover2      = DS_richness - mean_QDS_richness2,
+    HDS_turnover_prop  = HDS_turnover/DS_richness,
+    HDS_turnover2_prop = HDS_turnover2/DS_richness
+  )
+
+m1 <- lm(QDS_richness        ~ PC1, data2$QDS)
+m2 <- lm(log(QDS_richness)   ~ PC1, data2$QDS)
+m3 <- lm(log10(QDS_richness) ~ PC1, data2$QDS)
+AIC(m1, m2, m3)
+# Choose m3
+m4 <- lm(log10(QDS_richness) ~ PC1 + region, data2$QDS)
+m5 <- lm(log10(QDS_richness) ~ PC1 * region, data2$QDS)
+AIC(m3, m4, m5)
+# Choose m5
+visreg::visreg(m5,
+  xvar = "PC1", by = "region", overlay = TRUE,
+  gg = TRUE
+)
+#ggplot(data$QDS, aes(PC1, QDS_richness)) +
+#  geom_smooth(method = lm, formula = y ~ x + colour) +
+#  geom_point(aes(colour = region)) +
+#  scale_y_log10()
+
+m1 <- lm(HDS_richness        ~ PC1, data2$HDS)
+m2 <- lm(log(HDS_richness)   ~ PC1, data2$HDS)
+m3 <- lm(log10(HDS_richness) ~ PC1, data2$HDS)
+AIC(m1, m2, m3)
+# Choose m3
+m4 <- lm(log10(HDS_richness) ~ PC1 + region, data2$HDS)
+m5 <- lm(log10(HDS_richness) ~ PC1 * region, data2$HDS)
+AIC(m3, m4, m5)
+# Choose m4
+visreg::visreg(m4,
+  xvar = "PC1", by = "region", overlay = TRUE,
+  gg = TRUE
+)
+#ggplot(data$HDS, aes(PC1, HDS_richness, colour = region)) +
+#  geom_smooth(method = lm, formula = y ~ x) +
+#  geom_point() +
+#  scale_y_log10()
+
+m1 <- lm(DS_richness        ~ PC1, data2$DS)
+m2 <- lm(log(DS_richness)   ~ PC1, data2$DS)
+m3 <- lm(log10(DS_richness) ~ PC1, data2$DS)
+AIC(m1, m2, m3)
+# Choose m3
+m4 <- lm(log10(DS_richness) ~ PC1 + region, data2$DS)
+m5 <- lm(log10(DS_richness) ~ PC1 * region, data2$DS)
+AIC(m3, m4, m5)
+# Choose m4
+visreg::visreg(m4,
+  xvar = "PC1", by = "region", overlay = TRUE,
+  gg = TRUE
+)
+
+models_non_region <- map(predictor_names,
+  ~lm(paste("QDS_richness ~", .x), data2$QDS)
+)
+names(models_non_region) <- predictor_names
+models_add_region <- map(predictor_names,
+  ~lm(paste("QDS_richness ~", .x, "+ region"), data2$QDS)
+)
+names(models_add_region) <- predictor_names
+models_int_region <- map(predictor_names,
+  ~lm(paste("QDS_richness ~", .x, "* region"), data2$QDS)
+)
+names(models_int_region) <- predictor_names
+knitr::kable(pmap_dfr(
+  .l  = list(models_non_region, models_add_region, models_int_region),
+  .id = "variable",
+  .f  = ~ AIC(..1, ..2, ..3) %>%
+    mutate(
+      model_rank = 1:3,
+      model_type = c(" ", "+", "x")[model_rank],
+      delta_AIC  = AIC - min(AIC),
+      best_model = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    dplyr::select(-df, -AIC, -model_rank, -best_model)
+))
+
+models_non_region <- map(predictor_names,
+  ~lm(paste("HDS_richness ~", .x), data2$HDS)
+)
+names(models_non_region) <- predictor_names
+models_add_region <- map(predictor_names,
+  ~lm(paste("HDS_richness ~", .x, "+ region"), data2$HDS)
+)
+names(models_add_region) <- predictor_names
+models_int_region <- map(predictor_names,
+  ~lm(paste("HDS_richness ~", .x, "* region"), data2$HDS)
+)
+names(models_int_region) <- predictor_names
+pmap_dfr(
+  .l  = list(models_non_region, models_add_region, models_int_region),
+  .id = "variable",
+  .f  = ~ AIC(..1, ..2, ..3) %>%
+    mutate(
+      model_rank = 1:3,
+      model_type = c(" ", "+", "x")[model_rank],
+      delta_AIC  = AIC - min(AIC),
+      best_model = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    dplyr::select(-df, -AIC, -model_rank, -best_model)
+)
+
+models_non_region <- map(predictor_names,
+  ~lm(glue("DS_richness ~", .x), data2$DS)
+)
+names(models_non_region) <- predictor_names
+models_add_region <- map(predictor_names,
+  ~lm(paste("DS_richness ~", .x, "+ region"), data2$DS)
+)
+names(models_add_region) <- predictor_names
+models_int_region <- map(predictor_names,
+  ~lm(paste("DS_richness ~", .x, "* region"), data2$DS)
+)
+names(models_int_region) <- predictor_names
+pmap_dfr(
+  .l  = list(models_non_region, models_add_region, models_int_region),
+  .id = "variable",
+  .f  = ~ AIC(..1, ..2, ..3) %>%
+    mutate(
+      model_rank = 1:3,
+      model_type = c(" ", "+", "x")[model_rank],
+      delta_AIC  = AIC - min(AIC),
+      best_model = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    dplyr::select(-df, -AIC, -model_rank, -best_model)
+)
+
+m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data2$QDS)
+m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data2$HDS)
+m_DS_richness  <- lm(glue("DS_richness ~ {full_formula}"),  data2$DS)
+
+m_QDS_richness %<>% step(direction = "backward", trace = 0)
+m_HDS_richness %<>% step(direction = "backward", trace = 0)
+m_DS_richness  %<>% step(direction = "backward", trace = 0)
+
+m_QDS_richness %<>% reparameterise()
+m_HDS_richness %<>% reparameterise()
+m_DS_richness  %<>% reparameterise()
+
+models <- list(
+  QDS_richness = m_QDS_richness,
+  HDS_richness = m_HDS_richness,
+  DS_richness  = m_DS_richness
+)
+models_summary <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)")
+
+models_R2 <- models %>%
+  map_df(.id = "response", glance) %>%
+  dplyr::select(response, adj.r.squared)
+
+models_summary %<>% full_join(models_R2)
+
+glance(m_QDS_richness)
+glance(m_HDS_richness)
+glance(m_DS_richness)
+
+models_summary_for_plot <- models_summary %>%
+  mutate(
+    response = case_when(
+      response == "QDS_richness" ~ "(a)~~italic(S)[QDS]",
+      response == "HDS_richness" ~ "(b)~~italic(S)[HDS]",
+      response == "DS_richness"  ~ "(c)~~italic(S)[DS]"
+    ),
+    region = 
+      case_when(
+        str_detect(term, "regionSWAFR") ~ "SWAFR", 
+        str_detect(term, "regionGCFR")  ~ "GCFR",
+        TRUE                            ~ "Main effect only"
+      ) %>%
+      factor(levels = c("Main effect only", "GCFR", "SWAFR")),
+    term = term %>%
+      str_replace_all("\\.", " ") %>%
+      str_remove_all("regionSWAFR:") %>%
+      str_remove_all("regionGCFR:") %>%
+      str_replace_all("regionSWAFR", "SWAFR") %>%
+      factor(levels = c(str_replace_all(var_names, " ", "_"), "SWAFR")),
+    sig = (p.value < 0.05)
+  )
+ggplot(models_summary_for_plot) +
+  aes(
+    term, estimate,
+    fill = region, group = region, shape = region,
+    alpha = sig
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(position = position_dodge(width = 0.25)) +
+  labs(x = "Term", y = "Slope") +
+  scale_fill_manual(values = c(NA, "black", "white")) +
+  scale_shape_manual(values = c(4, 21, 21)) +
+  scale_alpha_manual(values = c(0.25, 1)) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  guides(
+    fill = FALSE,
+    shape = guide_legend(
+      title = "Effect type",
+      override.aes = list(fill = c(NA, "black", "white"))
+    ), 
+    alpha = FALSE
+  ) +
+  theme(
+    axis.text.x  = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    strip.text.x = element_text(angle =  0, hjust = 0)
+  )
+ggplot(models_summary_for_plot[models_summary_for_plot$term != "SWAFR", ]) +
+  aes(
+    term, estimate,
+    fill = region, group = region, shape = region,
+    alpha = sig
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = 0.25),
+    width = 0
+  ) +
+  geom_point(position = position_dodge(width = 0.25)) +
+  labs(x = "Term", y = "Slope") +
+  scale_fill_manual(values = c(NA, "black", "white")) +
+  scale_shape_manual(values = c(4, 21, 21)) +
+  scale_alpha_manual(values = c(0.25, 1)) +
+  facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
+  guides(
+    fill = FALSE,
+    shape = guide_legend(
+      title = "Effect type",
+      override.aes = list(fill = c(NA, "black", "white"))
+    ), 
+    alpha = FALSE
+  ) +
+  theme(
+    axis.text.x  = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    strip.text.x = element_text(angle =  0, hjust = 0)
+  )
+```
