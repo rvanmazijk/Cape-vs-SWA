@@ -1,9 +1,9 @@
 ---
-title    : "(2^nd^) Analyses for 2^nd^ draft"
+title    : "Analyses & results"
 subtitle : "GCFR vs SWAFR manuscript"
 author   : "Ruan van Mazijk"
 date     : "`r Sys.Date()`"
-output   : pdf_document
+output   : [pdf_document, html_document]
 geometry : a4paper, margin=1in
 ---
 
@@ -60,47 +60,7 @@ theme_set(theme_bw() + theme(
 ))
 ```
 
-# Preamble/outline
-
-Here I layout (another) the "new", second incarnation of the analyses as discussed in August 2019, during the writing of the second draft of the manuscript.
-
-To reiterate that manuscript, we hypothesise that the greater vascular plant species richness of the GCFR compared to that of the SWAFR is explained by the regions' difference in environmental heterogeneity.
-
-The proposed "story" of questions for the analyses is as follows:
-
-1. Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
-2. Do the regions differ w.r.t. the species richness of both HDS and QDS cells, and, for HDS cells' richness (_S_~HDS~), does the explanatory power of mean QDS richness (_S_~QDS~) and turnover (_T_~QDS~) differ between the regions?
-3. Does heterogeneity explain differences in richness and turnover between the regions?
-
-# 1. Comparing regions' environmental heterogeneity
-
-Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
-
-In order to determine which region is more environmentally heterogeneous, and what scales heterogeneity is most pronounced, we calculated environmental heterogeneity at various spatial scales. We treated environmental heterogeneity (_EH_) as the variance of twentieth, eighth- (EDS), quarter- (QDS) and half- (HDS) degree-squares' environmental conditions in tenth- (TDS), QDS, HDS and one-degree-squares (DS) respectively. More generally, for pixels _X_ at some broad scale _b_, _EH_ is based on the values of the _N_ sub-pixels _x~i~_ at the finer scale _f_ as follows:
-
-$$
-  EH(X_b) = \mathrm{Var}(X_f) = \frac{1}{N} \sum_{i=1}^N ({x_f}_i - \overline{x_f})^2.
-$$
-
-For our purposes, _EH_ is thus defined for the nine environmental variables _X_ at the four spatial scales as follows:
-
-$$
-  EH(X_\mathrm{DS}) = \mathrm{Var}(X_\mathrm{HDS}),
-$$
-
-$$
-  EH(X_\mathrm{HDS}) = \mathrm{Var}(X_\mathrm{QDS})
-$$
-
-$$
-  EH(X_\mathrm{QDS}) = \mathrm{Var}(X_\mathrm{EDS})
-$$
-
-$$
-  EH(X_\mathrm{TDS}) = \mathrm{Var}(X_{\frac{1}{20}\mathrm{DS}})
-$$
-
-...
+# 1. Comparing environmental heterogeneity
 
 ```{r import-processed-environmental-data}
 data_dir <- here("data/derived-data/May-2019")
