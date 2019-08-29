@@ -177,6 +177,15 @@ heterogeneity <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
     cbind(region = "SWAFR", as.data.frame(log10(.y)))
   ))
 )
+# Scale and centre all heterogeneity values _across_ regions
+heterogeneity %<>%
+  map(mutate_if,
+    is.numeric, scale
+  ) %>%
+  map(as_tibble)# %>%
+  #map(set_colnames,
+  #  c("region", str_replace_all(var_names, " ", "_"))
+  #)
 ```
 
 ```{r generate-PC1-of-EH}
@@ -220,7 +229,7 @@ plot_grid(plotlist = map2(
 
 ```{r add-PC1-to-heterogeneity-data}
 PC1s <- map(heterogeneity_PCAs, ~tibble(PC1 = .x$x[, 1]))
-heterogeneity %<>% map2(PC1s, ~cbind(.x, .y))
+heterogeneity %<>% map2(PC1s, ~as_tibble(cbind(.x, .y)))
 ```
 
 ```{r CLES-analysis}
@@ -371,7 +380,7 @@ ggplot(CLES_results) +
   geom_line() +
   geom_errorbar(aes(ymin = U_low, ymax = U_upp), width = 0) +
   geom_point(aes(shape = P_U < 0.05)) +
-  scale_shape_manual(name = bquote(italic("P"["U"]) < 0.05), values = c(1, 19)) 
+  scale_shape_manual(name = bquote(italic("P"["U"]) < 0.05), values = c(1, 19))  +
   facet_wrap(~variable, nrow = 2)
 ```
 
@@ -415,6 +424,11 @@ heterogeneity_w_coords <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
     cbind(region = "SWAFR", raster2df(.y))
   ))
 )
+heterogeneity_w_coords %<>% 
+  map(mutate_at,
+    vars(str_replace_all(var_names, " ", "_")), scale
+  ) %>%
+  map(as_tibble)
 heterogeneity <- map2(heterogeneity, heterogeneity_w_coords, full_join)
 
 heterogeneity$QDS$QDS <- heterogeneity$QDS %$%
@@ -507,7 +521,8 @@ HDS_richness <- species_occ_data %>%
     n_QDS         = length(unique(QDS)),
     n_collections = length(species),
     HDS_richness  = length(unique(species))
-  )
+  ) %>%
+  full_join(mean_QDS_richness)
 mean_HDS_richness <- HDS_richness %>%
   mutate(DS = str_remove(HDS, ".$")) %>%
   group_by(DS) %>%
@@ -520,19 +535,17 @@ DS_richness <- species_occ_data %>%
     n_HDS         = length(unique(HDS)),
     n_collections = length(species),
     DS_richness   = length(unique(species))
-  )
+  ) %>%
+  full_join(mean_HDS_richness)
 ```
 
 ```{r collate-gridded-heterogeneity-and-richness}
 data <- heterogeneity[-1]  # can't use 0.10x0.10 for richness data
 data$QDS %<>%
-  as_tibble() %>%
   full_join(QDS_richness) %>%
   na.exclude() %>%
   filter(n_EDS == 4)
 data$HDS %<>%
-  as_tibble() %>%
-  full_join(mean_QDS_richness) %>%
   full_join(HDS_richness) %>%
   na.exclude() %>%
   filter(n_QDS == 4) %>%
@@ -541,8 +554,6 @@ data$HDS %<>%
     QDS_turnover_prop = QDS_turnover / HDS_richness
   )
 data$DS %<>%
-  as_tibble() %>%
-  full_join(mean_HDS_richness) %>%
   full_join(DS_richness) %>%
   na.exclude() %>%
   filter(n_HDS == 4) %>%
@@ -917,12 +928,18 @@ ggplot(data$DS, aes(lon, lat, colour = multivariate_residual)) +
 ```
 
 ```{r plot-multivariate-models}
+models_R2adjs <- models_summary %>%
+  group_by(response) %>%
+  summarise(adj.r.squared = adj.r.squared %>%
+    unique() %>%
+    round(digits = 2)
+  )
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
-      response == "QDS_richness" ~ "(a)~~log[10](italic(S)[QDS])",
-      response == "HDS_richness" ~ "(b)~~log[10](italic(S)[HDS])",
-      response == "DS_richness"  ~ "(c)~~log[10](italic(S)[DS])"
+      response == "QDS_richness" ~ "(a)~QDS~~(italic(R)[adj]^2=='0.20')",
+      response == "HDS_richness" ~ "(b)~HDS~~(italic(R)[adj]^2=='0.21')",
+      response == "DS_richness"  ~ "(c)~DS~~(italic(R)[adj]^2=='0.78')"
     ),
     region = 
       case_when(
@@ -937,7 +954,11 @@ models_summary_for_plot <- models_summary %>%
       str_remove_all("regionGCFR:") %>%
       str_replace_all("regionSWAFR", "SWAFR") %>%
       factor(levels = c(str_replace_all(var_names, " ", "_"), "SWAFR")),
-    sig = (p.value < 0.05)
+    sig = case_when(
+      p.value < 0.005 ~ "< 0.005",
+      p.value < 0.05  ~ "< 0.05",
+      TRUE            ~ "NS"
+    )
   )
 ggplot(models_summary_for_plot) +
   aes(
@@ -952,21 +973,29 @@ ggplot(models_summary_for_plot) +
     width = 0
   ) +
   geom_point(position = position_dodge(width = 0.25)) +
-  labs(x = "Term", y = "Slope") +
+  labs(
+    x = "Predictor",
+    y = bquote(
+      "Effect"~~
+      "(log"["10"]*italic("S")*")"
+    )
+  ) +
   scale_fill_manual(values = c(NA, "black", "white")) +
   scale_shape_manual(values = c(4, 21, 21)) +
-  scale_alpha_manual(values = c(0.25, 1)) +
+  scale_alpha_manual(name = bquote(italic("P")["Effect"]),
+                     values = c(1, 0.75, 0.25)) +#c(0.25, 1)) +
   facet_wrap(~response, nrow = 3, scales = "free_y", labeller = label_parsed) +
   guides(
     fill = FALSE,
     shape = guide_legend(
       title = "Effect type",
       override.aes = list(fill = c(NA, "black", "white"))
-    ), 
-    alpha = FALSE
+    )#, 
+    #alpha = FALSE
   ) +
   theme(
     axis.text.x  = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    #axis.text.y  = element_text(angle = 90, hjust = 0.5),
     strip.text.x = element_text(angle =  0, hjust = 0)
   )
 ```
