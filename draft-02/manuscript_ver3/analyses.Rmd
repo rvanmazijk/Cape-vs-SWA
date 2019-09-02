@@ -562,6 +562,113 @@ data$DS %<>%
   )
 ```
 
+```{r explore-collection-effort, eval=FALSE}
+ggplot(data$QDS, aes(QDS_richness, n_collections, colour = region)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10()
+ggplot(data$HDS, aes(HDS_richness, n_collections, colour = region)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10()
+ggplot(data$DS, aes(DS_richness, n_collections, colour = region)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10()
+
+ggplot(data$QDS) +
+  aes(n_collections, n_collections/QDS_richness, colour = region) +
+  geom_smooth(method = lm) +
+  geom_point() +
+  labs(
+    x = "No. collections in QDS", 
+    y = "No. collections per species in QDS"
+  ) +
+  scale_x_log10() +
+  scale_y_log10()
+ggplot(data$QDS) +
+  aes(QDS_richness, n_collections*QDS_richness, colour = region) +
+  geom_point()
+
+ggplot(data$HDS) +
+  aes(n_collections, HDS_richness, colour = region) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  lims(x = c(0, 2e4), y = c(0, 2e4))
+
+size_of_choice <- function(n = 100) {
+  d <- data.frame(x = 1:n)
+  d$y <- choose(n, d$x)
+  plot(y ~ x, d,type = "l")
+}
+size_of_choice()
+
+1:nrow(data$HDS) %>%
+  map_dfr(.id = "sample_size", ~sample_n(data$HDS, .x)) %>%
+  group_by(region, sample_size) %>%
+  summarise(HDS_richness = mean(HDS_richness)) %>%
+  ungroup() %>%
+  mutate(sample_size = as.numeric(as.character(sample_size))) %>%
+  ggplot(aes(sample_size, HDS_richness, colour = region)) +
+    geom_point()
+
+ggplot(data$QDS) +
+  aes(n_collections, QDS_richness/n_collections, colour = region) +
+  geom_point() +
+  labs(
+    x = "No. collections in QDS", 
+    y = "No. species per collection in QDS"
+  ) +
+  scale_x_log10()
+
+ggplot(data$HDS) +
+  aes(n_collections, HDS_richness.n_collections, colour = region) +
+  geom_point() +
+  labs(
+    x = "No. collections in HDS", 
+    y = "No. species per collection in HDS"
+  ) +
+  scale_x_log10()
+
+ggplot(data$DS) +
+  aes(n_collections, DS_richness/n_collections, colour = region) +
+  geom_point() +
+  labs(
+    x = "No. collections in DS", 
+    y = "No. species per collection in DS"
+  ) +
+  scale_x_log10()
+
+ggplot(data$QDS, aes(QDS_richness/n_collections, fill = region)) +
+  geom_histogram(position = "dodge")
+ggplot(data$HDS, aes(HDS_richness/n_collections, fill = region)) +
+  geom_histogram(position = "dodge")
+ggplot(data$DS, aes(DS_richness/n_collections, fill = region)) +
+  geom_histogram(position = "dodge")
+
+data %$%
+  HDS %>%
+  mutate(QDS_turnover_std =
+    ((HDS_richness/n_collections) - (mean_QDS_richness/n_collections)) #/
+    #(HDS_richness/n_collections)
+  ) %>%
+  ggplot(aes(QDS_turnover_std, fill = region)) +
+    geom_histogram(position = "dodge")
+
+ggplot(data$QDS, aes(lon, lat, colour = n_collections)) +
+  geom_point(size = 3) +
+  facet_grid(~region, scales = "free_x") +
+  scale_colour_viridis_c()
+ggplot(data$HDS, aes(lon, lat, colour = n_collections)) +
+  geom_point(size = 5) +
+  facet_grid(~region, scales = "free_x") +
+  scale_colour_viridis_c()
+ggplot(data$DS, aes(lon, lat, colour = n_collections)) +
+  geom_point(size = 10) +
+  facet_grid(~region, scales = "free_x") +
+  scale_colour_viridis_c()
+```
+
 ```{r plot-richness-distributions-and-partitions, fig.width=7, fig.height=6, fig.cap="Distributions of (a) QDS- and (b) HDS-scale vascular plant species richness in the GCFR and SWAFR. (c) Scatter plot of mean QDS-scale richness ($\\overline{S}$~QDS~) and turnover (_T_~QDS~; Equation 1) with contour lines denoting the _S_~HDS~ that arises as their sum. (d) The distribution of the turnover partition of _S_~HDS~ (_T_~QDS~; in c) expressed as a proportion (_T_~QDS~ / $\\overline{S}$~HDS~)."}
 data_for_plot <- data %$%
   rbind(
@@ -890,6 +997,16 @@ AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
 # No evidence for interaction, only differing intercepts!
 summary(m2)
+visreg::visreg(m2,
+  trans   = function(x) 10^x,
+  xvar    = "PC1",
+  by      = "scale",
+  overlay = TRUE,
+  gg      = TRUE, 
+  rug     = FALSE,
+  ylab    = bquote(italic("S"))
+) +
+  theme(legend.position = "none")
 ```
 
 ```{r fit-univariate-QDS-richness-models}
