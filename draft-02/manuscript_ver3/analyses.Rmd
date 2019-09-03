@@ -35,6 +35,8 @@ library(broom)  # to tidy model outputs
 # Figures
 library(cowplot)  # for panelling
 library(ggfortify)  # for autoplot() of PCAs
+library(rasterVis)
+library(scales)
 ```
 
 ```{r set-global-variables}
@@ -178,9 +180,7 @@ heterogeneity <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
 )
 # Scale and centre all heterogeneity values _across_ regions
 heterogeneity %<>%
-  map(mutate_if,
-    is.numeric, scale
-  ) %>%
+  map(mutate_if, is.numeric, scale) %>%
   map(as_tibble)
 ```
 
@@ -206,10 +206,8 @@ heterogeneity_PCAs %<>% map(function(PCA) {
 
 ```{r plot-PC1-of-EH, eval=FALSE}
 # TODO: neaten this plot up for SI
-plot_grid(plotlist = map2(
-  .x = heterogeneity_PCAs,
-  .y = heterogeneity,
-  .f =
+heterogeneity_PCAs %>%
+  map2(heterogeneity,
     ~ autoplot(.x, data = .y, colour = "region",
       alpha = 0.25,
       loadings       = TRUE, loadings.colour       = "black",
@@ -219,7 +217,8 @@ plot_grid(plotlist = map2(
     ggtitle(unique(.y$scale)) +
     geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
     geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
-))
+  ) %>%
+  {plot_grid(plotlist = .)}
 ```
 
 ```{r add-PC1-to-heterogeneity-data}
@@ -386,6 +385,11 @@ ggplot(CLES_results) +
 GCFR_border  <- readOGR(here("data/derived-data/borders/GCFR_border"))
 SWAFR_border <- readOGR(here("data/derived-data/borders/SWBP_Mike-Cramer"))
 
+GCFR_border_buffered  <- readOGR(here("data/derived-data/borders/GCFR_border_buffered/"))
+SWAFR_border_buffered <- readOGR(here("data/derived-data/borders/SWAFR_border_buffered/"))
+ZA_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_02_zaf")
+AU_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_02_aus")
+
 GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
 SWAFR_box <- readOGR(here("data/derived-data/borders/SWAFR_box"))
 
@@ -453,14 +457,21 @@ heterogeneity$DS$DS <- heterogeneity$DS %$%
 ```
 
 ```{r collate-richness-into-grids}
-GCFR_species_occ <- read_rds(here(
+make_SpatialPointsDataFrame <- function(x) {
+  SpatialPointsDataFrame(
+    coords      = x[, c("decimallongitude", "decimallatitude")],
+    data        = x[, "species"],
+    proj4string = crs(Larsen_grid)
+  )
+}
+GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
   "data/derived-data/flora",
-  "trimmed_GCFR_clean_flora_spdf_species"
-))
-SWAFR_species_occ <- read_rds(here(
+  "GCFR_clean_flora_2017-09-14.csv"
+)))
+SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
   "data/derived-data/flora",
-  "trimmed_SWAFR_clean_flora_spdf_species"
-))
+  "SWAFR_clean_flora_2017-09-14.csv"
+)))
 species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
 
 # Add grid codes to species data
@@ -497,6 +508,8 @@ SWAFR_bad_species <-
 species_occ_data <- species_occ@data %>%
   filter(!(species %in% c(GCFR_bad_species, SWAFR_bad_species)))
 
+species_occ_data %<>% na.exclude()
+
 # Collate richness measures at each scale
 # At QDS-scale:
 QDS_richness <- species_occ_data %>%
@@ -510,9 +523,7 @@ QDS_richness <- species_occ_data %>%
 mean_QDS_richness <- QDS_richness %>%
   mutate(HDS = str_remove(QDS, ".$")) %>%
   group_by(HDS) %>%
-  summarise(
-    mean_QDS_richness = mean(QDS_richness)
-  )
+  summarise(mean_QDS_richness = mean(QDS_richness, na.rm = TRUE))
 HDS_richness <- species_occ_data %>%
   group_by(HDS) %>%
   summarise(
@@ -525,9 +536,7 @@ HDS_richness <- species_occ_data %>%
 mean_HDS_richness <- HDS_richness %>%
   mutate(DS = str_remove(HDS, ".$")) %>%
   group_by(DS) %>%
-  summarise(
-    mean_HDS_richness = mean(HDS_richness)
-  )
+  summarise(mean_HDS_richness = mean(HDS_richness, na.rm = TRUE))
 DS_richness <- species_occ_data %>%
   group_by(DS) %>%
   summarise(
@@ -542,12 +551,12 @@ DS_richness <- species_occ_data %>%
 data <- heterogeneity[-1]  # can't use 0.10x0.10 for richness data
 data$QDS %<>%
   full_join(QDS_richness) %>%
-  na.exclude() %>%
-  filter(n_EDS == 4)
+  na.exclude() #%>%
+  #filter(n_EDS == 4)
 data$HDS %<>%
   full_join(HDS_richness) %>%
   na.exclude() %>%
-  filter(n_QDS == 4) %>%
+  #filter(n_QDS == 4) %>%
   mutate(
     QDS_turnover      = HDS_richness - mean_QDS_richness,
     QDS_turnover_prop = QDS_turnover / HDS_richness
@@ -564,6 +573,7 @@ data$DS %<>%
 
 ```{r explore-collection-effort, eval=FALSE}
 ggplot(data$QDS, aes(QDS_richness, n_collections, colour = region)) +
+  geom_abline(intercept = 0, slope = 1) +
   geom_point() +
   scale_x_log10() +
   scale_y_log10()
@@ -622,7 +632,7 @@ ggplot(data$QDS) +
   scale_x_log10()
 
 ggplot(data$HDS) +
-  aes(n_collections, HDS_richness.n_collections, colour = region) +
+  aes(n_collections, HDS_richness/n_collections, colour = region) +
   geom_point() +
   labs(
     x = "No. collections in HDS", 
@@ -841,9 +851,96 @@ knitr::kable(richness_test_results,
 )
 ```
 
+```{r, eval=FALSE}
+#data %>%
+#  map(~split(.x, .x$region))
+#  QDS %>%
+#  filter(region == "GCFR")
+#QDS_GCFR_pts <- SpatialPointsDataFrame(
+#  coords      = data_QDS_GCFR %>% dplyr::select(lon, lat),
+#  data        = data_QDS_GCFR %>% dplyr::select(-region, -QDS, -lon, -lat),
+#  proj4string = crs(Larsen_grid)
+#)
+#QDS_GCFR_ras <- rasterize(QDS_GCFR_pts, GCFR_heterogeneity$QDS)
+#autoplot(QDS_GCFR_ras$QDS_richness) +
+#  scale_fill_viridis_c()
+
+data_QDS_GCFR <- data %$%
+  QDS %>%
+  filter(region == "GCFR")
+QDS_GCFR_pts <- SpatialPixelsDataFrame(SpatialPoints(
+  coords      = data_QDS_GCFR %>%
+                  dplyr::select(lon, lat) %>%
+                  mutate(lon = lon - 0.075 - 0.125, lat = lat + 0.025 + 0.125),
+  proj4string = crs(Larsen_grid)),
+  data        = data_QDS_GCFR %>% dplyr::select(-region, -QDS, -lon, -lat)
+)
+autoplot(QDS_GCFR_pts) +
+  geom_path(
+    data = ZA_QDS,
+    aes(long, lat, group = group),
+    color = "black", size = 0.5
+  ) +
+  scale_fill_viridis_c(na.value = NA) +
+  labs(x = "Longitude (º)", y = "Latitude (º)")
+
+QDS_GCFR_ras <- rasterize(QDS_GCFR_pts, GCFR_heterogeneity$QDS)
+gplot(QDS_GCFR_ras$QDS_richness) +
+  geom_tile(aes(fill = value)) +
+  geom_path(
+    data = ZA_QDS,
+    aes(long, lat, group = group),
+    color = "black", size = 0.5
+  ) +
+  scale_fill_viridis_c(na.value = NA) +
+  labs(x = "Longitude (º)", y = "Latitude (º)")
+
+#plot(QDS_GCFR_ras$QDS_richness)
+plot(QDS_GCFR_pts)
+plot(ZA_QDS, add = TRUE)
+#plot(GCFR_border, add = TRUE)
+#plot(GCFR_EDS, add = TRUE)
+
+data_QDS_SWAFR <- data %$%
+  QDS %>%
+  filter(region == "SWAFR")
+QDS_SWAFR_pts <- SpatialPointsDataFrame(
+  coords      = data_QDS_SWAFR %>% dplyr::select(lon, lat),
+  data        = data_QDS_SWAFR %>% dplyr::select(-region, -QDS, -lon, -lat),
+  proj4string = crs(Larsen_grid)
+)
+QDS_SWAFR_ras <- rasterize(QDS_SWAFR_pts, SWAFR_heterogeneity$QDS)
+autoplot(QDS_SWAFR_ras$QDS_richness)
+
+data_HDS_GCFR <- data %$%
+  HDS %>%
+  filter(region == "GCFR")
+HDS_GCFR_pts <- SpatialPointsDataFrame(
+  coords      = data_HDS_GCFR %>% dplyr::select(lon, lat),
+  data        = data_HDS_GCFR %>% dplyr::select(-region, -HDS, -lon, -lat),
+  proj4string = crs(Larsen_grid)
+)
+HDS_GCFR_ras <- rasterize(HDS_GCFR_pts, GCFR_heterogeneity$HDS)
+plot(HDS_GCFR_ras$HDS_richness)
+plot(GCFR_border, add = TRUE)
+plot(GCFR_border_buffered, add = TRUE)
+plot(ZA_EDS, add = TRUE)
+
+data_HDS_SWAFR <- data %$%
+  HDS %>%
+  filter(region == "SWAFR")
+HDS_SWAFR_pts <- SpatialPointsDataFrame(
+  coords      = data_HDS_SWAFR %>% dplyr::select(lon, lat),
+  data        = data_HDS_SWAFR %>% dplyr::select(-region, -HDS, -lon, -lat),
+  proj4string = crs(Larsen_grid)
+)
+HDS_SWAFR_ras <- rasterize(HDS_SWAFR_pts, SWAFR_heterogeneity$HDS)
+autoplot(HDS_SWAFR_ras$HDS_richness)
+```
+
 ```{r maps, eval=FALSE}
 ggplot(data$QDS, aes(lon, lat, colour = QDS_richness)) +
-  geom_point(size = 3) +
+  geom_tile() +
   facet_grid(~region, scales = "free_x") +
   scale_colour_viridis_c()
 ggplot(data$HDS, aes(lon, lat, colour = HDS_richness)) +
@@ -1539,6 +1636,7 @@ ggplot(models_summary_for_plot) +
     axis.text.y  = element_text(angle = 90, hjust = 0.5),
     strip.text.x = element_text(angle =  0, hjust = 0)
   )
+#save.image(here("draft-02/manuscript_ver3/2019-09-03_saved-workspace.Rdata"))
 ```
 
 ```{r}
