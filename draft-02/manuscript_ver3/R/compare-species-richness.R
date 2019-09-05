@@ -3,19 +3,23 @@
 GCFR_border  <- readOGR(here("data/derived-data/borders/GCFR_border"))
 SWAFR_border <- readOGR(here("data/derived-data/borders/SWBP_Mike-Cramer"))
 
-GCFR_border_buffered  <- readOGR(here("data/derived-data/borders/GCFR_border_buffered/"))
-SWAFR_border_buffered <- readOGR(here("data/derived-data/borders/SWAFR_border_buffered/"))
+GCFR_border_buffered <-
+  readOGR(here("data/derived-data/borders/GCFR_border_buffered/"))
+SWAFR_border_buffered <-
+  readOGR(here("data/derived-data/borders/SWAFR_border_buffered/"))
 
 GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
 SWAFR_box <- readOGR(here("data/derived-data/borders/SWAFR_box"))
 
-# Import EDS polygons
+# Import EDS & QDS polygons
 ZA_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_03_zaf")
 AU_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_03_aus")
+ZA_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_02_zaf")
+AU_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_02_aus")
 
 # Crop to regions
-GCFR_EDS  <- crop(ZA_EDS, GCFR_box)
-SWAFR_EDS <- crop(AU_EDS, SWAFR_box)
+#GCFR_EDS  <- crop(ZA_EDS, GCFR_box)
+#SWAFR_EDS <- crop(AU_EDS, SWAFR_box)
 
 # Get DS, HDS, QDS codes from EDS codes
 Larsen_grid <- rbind(GCFR_EDS, SWAFR_EDS)
@@ -24,63 +28,111 @@ Larsen_grid$qdgc <- str_remove(Larsen_grid$edgc, ".$")
 Larsen_grid$hdgc <- str_remove(Larsen_grid$qdgc, ".$")
 Larsen_grid$dgc  <- str_remove(Larsen_grid$hdgc, ".$")
 
-Larsen_grid$region <- Larsen_grid %over%
-  rbind(GCFR_border_buffered, SWAFR_border_buffered)
-Larsen_grid$in_region <- !is.na(Larsen_grid$region)
+# ... --------------------------------------------------------------------------
 
-# ...
-ZA_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_02_zaf")
-AU_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_02_aus")
+ZA_EDS@data %<>% cbind(ZA_EDS %over% GCFR_border_buffered)
+ZA_QDS@data %<>% cbind(ZA_QDS %over% GCFR_border_buffered)
 
-# Collate heterogeneity data into grids ----------------------------------------
+ZA_EDS@data$region %<>% {!is.na(.)}
+ZA_QDS@data$region %<>% {!is.na(.)}
 
-# Include lon/lat when converting from Raster* to data.frame
-raster2df <- function(r) {
-  lon_lat <- xyFromCell(r, 1:ncell(r))
-  colnames(lon_lat) <- c("lon", "lat")
-  df <- as.data.frame(log10(r))
-  df <- cbind(lon_lat, df)
-  df
-}
-heterogeneity_w_coords <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
-  ~ na.exclude(rbind(
-    cbind(region = "GCFR",  raster2df(.x)),
-    cbind(region = "SWAFR", raster2df(.y))
-  ))
-)
-heterogeneity_w_coords %<>%
-  map(mutate_at, vars(str_replace_all(var_names, " ", "_")), scale) %>%
-  map(as_tibble)
-heterogeneity <- map2(heterogeneity, heterogeneity_w_coords,
-  full_join
-)
+GCFR_EDS <- ZA_EDS[ZA_EDS$region, ]
+GCFR_QDS <- ZA_QDS[ZA_QDS$region, ]
 
-heterogeneity$QDS$QDS <- heterogeneity %$%
-  QDS %$%
-  SpatialPoints(
-    coords      = data.frame(x = lon, y = lat),
-    proj4string = crs(Larsen_grid)
-  ) %over%
-  Larsen_grid %>%
-  pull(qdgc)
+GCFR_QDS_w_all_EDS <- GCFR_EDS %over%
+  ZA_QDS %>%
+  group_by(qdgc) %>%
+  summarise(n_EDS = n()) %>%
+  filter(n_EDS == 4) %>%
+  pull(qdgc) %>%
+  as.character()
 
-heterogeneity$HDS$HDS <- heterogeneity %$%
-  HDS %$%
-  SpatialPoints(
-    coords      = data.frame(x = lon, y = lat),
-    proj4string = crs(Larsen_grid)
-  ) %over%
-  Larsen_grid %>%
-  pull(hdgc)
 
-heterogeneity$DS$DS <- heterogeneity %$%
-  DS %$%
-  SpatialPoints(
-    coords      = data.frame(x = lon, y = lat),
-    proj4string = crs(Larsen_grid)
-  ) %over%
-  Larsen_grid %>%
-  pull(dgc)
+plot(crop(ZA_QDS, GCFR_box), lwd = 3)#, add = TRUE, lwd = 2)
+plot(GCFR_EDS,
+     border = "red", lwd = 2)#, add = TRUE)
+plot(ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS, ],
+     border = "green", add = TRUE)
+
+# START: YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+foo <- intersect(GCFR_QDS, GCFR_EDS)
+plot(foo)
+plot(ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS, ],
+     border = "green", add = TRUE)
+
+GCFR_QDS_w_all_EDS2 <- foo@data %>%
+  group_by(qdgc.1) %>%
+  summarise(n_EDS = n()) %>%
+  filter(n_EDS == 4) %>%
+  pull(qdgc.1) %>%
+  as.character()
+
+plot(crop(ZA_QDS, GCFR_box), lwd = 3)#, add = TRUE, lwd = 2)
+plot(GCFR_EDS,
+     border = "red", lwd = 2, add = TRUE)
+plot(ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS2, ],
+     border = "green", add = TRUE)
+# END: YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#plot(GCFR_border_buffered)
+#plot(crop(ZA_EDS, GCFR_box), add = TRUE, border = "red")
+#plot(crop(ZA_QDS, GCFR_box), add = TRUE)
+
+#spplot(crop(ZA_EDS, GCFR_box), zcol = "region", col.regions = c("black", NA))
+
+#Larsen_grid$region <- Larsen_grid %over%
+#  rbind(GCFR_border_buffered, SWAFR_border_buffered)
+#Larsen_grid$in_region <- !is.na(Larsen_grid$region)
+
+## Collate heterogeneity data into grids ----------------------------------------
+#
+## Include lon/lat when converting from Raster* to data.frame
+#raster2df <- function(r) {
+#  lon_lat <- xyFromCell(r, 1:ncell(r))
+#  colnames(lon_lat) <- c("lon", "lat")
+#  df <- as.data.frame(log10(r))
+#  df <- cbind(lon_lat, df)
+#  df
+#}
+#heterogeneity_w_coords <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
+#  ~ na.exclude(rbind(
+#    cbind(region = "GCFR",  raster2df(.x)),
+#    cbind(region = "SWAFR", raster2df(.y))
+#  ))
+#)
+#heterogeneity_w_coords %<>%
+#  map(mutate_at, vars(str_replace_all(var_names, " ", "_")), scale) %>%
+#  map(as_tibble)
+#heterogeneity <- map2(heterogeneity, heterogeneity_w_coords,
+#  full_join
+#)
+#
+#heterogeneity$QDS$QDS <- heterogeneity %$%
+#  QDS %$%
+#  SpatialPoints(
+#    coords      = data.frame(x = lon, y = lat),
+#    proj4string = crs(Larsen_grid)
+#  ) %over%
+#  Larsen_grid %>%
+#  pull(qdgc)
+#
+#heterogeneity$HDS$HDS <- heterogeneity %$%
+#  HDS %$%
+#  SpatialPoints(
+#    coords      = data.frame(x = lon, y = lat),
+#    proj4string = crs(Larsen_grid)
+#  ) %over%
+#  Larsen_grid %>%
+#  pull(hdgc)
+#
+#heterogeneity$DS$DS <- heterogeneity %$%
+#  DS %$%
+#  SpatialPoints(
+#    coords      = data.frame(x = lon, y = lat),
+#    proj4string = crs(Larsen_grid)
+#  ) %over%
+#  Larsen_grid %>%
+#  pull(dgc)
 
 # Collate richness data into grids ---------------------------------------------
 
