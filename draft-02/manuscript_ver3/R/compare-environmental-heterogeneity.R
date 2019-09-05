@@ -23,22 +23,24 @@ CLES_results <- heterogeneity_for_CLES %$%
       )
     )
   )
-CLES_results %<>% mutate(
-  variable = factor(variable, levels = var_names %>%
-    str_replace_all(" ", "_") %>%
-    c("PC1")
-  ),
-  scale = case_when(
-    scale == "point1" ~ 0.10,
-    scale == "QDS"    ~ 0.25,
-    scale == "HDS"    ~ 0.50,
-    scale == "DS"     ~ 1.00
-  ),
-  diff  = map_dbl(U_test, "estimate"),
-  P_U   = map_dbl(U_test, "p.value"),
-  U_low = map_dbl(U_test, "conf.low"),
-  U_upp = map_dbl(U_test, "conf.high")
-)
+CLES_results %<>%
+  mutate(
+    variable = factor(variable, levels = var_names %>%
+      str_replace_all(" ", "_") %>%
+      c("PC1")
+    ),
+    scale = case_when(
+      scale == "point1" ~ 0.10,
+      scale == "QDS"    ~ 0.25,
+      scale == "HDS"    ~ 0.50,
+      scale == "DS"     ~ 1.00
+    ),
+    diff  = map_dbl(U_test, "estimate"),
+    P_U   = map_dbl(U_test, "p.value"),
+    U_low = map_dbl(U_test, "conf.low"),
+    U_upp = map_dbl(U_test, "conf.high")
+  ) %>%
+  dplyr::select(-U_test)
 
 # Fit linear models of CLES vs scale for each variable
 CLES_models <- CLES_results %>%
