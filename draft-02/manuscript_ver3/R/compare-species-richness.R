@@ -11,11 +11,13 @@ SWAFR_border_buffered <-
 GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
 SWAFR_box <- readOGR(here("data/derived-data/borders/SWAFR_box"))
 
-# Import EDS & QDS polygons
+# Import Larsen grid polygons
 ZA_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_03_zaf")
 AU_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_03_aus")
 ZA_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_02_zaf")
 AU_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_02_aus")
+ZA_HDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_01_zaf")
+AU_HDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_01_aus")
 
 # Crop to regions
 #GCFR_EDS  <- crop(ZA_EDS, GCFR_box)
@@ -30,6 +32,9 @@ Larsen_grid$dgc  <- str_remove(Larsen_grid$hdgc, ".$")
 
 # ... --------------------------------------------------------------------------
 
+# .... QDS-scale ---------------------------------------------------------------
+
+# Test
 ZA_EDS@data %<>% cbind(ZA_EDS %over% GCFR_border_buffered)
 ZA_QDS@data %<>% cbind(ZA_QDS %over% GCFR_border_buffered)
 
@@ -39,50 +44,88 @@ ZA_QDS@data$region %<>% {!is.na(.)}
 GCFR_EDS <- ZA_EDS[ZA_EDS$region, ]
 GCFR_QDS <- ZA_QDS[ZA_QDS$region, ]
 
-GCFR_QDS_w_all_EDS <- GCFR_EDS %over%
-  ZA_QDS %>%
-  group_by(qdgc) %>%
-  summarise(n_EDS = n()) %>%
-  filter(n_EDS == 4) %>%
-  pull(qdgc) %>%
-  as.character()
+GCFR_QDS_EDS <- intersect(GCFR_QDS, GCFR_EDS)
 
-
-plot(crop(ZA_QDS, GCFR_box), lwd = 3)#, add = TRUE, lwd = 2)
-plot(GCFR_EDS,
-     border = "red", lwd = 2)#, add = TRUE)
-plot(ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS, ],
-     border = "green", add = TRUE)
-
-# START: YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-foo <- intersect(GCFR_QDS, GCFR_EDS)
-plot(foo)
-plot(ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS, ],
-     border = "green", add = TRUE)
-
-GCFR_QDS_w_all_EDS2 <- foo@data %>%
+GCFR_QDS_w_all_EDS <- GCFR_QDS_EDS@data %>%
   group_by(qdgc.1) %>%
   summarise(n_EDS = n()) %>%
   filter(n_EDS == 4) %>%
   pull(qdgc.1) %>%
   as.character()
 
-plot(crop(ZA_QDS, GCFR_box), lwd = 3)#, add = TRUE, lwd = 2)
-plot(GCFR_EDS,
-     border = "red", lwd = 2, add = TRUE)
-plot(ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS2, ],
-     border = "green", add = TRUE)
-# END: YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Check
+plot(GCFR_EDS, lwd = 2)
+plot(
+  ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS, ],
+  border = "green", add = TRUE
+)
+# Works!
 
-#plot(GCFR_border_buffered)
-#plot(crop(ZA_EDS, GCFR_box), add = TRUE, border = "red")
-#plot(crop(ZA_QDS, GCFR_box), add = TRUE)
+# Do rest
+AU_EDS@data %<>% cbind(AU_EDS %over% SWAFR_border_buffered)
+AU_QDS@data %<>% cbind(AU_QDS %over% SWAFR_border_buffered)
 
-#spplot(crop(ZA_EDS, GCFR_box), zcol = "region", col.regions = c("black", NA))
+AU_EDS@data$region %<>% {!is.na(.)}
+AU_QDS@data$region %<>% {!is.na(.)}
 
-#Larsen_grid$region <- Larsen_grid %over%
-#  rbind(GCFR_border_buffered, SWAFR_border_buffered)
-#Larsen_grid$in_region <- !is.na(Larsen_grid$region)
+SWAFR_EDS <- AU_EDS[AU_EDS$region, ]
+SWAFR_QDS <- AU_QDS[AU_QDS$region, ]
+
+SWAFR_QDS_EDS <- intersect(SWAFR_QDS, SWAFR_EDS)
+
+SWAFR_QDS_w_all_EDS <- SWAFR_QDS_EDS@data %>%
+  group_by(qdgc.1) %>%
+  summarise(n_EDS = n()) %>%
+  filter(n_EDS == 4) %>%
+  pull(qdgc.1) %>%
+  as.character()
+
+# .... HDS-scale ---------------------------------------------------------------
+
+ZA_HDS@data %<>% cbind(ZA_HDS %over% GCFR_border_buffered)
+
+ZA_HDS@data$region %<>% {!is.na(.)}
+
+GCFR_HDS <- ZA_HDS[ZA_HDS$region, ]
+
+GCFR_HDS_QDS <- intersect(GCFR_HDS, GCFR_QDS)
+
+GCFR_HDS_w_all_QDS <- GCFR_HDS_QDS@data %>%
+  group_by(qdgc.1) %>%
+  summarise(n_QDS = n()) %>%
+  filter(n_QDS == 4) %>%
+  pull(qdgc.1) %>%
+  as.character()
+
+# Check
+plot(GCFR_QDS, lwd = 2)
+plot(
+  ZA_HDS[ZA_HDS$qdgc %in% GCFR_HDS_w_all_QDS, ],
+  border = "green", add = TRUE
+)
+# Works!
+
+# Do rest
+AU_EDS@data %<>% cbind(AU_EDS %over% SWAFR_border_buffered)
+AU_QDS@data %<>% cbind(AU_QDS %over% SWAFR_border_buffered)
+
+AU_EDS@data$region %<>% {!is.na(.)}
+AU_QDS@data$region %<>% {!is.na(.)}
+
+SWAFR_EDS <- AU_EDS[AU_EDS$region, ]
+SWAFR_QDS <- AU_QDS[AU_QDS$region, ]
+
+SWAFR_QDS_EDS <- intersect(SWAFR_QDS, SWAFR_EDS)
+
+SWAFR_QDS_w_all_EDS <- SWAFR_QDS_EDS@data %>%
+  group_by(qdgc.1) %>%
+  summarise(n_EDS = n()) %>%
+  filter(n_EDS == 4) %>%
+  pull(qdgc.1) %>%
+  as.character()
+
+
+
 
 ## Collate heterogeneity data into grids ----------------------------------------
 #
