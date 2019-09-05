@@ -1,13 +1,14 @@
-# CLES-analysis ----------------------------------------------------------------
+# Import and tidy heterogeneity data -------------------------------------------
 
-heterogeneity_for_CLES <- list(
-  GCFR = heterogeneity %>%
-    map(filter, region == "GCFR") %>%
-    map(dplyr::select, -region),
-  SWAFR = heterogeneity %>%
-    map(filter, region == "SWAFR") %>%
-    map(dplyr::select, -region)
-)
+heterogeneity <- read_csv(glue("{data_dir}/heterogeneity.csv"))
+
+heterogeneity_for_CLES <- heterogeneity %>%
+  split(.$region) %>%
+  map(~split(.x, .x$scale)) %>%
+  map(map, dplyr::select_if, is.numeric)
+
+# CLES analysis ----------------------------------------------------------------
+
 CLES_results <- heterogeneity_for_CLES %$%
   map2_dfr(GCFR, SWAFR, .id = "scale",
     # For every spatial scale, ...
@@ -23,6 +24,8 @@ CLES_results <- heterogeneity_for_CLES %$%
       )
     )
   )
+
+# Tidy
 CLES_results %<>%
   mutate(
     variable = factor(variable, levels = var_names %>%
@@ -42,7 +45,8 @@ CLES_results %<>%
   ) %>%
   dplyr::select(-U_test)
 
-# Fit linear models of CLES vs scale for each variable
+# Fit linear models of CLES vs scale for each variable -------------------------
+
 CLES_models <- CLES_results %>%
   split(.$variable) %>%
   map(~lm(CLES_value ~ scale, .x))
@@ -62,5 +66,6 @@ CLES_model_summaries <- CLES_models %>%
   )) %>%
   mutate_if(is.numeric, round, digits = 3) %>%
   dplyr::select(variable, estimate, p.value, sig)
-# Print table
-CLES_model_summaries
+
+# Print summary table
+as.data.frame(CLES_model_summaries)
