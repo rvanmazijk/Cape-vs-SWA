@@ -15,10 +15,8 @@ knitr::opts_chunk$set(
 	warning  = FALSE
 )
 options(knitr.kable.NA = '')
-```
-
-```{r my-setup}
-source(here::here("draft-02/manuscript_ver3/R/setup.R"))
+library(here)
+source(here("draft-02/manuscript_ver3/R/setup.R"))
 ```
 
 # 1. Comparing environmental heterogeneity
