@@ -49,12 +49,36 @@ SWAFR_heterogeneity <- c(
 
 # Save heterogeneity rasters to disc -------------------------------------------
 
-map(GCFR_heterogeneity,
-  write.raster, glue("{data_dir}/GCFR_{var_names}_masked2_heterogeneity.tif")
+iwalk(GCFR_heterogeneity,
+  function(each_scale, each_scales_name) {
+    each_scale %<>%
+      as.list() %>%
+      set_names(str_replace_all(var_names, " ", "_"))
+    iwalk(each_scale,
+      function(each_layer, each_layers_name) {
+        writeRaster(each_layer, filename = glue(
+          "{data_dir}/",
+          "GCFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
+        ))
+      }
+    )
+  }
 )
 
-map(SWAFR_heterogeneity,
-  write.raster, glue("{data_dir}/SWAFR_{var_names}_masked2_heterogeneity.tif")
+iwalk(SWAFR_heterogeneity,
+  function(each_scale, each_scales_name) {
+    each_scale %<>%
+      as.list() %>%
+      set_names(str_replace_all(var_names, " ", "_"))
+    iwalk(each_scale,
+      function(each_layer, each_layers_name) {
+        writeRaster(each_layer, filename = glue(
+          "{data_dir}/",
+          "SWAFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
+        ))
+      }
+    )
+  }
 )
 
 # Tidy heterogeneity data ------------------------------------------------------
@@ -90,6 +114,9 @@ heterogeneity_PCAs <- map(heterogeneity,
     prcomp(center = TRUE, scale. = TRUE)
 )
 
+# Look at results
+map(heterogeneity_PCAs, summary)
+
 # Force PC1 scores to be positive if all vars rotations are negative
 heterogeneity_PCAs %<>% map(function(PCA) {
   if (all(PCA$rotation[, 1] <= 0)) {
@@ -107,3 +134,7 @@ PC1s <- map(heterogeneity_PCAs,
 heterogeneity %<>% map2(PC1s,
   ~as_tibble(cbind(.x, .y))
 )
+
+heterogeneity %>%
+  bind_rows(.id = "scale") %>%
+  write_csv(glue("{data_dir}/heterogeneity.csv"))
