@@ -21,14 +21,8 @@ source(here("draft-02/manuscript_ver3/R/setup.R"))
 
 # 1. Comparing environmental heterogeneity
 
-```{r import-environmental-data}
-data_dir <- here("data/derived-data/May-2019")
-GCFR_file_names  <- glue("{data_dir}/GCFR_{var_names}_masked2.tif")
-SWAFR_file_names <- glue("{data_dir}/SWAFR_{var_names}_masked2.tif")
-GCFR_variables  <- stack(GCFR_file_names)
-SWAFR_variables <- stack(SWAFR_file_names)
-names(GCFR_variables)  <- str_replace_all(var_names, " ", "_")
-names(SWAFR_variables) <- str_replace_all(var_names, " ", "_")
+```{r generate-heterogeneity-data}
+source(here("draft-02/manuscript_ver3/R/generate-heterogeneity-data.R"))
 ```
 
 ```{r plot-0.05-environmental-data, eval=FALSE}
@@ -42,24 +36,6 @@ plot(SWAFR_variables)
 par(op)
 ```
 
-```{r resample-environmental-data-from-0.05-to-EDS}
-EDS_template_raster <- GCFR_variables$Elevation %>%
-  aggregate(fact = 5) %>%  # aggregate up to QDS
-  disaggregate(fact = 2)   # disaggregate down to EDS
-GCFR_variables_EDS <- resample(
-  GCFR_variables, EDS_template_raster,
-  method = "bilinear"
-)
-
-EDS_template_raster <- SWAFR_variables$Elevation %>%
-  aggregate(fact = 5) %>%
-  disaggregate(fact = 2)
-SWAFR_variables_EDS <- resample(
-  SWAFR_variables, EDS_template_raster,
-  method = "bilinear"
-)
-```
-
 ```{r plot-EDS-environmental-data, eval=FALSE}
 # TODO: neaten these plots up for SI(?)
 par(mfrow = c(3, 3))
@@ -69,26 +45,6 @@ par(op)
 par(mfrow = c(3, 3))
 plot(SWAFR_variables_EDS)
 par(op)
-```
-
-```{r generate-heterogeneity-data}
-scales <- c(1, 2, 4)
-
-GCFR_heterogeneity <- map(scales,
-  ~ GCFR_variables_EDS %>%
-    aggregate(fact = .x) %>%
-    aggregate(fun = var)
-)
-names(GCFR_heterogeneity) <- c("QDS", "HDS", "DS")
-GCFR_heterogeneity %<>% {c(point1 = aggregate(GCFR_variables, fun = var), .)}
-
-SWAFR_heterogeneity <- map(scales,
-  ~ SWAFR_variables_EDS %>%
-    aggregate(fact = .x) %>%
-    aggregate(fun = var)
-)
-names(SWAFR_heterogeneity) <- c("QDS", "HDS", "DS")
-SWAFR_heterogeneity %<>% {c(point1 = aggregate(SWAFR_variables, fun = var), .)}
 ```
 
 ```{r plot-heterogeneity-data, eval=FALSE}
@@ -124,40 +80,6 @@ par(op)
 par(mfrow = c(3, 3))
 plot(SWAFR_heterogeneity$DS)
 par(op)
-```
-
-```{r tidy-heterogeneity-data}
-# Join regions' datasets
-heterogeneity <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
-  ~ na.exclude(rbind(
-    cbind(region = "GCFR",  as.data.frame(log10(.x))),
-    cbind(region = "SWAFR", as.data.frame(log10(.y)))
-  ))
-)
-# Scale and centre all heterogeneity values _across_ regions
-heterogeneity %<>%
-  map(mutate_if, is.numeric, scale) %>%
-  map(as_tibble)
-```
-
-```{r generate-PC1-of-EH}
-heterogeneity_PCAs <- map(heterogeneity,
-  ~ prcomp(
-    .x[, -1], 
-    center = TRUE, 
-    scale. = TRUE
-  )
-)
-
-# Force PC1 scores to be positive if all vars rotations are negative
-heterogeneity_PCAs %<>% map(function(PCA) {
-  if (all(PCA$rotation[, 1] <= 0)) {
-    message("Multiplying this one by -1")
-    PCA$rotation[, 1] %<>% multiply_by(-1)
-    PCA$x[, 1]        %<>% multiply_by(-1)
-  }
-  PCA
-})
 ```
 
 ```{r plot-PC1-of-EH, eval=FALSE}
