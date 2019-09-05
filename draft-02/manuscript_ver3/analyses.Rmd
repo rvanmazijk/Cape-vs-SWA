@@ -1732,7 +1732,7 @@ m_all_scales %>%
       str_remove_all("(scale|region)(.?DS|(SWA|GC)FR):"),
     sig = ifelse(p.value < 0.05, "< 0.05", "NS")
   ) %>%
-  #filter(term %in% var_names) %>%
+  filter(term %in% var_names) %>%
   mutate(term = factor(term, levels = c(var_names, "regionSWAFR", "scaleQDS", "scaleHDS"))) %>%
   ggplot() +
     aes(
