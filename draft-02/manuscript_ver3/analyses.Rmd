@@ -21,7 +21,7 @@ source(here("draft-02/manuscript_ver3/R/setup.R"))
 
 # 1. Comparing environmental heterogeneity
 
-```{r generate-heterogeneity-data}
+```{r generate-heterogeneity-data, results="hide"}
 source(here("draft-02/manuscript_ver3/R/generate-heterogeneity-data.R"))
 ```
 
@@ -99,7 +99,7 @@ heterogeneity_PCAs %>%
   {plot_grid(plotlist = .)}
 ```
 
-```{r compare-environmental-heterogeneity}
+```{r compare-environmental-heterogeneity, results="hide"}
 source(here("draft-02/manuscript_ver3/R/compare-environmental-heterogeneity.R"))
 ```
 
