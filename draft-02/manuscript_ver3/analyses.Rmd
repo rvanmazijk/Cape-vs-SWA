@@ -1639,7 +1639,7 @@ ggplot(models_summary_for_plot) +
 #save.image(here("draft-02/manuscript_ver3/2019-09-03_saved-workspace.Rdata"))
 ```
 
-```{r}
+```{r, eval=FALSE}
 models_summary_for_plot %>%
   mutate(
     scale = c(0.25, 0.50, 1.00)[as.numeric(as.factor(response))],
@@ -1672,7 +1672,7 @@ models_summary_for_plot %>%
     )
 ```
 
-```{r}
+```{r, eval=FALSE}
 data_all_scales <- data %$% rbind(
   QDS %>%
     rename(richness = log10_QDS_richness) %>%
