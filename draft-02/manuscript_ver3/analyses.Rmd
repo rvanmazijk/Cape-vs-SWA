@@ -59,7 +59,7 @@ op <- par()
 # Global ggplot2 theme settings
 theme_set(theme_bw() + theme(
   strip.background = element_blank(),
-  panel.grid = element_blank()
+  panel.grid       = element_blank()
 ))
 ```
 
@@ -485,7 +485,7 @@ species_occ$DS  <- str_remove(species_occ$HDS, ".$")
 
 # Export final lists of species
 GCFR_species_occ@data %>%
-  group_by(species) %>%
+  group_by(species)  %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
   write_csv(here("draft-02/manuscript_ver3/GCFR-species.csv"))
