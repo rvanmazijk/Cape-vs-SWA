@@ -61,7 +61,6 @@ plot(
 )
 # Works!
 
-# Do rest
 AU_EDS@data %<>% cbind(AU_EDS %over% SWAFR_border_buffered)
 AU_QDS@data %<>% cbind(AU_QDS %over% SWAFR_border_buffered)
 
@@ -105,27 +104,48 @@ plot(
 )
 # Works!
 
-# Do rest
-AU_EDS@data %<>% cbind(AU_EDS %over% SWAFR_border_buffered)
-AU_QDS@data %<>% cbind(AU_QDS %over% SWAFR_border_buffered)
+AU_HDS@data %<>% cbind(AU_HDS %over% SWAFR_border_buffered)
 
-AU_EDS@data$region %<>% {!is.na(.)}
-AU_QDS@data$region %<>% {!is.na(.)}
+AU_HDS@data$region %<>% {!is.na(.)}
 
-SWAFR_EDS <- AU_EDS[AU_EDS$region, ]
-SWAFR_QDS <- AU_QDS[AU_QDS$region, ]
+SWAFR_HDS <- AU_HDS[AU_HDS$region, ]
 
-SWAFR_QDS_EDS <- intersect(SWAFR_QDS, SWAFR_EDS)
+SWAFR_HDS_QDS <- intersect(SWAFR_HDS, SWAFR_QDS)
 
-SWAFR_QDS_w_all_EDS <- SWAFR_QDS_EDS@data %>%
+SWAFR_HDS_w_all_QDS <- SWAFR_HDS_QDS@data %>%
   group_by(qdgc.1) %>%
-  summarise(n_EDS = n()) %>%
-  filter(n_EDS == 4) %>%
+  summarise(n_QDS = n()) %>%
+  filter(n_QDS == 4) %>%
   pull(qdgc.1) %>%
   as.character()
 
+# .... DS-scale ----------------------------------------------------------------
 
+GCFR_HDS$dgc <- str_remove(GCFR_HDS$qdgc, ".$")
 
+GCFR_DS_w_all_HDS <- GCFR_HDS@data %>%
+  group_by(dgc) %>%
+  summarise(n_HDS = n()) %>%
+  filter(n_HDS == 4) %>%
+  pull(dgc) %>%
+  as.character()
+
+# Check
+plot(GCFR_HDS, lwd = 2)
+plot(
+  GCFR_HDS[GCFR_HDS$dgc %in% GCFR_DS_w_all_HDS, ],
+  border = "green", add = TRUE
+)
+# Works!
+
+SWAFR_HDS$dgc <- str_remove(SWAFR_HDS$qdgc, ".$")
+
+SWAFR_DS_w_all_HDS <- SWAFR_HDS@data %>%
+  group_by(dgc) %>%
+  summarise(n_HDS = n()) %>%
+  filter(n_HDS == 4) %>%
+  pull(dgc) %>%
+  as.character()
 
 ## Collate heterogeneity data into grids ----------------------------------------
 #
