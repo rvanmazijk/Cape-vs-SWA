@@ -199,10 +199,10 @@ SWAFR_DS_w_all_HDS <- SWAFR_HDS@data %>%
 
 # Collate richness data into grids ---------------------------------------------
 
-make_SpatialPointsDataFrame <- function(x) {
+make_SpatialPointsDataFrame <- function(df) {
   SpatialPointsDataFrame(
-    coords      = x[, c("decimallongitude", "decimallatitude")],
-    data        = x[, "species"],
+    coords      = df[, c("decimallongitude", "decimallatitude")],
+    data        = df[, "species"],
     proj4string = crs(Larsen_grid)
   )
 }
