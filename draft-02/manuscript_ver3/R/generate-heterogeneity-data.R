@@ -56,7 +56,7 @@ iwalk(GCFR_heterogeneity,
       set_names(str_replace_all(var_names, " ", "_"))
     iwalk(each_scale,
       function(each_layer, each_layers_name) {
-        writeRaster(each_layer, filename = glue(
+        writeRaster(each_layer, overwrite = TRUE, filename = glue(
           "{data_dir}/",
           "GCFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
         ))
@@ -72,7 +72,7 @@ iwalk(SWAFR_heterogeneity,
       set_names(str_replace_all(var_names, " ", "_"))
     iwalk(each_scale,
       function(each_layer, each_layers_name) {
-        writeRaster(each_layer, filename = glue(
+        writeRaster(each_layer, overwrite = TRUE, filename = glue(
           "{data_dir}/",
           "SWAFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
         ))
