@@ -30,7 +30,7 @@ models_summary_for_plot <- models_summary %>%
     sig = ifelse(p.value < 0.05, "< 0.05", "NS")
   )
 
-ggplot(models_summary_for_plot) +
+model_summary_plot <- ggplot(models_summary_for_plot) +
   aes(
     term, estimate,
     fill = region, group = region, shape = region,
@@ -45,10 +45,7 @@ ggplot(models_summary_for_plot) +
   geom_point(position = position_dodge(width = 0.25), size = 2) +
   labs(
     x = "Heterogeneity predictor",
-    y = bquote(
-      "Effect"~~
-        "(log"["10"]*italic("S")*")"
-    )
+    y = bquote("Effect"~~"("*italic("S")*")")
   ) +
   scale_fill_manual(values = c(NA, "black", "white")) +
   scale_shape_manual(values = c(4, 21, 21)) +
@@ -70,3 +67,13 @@ ggplot(models_summary_for_plot) +
     axis.text.y  = element_text(angle = 90, hjust = 0.5),
     strip.text.x = element_text(angle =  0, hjust = 0)
   )
+
+# Save to disc
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-multivariate-models.pdf"
+  ),
+  model_summary_plot,
+  width = 7, height = 7
+)

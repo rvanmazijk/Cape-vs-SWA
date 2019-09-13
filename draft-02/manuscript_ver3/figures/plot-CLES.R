@@ -11,7 +11,7 @@ CLES_results %<>% mutate(
 
 # Create empty panels
 empty_plots <- ggplot(CLES_results, aes(scale, CLES_value)) +
-  geom_hline(yintercept = 0.5, lty = "dashed") +
+  geom_hline(yintercept = 0.5, colour = "grey75", lty = "dashed") +
   facet_wrap(~label, nrow = 2) +
   scale_x_continuous(
     name   = "Scale (º)",
@@ -48,4 +48,12 @@ CLES_plots <- empty_plots +
   geom_point(data = CLES_results, aes(shape = P_U < 0.05), size = 2) +
   scale_shape_manual(values = c(1, 19))
 
-CLES_plots
+# Save to disc
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-CLES.pdf"
+  ),
+  CLES_plots,
+  width = 7, height = 4
+)

@@ -1,5 +1,11 @@
 # Plot richness distributions & partitions
 
+data <- list(
+  QDS = read_csv(glue("{data_dir}/data-QDS-w-residuals.csv")),
+  HDS = read_csv(glue("{data_dir}/data-HDS-w-residuals.csv")),
+  DS  = read_csv(glue("{data_dir}/data-DS-w-residuals.csv"))
+)
+
 data_for_plot <- data %$%
   rbind(
     QDS %>%
@@ -110,11 +116,22 @@ hist_plots[c("QDS_richness", "HDS_turnover_prop")] %<>% map(
   ~.x + theme(legend.position = "none")
 )
 # Plot panels
-hist_plots %$% plot_grid(
+final_plot <- hist_plots %$% plot_grid(
   QDS_richness,   HDS_richness,
   partition_plot, HDS_turnover_prop,
   nrow = 2,
   labels = glue("({letters[1:4]})"),
   label_x = 0.125, label_y = 0.975
 )
+
+# Save to disc
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-richness-distributions-partitions.pdf"
+  ),
+  final_plot,
+  width = 7, height = 6
+)
+
 # TODO: Plot DS-scale versions for SI
