@@ -167,7 +167,7 @@ heterogeneity_w_coords %<>%
   map(mutate_at, vars(str_replace_all(var_names, " ", "_")), scale) %>%
   map(as_tibble)
 heterogeneity <- map2(heterogeneity, heterogeneity_w_coords,
-                      full_join
+  full_join
 )
 
 heterogeneity$QDS$QDS <- heterogeneity %$%
@@ -205,9 +205,9 @@ heterogeneity$DS %<>%
 
 # Check
 map(heterogeneity[2:4],
-    ~ ggplot(.x, aes(lon, lat)) +
-      geom_point() +
-      facet_grid(~region, scales = "free_x")
+  ~ ggplot(.x, aes(lon, lat)) +
+    geom_point() +
+    facet_grid(~region, scales = "free_x")
 )
 # Works!
 
