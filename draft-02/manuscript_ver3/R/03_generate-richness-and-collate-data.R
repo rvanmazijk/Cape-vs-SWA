@@ -343,3 +343,121 @@ map(data,
 
 # Save to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}.csv")))
+
+# Rasterise richness data ------------------------------------------------------
+
+# QDS-scale:
+GCFR_QDS_richness <- GCFR_heterogeneity$QDS$Elevation
+names(GCFR_QDS_richness) <- "QDS_richness"
+GCFR_QDS_richness[] <- NA
+cell_nos <- cellFromXY(
+  GCFR_QDS_richness,
+  data %$%
+    QDS %>%
+    filter(region == "GCFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+GCFR_QDS_richness[cell_nos] <- data %$%
+  QDS %>%
+  filter(region == "GCFR") %>%
+  pull(QDS_richness)
+# Check
+plot(GCFR_QDS_richness)
+plot(GCFR_border, add = TRUE)
+# Works!
+writeRaster(GCFR_QDS_richness, glue("{data_dir}/GCFR_QDS_richness.tif"))
+SWAFR_QDS_richness <- SWAFR_heterogeneity$QDS$Elevation
+names(SWAFR_QDS_richness) <- "QDS_richness"
+SWAFR_QDS_richness[] <- NA
+cell_nos <- cellFromXY(
+  SWAFR_QDS_richness,
+  data %$%
+    QDS %>%
+    filter(region == "SWAFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+SWAFR_QDS_richness[cell_nos] <- data %$%
+  QDS %>%
+  filter(region == "SWAFR") %>%
+  pull(QDS_richness)
+plot(SWAFR_QDS_richness)
+plot(SWAFR_border, add = TRUE)
+writeRaster(SWAFR_QDS_richness, glue("{data_dir}/SWAFR_QDS_richness.tif"))
+
+# HDS-scale:
+GCFR_HDS_richness <- GCFR_heterogeneity$HDS$Elevation
+names(GCFR_HDS_richness) <- "HDS_richness"
+GCFR_HDS_richness[] <- NA
+cell_nos <- cellFromXY(
+  GCFR_HDS_richness,
+  data %$%
+    HDS %>%
+    filter(region == "GCFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+GCFR_HDS_richness[cell_nos] <- data %$%
+  HDS %>%
+  filter(region == "GCFR") %>%
+  pull(HDS_richness)
+plot(GCFR_HDS_richness)
+plot(GCFR_border, add = TRUE)
+writeRaster(GCFR_HDS_richness, glue("{data_dir}/GCFR_HDS_richness.tif"))
+SWAFR_HDS_richness <- SWAFR_heterogeneity$HDS$Elevation
+names(SWAFR_HDS_richness) <- "HDS_richness"
+SWAFR_HDS_richness[] <- NA
+cell_nos <- cellFromXY(
+  SWAFR_HDS_richness,
+  data %$%
+    HDS %>%
+    filter(region == "SWAFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+SWAFR_HDS_richness[cell_nos] <- data %$%
+  HDS %>%
+  filter(region == "SWAFR") %>%
+  pull(HDS_richness)
+plot(SWAFR_HDS_richness)
+plot(SWAFR_border, add = TRUE)
+writeRaster(SWAFR_HDS_richness, glue("{data_dir}/SWAFR_HDS_richness.tif"))
+
+# DS-scale:
+GCFR_DS_richness <- GCFR_heterogeneity$DS$Elevation
+names(GCFR_DS_richness) <- "DS_richness"
+GCFR_DS_richness[] <- NA
+cell_nos <- cellFromXY(
+  GCFR_DS_richness,
+  data %$%
+    DS %>%
+    filter(region == "GCFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+GCFR_DS_richness[cell_nos] <- data %$%
+  DS %>%
+  filter(region == "GCFR") %>%
+  pull(DS_richness)
+plot(GCFR_DS_richness)
+plot(GCFR_border, add = TRUE)
+writeRaster(GCFR_DS_richness, glue("{data_dir}/GCFR_DS_richness.tif"))
+SWAFR_DS_richness <- SWAFR_heterogeneity$DS$Elevation
+names(SWAFR_DS_richness) <- "DS_richness"
+SWAFR_DS_richness[] <- NA
+cell_nos <- cellFromXY(
+  SWAFR_DS_richness,
+  data %$%
+    DS %>%
+    filter(region == "SWAFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+SWAFR_DS_richness[cell_nos] <- data %$%
+  DS %>%
+  filter(region == "SWAFR") %>%
+  pull(DS_richness)
+plot(SWAFR_DS_richness)
+plot(SWAFR_border, add = TRUE)
+writeRaster(SWAFR_DS_richness, glue("{data_dir}/SWAFR_DS_richness.tif"))
