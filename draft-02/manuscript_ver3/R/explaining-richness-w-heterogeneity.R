@@ -1,3 +1,11 @@
+# Import data ------------------------------------------------------------------
+
+data <- list(
+  QDS = read_csv(glue("{data_dir}/data-QDS.csv")),
+  HDS = read_csv(glue("{data_dir}/data-HDS.csv")),
+  DS  = read_csv(glue("{data_dir}/data-DS.csv"))
+)
+
 # Univariate models ------------------------------------------------------------
 
 # .... Fit PC1 models ----------------------------------------------------------
@@ -455,6 +463,5 @@ data$QDS$multivariate_residual <- m_QDS_richness$residuals
 data$HDS$multivariate_residual <- m_HDS_richness$residuals
 data$DS$multivariate_residual  <- m_DS_richness$residuals
 
-data %>%
-  bind_rows(.id = "scale") %>%
-  write_csv(glue("{data_dir}/data.csv"))
+# Save new data w/ residuals to disc
+iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}.csv")))

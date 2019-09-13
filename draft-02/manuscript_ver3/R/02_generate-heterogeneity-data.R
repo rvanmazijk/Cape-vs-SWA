@@ -135,6 +135,7 @@ heterogeneity %<>% map2(PC1s,
   ~as_tibble(cbind(.x, .y))
 )
 
+# Save to disc
 heterogeneity %>%
   bind_rows(.id = "scale") %>%
   write_csv(glue("{data_dir}/heterogeneity.csv"))
