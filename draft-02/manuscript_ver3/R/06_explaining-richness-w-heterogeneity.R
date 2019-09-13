@@ -403,7 +403,7 @@ full_formula <- predictor_names[predictor_names != "PC1"] %>%
 
 m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data$QDS)
 m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data$HDS)
-m_DS_richness  <- lm(glue("DS_richness  ~ {full_formula}"),  data$DS)
+m_DS_richness  <- lm(glue("DS_richness  ~ {full_formula}"), data$DS)
 
 m_QDS_richness %<>% step(direction = "backward", trace = 0)
 m_HDS_richness %<>% step(direction = "backward", trace = 0)
