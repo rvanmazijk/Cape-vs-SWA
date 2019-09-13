@@ -7,8 +7,7 @@ data <- list(
 )
 
 heterogeneity_for_CLES <- data %>%
-  split(.$region) %>%
-  map(~split(.x, .x$scale)) %>%
+  map(~split(.x, .x$region)) %>%
   map(map, dplyr::select_at,
     c(str_replace_all(var_names, " ", "_"), "PC1")
   )
@@ -17,8 +16,25 @@ heterogeneity_point1 <- read_csv(glue("{data_dir}/heterogeneity.csv")) %>%
   split(.$region) %>%
   map(dplyr::select, -scale, -region)
 
-heterogeneity_for_CLES$GCFR$point1 <- heterogeneity_point1$GCFR
-heterogeneity_for_CLES$SWAFR$point1 <- heterogeneity_point1$SWAFR
+heterogeneity_for_CLES$point1$GCFR  <- heterogeneity_point1$GCFR
+heterogeneity_for_CLES$point1$SWAFR <- heterogeneity_point1$SWAFR
+
+heterogeneity_for_CLES2 <- list()
+
+heterogeneity_for_CLES2$GCFR <- list(
+  point1 = heterogeneity_for_CLES$point1$GCFR,
+  QDS    = heterogeneity_for_CLES$QDS$GCFR,
+  HDS    = heterogeneity_for_CLES$HDS$GCFR,
+  DS     = heterogeneity_for_CLES$DS$GCFR
+)
+heterogeneity_for_CLES2$SWAFR <- list(
+  point1 = heterogeneity_for_CLES$point1$SWAFR,
+  QDS    = heterogeneity_for_CLES$QDS$SWAFR,
+  HDS    = heterogeneity_for_CLES$HDS$SWAFR,
+  DS     = heterogeneity_for_CLES$DS$SWAFR
+)
+
+heterogeneity_for_CLES <- heterogeneity_for_CLES2
 
 # CLES analysis ----------------------------------------------------------------
 
