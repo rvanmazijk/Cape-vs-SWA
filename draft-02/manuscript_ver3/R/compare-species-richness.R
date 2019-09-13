@@ -272,12 +272,12 @@ QDS_richness <- species_occ_data %>%
   full_join(tibble(EDS = Larsen_grid$edgc)) %>%
   mutate(EDS_in_region = EDS %in% Larsen_grid$edgc[Larsen_grid$in_region]) %>%
   group_by(QDS) %>%
+  filter(QDS %in% c(GCFR_QDS_w_all_EDS, SWAFR_QDS_w_all_EDS)) %>%
   summarise(
     n_EDS_in_region = length(unique(EDS[EDS_in_region])),
     n_collections   = length(species),
     QDS_richness    = length(unique(species))
-  ) %>%
-  filter(n_EDS_in_region == 4)
+  )
 # At HDS-scale:
 mean_QDS_richness <- QDS_richness %>%
   mutate(HDS = str_remove(QDS, ".$")) %>%
@@ -287,13 +287,13 @@ HDS_richness <- species_occ_data %>%
   full_join(tibble(QDS = Larsen_grid$qdgc[Larsen_grid$in_region])) %>%
   mutate(QDS_in_region = QDS %in% Larsen_grid$qdgc[Larsen_grid$in_region]) %>%
   group_by(HDS) %>%
+  filter(HDS %in% c(GCFR_HDS_w_all_QDS, SWAFR_HDS_w_all_QDS)) %>%
   summarise(
     n_QDS_in_region = length(unique(QDS[QDS_in_region])),
     n_collections   = length(species),
     HDS_richness    = length(unique(species))
   ) %>%
-  full_join(mean_QDS_richness) %>%
-  filter(n_QDS_in_region == 4)
+  full_join(mean_QDS_richness)
 # At DS-scale:
 mean_HDS_richness <- HDS_richness %>%
   mutate(DS = str_remove(HDS, ".$")) %>%
@@ -303,25 +303,23 @@ DS_richness <- species_occ_data %>%
   full_join(tibble(HDS = Larsen_grid$hdgc[Larsen_grid$in_region])) %>%
   mutate(HDS_in_region = HDS %in% Larsen_grid$hdgc[Larsen_grid$in_region]) %>%
   group_by(DS) %>%
+  filter(DS %in% c(GCFR_DS_w_all_HDS, SWAFR_DS_w_all_HDS)) %>%
   summarise(
     n_HDS_in_region = length(unique(HDS[HDS_in_region])),
     n_collections   = length(species),
     DS_richness     = length(unique(species))
   ) %>%
-  full_join(mean_HDS_richness) %>%
-  filter(n_HDS_in_region == 4)
+  full_join(mean_HDS_richness)
 
 # Collate gridded heterogeneity & richness data --------------------------------
 
-data <- heterogeneity[-1]  # can't use 0.10x0.10 for richness data
+data <- heterogeneity[-1]  # can't use 0.10 x 0.10 for richness data
 data$QDS %<>%
   full_join(QDS_richness) %>%
-  na.exclude() #%>%
-  #filter(n_EDS == 4)
+  na.exclude()
 data$HDS %<>%
   full_join(HDS_richness) %>%
   na.exclude() %>%
-  #filter(n_QDS == 4) %>%
   mutate(
     QDS_turnover      = HDS_richness - mean_QDS_richness,
     QDS_turnover_prop = QDS_turnover / HDS_richness
@@ -329,11 +327,18 @@ data$HDS %<>%
 data$DS %<>%
   full_join(DS_richness) %>%
   na.exclude() %>%
-  #filter(n_HDS == 4) %>%
   mutate(
     HDS_turnover      = DS_richness - mean_HDS_richness,
     HDS_turnover_prop = HDS_turnover/DS_richness,
   )
+
+# Check
+map(data, visdat::vis_dat)
+map(data,
+  ~ ggplot(.x, aes(lon, lat)) +
+    geom_point() +
+    facet_grid(~region, scales = "free_x")
+)
 
 # Test for differences in richness and turnover --------------------------------
 

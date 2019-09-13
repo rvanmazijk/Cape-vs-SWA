@@ -1,11 +1,18 @@
 # Import and tidy heterogeneity data -------------------------------------------
 
-heterogeneity <- read_csv(glue("{data_dir}/heterogeneity.csv"))
+heterogeneity_point1 <- read_csv(glue("{data_dir}/heterogeneity.csv")) %>%
+  filter(scale == "point1") %>%
+  split(.$region) %>%
+  map(dplyr::select, -scale, -region)
 
-heterogeneity_for_CLES <- heterogeneity %>%
+heterogeneity_for_CLES <- read_csv(glue("{data_dir}/data.csv")) %>%
   split(.$region) %>%
   map(~split(.x, .x$scale)) %>%
-  map(map, dplyr::select_if, is.numeric)
+  map(map, dplyr::select_at,
+    c(str_replace_all(var_names, " ", "_"), "PC1")
+  )
+heterogeneity_for_CLES$GCFR$point1 <- heterogeneity_point1$GCFR
+heterogeneity_for_CLES$SWAFR$point1 <- heterogeneity_point1$SWAFR
 
 # CLES analysis ----------------------------------------------------------------
 
