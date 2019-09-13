@@ -366,7 +366,7 @@ GCFR_QDS_richness[cell_nos] <- data %$%
 plot(GCFR_QDS_richness)
 plot(GCFR_border, add = TRUE)
 # Works!
-writeRaster(GCFR_QDS_richness, glue("{data_dir}/GCFR_QDS_richness.tif"))
+writeRaster(GCFR_QDS_richness, glue("{data_dir}/GCFR_QDS_richness.tif"), overwrite = TRUE)
 SWAFR_QDS_richness <- SWAFR_heterogeneity$QDS$Elevation
 names(SWAFR_QDS_richness) <- "QDS_richness"
 SWAFR_QDS_richness[] <- NA
@@ -384,7 +384,7 @@ SWAFR_QDS_richness[cell_nos] <- data %$%
   pull(QDS_richness)
 plot(SWAFR_QDS_richness)
 plot(SWAFR_border, add = TRUE)
-writeRaster(SWAFR_QDS_richness, glue("{data_dir}/SWAFR_QDS_richness.tif"))
+writeRaster(SWAFR_QDS_richness, glue("{data_dir}/SWAFR_QDS_richness.tif"), overwrite = TRUE)
 
 # HDS-scale:
 GCFR_HDS_richness <- GCFR_heterogeneity$HDS$Elevation
@@ -404,7 +404,7 @@ GCFR_HDS_richness[cell_nos] <- data %$%
   pull(HDS_richness)
 plot(GCFR_HDS_richness)
 plot(GCFR_border, add = TRUE)
-writeRaster(GCFR_HDS_richness, glue("{data_dir}/GCFR_HDS_richness.tif"))
+writeRaster(GCFR_HDS_richness, glue("{data_dir}/GCFR_HDS_richness.tif"), overwrite = TRUE)
 SWAFR_HDS_richness <- SWAFR_heterogeneity$HDS$Elevation
 names(SWAFR_HDS_richness) <- "HDS_richness"
 SWAFR_HDS_richness[] <- NA
@@ -422,7 +422,7 @@ SWAFR_HDS_richness[cell_nos] <- data %$%
   pull(HDS_richness)
 plot(SWAFR_HDS_richness)
 plot(SWAFR_border, add = TRUE)
-writeRaster(SWAFR_HDS_richness, glue("{data_dir}/SWAFR_HDS_richness.tif"))
+writeRaster(SWAFR_HDS_richness, glue("{data_dir}/SWAFR_HDS_richness.tif"), overwrite = TRUE)
 
 # DS-scale:
 GCFR_DS_richness <- GCFR_heterogeneity$DS$Elevation
@@ -442,7 +442,7 @@ GCFR_DS_richness[cell_nos] <- data %$%
   pull(DS_richness)
 plot(GCFR_DS_richness)
 plot(GCFR_border, add = TRUE)
-writeRaster(GCFR_DS_richness, glue("{data_dir}/GCFR_DS_richness.tif"))
+writeRaster(GCFR_DS_richness, glue("{data_dir}/GCFR_DS_richness.tif"), overwrite = TRUE)
 SWAFR_DS_richness <- SWAFR_heterogeneity$DS$Elevation
 names(SWAFR_DS_richness) <- "DS_richness"
 SWAFR_DS_richness[] <- NA
@@ -460,4 +460,4 @@ SWAFR_DS_richness[cell_nos] <- data %$%
   pull(DS_richness)
 plot(SWAFR_DS_richness)
 plot(SWAFR_border, add = TRUE)
-writeRaster(SWAFR_DS_richness, glue("{data_dir}/SWAFR_DS_richness.tif"))
+writeRaster(SWAFR_DS_richness, glue("{data_dir}/SWAFR_DS_richness.tif"), overwrite = TRUE)

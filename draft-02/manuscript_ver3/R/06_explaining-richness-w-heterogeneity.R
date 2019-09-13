@@ -464,4 +464,4 @@ data$HDS$multivariate_residual <- m_HDS_richness$residuals
 data$DS$multivariate_residual  <- m_DS_richness$residuals
 
 # Save new data w/ residuals to disc
-iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}.csv")))
+iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
