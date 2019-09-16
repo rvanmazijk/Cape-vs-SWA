@@ -120,7 +120,7 @@ final_plot <- hist_plots %$% plot_grid(
   QDS_richness,   HDS_richness,
   partition_plot, HDS_turnover_prop,
   nrow = 2,
-  labels = glue("({letters[1:4]})"),
+  labels = glue("({letters[1:4]})"), label_fontface = "plain",
   label_x = 0.125, label_y = 0.975
 )
 
