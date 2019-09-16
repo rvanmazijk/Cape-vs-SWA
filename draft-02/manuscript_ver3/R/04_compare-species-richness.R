@@ -54,3 +54,11 @@ richness_test_results <- data %$% rbind(
 
 # Print table
 richness_test_results
+#> # A tibble: 5 x 3
+#>   metric                    P_U CLES_value
+#>   <chr>                   <dbl>      <dbl>
+#> 1 QDS_richness      0.406            0.516
+#> 2 HDS_richness      0.275            0.542
+#> 3 DS_richness       0.0384           0.658
+#> 4 QDS_turnover_prop 0.000000532      0.696
+#> 5 HDS_turnover_prop 0.00125          0.741
