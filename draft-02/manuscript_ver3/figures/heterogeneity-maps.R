@@ -1,6 +1,3 @@
-library(here)
-source(here("draft-02/manuscript_ver3/R/setup.R"))
-
 tidy_var_names <- c(
   str_replace_all(var_names, ' ', '_')#,
   #"PC1"  # TODO: save to disc before running this script
