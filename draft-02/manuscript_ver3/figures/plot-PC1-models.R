@@ -78,3 +78,12 @@ ggsave(
   all_scales_plots,
   width = 9, height = 3
 )
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-PC1-models.pNG"
+  ),
+  all_scales_plots, dpi = 600,
+  width = 9, height = 3
+)
+
