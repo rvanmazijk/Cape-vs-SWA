@@ -27,7 +27,7 @@ QDS_plot <- ggplot(data$QDS, aes(PC1, QDS_richness, fill = region)) +
     title = bquote("(a)  QDS ("*italic("R")^{"2"}*" = 0.14)")
   ) +
   scale_fill_manual(name = "Region", values = c("black", "white")) +
-  scale_colour_manual(name = "Region", values = c("black", "grey25")) +
+  scale_colour_manual(name = "Region", values = c("black", "grey50")) +
   coord_cartesian(ylim = master_ylim) +
   theme(
     legend.position = "none",
