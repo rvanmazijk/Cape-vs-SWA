@@ -107,26 +107,26 @@ fit_univariate_models <- function(response) {
                        ~ ifelse(.y != "non_region",
                          tidy(.x)$estimate[3],
                          NA
-                     )
-      ),
+                       )
+                     ),
       P_region     = map2_dbl(model, model_type,
                        ~ ifelse(.y != "non_region",
                          tidy(.x)$p.value[3],
                          NA
-                     )
-      ),
+                       )
+                     ),
       int_coeff    = map2_dbl(model, model_type,
                        ~ ifelse(.y == "int_region",
                          tidy(.x)$estimate[4],
                          NA
-                     )
-      ),
+                       )
+                     ),
       P_int        = map2_dbl(model, model_type,
                        ~ ifelse(.y == "int_region",
                          tidy(.x)$p.value[4],
                          NA
-                     )
-      ),
+                       )
+                     ),
       slope_sig    = ifelse(P_slope  < 0.05, "*", ""),
       region_sig   = ifelse(P_region < 0.05, "*", ""),
       int_sig      = ifelse(P_int    < 0.05, "*", ""),
@@ -150,7 +150,7 @@ fit_univariate_models <- function(response) {
           "Main effect only",
           "Region only"
         )),
-      variable = str_replace_all(variable, "_", " "),
+      variable    = str_replace_all(variable, "_", " "),
       slope_sign  = ifelse(slope        > 0, "+", "-"),
       region_sign = ifelse(region_coeff > 0, "+", "-"),
       int_sign    = ifelse(int_coeff    > 0, "+", "-")
