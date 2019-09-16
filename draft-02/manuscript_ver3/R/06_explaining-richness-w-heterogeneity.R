@@ -8,7 +8,7 @@ data <- list(
 
 # Univariate models ------------------------------------------------------------
 
-# .... Fit PC1 models ----------------------------------------------------------
+# .... Fit PC1 models manually (worthwhile) ------------------------------------
 
 # QDS-richness:
 m1 <- lm(QDS_richness ~ PC1, data$QDS)
@@ -71,328 +71,128 @@ data$DS$PC1_residual <- m1$residuals
 #  ) +
 #  theme(legend.position = "none")
 
-# .... Fit univariate QDS richness models --------------------------------------
+# .... Fit other all vars univariate models ------------------------------------
 
-predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
+# Define univariate model fitting helper function
+fit_univariate_models <- function(response) {
+  dataset <- data %$% {
+    if      (response == "QDS_richness") QDS
+    else if (response == "HDS_richness") HDS
+    else if (response == "DS_richness")  DS
+  }
 
-univar_models <- map(predictor_names,
-  ~ list(
-    non_region = lm(paste("QDS_richness ~", .x),             data$QDS),
-    add_region = lm(paste("QDS_richness ~", .x, "+ region"), data$QDS),
-    int_region = lm(paste("QDS_richness ~", .x, "* region"), data$QDS)
+  predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
+  univar_models <- map(predictor_names,
+    ~ list(
+      non_region = lm(glue("{response} ~ {.x}"),          dataset),
+      add_region = lm(glue("{response} ~ {.x} + region"), dataset),
+      int_region = lm(glue("{response} ~ {.x} * region"), dataset)
+    )
   )
-)
-names(univar_models) <- predictor_names
+  names(univar_models) <- predictor_names
 
-univar_model_summary <- univar_models %>%
-  map_dfr(.id = "variable",
-    ~ tibble(
-      model_type = names(.x),
-      model_rank = 1:3,
-      model = .x
-    )
-  ) %>%
-  group_by(variable) %>%
-  mutate(
-    slope        = map_dbl(model, ~tidy(.x)$estimate[2]),
-    P_slope      = map_dbl(model, ~tidy(.x)$p.value[ 2]),
-    region_coeff = map2_dbl(model, model_type,
-                     ~ ifelse(.y != "non_region",
-                       tidy(.x)$estimate[3],
-                       NA
-                   )
-    ),
-    P_region     = map2_dbl(model, model_type,
-                     ~ ifelse(.y != "non_region",
-                       tidy(.x)$p.value[3],
-                       NA
-                   )
-    ),
-    int_coeff    = map2_dbl(model, model_type,
-                     ~ ifelse(.y == "int_region",
-                       tidy(.x)$estimate[4],
-                       NA
-                   )
-    ),
-    P_int        = map2_dbl(model, model_type,
-                     ~ ifelse(.y == "int_region",
-                       tidy(.x)$p.value[4],
-                       NA
-                   )
-    ),
-    slope_sig    = ifelse(P_slope  < 0.05, "*", ""),
-    region_sig   = ifelse(P_region < 0.05, "*", ""),
-    int_sig      = ifelse(P_int    < 0.05, "*", ""),
-    AIC          = map_dbl(model, AIC),
-    delta_AIC    = AIC - min(AIC),
-    best_model   = (model_rank == min(model_rank[delta_AIC < 2]))
-  ) %>%
-  filter(best_model) %>%
-  ungroup() %>%
-  mutate(
-    model_type =
-      case_when(
-        model_type == "non_region"                   ~ "Main effect only",
-        model_type == "add_region" & P_slope <  0.05 ~ "Main effect + region",
-        model_type == "add_region" & P_slope >= 0.05 ~ "Region only",
-        model_type == "int_region"                   ~ "Main effect * region"
-      ) %>%
-      factor(levels = c(
-        "Main effect * region",
-        "Main effect + region",
-        "Main effect only",
-        "Region only"
-      )),
-    variable = str_replace_all(variable, "_", " "),
-    slope_sign  = ifelse(slope        > 0, "+", "-"),
-    region_sign = ifelse(region_coeff > 0, "+", "-"),
-    int_sign    = ifelse(int_coeff    > 0, "+", "-")
-  ) %>%
-  mutate_at(c("P_slope", "P_region", "P_int"),
-    ~ case_when(
-      .x < 0.001 ~ "***",
-      .x < 0.010 ~ "**",
-      .x < 0.050 ~ "*",
-      .x < 0.100 ~ ".",
-      TRUE       ~ " "
-    )
-  ) %>%
-  mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
-  dplyr::select(
-    model_type,  variable,
-    slope_sign,  P_slope,
-    region_sign, P_region,
-    int_sign,    P_int
-  ) %>%
-  arrange(model_type)
+  univar_model_summary <- univar_models %>%
+    map_dfr(.id = "variable",
+      ~ tibble(
+        model_type = names(.x),
+        model_rank = 1:3,
+        model = .x
+      )
+    ) %>%
+    group_by(variable) %>%
+    mutate(
+      slope        = map_dbl(model, ~tidy(.x)$estimate[2]),
+      P_slope      = map_dbl(model, ~tidy(.x)$p.value[ 2]),
+      region_coeff = map2_dbl(model, model_type,
+                       ~ ifelse(.y != "non_region",
+                         tidy(.x)$estimate[3],
+                         NA
+                     )
+      ),
+      P_region     = map2_dbl(model, model_type,
+                       ~ ifelse(.y != "non_region",
+                         tidy(.x)$p.value[3],
+                         NA
+                     )
+      ),
+      int_coeff    = map2_dbl(model, model_type,
+                       ~ ifelse(.y == "int_region",
+                         tidy(.x)$estimate[4],
+                         NA
+                     )
+      ),
+      P_int        = map2_dbl(model, model_type,
+                       ~ ifelse(.y == "int_region",
+                         tidy(.x)$p.value[4],
+                         NA
+                     )
+      ),
+      slope_sig    = ifelse(P_slope  < 0.05, "*", ""),
+      region_sig   = ifelse(P_region < 0.05, "*", ""),
+      int_sig      = ifelse(P_int    < 0.05, "*", ""),
+      AIC          = map_dbl(model, AIC),
+      delta_AIC    = AIC - min(AIC),
+      best_model   = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    ungroup() %>%
+    mutate(
+      model_type =
+        case_when(
+          model_type == "non_region"                   ~ "Main effect only",
+          model_type == "add_region" & P_slope <  0.05 ~ "Main effect + region",
+          model_type == "add_region" & P_slope >= 0.05 ~ "Region only",
+          model_type == "int_region"                   ~ "Main effect * region"
+        ) %>%
+        factor(levels = c(
+          "Main effect * region",
+          "Main effect + region",
+          "Main effect only",
+          "Region only"
+        )),
+      variable = str_replace_all(variable, "_", " "),
+      slope_sign  = ifelse(slope        > 0, "+", "-"),
+      region_sign = ifelse(region_coeff > 0, "+", "-"),
+      int_sign    = ifelse(int_coeff    > 0, "+", "-")
+    ) %>%
+    mutate_at(c("P_slope", "P_region", "P_int"),
+      ~ case_when(
+        .x < 0.001 ~ "***",
+        .x < 0.010 ~ "**",
+        .x < 0.050 ~ "*",
+        .x < 0.100 ~ ".",
+        TRUE       ~ " "
+      )
+    ) %>%
+    mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
+    dplyr::select(
+      model_type,  variable,
+      slope_sign,  P_slope,
+      region_sign, P_region,
+      int_sign,    P_int
+    ) %>%
+    arrange(model_type)
 
-# Remove variable names after first mention in table
-univar_model_summary$model_type %<>% as.character()
-for (pred in unique(univar_model_summary$model_type)) {
-  to_remove <- which(univar_model_summary$model_type == pred)[-1]
-  univar_model_summary$model_type[to_remove] <- " "
+  # Remove variable names after first mention in table
+  univar_model_summary$model_type %<>% as.character()
+  for (pred in unique(univar_model_summary$model_type)) {
+    to_remove <- which(univar_model_summary$model_type == pred)[-1]
+    univar_model_summary$model_type[to_remove] <- " "
+  }
+
+  # Print summary table
+  univar_model_summary
+
+  # Save results to disc
+  write_csv(
+    univar_model_summary,
+    glue("{data_dir}/{response}_univariate_model_results.csv")
+  )
 }
 
-# No interaction models best-fitting, so remove those columns
-univar_model_summary %<>% dplyr::select(-int_sign, -P_int)
-
-# Print summary table
-univar_model_summary
-
-# .... Fit univariate HDS richness-models --------------------------------------
-
-univar_models <- map(predictor_names,
-  ~ list(
-    non_region = lm(paste("HDS_richness ~", .x),             data$HDS),
-    add_region = lm(paste("HDS_richness ~", .x, "+ region"), data$HDS),
-    int_region = lm(paste("HDS_richness ~", .x, "* region"), data$HDS)
-  )
-)
-names(univar_models) <- predictor_names
-
-univar_model_summary <- univar_models %>%
-  map_dfr(.id = "variable",
-    ~ tibble(
-      model_type = names(.x),
-      model_rank = 1:3,
-      model = .x
-    )
-  ) %>%
-  group_by(variable) %>%
-  mutate(
-    slope        = map_dbl(model, ~tidy(.x)$estimate[2]),
-    P_slope      = map_dbl(model, ~tidy(.x)$p.value[ 2]),
-    region_coeff = map2_dbl(model, model_type,
-                     ~ ifelse(.y != "non_region",
-                       tidy(.x)$estimate[3],
-                       NA
-                     )
-                   ),
-    P_region     = map2_dbl(model, model_type,
-                     ~ ifelse(.y != "non_region",
-                       tidy(.x)$p.value[3],
-                       NA
-                     )
-                   ),
-    int_coeff    = map2_dbl(model, model_type,
-                     ~ ifelse(.y == "int_region",
-                       tidy(.x)$estimate[4],
-                       NA
-                     )
-                   ),
-    P_int        = map2_dbl(model, model_type,
-                     ~ ifelse(.y == "int_region",
-                       tidy(.x)$p.value[4],
-                       NA
-                     )
-                   ),
-    slope_sig    = ifelse(P_slope  < 0.05, "*", ""),
-    region_sig   = ifelse(P_region < 0.05, "*", ""),
-    int_sig      = ifelse(P_int    < 0.05, "*", ""),
-    AIC          = map_dbl(model, AIC),
-    delta_AIC    = AIC - min(AIC),
-    best_model   = (model_rank == min(model_rank[delta_AIC < 2]))
-  ) %>%
-  filter(best_model) %>%
-  ungroup() %>%
-  mutate(
-    model_type =
-      case_when(
-        model_type == "non_region"                   ~ "Main effect only",
-        model_type == "add_region" & P_slope <  0.05 ~ "Main effect + region",
-        model_type == "add_region" & P_slope >= 0.05 ~ "Region only",
-        model_type == "int_region"                   ~ "Main effect * region"
-      ) %>%
-      factor(levels = c(
-        "Main effect * region",
-        "Main effect + region",
-        "Main effect only",
-        "Region only"
-      )),
-    variable = str_replace_all(variable, "_", " "),
-    slope_sign  = ifelse(slope        > 0, "+", "-"),
-    region_sign = ifelse(region_coeff > 0, "+", "-"),
-    int_sign    = ifelse(int_coeff    > 0, "+", "-")
-  ) %>%
-  mutate_at(c("P_slope", "P_region", "P_int"),
-    ~ case_when(
-      .x < 0.001 ~ "***",
-      .x < 0.010 ~ "**",
-      .x < 0.050 ~ "*",
-      .x < 0.100 ~ ".",
-      TRUE       ~ " "
-    )
-  ) %>%
-  mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
-  dplyr::select(
-    model_type,  variable,
-    slope_sign,  P_slope,
-    region_sign, P_region,
-    int_sign,    P_int
-  ) %>%
-  arrange(model_type)
-
-# Remove variable names after first mention in table
-univar_model_summary$model_type %<>% as.character()
-for (pred in unique(univar_model_summary$model_type)) {
-  to_remove <- which(univar_model_summary$model_type == pred)[-1]
-  univar_model_summary$model_type[to_remove] <- " "
-}
-
-# All main effect only best-fitting, so remove other columns
-univar_model_summary %<>% dplyr::select(
-  -region_sign, -P_region,
-  -int_sign,    -P_int
-)
-
-# Print summary table
-univar_model_summary
-
-# .... Fit univariate DS richness models ---------------------------------------
-
-univar_models <- map(predictor_names,
-  ~ list(
-    non_region = lm(paste("DS_richness ~", .x),             data$DS),
-    add_region = lm(paste("DS_richness ~", .x, "+ region"), data$DS),
-    int_region = lm(paste("DS_richness ~", .x, "* region"), data$DS)
-  )
-)
-names(univar_models) <- predictor_names
-
-univar_model_summary <- univar_models %>%
-  map_dfr(.id = "variable",
-    ~ tibble(
-      model_type = names(.x),
-      model_rank = 1:3,
-      model = .x
-    )
-  ) %>%
-  group_by(variable) %>%
-  mutate(
-    slope        = map_dbl(model, ~tidy(.x)$estimate[2]),
-    P_slope      = map_dbl(model, ~tidy(.x)$p.value[ 2]),
-    region_coeff = map2_dbl(model, model_type,
-                     ~ ifelse(.y != "non_region",
-                       tidy(.x)$estimate[3],
-                       NA
-                     )
-                   ),
-    P_region     = map2_dbl(model, model_type,
-                     ~ ifelse(.y != "non_region",
-                        tidy(.x)$p.value[3],
-                        NA
-                     )
-                   ),
-    int_coeff    = map2_dbl(model, model_type,
-                     ~ ifelse(.y == "int_region",
-                       tidy(.x)$estimate[4],
-                       NA
-                     )
-                   ),
-    P_int        = map2_dbl(model, model_type,
-                     ~ ifelse(.y == "int_region",
-                       tidy(.x)$p.value[4],
-                       NA
-                     )
-                   ),
-    slope_sig    = ifelse(P_slope  < 0.05, "*", ""),
-    region_sig   = ifelse(P_region < 0.05, "*", ""),
-    int_sig      = ifelse(P_int    < 0.05, "*", ""),
-    AIC          = map_dbl(model, AIC),
-    delta_AIC    = AIC - min(AIC),
-    best_model   = (model_rank == min(model_rank[delta_AIC < 2]))
-  ) %>%
-  filter(best_model) %>%
-  ungroup() %>%
-  mutate(
-    model_type =
-      case_when(
-        model_type == "non_region"                   ~ "Main effect only",
-        model_type == "add_region" & P_slope <  0.05 ~ "Main effect + region",
-        model_type == "add_region" & P_slope >= 0.05 ~ "Region only",
-        model_type == "int_region"                   ~ "Main effect * region"
-      ) %>%
-      factor(levels = c(
-        "Main effect * region",
-        "Main effect + region",
-        "Main effect only",
-        "Region only"
-      )),
-    variable = str_replace_all(variable, "_", " "),
-    slope_sign  = ifelse(slope        > 0, "+", "-"),
-    region_sign = ifelse(region_coeff > 0, "+", "-"),
-    int_sign    = ifelse(int_coeff    > 0, "+", "-")
-  ) %>%
-  mutate_at(c("P_slope", "P_region", "P_int"),
-    ~ case_when(
-      .x < 0.001 ~ "***",
-      .x < 0.010 ~ "**",
-      .x < 0.050 ~ "*",
-      .x < 0.100 ~ ".",
-      TRUE       ~ " "
-    )
-  ) %>%
-  mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
-  dplyr::select(
-    model_type,  variable,
-    slope_sign,  P_slope,
-    region_sign, P_region,
-    int_sign,    P_int
-  ) %>%
-  arrange(model_type)
-
-# Remove variable names after first mention in table
-univar_model_summary$model_type %<>% as.character()
-for (pred in unique(univar_model_summary$model_type)) {
-  to_remove <- which(univar_model_summary$model_type == pred)[-1]
-  univar_model_summary$model_type[to_remove] <- " "
-}
-
-# No interaction models best-fitting, so remove those columns
-univar_model_summary %<>% dplyr::select(-int_sign, -P_int)
-
-# Print summary table
-univar_model_summary
+fit_univariate_models("QDS_richness")
+fit_univariate_models("HDS_richness")
+fit_univariate_models("DS_richness")
 
 # Multivariate models ----------------------------------------------------------
 
