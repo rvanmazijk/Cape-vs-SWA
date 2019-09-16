@@ -57,3 +57,11 @@ ggsave(
   CLES_plots,
   width = 7, height = 4
 )
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-CLES.png"
+  ),
+  CLES_plots, dpi = 600,
+  width = 7, height = 4
+)
