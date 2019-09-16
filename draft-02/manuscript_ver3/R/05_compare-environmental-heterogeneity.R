@@ -98,3 +98,14 @@ CLES_model_summaries <- CLES_models %>%
 
 # Print summary table
 as.data.frame(CLES_model_summaries)
+#>     variable estimate p.value sig
+#> 1  Elevation    0.059   0.168
+#> 2        MAP   -0.157   0.095   .
+#> 3        PDQ   -0.042   0.401
+#> 4  Surface_T   -0.112   0.169
+#> 5       NDVI    0.116   0.000   *
+#> 6        CEC   -0.043   0.295
+#> 7       Clay    0.158   0.037   *
+#> 8     Soil_C   -0.030   0.524
+#> 9         pH    0.014   0.678
+#> 10       PC1   -0.014   0.266
