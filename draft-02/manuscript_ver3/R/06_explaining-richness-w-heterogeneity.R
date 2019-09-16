@@ -265,3 +265,88 @@ data$DS$multivariate_residual  <- m_DS_richness$residuals
 
 # Save new data w/ residuals to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
+
+# .... Scale-ANCOVA-like multivariate-model ------------------------------------
+
+vars <- c(
+  "region",
+  "richness",
+  str_replace_all(var_names, " ", "_")
+)
+data_all_scales <- data %$% rbind(
+  QDS %>%
+    rename(richness = QDS_richness) %>%
+    dplyr::select_at(vars) %>%
+    add_column(scale = "QDS"),
+  HDS %>%
+    rename(richness = HDS_richness) %>%
+    dplyr::select_at(vars) %>%
+    add_column(scale = "HDS"),
+  DS %>%
+    rename(richness = DS_richness) %>%
+    dplyr::select_at(vars) %>%
+    add_column(scale = "DS")
+)
+
+full_formula <- predictor_names[predictor_names != "PC1"] %>%
+  {c(., paste(., "* region"), paste(., "* scale"))} %>%
+  paste(collapse = " + ")
+m_all_scales <- lm(glue("richness ~ {full_formula}"), data_all_scales)
+m_all_scales %<>% step(direction = "backward", trace = 0)
+
+summary(m_all_scales)
+
+reparameterise <- function(m) {
+  preds_w_interactions <- m %$%
+    coefficients %>%
+    names() %>%
+    magrittr::extract(which(
+      str_detect(., ":regionSWAFR") |
+      str_detect(., ":scale(H|Q)DS")
+    ))
+  reparameterisation <- preds_w_interactions %>%
+    str_remove(":regionSWAFR") %>%
+    str_remove(":scaleQDS") %>%
+    str_remove(":scaleHDS") %>%
+    str_remove_all(":") %>%
+    {glue("-{.}")} %>%
+    paste(collapse = " ")
+  update(m,
+    formula = glue(". ~ . {reparameterisation}"),
+    data    = data_all_scales
+  )
+}
+m_all_scales %>%
+  reparameterise() %>%
+  tidy(conf.int = TRUE) %>%
+  mutate(
+    region = case_when(
+      str_detect(term, "GCFR")  ~ "GCFR",
+      str_detect(term, "SWAFR") ~ "SWAFR",
+      TRUE                      ~ ""
+    ),
+    scale = case_when(
+      str_detect(term, "QDS") ~ "QDS",
+      str_detect(term, "HDS") ~ "HDS",
+      str_detect(term, "DS")  ~ "DS",
+      TRUE                    ~ ""
+    ),
+    term_type = case_when(
+      str_detect(term, "region") ~ "region",
+      str_detect(term, "scale")  ~ "scale",
+      TRUE                       ~ ""
+    ),
+    var = term %>%
+      str_remove("region(GC|SWA)FR") %>%
+      str_remove("scale(H|Q)?DS") %>%
+      str_remove("\\(Intercept\\)") %>%
+      str_remove_all(":"),
+    sig = p.value < 0.05
+  ) %>%
+  filter(sig) %>%
+  ggplot(aes(var, estimate, colour = region, shape = scale)) +
+    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+    geom_point() +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0) +
+    #facet_wrap(~term_type, scales = "free_x") +
+    theme(axis.text.x = element_text(angle = 90))
