@@ -77,3 +77,11 @@ ggsave(
   model_summary_plot,
   width = 7, height = 7
 )
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-multivariate-models.png"
+  ),
+  model_summary_plot, dpi = 600,
+  width = 7, height = 7
+)
