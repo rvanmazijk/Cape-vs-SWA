@@ -133,5 +133,13 @@ ggsave(
   final_plot,
   width = 7, height = 6
 )
+ggsave(
+  here(
+    "draft-02/manuscript_ver3/figures",
+    "plot-richness-distributions-partitions.png"
+  ),
+  final_plot, dpi = 600,
+  width = 7, height = 6
+)
 
 # TODO: Plot DS-scale versions for SI
