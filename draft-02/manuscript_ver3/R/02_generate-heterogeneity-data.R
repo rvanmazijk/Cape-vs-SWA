@@ -116,6 +116,11 @@ heterogeneity_PCAs <- map(heterogeneity,
 
 # Look at results
 map(heterogeneity_PCAs, summary)
+#>          Proportion of Variance (PC1)
+#> $point1                        0.3819
+#> $QDS                           0.4244
+#> $HDS                           0.3902
+#> $DS                            0.4126
 
 # Force PC1 scores to be positive if all vars rotations are negative
 heterogeneity_PCAs %<>% map(function(PCA) {
