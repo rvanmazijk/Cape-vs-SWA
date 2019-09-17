@@ -49,37 +49,29 @@ SWAFR_heterogeneity <- c(
 
 # Save heterogeneity rasters to disc -------------------------------------------
 
-iwalk(GCFR_heterogeneity,
-  function(each_scale, each_scales_name) {
-    each_scale %<>%
-      as.list() %>%
-      set_names(str_replace_all(var_names, " ", "_"))
-    iwalk(each_scale,
-      function(each_layer, each_layers_name) {
-        writeRaster(each_layer, overwrite = TRUE, filename = glue(
-          "{data_dir}/",
-          "GCFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
-        ))
-      }
-    )
-  }
-)
+iwalk(GCFR_heterogeneity, function(each_scale, each_scales_name) {
+  each_scale %<>%
+    as.list() %>%
+    set_names(str_replace_all(var_names, " ", "_"))
+  iwalk(each_scale, function(each_layer, each_layers_name) {
+    writeRaster(each_layer, overwrite = TRUE, filename = glue(
+      "{data_dir}/",
+      "GCFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
+    ))
+  })
+})
 
-iwalk(SWAFR_heterogeneity,
-  function(each_scale, each_scales_name) {
-    each_scale %<>%
-      as.list() %>%
-      set_names(str_replace_all(var_names, " ", "_"))
-    iwalk(each_scale,
-      function(each_layer, each_layers_name) {
-        writeRaster(each_layer, overwrite = TRUE, filename = glue(
-          "{data_dir}/",
-          "SWAFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
-        ))
-      }
-    )
-  }
-)
+iwalk(SWAFR_heterogeneity, function(each_scale, each_scales_name) {
+  each_scale %<>%
+    as.list() %>%
+    set_names(str_replace_all(var_names, " ", "_"))
+  iwalk(each_scale, function(each_layer, each_layers_name) {
+    writeRaster(each_layer, overwrite = TRUE, filename = glue(
+      "{data_dir}/",
+      "SWAFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
+    ))
+  })
+})
 
 # Tidy heterogeneity data ------------------------------------------------------
 
