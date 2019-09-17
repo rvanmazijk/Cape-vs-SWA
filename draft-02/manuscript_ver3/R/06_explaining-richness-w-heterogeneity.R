@@ -1,3 +1,5 @@
+predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
+
 # Import data ------------------------------------------------------------------
 
 data <- list(
@@ -81,7 +83,6 @@ fit_univariate_models <- function(response) {
     else if (response == "DS_richness")  DS
   }
 
-  predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
   univar_models <- map(predictor_names,
     ~ list(
       non_region = lm(glue("{response} ~ {.x}"),          dataset),
