@@ -105,6 +105,16 @@ heterogeneity_PCAs <- map(heterogeneity,
     dplyr::select(-region) %>%
     prcomp(center = TRUE, scale. = TRUE)
 )
+#heterogeneity_PCAs_clim <- map(heterogeneity,
+#  ~ .x %>%
+#    dplyr::select(Elevation, MAP, PDQ, Surface_T, NDVI) %>%
+#    prcomp(center = TRUE, scale. = TRUE)
+#)
+#heterogeneity_PCAs_soil <- map(heterogeneity,
+#  ~ .x %>%
+#    dplyr::select(CEC, Clay, Soil_C, pH) %>%
+#    prcomp(center = TRUE, scale. = TRUE)
+#)
 
 # Look at results
 map(heterogeneity_PCAs, summary)
@@ -113,6 +123,8 @@ map(heterogeneity_PCAs, summary)
 #> $QDS                           0.4244
 #> $HDS                           0.3902
 #> $DS                            0.4126
+map(heterogeneity_PCAs_clim, summary)
+map(heterogeneity_PCAs_soil, summary)
 
 # Force PC1 scores to be positive if all vars' rotations are negative
 force_positive_PC1 <- function(PCA) {
@@ -124,14 +136,124 @@ force_positive_PC1 <- function(PCA) {
   PCA
 }
 heterogeneity_PCAs      %<>% map(force_positive_PC1)
+#heterogeneity_PCAs_clim %<>% map(force_positive_PC1)
+#heterogeneity_PCAs_soil %<>% map(force_positive_PC1)
+
+# Plot PC-biplots
+plot_grid(plotlist = map2(heterogeneity_PCAs, heterogeneity,
+  ~ autoplot(.x, data = .y, colour = "region",
+    alpha = 0.25,
+    loadings       = TRUE, loadings.colour       = "black",
+    loadings.label = TRUE, loadings.label.colour = "black",
+    loadings.label.hjust = -0.25
+  ) +
+  ggtitle(unique(.y$scale)) +
+  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
+))
+#plot_grid(plotlist = map2(heterogeneity_PCAs_clim, heterogeneity,
+#  ~ autoplot(.x, data = .y, colour = "region",
+#    alpha = 0.25,
+#    loadings       = TRUE, loadings.colour       = "black",
+#    loadings.label = TRUE, loadings.label.colour = "black",
+#    loadings.label.hjust = -0.25
+#  ) +
+#  ggtitle(unique(.y$scale)) +
+#  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+#  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
+#))
+#plot_grid(plotlist = map2(heterogeneity_PCAs_soil, heterogeneity,
+#  ~ autoplot(.x, data = .y, colour = "region",
+#    alpha = 0.25,
+#    loadings       = TRUE, loadings.colour       = "black",
+#    loadings.label = TRUE, loadings.label.colour = "black",
+#    loadings.label.hjust = -0.25
+#  ) +
+#  ggtitle(unique(.y$scale)) +
+#  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+#  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
+#))
+
+# Inspect other rotations/loadings? (PC2 et al.)
+#PC2s <- heterogeneity_PCAs %$% as.data.frame(rbind(
+#  point1 %$% cbind(
+#    variable = rownames(rotation),
+#    scale    = 0.10,
+#    rotation = rotation[, 2]
+#  ),
+#  QDS %$% cbind(
+#    variable = rownames(rotation),
+#    scale    = 0.25,
+#    rotation = rotation[, 2]
+#  ),
+#  HDS %$% cbind(
+#    variable = rownames(rotation),
+#    scale    = 0.50,
+#    rotation = rotation[, 2]
+#  ),
+#  DS %$% cbind(
+#    variable = rownames(rotation),
+#    scale    = 1.00,
+#    rotation = -rotation[, 2]  # !!!
+#  )
+#))
+#PC2s$variable %<>% factor(levels = str_replace_all(var_names, " ", "_"))
+#PC2s$scale    %<>% as.character() %>% as.numeric()
+#PC2s$rotation %<>% as.character() %>% as.numeric()
+#ggplot(PC2s, aes(scale, rotation, group = variable, colour = variable)) +
+#  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+#  geom_point() +
+#  geom_line()
+#ggplot(PC2s, aes(scale, rotation)) +
+#  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+#  geom_point() +
+#  facet_wrap(~variable, nrow = 2)
 
 # Add PC1 to heterogeneity dataset
 PC1s <- map(heterogeneity_PCAs,
   ~tibble(PC1 = .x$x[, 1])
 )
-heterogeneity %<>% map2(PC1s,
-  ~as_tibble(cbind(.x, .y))
-)
+#PC1s_clim <- map(heterogeneity_PCAs_clim,
+#  ~tibble(PC1_clim = .x$x[, 1])
+#)
+#PC1s_soil <- map(heterogeneity_PCAs_soil,
+#  ~tibble(PC1_soil = .x$x[, 1])
+#)
+heterogeneity %<>%
+  map2(PC1s, ~as_tibble(cbind(.x, .y))) #%>%
+  #map2(PC1s_clim, ~as_tibble(cbind(.x, .y))) %>%
+  #map2(PC1s_soil, ~as_tibble(cbind(.x, .y)))
+
+# Fiddling
+#
+#heterogeneity %>%
+#  bind_rows(.id = "scale") %>%
+#  ggplot(aes(PC1_soil, PC1_clim, colour = region)) +
+#    geom_point() +
+#    facet_wrap(~scale, scales = "free")
+#heterogeneity %>%
+#  bind_rows(.id = "scale") %>%
+#  gather(PC1_type, PC1_value, PC1, PC1_clim, PC1_soil) %>%
+#  ggplot(aes(PC1_type, PC1_value, colour = region)) +
+#    geom_boxplot() +
+#    facet_wrap(~scale, scales = "free")
+#heterogeneity %>%
+#  map_dfr(.id = "scale",
+#    ~ .x %$% tibble(
+#      CLES_clim = CLES(
+#        PC1_clim[region == "SWAFR"],
+#        PC1_clim[region == "GCFR"]
+#      ),
+#      PU_clim = tidy(wilcox.test(PC1_clim ~ region))$p.value,
+#      CLES_soil = CLES(
+#        PC1_soil[region == "SWAFR"],
+#        PC1_soil[region == "GCFR"]
+#      ),
+#      PU_soil = tidy(wilcox.test(PC1_soil ~ region))$p.value
+#    )
+#  )
+#
+# /Fiddling
 
 # Save to disc
 heterogeneity %>%

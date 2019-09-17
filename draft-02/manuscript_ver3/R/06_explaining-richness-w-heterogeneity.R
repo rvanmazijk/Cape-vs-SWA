@@ -12,6 +12,59 @@ data <- list(
 
 # .... Fit PC1 models manually (worthwhile) ------------------------------------
 
+# Fiddling
+#
+## QDS-scale:
+#m1   <- lm(QDS_richness ~ PC1_clim,                            data$QDS)
+#m1.0 <- lm(QDS_richness ~ PC1_soil,                            data$QDS)
+#m1.1 <- lm(QDS_richness ~ PC1_clim                   + region, data$QDS)
+#m1.2 <- lm(QDS_richness ~                   PC1_soil + region, data$QDS)
+#m2   <- lm(QDS_richness ~ PC1_clim        + PC1_soil,          data$QDS)
+#m3   <- lm(QDS_richness ~ PC1_clim        + PC1_soil + region, data$QDS)
+#m4   <- lm(QDS_richness ~ PC1_clim*region + PC1_soil,          data$QDS)
+#m5   <- lm(QDS_richness ~ PC1_clim        + PC1_soil*region,   data$QDS)
+#m6   <- lm(QDS_richness ~ PC1_clim*region + PC1_soil*region,   data$QDS)
+#AIC(m1, m1.0, m1.1, m1.2, m2, m3, m4, m5, m6) %>%
+#  mutate(delta_AIC  = AIC - min(AIC))  # m3 best (even considering m1.0--1.2)
+#visreg::visreg(m3, xvar = "PC1_clim", by = "region", overlay = TRUE)
+#visreg::visreg(m3, xvar = "PC1_soil", by = "region", overlay = TRUE)
+#summary(m3)
+#
+## HDS-scale:
+#m1   <- lm(HDS_richness ~ PC1_clim,                            data$HDS)
+#m1.0 <- lm(HDS_richness ~ PC1_soil,                            data$HDS)
+#m1.1 <- lm(HDS_richness ~ PC1_clim                   + region, data$HDS)
+#m1.2 <- lm(HDS_richness ~                   PC1_soil + region, data$HDS)
+#m2   <- lm(HDS_richness ~ PC1_clim        + PC1_soil,          data$HDS)
+#m3   <- lm(HDS_richness ~ PC1_clim        + PC1_soil + region, data$HDS)
+#m4   <- lm(HDS_richness ~ PC1_clim*region + PC1_soil,          data$HDS)
+#m5   <- lm(HDS_richness ~ PC1_clim        + PC1_soil*region,   data$HDS)
+#m6   <- lm(HDS_richness ~ PC1_clim*region + PC1_soil*region,   data$HDS)
+#AIC(m1, m1.0, m1.1, m1.2, m2, m3, m4, m5, m6) %>%
+#  mutate(delta_AIC  = AIC - min(AIC))  # m3 best (ignoring m1.0--1.2)
+#visreg::visreg(m3, xvar = "PC1_clim", by = "region", overlay = TRUE)
+#visreg::visreg(m3, xvar = "PC1_soil", by = "region", overlay = TRUE)
+#summary(m3)
+#visreg::visreg(m1.1, xvar = "PC1_clim", by = "region", overlay = TRUE)
+#summary(m1.1)
+#
+## DS-scale:
+#m1   <- lm(DS_richness ~ PC1_clim,                            data$DS)
+#m1.0 <- lm(DS_richness ~ PC1_soil,                            data$DS)
+#m1.1 <- lm(DS_richness ~ PC1_clim                   + region, data$DS)
+#m1.2 <- lm(DS_richness ~                   PC1_soil + region, data$DS)
+#m2   <- lm(DS_richness ~ PC1_clim        + PC1_soil,          data$DS)
+#m3   <- lm(DS_richness ~ PC1_clim        + PC1_soil + region, data$DS)
+#m4   <- lm(DS_richness ~ PC1_clim*region + PC1_soil,          data$DS)
+#m5   <- lm(DS_richness ~ PC1_clim        + PC1_soil*region,   data$DS)
+#m6   <- lm(DS_richness ~ PC1_clim*region + PC1_soil*region,   data$DS)
+#AIC(m1, m1.0, m1.1, m1.2, m2, m3, m4, m5, m6) %>%
+#  mutate(delta_AIC  = AIC - min(AIC))  # m1 best
+#visreg::visreg(m1)
+#summary(m1)
+#
+# /Fiddling
+
 # QDS-richness:
 m1 <- lm(QDS_richness ~ PC1, data$QDS)
 m2 <- lm(QDS_richness ~ PC1 + region, data$QDS)
@@ -196,6 +249,253 @@ fit_univariate_models("HDS_richness")
 fit_univariate_models("DS_richness")
 
 # Multivariate models ----------------------------------------------------------
+
+# Fiddling
+#
+## QDS-scale:
+#m1 <- lm(
+#  QDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    CEC +
+#    Clay +
+#    Soil_C +
+#    pH,
+#  data = data$QDS
+#)
+#m1.5 <- lm(
+#  QDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    CEC +
+#    Clay +
+#    Soil_C +
+#    pH +
+#    region,
+#  data = data$QDS
+#)
+#m2 <- lm(
+#  QDS_richness ~
+#    region*Elevation +
+#    region*MAP +
+#    region*PDQ +
+#    region*Surface_T +
+#    region*NDVI +
+#    region*CEC +
+#    region*Clay +
+#    region*Soil_C +
+#    region*pH,
+#  data = data$QDS
+#)
+#m3 <- lm(
+#  QDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI,
+#  data = data$QDS
+#)
+#m3.5 <- lm(
+#  QDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    region,
+#  data = data$QDS
+#)
+#m4 <- lm(
+#  QDS_richness ~
+#    region*Elevation +
+#    region*MAP +
+#    region*PDQ +
+#    region*Surface_T +
+#    region*NDVI,
+#  data = data$QDS
+#)
+#AIC(m1, m1.5, m2) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m2 best
+#AIC(m3, m3.5, m4) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m4 best
+#AIC(m1, m1.5, m2, m3, m3.5, m4) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m4 best
+#m4 %>%
+#  anova() %>%
+#  tidy() %>%
+#  transmute(term = term, var_explained = sumsq / sum(sumsq)) %>%
+#  arrange(desc(var_explained))
+#
+## HDS-scale:
+#m1 <- lm(
+#  HDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    CEC +
+#    Clay +
+#    Soil_C +
+#    pH,
+#  data = data$HDS
+#)
+#m1.5 <- lm(
+#  HDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    CEC +
+#    Clay +
+#    Soil_C +
+#    pH +
+#    region,
+#  data = data$HDS
+#)
+#m2 <- lm(
+#  HDS_richness ~
+#    region*Elevation +
+#    region*MAP +
+#    region*PDQ +
+#    region*Surface_T +
+#    region*NDVI +
+#    region*CEC +
+#    region*Clay +
+#    region*Soil_C +
+#    region*pH,
+#  data = data$HDS
+#)
+#m3 <- lm(
+#  HDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI,
+#  data = data$HDS
+#)
+#m3.5 <- lm(
+#  HDS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    region,
+#  data = data$HDS
+#)
+#m4 <- lm(
+#  HDS_richness ~
+#    region*Elevation +
+#    region*MAP +
+#    region*PDQ +
+#    region*Surface_T +
+#    region*NDVI,
+#  data = data$HDS
+#)
+#AIC(m1, m1.5, m2) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m1 best
+#AIC(m3, m3.5, m4) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m3 best
+#AIC(m1, m1.5, m2, m3, m3.5, m4) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m3 best
+#m3 %>%
+#  anova() %>%
+#  tidy() %>%
+#  transmute(term = term, var_explained = sumsq / sum(sumsq)) %>%
+#  arrange(desc(var_explained))
+#
+## DS-scale:
+#m1 <- lm(
+#  DS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    CEC +
+#    Clay +
+#    Soil_C +
+#    pH,
+#  data = data$DS
+#)
+#m1.5 <- lm(
+#  DS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    CEC +
+#    Clay +
+#    Soil_C +
+#    pH +
+#    region,
+#  data = data$DS
+#)
+#m2 <- lm(
+#  DS_richness ~
+#    region*Elevation +
+#    region*MAP +
+#    region*PDQ +
+#    region*Surface_T +
+#    region*NDVI +
+#    region*CEC +
+#    region*Clay +
+#    region*Soil_C +
+#    region*pH,
+#  data = data$DS
+#)
+#m3 <- lm(
+#  DS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI,
+#  data = data$DS
+#)
+#m3.5 <- lm(
+#  DS_richness ~
+#    Elevation +
+#    MAP +
+#    PDQ +
+#    Surface_T +
+#    NDVI +
+#    region,
+#  data = data$DS
+#)
+#m4 <- lm(
+#  DS_richness ~
+#    region*Elevation +
+#    region*MAP +
+#    region*PDQ +
+#    region*Surface_T +
+#    region*NDVI,
+#  data = data$DS
+#)
+#AIC(m1, m1.5, m2) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m2 best
+#AIC(m3, m3.5, m4) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m3 best
+#AIC(m1, m1.5, m2, m3, m3.5, m4) %>%
+#  mutate(delta_AIC = AIC - min(AIC))  # m2 best
+#m2 %>%
+#  anova() %>%
+#  tidy() %>%
+#  transmute(term = term, var_explained = sumsq / sum(sumsq)) %>%
+#  arrange(desc(var_explained))
+#
+# /Fiddling
 
 # Fit multivariate models
 full_formula <- predictor_names[predictor_names != "PC1"] %>%
@@ -433,85 +733,85 @@ writeRaster(
 
 # .... Scale-ANCOVA-like multivariate-model ------------------------------------
 
-vars <- c(
-  "region",
-  "richness",
-  str_replace_all(var_names, " ", "_")
-)
-data_all_scales <- data %$% rbind(
-  QDS %>%
-    rename(richness = QDS_richness) %>%
-    dplyr::select_at(vars) %>%
-    add_column(scale = "QDS"),
-  HDS %>%
-    rename(richness = HDS_richness) %>%
-    dplyr::select_at(vars) %>%
-    add_column(scale = "HDS"),
-  DS %>%
-    rename(richness = DS_richness) %>%
-    dplyr::select_at(vars) %>%
-    add_column(scale = "DS")
-)
-
-full_formula <- predictor_names[predictor_names != "PC1"] %>%
-  {c(., paste(., "* region"), paste(., "* scale"))} %>%
-  paste(collapse = " + ")
-m_all_scales <- lm(glue("richness ~ {full_formula}"), data_all_scales)
-m_all_scales %<>% step(direction = "backward", trace = 0)
-
-summary(m_all_scales)
-
-reparameterise <- function(m) {
-  preds_w_interactions <- m %$%
-    coefficients %>%
-    names() %>%
-    magrittr::extract(which(
-      str_detect(., ":regionSWAFR") |
-      str_detect(., ":scale(H|Q)DS")
-    ))
-  reparameterisation <- preds_w_interactions %>%
-    str_remove(":regionSWAFR") %>%
-    str_remove(":scaleQDS") %>%
-    str_remove(":scaleHDS") %>%
-    str_remove_all(":") %>%
-    {glue("-{.}")} %>%
-    paste(collapse = " ")
-  update(m,
-    formula = glue(". ~ . {reparameterisation}"),
-    data    = data_all_scales
-  )
-}
-m_all_scales %>%
-  reparameterise() %>%
-  tidy(conf.int = TRUE) %>%
-  mutate(
-    region = case_when(
-      str_detect(term, "GCFR")  ~ "GCFR",
-      str_detect(term, "SWAFR") ~ "SWAFR",
-      TRUE                      ~ ""
-    ),
-    scale = case_when(
-      str_detect(term, "QDS") ~ "QDS",
-      str_detect(term, "HDS") ~ "HDS",
-      str_detect(term, "DS")  ~ "DS",
-      TRUE                    ~ ""
-    ),
-    term_type = case_when(
-      str_detect(term, "region") ~ "region",
-      str_detect(term, "scale")  ~ "scale",
-      TRUE                       ~ ""
-    ),
-    var = term %>%
-      str_remove("region(GC|SWA)FR") %>%
-      str_remove("scale(H|Q)?DS") %>%
-      str_remove("\\(Intercept\\)") %>%
-      str_remove_all(":"),
-    sig = p.value < 0.05
-  ) %>%
-  filter(sig) %>%
-  ggplot(aes(var, estimate, colour = region, shape = scale)) +
-    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
-    geom_point() +
-    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0) +
-    #facet_wrap(~term_type, scales = "free_x") +
-    theme(axis.text.x = element_text(angle = 90))
+#vars <- c(
+#  "region",
+#  "richness",
+#  str_replace_all(var_names, " ", "_")
+#)
+#data_all_scales <- data %$% rbind(
+#  QDS %>%
+#    rename(richness = QDS_richness) %>%
+#    dplyr::select_at(vars) %>%
+#    add_column(scale = "QDS"),
+#  HDS %>%
+#    rename(richness = HDS_richness) %>%
+#    dplyr::select_at(vars) %>%
+#    add_column(scale = "HDS"),
+#  DS %>%
+#    rename(richness = DS_richness) %>%
+#    dplyr::select_at(vars) %>%
+#    add_column(scale = "DS")
+#)
+#
+#full_formula <- predictor_names[predictor_names != "PC1"] %>%
+#  {c(., paste(., "* region"), paste(., "* scale"))} %>%
+#  paste(collapse = " + ")
+#m_all_scales <- lm(glue("richness ~ {full_formula}"), data_all_scales)
+#m_all_scales %<>% step(direction = "backward")
+#
+#summary(m_all_scales)
+#
+#reparameterise <- function(m) {
+#  preds_w_interactions <- m %$%
+#    coefficients %>%
+#    names() %>%
+#    magrittr::extract(which(
+#      str_detect(., ":regionSWAFR") |
+#      str_detect(., ":scale(H|Q)DS")
+#    ))
+#  reparameterisation <- preds_w_interactions %>%
+#    str_remove(":regionSWAFR") %>%
+#    str_remove(":scaleQDS") %>%
+#    str_remove(":scaleHDS") %>%
+#    str_remove_all(":") %>%
+#    {glue("-{.}")} %>%
+#    paste(collapse = " ")
+#  update(m,
+#    formula = glue(". ~ . {reparameterisation}"),
+#    data    = data_all_scales
+#  )
+#}
+#m_all_scales %>%
+#  reparameterise() %>%
+#  tidy(conf.int = TRUE) %>%
+#  mutate(
+#    region = case_when(
+#      str_detect(term, "GCFR")  ~ "GCFR",
+#      str_detect(term, "SWAFR") ~ "SWAFR",
+#      TRUE                      ~ ""
+#    ),
+#    scale = case_when(
+#      str_detect(term, "QDS") ~ "QDS",
+#      str_detect(term, "HDS") ~ "HDS",
+#      str_detect(term, "DS")  ~ "DS",
+#      TRUE                    ~ ""
+#    ),
+#    term_type = case_when(
+#      str_detect(term, "region") ~ "region",
+#      str_detect(term, "scale")  ~ "scale",
+#      TRUE                       ~ ""
+#    ),
+#    var = term %>%
+#      str_remove("region(GC|SWA)FR") %>%
+#      str_remove("scale(H|Q)?DS") %>%
+#      str_remove("\\(Intercept\\)") %>%
+#      str_remove_all(":"),
+#    sig = p.value < 0.05
+#  ) %>%
+#  filter(sig) %>%
+#  ggplot(aes(var, estimate, colour = region, shape = scale)) +
+#    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
+#    geom_point() +
+#    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0) +
+#    #facet_wrap(~term_type, scales = "free_x") +
+#    theme(axis.text.x = element_text(angle = 90))
