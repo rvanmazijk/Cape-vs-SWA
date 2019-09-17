@@ -344,12 +344,15 @@ map(data,
 # Save to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}.csv")))
 
-# Rasterise richness data ------------------------------------------------------
+# Rasterise richness & PC1 data ------------------------------------------------
 
-# QDS-scale:
-GCFR_QDS_richness <- GCFR_heterogeneity$QDS$Elevation
+# .... QDS-scale ---------------------------------------------------------------
+
+# GCFR:
+GCFR_QDS_richness   <- GCFR_QDS_PC1   <- GCFR_heterogeneity$QDS$Elevation
+GCFR_QDS_richness[] <- GCFR_QDS_PC1[] <- NA
 names(GCFR_QDS_richness) <- "QDS_richness"
-GCFR_QDS_richness[] <- NA
+names(GCFR_QDS_PC1)      <- "QDS_PC1"
 cell_nos <- cellFromXY(
   GCFR_QDS_richness,
   data %$%
@@ -362,14 +365,33 @@ GCFR_QDS_richness[cell_nos] <- data %$%
   QDS %>%
   filter(region == "GCFR") %>%
   pull(QDS_richness)
+GCFR_QDS_PC1[cell_nos] <- data %$%
+  QDS %>%
+  filter(region == "GCFR") %>%
+  pull(PC1)
 # Check
 plot(GCFR_QDS_richness)
 plot(GCFR_border, add = TRUE)
+plot(GCFR_QDS_PC1)
+plot(GCFR_border, add = TRUE)
+plot(GCFR_QDS_richness[] ~ GCFR_QDS_PC1[])
 # Works!
-writeRaster(GCFR_QDS_richness, glue("{data_dir}/GCFR_QDS_richness.tif"), overwrite = TRUE)
-SWAFR_QDS_richness <- SWAFR_heterogeneity$QDS$Elevation
+writeRaster(
+  GCFR_QDS_richness,
+  glue("{data_dir}/GCFR_QDS_richness.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  GCFR_QDS_PC1,
+  glue("{data_dir}/GCFR_QDS_PC1.tif"),
+  overwrite = TRUE
+)
+
+# SWAFR:
+SWAFR_QDS_richness   <- SWAFR_QDS_PC1   <- SWAFR_heterogeneity$QDS$Elevation
+SWAFR_QDS_richness[] <- SWAFR_QDS_PC1[] <- NA
 names(SWAFR_QDS_richness) <- "QDS_richness"
-SWAFR_QDS_richness[] <- NA
+names(SWAFR_QDS_PC1)      <- "QDS_PC1"
 cell_nos <- cellFromXY(
   SWAFR_QDS_richness,
   data %$%
@@ -382,14 +404,33 @@ SWAFR_QDS_richness[cell_nos] <- data %$%
   QDS %>%
   filter(region == "SWAFR") %>%
   pull(QDS_richness)
+SWAFR_QDS_PC1[cell_nos] <- data %$%
+  QDS %>%
+  filter(region == "SWAFR") %>%
+  pull(PC1)
 plot(SWAFR_QDS_richness)
 plot(SWAFR_border, add = TRUE)
-writeRaster(SWAFR_QDS_richness, glue("{data_dir}/SWAFR_QDS_richness.tif"), overwrite = TRUE)
+plot(SWAFR_QDS_PC1)
+plot(SWAFR_border, add = TRUE)
+plot(SWAFR_QDS_richness[] ~ SWAFR_QDS_PC1[])
+writeRaster(
+  SWAFR_QDS_richness,
+  glue("{data_dir}/SWAFR_QDS_richness.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  SWAFR_QDS_richness,
+  glue("{data_dir}/SWAFR_QDS_PC1.tif"),
+  overwrite = TRUE
+)
 
-# HDS-scale:
-GCFR_HDS_richness <- GCFR_heterogeneity$HDS$Elevation
+# .... HDS-scale ---------------------------------------------------------------
+
+# GCFR:
+GCFR_HDS_richness   <- GCFR_HDS_PC1   <- GCFR_heterogeneity$HDS$Elevation
+GCFR_HDS_richness[] <- GCFR_HDS_PC1[] <- NA
 names(GCFR_HDS_richness) <- "HDS_richness"
-GCFR_HDS_richness[] <- NA
+names(GCFR_HDS_PC1)      <- "HDS_PC1"
 cell_nos <- cellFromXY(
   GCFR_HDS_richness,
   data %$%
@@ -402,12 +443,31 @@ GCFR_HDS_richness[cell_nos] <- data %$%
   HDS %>%
   filter(region == "GCFR") %>%
   pull(HDS_richness)
+GCFR_HDS_PC1[cell_nos] <- data %$%
+  HDS %>%
+  filter(region == "GCFR") %>%
+  pull(PC1)
 plot(GCFR_HDS_richness)
 plot(GCFR_border, add = TRUE)
-writeRaster(GCFR_HDS_richness, glue("{data_dir}/GCFR_HDS_richness.tif"), overwrite = TRUE)
-SWAFR_HDS_richness <- SWAFR_heterogeneity$HDS$Elevation
+plot(GCFR_HDS_PC1)
+plot(GCFR_border, add = TRUE)
+plot(GCFR_HDS_richness[] ~ GCFR_HDS_PC1[])
+writeRaster(
+  GCFR_HDS_richness,
+  glue("{data_dir}/GCFR_HDS_richness.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  GCFR_HDS_PC1,
+  glue("{data_dir}/GCFR_HDS_PC1.tif"),
+  overwrite = TRUE
+)
+
+# SWAFR:
+SWAFR_HDS_richness   <- SWAFR_HDS_PC1   <- SWAFR_heterogeneity$HDS$Elevation
+SWAFR_HDS_richness[] <- SWAFR_HDS_PC1[] <- NA
 names(SWAFR_HDS_richness) <- "HDS_richness"
-SWAFR_HDS_richness[] <- NA
+names(SWAFR_HDS_PC1)      <- "HDS_PC1"
 cell_nos <- cellFromXY(
   SWAFR_HDS_richness,
   data %$%
@@ -420,14 +480,33 @@ SWAFR_HDS_richness[cell_nos] <- data %$%
   HDS %>%
   filter(region == "SWAFR") %>%
   pull(HDS_richness)
+SWAFR_HDS_PC1[cell_nos] <- data %$%
+  HDS %>%
+  filter(region == "SWAFR") %>%
+  pull(PC1)
 plot(SWAFR_HDS_richness)
 plot(SWAFR_border, add = TRUE)
-writeRaster(SWAFR_HDS_richness, glue("{data_dir}/SWAFR_HDS_richness.tif"), overwrite = TRUE)
+plot(SWAFR_HDS_PC1)
+plot(SWAFR_border, add = TRUE)
+plot(SWAFR_HDS_richness[] ~ SWAFR_HDS_PC1[])
+writeRaster(
+  SWAFR_HDS_richness,
+  glue("{data_dir}/SWAFR_HDS_richness.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  SWAFR_HDS_PC1,
+  glue("{data_dir}/SWAFR_HDS_PC1.tif"),
+  overwrite = TRUE
+)
 
-# DS-scale:
-GCFR_DS_richness <- GCFR_heterogeneity$DS$Elevation
+# .... DS-scale ----------------------------------------------------------------
+
+# GCFR:
+GCFR_DS_richness   <- GCFR_DS_PC1   <- GCFR_heterogeneity$DS$Elevation
+GCFR_DS_richness[] <- GCFR_DS_PC1[] <- NA
 names(GCFR_DS_richness) <- "DS_richness"
-GCFR_DS_richness[] <- NA
+names(GCFR_DS_PC1)      <- "DS_PC1"
 cell_nos <- cellFromXY(
   GCFR_DS_richness,
   data %$%
@@ -440,12 +519,31 @@ GCFR_DS_richness[cell_nos] <- data %$%
   DS %>%
   filter(region == "GCFR") %>%
   pull(DS_richness)
+GCFR_DS_PC1[cell_nos] <- data %$%
+  DS %>%
+  filter(region == "GCFR") %>%
+  pull(PC1)
 plot(GCFR_DS_richness)
 plot(GCFR_border, add = TRUE)
-writeRaster(GCFR_DS_richness, glue("{data_dir}/GCFR_DS_richness.tif"), overwrite = TRUE)
-SWAFR_DS_richness <- SWAFR_heterogeneity$DS$Elevation
+plot(GCFR_DS_PC1)
+plot(GCFR_border, add = TRUE)
+plot(GCFR_DS_richness[] ~ GCFR_DS_PC1[])
+writeRaster(
+  GCFR_DS_richness,
+  glue("{data_dir}/GCFR_DS_richness.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  GCFR_DS_PC1,
+  glue("{data_dir}/GCFR_DS_PC1.tif"),
+  overwrite = TRUE
+)
+
+# SWAFR:
+SWAFR_DS_richness   <- SWAFR_DS_PC1   <- SWAFR_heterogeneity$DS$Elevation
+SWAFR_DS_richness[] <- SWAFR_DS_PC1[] <- NA
 names(SWAFR_DS_richness) <- "DS_richness"
-SWAFR_DS_richness[] <- NA
+names(SWAFR_DS_PC1)      <- "DS_PC1"
 cell_nos <- cellFromXY(
   SWAFR_DS_richness,
   data %$%
@@ -458,6 +556,22 @@ SWAFR_DS_richness[cell_nos] <- data %$%
   DS %>%
   filter(region == "SWAFR") %>%
   pull(DS_richness)
+SWAFR_DS_PC1[cell_nos] <- data %$%
+  DS %>%
+  filter(region == "SWAFR") %>%
+  pull(PC1)
 plot(SWAFR_DS_richness)
 plot(SWAFR_border, add = TRUE)
-writeRaster(SWAFR_DS_richness, glue("{data_dir}/SWAFR_DS_richness.tif"), overwrite = TRUE)
+plot(SWAFR_DS_PC1)
+plot(SWAFR_border, add = TRUE)
+plot(SWAFR_DS_richness[] ~ SWAFR_DS_PC1[])
+writeRaster(
+  SWAFR_DS_richness,
+  glue("{data_dir}/SWAFR_DS_richness.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  SWAFR_DS_PC1,
+  glue("{data_dir}/SWAFR_DS_PC1.tif"),
+  overwrite = TRUE
+)
