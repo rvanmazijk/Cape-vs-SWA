@@ -267,6 +267,170 @@ data$DS$multivariate_residual  <- m_DS_richness$residuals
 # Save new data w/ residuals to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
 
+# .... Store residuals in rasters ----------------------------------------------
+
+# ........ QDS-scale -----------------------------------------------------------
+
+# GCFR:
+GCFR_QDS_multivariate_residuals        <- GCFR_heterogeneity$QDS$Elevation
+GCFR_QDS_multivariate_residuals[]      <- NA
+names(GCFR_QDS_multivariate_residuals) <- "multivariate_residual"
+cell_nos <- cellFromXY(
+  GCFR_QDS_multivariate_residuals,
+  data %$%
+    QDS %>%
+    filter(region == "GCFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+GCFR_QDS_multivariate_residuals[cell_nos] <- data %$%
+  QDS %>%
+  filter(region == "GCFR") %>%
+  pull(multivariate_residual)
+# Check
+plot(GCFR_QDS_multivariate_residuals)
+plot(GCFR_border, add = TRUE)
+# Works!
+writeRaster(
+  GCFR_QDS_multivariate_residuals,
+  glue("{data_dir}/GCFR_QDS_multivariate_richness.tif"),
+  overwrite = TRUE
+)
+
+# SWAFR:
+SWAFR_QDS_multivariate_residuals        <- SWAFR_heterogeneity$QDS$Elevation
+SWAFR_QDS_multivariate_residuals[]      <- NA
+names(SWAFR_QDS_multivariate_residuals) <- "multivariate_residual"
+cell_nos <- cellFromXY(
+  SWAFR_QDS_multivariate_residuals,
+  data %$%
+    QDS %>%
+    filter(region == "SWAFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+SWAFR_QDS_multivariate_residuals[cell_nos] <- data %$%
+  QDS %>%
+  filter(region == "SWAFR") %>%
+  pull(multivariate_residual)
+# Check
+plot(SWAFR_QDS_multivariate_residuals)
+plot(SWAFR_border, add = TRUE)
+# Works!
+writeRaster(
+  SWAFR_QDS_multivariate_residuals,
+  glue("{data_dir}/SWAFR_QDS_multivariate_richness.tif"),
+  overwrite = TRUE
+)
+
+# ........ HDS-scale -----------------------------------------------------------
+
+# GCFR:
+GCFR_HDS_multivariate_residuals        <- GCFR_heterogeneity$HDS$Elevation
+GCFR_HDS_multivariate_residuals[]      <- NA
+names(GCFR_HDS_multivariate_residuals) <- "multivariate_residual"
+cell_nos <- cellFromXY(
+  GCFR_HDS_multivariate_residuals,
+  data %$%
+    HDS %>%
+    filter(region == "GCFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+GCFR_HDS_multivariate_residuals[cell_nos] <- data %$%
+  HDS %>%
+  filter(region == "GCFR") %>%
+  pull(multivariate_residual)
+# Check
+plot(GCFR_HDS_multivariate_residuals)
+plot(GCFR_border, add = TRUE)
+# Works!
+writeRaster(
+  GCFR_HDS_multivariate_residuals,
+  glue("{data_dir}/GCFR_HDS_multivariate_richness.tif"),
+  overwrite = TRUE
+)
+
+# SWAFR:
+SWAFR_HDS_multivariate_residuals        <- SWAFR_heterogeneity$HDS$Elevation
+SWAFR_HDS_multivariate_residuals[]      <- NA
+names(SWAFR_HDS_multivariate_residuals) <- "multivariate_residual"
+cell_nos <- cellFromXY(
+  SWAFR_HDS_multivariate_residuals,
+  data %$%
+    HDS %>%
+    filter(region == "SWAFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+SWAFR_HDS_multivariate_residuals[cell_nos] <- data %$%
+  HDS %>%
+  filter(region == "SWAFR") %>%
+  pull(multivariate_residual)
+# Check
+plot(SWAFR_HDS_multivariate_residuals)
+plot(SWAFR_border, add = TRUE)
+# Works!
+writeRaster(
+  SWAFR_HDS_multivariate_residuals,
+  glue("{data_dir}/SWAFR_HDS_multivariate_richness.tif"),
+  overwrite = TRUE
+)
+
+# ........ DS-scale ------------------------------------------------------------
+
+# GCFR:
+GCFR_DS_multivariate_residuals        <- GCFR_heterogeneity$DS$Elevation
+GCFR_DS_multivariate_residuals[]      <- NA
+names(GCFR_DS_multivariate_residuals) <- "multivariate_residual"
+cell_nos <- cellFromXY(
+  GCFR_DS_multivariate_residuals,
+  data %$%
+    DS %>%
+    filter(region == "GCFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+GCFR_DS_multivariate_residuals[cell_nos] <- data %$%
+  DS %>%
+  filter(region == "GCFR") %>%
+  pull(multivariate_residual)
+# Check
+plot(GCFR_DS_multivariate_residuals)
+plot(GCFR_border, add = TRUE)
+# Works!
+writeRaster(
+  GCFR_DS_multivariate_residuals,
+  glue("{data_dir}/GCFR_DS_multivariate_richness.tif"),
+  overwrite = TRUE
+)
+
+# SWAFR:
+SWAFR_DS_multivariate_residuals        <- SWAFR_heterogeneity$DS$Elevation
+SWAFR_DS_multivariate_residuals[]      <- NA
+names(SWAFR_DS_multivariate_residuals) <- "multivariate_residual"
+cell_nos <- cellFromXY(
+  SWAFR_DS_multivariate_residuals,
+  data %$%
+    DS %>%
+    filter(region == "SWAFR") %>%
+    dplyr::select(lon, lat) %>%
+    as.matrix()
+)
+SWAFR_DS_multivariate_residuals[cell_nos] <- data %$%
+  DS %>%
+  filter(region == "SWAFR") %>%
+  pull(multivariate_residual)
+# Check
+plot(SWAFR_DS_multivariate_residuals)
+plot(SWAFR_border, add = TRUE)
+# Works!
+writeRaster(
+  SWAFR_DS_multivariate_residuals,
+  glue("{data_dir}/SWAFR_DS_multivariate_richness.tif"),
+  overwrite = TRUE
+)
+
 # .... Scale-ANCOVA-like multivariate-model ------------------------------------
 
 vars <- c(
