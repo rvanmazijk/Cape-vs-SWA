@@ -259,8 +259,15 @@ all_maps <- plot_grid(
   nrow = 4, rel_heights = c(1, 0.9, 0.9, 1)
 )
 
+# Save to disc -----------------------------------------------------------------
+
 ggsave(
   here("draft-02/manuscript_ver3/figures/maps.pdf"),
   all_maps,
+  width = 7, height = 12
+)
+ggsave(
+  here("draft-02/manuscript_ver3/figures/maps.png"),
+  all_maps, dpi = 600,
   width = 7, height = 12
 )
