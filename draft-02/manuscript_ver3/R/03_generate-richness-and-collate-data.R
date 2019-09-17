@@ -244,20 +244,20 @@ GCFR_species_occ@data %>%
   group_by(species)  %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(here("draft-02/manuscript_ver3/GCFR-species.csv"))
+  write_csv(glue("{data_dir}/GCFR-species.csv"))
 SWAFR_species_occ@data %>%
   group_by(species) %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(here("draft-02/manuscript_ver3/SWAFR-species.csv"))
+  write_csv(glue("{data_dir}/SWAFR-species.csv"))
 
 # Flag species w/ < 5 collections total in each region
 GCFR_bad_species <-
-  read_csv(here("draft-02/manuscript_ver3/GCFR-species.csv")) %>%
+  read_csv(glue("{data_dir}/GCFR-species.csv")) %>%
   filter(n_collections < 5) %>%
   pull(species)
 SWAFR_bad_species <-
-  read_csv(here("draft-02/manuscript_ver3/SWAFR-species.csv")) %>%
+  read_csv(glue("{data_dir}/SWAFR-species.csv")) %>%
   filter(n_collections < 5) %>%
   pull(species)
 # Filter them out
