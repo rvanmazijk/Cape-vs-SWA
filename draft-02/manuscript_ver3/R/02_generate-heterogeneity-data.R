@@ -114,15 +114,16 @@ map(heterogeneity_PCAs, summary)
 #> $HDS                           0.3902
 #> $DS                            0.4126
 
-# Force PC1 scores to be positive if all vars rotations are negative
-heterogeneity_PCAs %<>% map(function(PCA) {
+# Force PC1 scores to be positive if all vars' rotations are negative
+force_positive_PC1 <- function(PCA) {
   if (all(PCA$rotation[, 1] <= 0)) {
     message("Multiplying this one by -1")
     PCA$rotation[, 1] %<>% multiply_by(-1)
     PCA$x[, 1]        %<>% multiply_by(-1)
   }
   PCA
-})
+}
+heterogeneity_PCAs      %<>% map(force_positive_PC1)
 
 # Add PC1 to heterogeneity dataset
 PC1s <- map(heterogeneity_PCAs,
