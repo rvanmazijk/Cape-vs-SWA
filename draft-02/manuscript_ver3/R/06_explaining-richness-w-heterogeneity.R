@@ -79,6 +79,9 @@ summary(m3)
 # Store residuals in master dataset for use in maps below
 data$QDS$PC1_residual <- m3$residuals
 
+# Using this number in text:
+sd(data$QDS$QDS_richness)
+
 # HDS-richness:
 m1 <- lm(HDS_richness ~ PC1, data$HDS)
 m2 <- lm(HDS_richness ~ PC1 + region, data$HDS)
@@ -107,21 +110,34 @@ summary(m1)
 # Store residuals in master dataset for use in maps below
 data$DS$PC1_residual <- m1$residuals
 
-# .... Check for scale dependence formally w/ ANCOVA ---------------------------
+# .... Check for scale dependence formally w/ ANCOVA? --------------------------
 
-#m1 <- lm(richness ~ PC1,         data_for_PC1_plots)
-#m2 <- lm(richness ~ PC1 + scale, data_for_PC1_plots)
-#m3 <- lm(richness ~ PC1 * scale, data_for_PC1_plots)
-#AIC(m1, m2, m3) %>%
-#  mutate(delta_AIC  = AIC - min(AIC))
-## No evidence for interaction, only differing intercepts!
-#summary(m2)
-#m2 %>%
+#data_all_scales <- data %$% rbind(
+#  QDS %>% transmute(
+#    scale = "QDS", region = region,
+#    richness = QDS_richness, PC1 = PC1
+#  ),
+#  HDS %>% transmute(
+#    scale = "HDS", region = region,
+#    richness = HDS_richness, PC1 = PC1
+#  ),
+#  DS %>% transmute(
+#    scale = "DS", region = region,
+#    richness = DS_richness, PC1 = PC1
+#  )
+#)
+#
+#m1 <- lm(richness ~ PC1 * scale,                  data_all_scales)
+#m2 <- lm(richness ~ PC1 * scale + region,         data_all_scales)
+#m3 <- lm(richness ~ PC1 * scale + region * scale, data_all_scales)
+#m4 <- lm(richness ~ PC1 * scale * region,         data_all_scales)
+#AIC(m1, m2, m3, m4) %>%
+#  mutate(delta_AIC  = AIC - min(AIC))  # m2 best
+#summary(m4)
+#m4 %>%
 #  visreg::visreg(xvar = "PC1", by = "scale",
-#    trans   = function(x) 10^x,
 #    overlay = TRUE,
 #    gg      = TRUE,
-#    rug     = FALSE,
 #    ylab    = bquote(italic("S"))
 #  ) +
 #  theme(legend.position = "none")
@@ -563,6 +579,14 @@ glance(m_DS_richness)
 data$QDS$multivariate_residual <- m_QDS_richness$residuals
 data$HDS$multivariate_residual <- m_HDS_richness$residuals
 data$DS$multivariate_residual  <- m_DS_richness$residuals
+
+# Look at break down of variance explained (ANOVA) by each model
+models %>%
+  map(anova) %>%
+  map(tidy) %>%
+  map(mutate, var_explained = sumsq / sum(sumsq)) %>%
+  map(dplyr::select, term, var_explained, p.value) %>%
+  map(arrange, desc(var_explained))
 
 # Save new data w/ residuals to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
