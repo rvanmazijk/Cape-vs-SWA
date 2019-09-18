@@ -66,4 +66,3 @@ Abbreviations:
 - environmental heterogeneity (EH)
 - & environmental variables' abbreviations in Table \@ref(tab:data-sources).
 -->
-

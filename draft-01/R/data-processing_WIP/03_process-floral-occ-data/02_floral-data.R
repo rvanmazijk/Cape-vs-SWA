@@ -1,4 +1,4 @@
-# 1. Checking for name-acceptedness --------------------------------------------
+# 1) Checking for name-acceptedness --------------------------------------------
 
 # Fiddling to test and get-to-grips-with the two `taxize::` functions
 if (FALSE) {
@@ -37,7 +37,7 @@ if (FALSE) {
 summary(GCFR_spp_sets)
 summary(SWAFR_spp_sets)
 
-# .... 1.1 Flag inconsistent names ---------------------------------------------
+# .... Flag inconsistent names -------------------------------------------------
 
 # Now let's do this in stages/chunks just for safety/sanity:
 # FIXME: all the dirs in here are old,

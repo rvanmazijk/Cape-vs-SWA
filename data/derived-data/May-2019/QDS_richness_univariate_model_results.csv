@@ -1,0 +1,11 @@
+model_type,variable,slope_sign,P_slope,region_sign,P_region,int_sign,P_int
+Main effect * region,MAP,+,***,+,**,-,***
+ ,NDVI,+,***,-,*,-,***
+ ,Soil C,+,***,-, ,-,**
+ ,PC1,+,***,+,***,-,*
+Main effect + region,Elevation,+,***,+,**, , 
+ ,PDQ,+,***,+,*, , 
+ ,CEC,+,*,-,*, , 
+ ,Clay,+,**,-,*, , 
+Main effect only,Surface T,+,***, , , , 
+Region only,pH,+,.,-,*, , 

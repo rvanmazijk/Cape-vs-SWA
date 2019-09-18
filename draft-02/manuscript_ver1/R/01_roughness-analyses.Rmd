@@ -1,0 +1,260 @@
+# 1. Environmental heterogeneity & scale
+
+Is the GCFR more heterogeneous environmentally than the SWAFR, and does the scale of that heterogeneity differ to that of the SWAFR?
+
+In order to determine which region is more environmentally heterogeneous, and what scales heterogeneity is most pronounced, we calculated a measure of environmental heterogeneity at various spatial scales (namely: the base data resolution (0.05º x 0.05º), eighth- (EDS), quarter- (QDS), half- (HDS) and three-quarter-degree-squares (3QDS)).
+
+Environmental "roughness" in both regions was calculated, in moving 3 x 3 cell windows, as the average absolute difference between cells and their (usually) 8 neighbours. Alternatively, for a focal cell $x^*$, the roughness is based on $x_1, x_2, \dots, x_i, \dots, x_8$ neighbour cells as:
+
+$$
+  Roughness(x^*) =
+    f \left( \begin{matrix}
+      x_1 & x_2 & x_3 \\
+      x_4 & x^* & x_5 \\
+      x_6 & x_7 & x_8
+    \end{matrix} \right) =
+    \frac{1}{8} \sum_i |x^* - x_i|
+$$
+
+In R, this is implemented this as follows:
+
+```
+roughness <- function(x) {
+  raster::focal(x, matrix(1, nrow = 3, ncol = 3), function(x) {
+    focal_cell <- x[5]
+    focal_exists <- (!is.na(focal_cell)) & (!is.nan(focal_cell))
+    if (focal_exists) {
+      neighbour_exists <- (!is.na(x)) & (!is.nan(x)) & (x != focal_cell)
+      neighbour_cells <- x[neighbour_exists]
+      return(mean(abs(focal_cell - neighbour_cells)))
+    } else {
+      return(NA)
+    }
+  })
+}
+```
+
+Following this, the various forms environmental heterogeneity were ordinated using principal component analysis (PCA), following $log(x + 1)$-transformations to ensure normality, to summarise a major axis of heterogeneity in each region (Figure 1). Portions of the data matrices for each scale for these PCAs are shown in Table 1.
+
+Biplots like those shown in Figure 1 are often used visualise a summary of the multidimensional environmental space encompassed by a geographic area. However, as our data are "roughness" values, it would be more accurate to refer to the biplots in Figure 1 as the heterogeneity spaces or heterogeneity envelopes of each geographic region, at five spatial scales. We can see clear separation between the GCFR and SWAFR in their heterogeneity envelopes across all five spatial scales. Of most importance here is the first principle component (PC1) of these spaces, where the GCFR is almost always as rough or more roughn than the SWAFR (Figure 1). W
+
+Both the actual environmental heterogeneity values and the principal component of heterogeneity were then compared between the GCFR and SWAFR using common language effect sizes ($CLES$). The $CLES$ of GCFR vs SWAFR heterogeneity values was regressed against the spatial scale at which it was calculated using simple linear regression (Figure 2, Table 2).
+
+We can see that PDQ, NDVI, pH and, arguably, elevation (Figure 2a,c,e,i) are all consistently more heterogeneous in the GCFR than in the SWAFR, regardless of spatial scale (Figure 2). The GCFR is more heterogeneous at finer scales in terms of MAP, surface temperature, CEC and soil carbon (Figure 2b,d,f,h). Notably bucking the trend, the GCFR is more pronouncedly heterogeneous at broad scales in terms of clay (Figure 2)---perhaps something to do with the Succulent Karoo vs CFR?. In general (i.e. regarding PC1; Figure 2j), the GCFR is more environmentally heterogeneous than the SWAFR, and particularly so at fine spatial scales.
+
+We can conclude, then, that the GCFR is more environmentally heterogeneous than the SWAFR, across multiple environmental axes. Generally, the GCFR is more finely scaled in its heterogeneity, though some variables show no scale-dependence, and heterogeneity in clay is greatest in the GCFR at broad scales.
+
+```{r import-roughness-matrices, include=FALSE}
+output_path      <- here("draft-02/outputs/roughness")
+resolutions      <- c("base", "EDS", "QDS", "HDS", "3QDS")
+matrix_filenames <- glue("{output_path}/{resolutions}_roughness_matrix.csv")
+
+roughness_matrices <- map(matrix_filenames, read_csv)
+names(roughness_matrices) <- resolutions
+```
+
+```{r print-roughness-matrix-example}
+roughness_matrices %$%
+  base %>%
+  mutate_if(is.numeric, log1p) %>%
+  mutate_if(is.numeric, round, digits = 2) %>%
+  {rbind(
+    .[1:3, ],
+    rep("...", 11),
+    tail(.)[1:3, ]
+  )} %>%
+  knitr::kable(caption = paste(
+    "Portions of the data matrices used in the PCA for this",
+    "section of the analysis, where roughness values were",
+    "$log(x + 1)$-transformed to ensure normality."
+  ))
+```
+
+```{r PCA-analysis, include=FALSE}
+roughness_PCAs <- map(roughness_matrices,
+  ~ .x[, -1] %>%
+    log1p() %>%
+    prcomp(scale. = TRUE)
+)
+
+# Force PC1 scores to be positive if all vars rotations are negative
+roughness_PCAs %<>% map(function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+})
+
+# Store PC1 & 2 in matrices for later
+roughness_matrices <- map2(roughness_PCAs, roughness_matrices,
+  function(PCA, layer) {
+    layer$PC1 <- PCA$x[, 1]
+    layer$PC2 <- PCA$x[, 2]
+    layer
+  }
+)
+```
+
+```{r plot-PCA, fig.height=8, fig.cap="Scatter plots of the first and second principal components (PC1, PC2) of environmental heterogeneity following principal components analyses (PCA) of the various forms of environmental heterogeneity, $log(x + 1)$-transformed (Table 1), repeated at the five spatial scales. The proportion of variation accounted for by each axis is denoted in parentheses. Arrows (labelled) denote the rotational loading of a given form of environmental heterogeneity. Note, the signs of loadings on PC1 have been forced to be positive, while the signs of loadings on PC2 are arbitrary. Here, greater values along PC1 represent greater overall environmental heterogeneity in an area. An area's PC2 value distinguishes the environmental axes most responsible for its overall observed heterogeneity."}
+roughness_PCA_plots <- map2(roughness_PCAs, roughness_matrices,
+  ~ autoplot(.x,
+      data = .y, colour = "region", alpha = 0.25,
+      loadings = TRUE, loadings.colour = "black",
+      loadings.label = TRUE, loadings.label.colour = "black",
+      loadings.label.hjust = -0.25
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+    geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5)
+)
+# Get legend to use as panel
+my_legend <- get_legend(roughness_PCA_plots[[1]])
+# Remove legends from PCA plots themselves
+roughness_PCA_plots %<>% map(~.x + theme(legend.position = "none"))
+# Store panels in list
+roughness_PCA_plots <- c(roughness_PCA_plots, my_legend = list(my_legend))
+# Plot panels
+plot_grid(
+  plotlist = roughness_PCA_plots,
+  labels   = c("0.05º", "EDS", "QDS", "HDS", "3QDS", ""),
+  nrow     = 3
+)
+```
+
+```{r map-PCA}
+# TODO: Plot maps of exemplary roughness variables and PC1
+```
+
+```{r CLES-analysis, include=FALSE}
+GCFR_roughness_data <- roughness_matrices %>%
+  map(filter, region == "GCFR") %>%
+  map(dplyr::select, -region, -PC2)
+SWAFR_roughness_data <- roughness_matrices %>%
+  map(filter, region == "SWAFR") %>%
+  map(dplyr::select, -region, -PC2)
+
+# (WARNING: this takes a while... Only run if haven't already...)
+if (!file.exists(glue("{output_path}/CLES_results.csv"))) {
+  set.seed(1234)
+  CLES_results <- map2_df(GCFR_roughness_data, SWAFR_roughness_data,
+    .id = "resolution",  # for every spatial resolution,
+    ~ map2_df(.x, .y,
+      .id = "variable",  # for every variable in each region,
+      ~tibble(
+        CLES_value = CLES(.y, .x),
+        P_U        = wilcox.test(.y, .x)$p.value
+      )
+    )
+  )
+  # Save results to disc
+  write_csv(
+    CLES_results,
+    glue("{output_path}/CLES_results.csv")
+  )
+} else {
+  # (... Or import from disc.)
+  CLES_results <- read_csv(glue("{output_path}/CLES_results.csv"))
+}
+
+# Tidy
+CLES_results %<>%
+  mutate(resolution = case_when(
+    resolution == "base" ~ 0.05,
+    resolution == "EDS"  ~ 0.125,
+    resolution == "QDS"  ~ 0.25,
+    resolution == "HDS"  ~ 0.50,
+    resolution == "3QDS" ~ 0.75
+  )) %>%
+  mutate(variable = factor(variable, levels = c(
+    "Elevation",
+    "MAP", "PDQ", "Surface.T",
+    "NDVI",
+    "CEC", "Clay", "Soil.C", "pH",
+    "PC1"
+  )))
+```
+
+```{r model-CLES}
+# Fit linear models of CLES ~ spatial scale for each variable
+CLES_models <- CLES_results %>%
+  split(.$variable) %>%
+  map(~lm(CLES_value ~ resolution, .x))
+# Summarise those models
+CLES_model_summaries <- CLES_models %>%
+  map_df(.id = "variable", tidy) %>%
+  filter(term != "(Intercept)") %>% 
+  mutate(sig = case_when(
+    p.value <= 0.05 ~ "*",
+    p.value <= 0.10 ~ ".",
+    TRUE            ~ " "
+  )) %>%
+  mutate(variable = factor(variable, levels = var_names %>%
+    str_replace_all(" ", ".") %>%
+    c("PC1")
+  )) %>%
+  mutate_if(is.numeric, round, digits = 3) %>%
+  dplyr::select(variable, estimate, p.value, sig)
+# Print table
+knitr::kable(CLES_model_summaries,
+  caption = paste(
+    "Slopes and associated $P$-values from simple linear regressions",
+    "of $CLES$ against scale for each form of environmental roughness",
+    "(Figure 2)."
+  ),
+  col.names = c("Variable", "Slope", "$P$", " "),
+  align = "lrrc"
+)
+```
+
+```{r plot-CLES-fits, fig.cap="Simple linear regressions of the common language effect size ($CLES$) of various forms of environmental heterogeneity (a--i), and the first principal component of heterogeneity (j; see Figure 1), where the $CLES$ is treated as the effect of GCFR relative to SWAFR values. Only significant or marginally significant fits are plotted (Table 2). Grey bands denote 95% confidence intervals about the fitted lines. Across spatial scales, all $CLES$ values differed significantly from zero following two-sided $t$-tests ($P < 0.001$)."}
+# Neaten variable labels to include panel letters
+CLES_results %<>%
+  mutate(
+    variable = variable %>%
+      as.character() %>%
+      str_replace_all("\\.", " "),
+    letters = rep(letters[1:10], 5),
+    label = glue("({letters}) {variable}")
+  )
+  
+# Create empty panels
+empty_plots <- ggplot(CLES_results, aes(resolution, CLES_value)) +
+  geom_hline(yintercept = 0.5, lty = "dashed") +
+  facet_wrap(~label, nrow = 2) +
+  scale_x_continuous(
+    name   = "Scale",
+    breaks = c(0.05,   0.125, 0.25,  0.50,  0.75),
+    labels = c("0.05º", "EDS", "QDS", "HDS", "3QDS")
+  ) +
+  scale_y_continuous(
+    name   = bquote(italic("CLES")~~~"(GCFR > SWAFR)"),
+    breaks = c(0.50, 0.75, 1.00)      
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x     = element_text(angle = 90, vjust = 0.5),
+    axis.text.y     = element_text(angle = 90, hjust = 0.5),
+    strip.text.x    = element_text(hjust = 0)
+  )
+# Create dataset without data for NS regressions (above),
+# so that geom_smooth() can't plot for those variables
+CLES_results_sans_NS <- mutate(CLES_results,
+  CLES_value = ifelse(variable %in% c("NDVI", "PDQ", "pH"),
+    NA,
+    CLES_value
+  )
+)
+# Add fits to empty plots
+CLES_plots <- empty_plots +
+  geom_smooth(
+    data    = CLES_results_sans_NS,
+    mapping = aes(group = label),
+    method  = lm,
+    colour  = "grey25"
+  ) +
+  # Plot full dataset on top of fits for clarity
+  geom_point(data = CLES_results, aes(shape = P_U < 0.05)) +
+  scale_shape_manual(values = c(1, 19))
+
+CLES_plots
+```
