@@ -6,6 +6,10 @@ data <- list(
   DS  = read_csv(glue("{data_dir}/data-DS-w-residuals.csv"))
 )
 
+data$QDS %>%
+  dplyr::select(region, QDS, QDS_richness) %>%
+  group_by(region)
+
 data_for_plot <- data %$%
   rbind(
     QDS %>%
@@ -25,6 +29,21 @@ data_for_plot <- data %$%
   gather(metric, metric_value, richness, turnover_prop) %>%
   unite(metric_scale, scale, metric) %>%
   na.exclude()
+
+foo <- hist(
+  data$QDS$QDS_richness[data$QDS$region == "GCFR"],
+  breaks = 30
+)
+foo
+
+bar <- hist(
+  data_for_plot$metric_value[
+    data_for_plot$region == "GCFR" &
+      data_for_plot$metric_scale == "QDS_richness"
+  ],
+  breaks = 30
+)
+bar
 
 x_axis_labels <- list(
   QDS_richness      = bquote(italic("S")["QDS"]),
@@ -61,6 +80,93 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
     )
 )
 names(hist_plots) <- unique(data_for_plot$metric_scale)
+
+total_QDS <- data$QDS %>%
+  group_by(region) %>%
+  summarise(n_QDS = n()) %>%
+  split(.$region) %>%
+  map(pull, n_QDS)
+total_HDS <- data$HDS %>%
+  group_by(region) %>%
+  summarise(n_HDS = n()) %>%
+  split(.$region) %>%
+  map(pull, n_HDS)
+total_DS <- data$DS %>%
+  group_by(region) %>%
+  summarise(n_DS = n()) %>%
+  split(.$region) %>%
+  map(pull, n_DS)
+
+adj_n_QDS <- ggplot_build(hist_plots$QDS_richness)$data[[1]] %>%
+  as_tibble() %>%
+  transmute(
+    region       = ifelse(fill == "black", "GCFR", "SWAFR"),
+    n_QDS        = count,
+    QDS_richness = x
+  ) %>%
+  mutate(prop_of_total_QDS =  map2_dbl(n_QDS, region, ~.x/total_QDS[[.y]]))
+adj_n_HDS <- ggplot_build(hist_plots$HDS_richness)$data[[1]] %>%
+  as_tibble() %>%
+  transmute(
+    region       = ifelse(fill == "black", "GCFR", "SWAFR"),
+    n_HDS        = count,
+    HDS_richness = x
+  ) %>%
+  mutate(prop_of_total_HDS =  map2_dbl(n_HDS, region, ~.x/total_HDS[[.y]]))
+adj_n_DS <- ggplot_build(hist_plots$DS_richness)$data[[1]] %>%
+  as_tibble() %>%
+  transmute(
+    region       = ifelse(fill == "black", "GCFR", "SWAFR"),
+    n_DS        = count,
+    DS_richness = x
+  ) %>%
+  mutate(prop_of_total_DS =  map2_dbl(n_DS, region, ~.x/total_DS[[.y]]))
+
+plot_grid(
+  hist_plots$QDS_richness,
+  ggplot(adj_n_QDS, aes(QDS_richness, prop_of_total_QDS, fill = region)) +
+    geom_col() +
+    theme(legend.position = c(0.8, 0.8))
+)
+plot_grid(
+  hist_plots$HDS_richness,
+  ggplot(adj_n_HDS, aes(HDS_richness, prop_of_total_HDS, fill = region)) +
+    geom_col() +
+    theme(legend.position = c(0.8, 0.8))
+)
+plot_grid(
+  hist_plots$DS_richness,
+  ggplot(adj_n_DS, aes(DS_richness, prop_of_total_DS, fill = region)) +
+    geom_col() +
+    theme(legend.position = c(0.8, 0.8))
+)
+
+wilcox.test(
+  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "GCFR"],
+  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "SWAFR"]
+)
+CLES(
+  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "SWAFR"],
+  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "GCFR"]
+)
+
+wilcox.test(
+  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "GCFR"],
+  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "SWAFR"]
+)
+CLES(
+  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "SWAFR"],
+  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "GCFR"]
+)
+
+wilcox.test(
+  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "GCFR"],
+  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "SWAFR"]
+)
+CLES(
+  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "SWAFR"],
+  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "GCFR"]
+)
 
 plot_lim <- data %$%
   HDS %$%
