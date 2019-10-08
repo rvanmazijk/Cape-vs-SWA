@@ -144,6 +144,45 @@ plot(SWAFR_pcoa$vectors)
 #BOTH_pcoa <- ape::pcoa(BOTH_jaccard)
 #plot(BOTH_pcoa$vectors)
 
+GCFR_jaccard %>%
+  as.matrix() %>%
+  as.data.frame() %>%
+  cbind(QDS1 = rownames(.)) %>%
+  gather(QDS2, jaccard, -QDS1) %>%
+  ggplot() +
+    aes(
+      reorder(QDS1, desc(jaccard)),
+      reorder(QDS2, desc(jaccard)),
+      fill = jaccard
+    ) +
+    geom_tile() +
+    scale_fill_viridis_c(direction = -1) +
+    theme(axis.ticks = element_blank(), axis.text = element_blank())
+
+SWAFR_jaccard %>%
+  as.matrix() %>%
+  as.data.frame() %>%
+  cbind(QDS1 = rownames(.)) %>%
+  gather(QDS2, jaccard, -QDS1) %>%
+  ggplot() +
+    aes(
+      reorder(QDS1, desc(jaccard)),
+      reorder(QDS2, desc(jaccard)),
+      fill = jaccard
+    ) +
+    geom_tile() +
+    scale_fill_viridis_c(direction = -1) +
+    theme(axis.ticks = element_blank(), axis.text = element_blank())
+
+rbind(
+  cbind(region = "GCFR",  jaccard = as.vector(GCFR_jaccard)),
+  cbind(region = "SWAFR", jaccard = as.vector(SWAFR_jaccard))
+) %>%
+  as.data.frame() %>%
+  mutate(jaccard = as.numeric(as.character(jaccard))) %>%
+  ggplot(aes(jaccard, fill = region)) +
+    geom_histogram(position = "dodge")
+
 pcoa_axes <- as_tibble(rbind(
   cbind(
     region = "GCFR",
