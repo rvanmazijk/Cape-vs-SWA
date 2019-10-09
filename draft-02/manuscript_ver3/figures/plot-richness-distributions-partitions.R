@@ -48,9 +48,9 @@ bar
 x_axis_labels <- list(
   QDS_richness      = bquote(italic("S")["QDS"]),
   HDS_richness      = bquote(italic("S")["HDS"]),
-  HDS_turnover_prop = bquote(italic("T")["QDS"]/bar(italic("S"))["QDS"]),
+  HDS_turnover_prop = bquote(italic("T")["QDS"]/italic("S")["HDS"]),
   DS_richness       = bquote(italic("S")["DS"]),
-  DS_turnover_prop  = bquote(italic("T")["HDS"]/bar(italic("S"))["HDS"])
+  DS_turnover_prop  = bquote(italic("T")["HDS"]/italic("S")["DS"])
 )
 hist_plots <- map(unique(data_for_plot$metric_scale),
   ~ data_for_plot %>%
@@ -81,6 +81,7 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
 )
 names(hist_plots) <- unique(data_for_plot$metric_scale)
 
+# Fiddling
 total_QDS <- data$QDS %>%
   group_by(region) %>%
   summarise(n_QDS = n()) %>%
@@ -96,7 +97,6 @@ total_DS <- data$DS %>%
   summarise(n_DS = n()) %>%
   split(.$region) %>%
   map(pull, n_DS)
-
 adj_n_QDS <- ggplot_build(hist_plots$QDS_richness)$data[[1]] %>%
   as_tibble() %>%
   transmute(
@@ -121,7 +121,6 @@ adj_n_DS <- ggplot_build(hist_plots$DS_richness)$data[[1]] %>%
     DS_richness = x
   ) %>%
   mutate(prop_of_total_DS =  map2_dbl(n_DS, region, ~.x/total_DS[[.y]]))
-
 plot_grid(
   hist_plots$QDS_richness,
   ggplot(adj_n_QDS, aes(QDS_richness, prop_of_total_QDS, fill = region)) +
@@ -140,7 +139,6 @@ plot_grid(
     geom_col() +
     theme(legend.position = c(0.8, 0.8))
 )
-
 wilcox.test(
   adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "GCFR"],
   adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "SWAFR"]
@@ -149,7 +147,6 @@ CLES(
   adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "SWAFR"],
   adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "GCFR"]
 )
-
 wilcox.test(
   adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "GCFR"],
   adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "SWAFR"]
@@ -158,7 +155,6 @@ CLES(
   adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "SWAFR"],
   adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "GCFR"]
 )
-
 wilcox.test(
   adj_n_DS$prop_of_total_DS[adj_n_DS$region == "GCFR"],
   adj_n_DS$prop_of_total_DS[adj_n_DS$region == "SWAFR"]
@@ -167,6 +163,16 @@ CLES(
   adj_n_DS$prop_of_total_DS[adj_n_DS$region == "SWAFR"],
   adj_n_DS$prop_of_total_DS[adj_n_DS$region == "GCFR"]
 )
+# /Fiddling
+
+# Fiddling again
+plot_grid(
+  hist_plots$QDS_richness, hist_plots$HDS_turnover_prop,
+  hist_plots$HDS_richness, hist_plots$DS_turnover_prop,
+  hist_plots$DS_richness,
+  nrow = 3
+)
+# /Fiddling again
 
 plot_lim <- data %$%
   HDS %$%
