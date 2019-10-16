@@ -145,6 +145,20 @@ GCFR_pcoa <- ape::pcoa(GCFR_jaccard)
 plot(GCFR_pcoa$vectors)
 #plot(GCFR_pcoa2$vectors)
 
+plot(
+  hclust(
+    vegdist(
+      set_rownames(
+        GCFR_matrix,
+        str_extract(rownames(GCFR_matrix), "S\\d\\d")
+      ),
+      method = "jaccard"
+    ),
+    method = "average"
+  ),
+  hang = -1
+)
+
 SWAFR_jaccard <- vegdist(SWAFR_matrix, method = "jaccard")
 SWAFR_pcoa <- ape::pcoa(SWAFR_jaccard)
 plot(SWAFR_pcoa$vectors)
@@ -159,14 +173,14 @@ GCFR_jaccard %>%
   cbind(QDS1 = rownames(.)) %>%
   gather(QDS2, jaccard, -QDS1) %>%
   ggplot() +
-  aes(
-    reorder(QDS1, desc(jaccard)),
-    reorder(QDS2, desc(jaccard)),
-    fill = jaccard
-  ) +
-  geom_tile() +
-  scale_fill_viridis_c(direction = -1) +
-  theme(axis.ticks = element_blank(), axis.text = element_blank())
+    aes(
+      reorder(QDS1, desc(jaccard)),
+      reorder(QDS2, desc(jaccard)),
+      fill = jaccard
+    ) +
+    geom_tile() +
+    scale_fill_viridis_c(direction = -1) +
+    theme(axis.ticks = element_blank(), axis.text = element_blank())
 
 SWAFR_jaccard %>%
   as.matrix() %>%
@@ -174,14 +188,14 @@ SWAFR_jaccard %>%
   cbind(QDS1 = rownames(.)) %>%
   gather(QDS2, jaccard, -QDS1) %>%
   ggplot() +
-  aes(
-    reorder(QDS1, desc(jaccard)),
-    reorder(QDS2, desc(jaccard)),
-    fill = jaccard
-  ) +
-  geom_tile() +
-  scale_fill_viridis_c(direction = -1) +
-  theme(axis.ticks = element_blank(), axis.text = element_blank())
+    aes(
+      reorder(QDS1, desc(jaccard)),
+      reorder(QDS2, desc(jaccard)),
+      fill = jaccard
+    ) +
+    geom_tile() +
+    scale_fill_viridis_c(direction = -1) +
+    theme(axis.ticks = element_blank(), axis.text = element_blank())
 
 rbind(
   cbind(region = "GCFR",  jaccard = as.vector(GCFR_jaccard)),
@@ -226,7 +240,7 @@ BOTH_pcoa_axes %<>% transmute(
 
 data %<>%
   full_join(pcoa_axes) %>%
-  full_join(BOTH_pcoa_axes) %>%
+  #full_join(BOTH_pcoa_axes) %>%
   mutate(
     vegtype = case_when(
       (Axis.1 > 0) & (Axis.2 > 0) ~ 1,
@@ -236,6 +250,8 @@ data %<>%
     ),
     vegunique = sqrt((0 - Axis.1)^2 + (0 - Axis.2)^2)
   )
+
+vegan::ordiplot()
 
 GCFR_pcoa_kmeans <- kmeans(GCFR_pcoa$vectors, 4)
 GCFR_pcoa_kmeans <- tibble(
