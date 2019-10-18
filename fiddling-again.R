@@ -159,8 +159,21 @@ data_for_plot <- data %$%
   na.exclude()
 ggplot(data_for_plot, aes(metric_value, fill = region)) +
   geom_histogram(colour = "black", position = "dodge") +
-  facet_grid(scale ~ metric, scales = "free") +
-  scale_fill_manual(values = c("black", "white"))
+  labs(
+    x = bquote(
+      italic("S")~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~italic("T")/italic("S")
+    ),
+    y = paste(
+      "No. QDS                                          ",
+      "No. HDS                                          ",
+      "No. DS"
+    )
+  ) +
+  geom_vline(aes(fill = metric), xintercept = 0.5, linetype = "dashed") +
+  facet_grid(scale ~ metric, scales = "free", labeller = label_parsed) +
+  scale_fill_manual(name = "Region", values = c("black", "white")) +
+  scale_colour_manual(values = c(NA, "black")) +
+  theme(strip.text = element_blank(), legend.position = c(0.75, 0.15))
 
 data_for_plot <- data %$%
   rbind(
