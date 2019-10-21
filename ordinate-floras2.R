@@ -19,7 +19,7 @@ SWAFR_species <- read_csv(here(
   "SWAFR-species.csv"
 ))
 
-GCFR_species  %<>% mutate(genus = str_extract(species, "^[a-zA-Z]+"))
+GCFR_species %<>% mutate(genus = str_extract(species, "^[a-zA-Z]+"))
 SWAFR_species %<>% mutate(genus = str_extract(species, "^[a-zA-Z]+"))
 
 GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
@@ -163,9 +163,9 @@ SWAFR_jaccard <- vegdist(SWAFR_matrix, method = "jaccard")
 SWAFR_pcoa <- ape::pcoa(SWAFR_jaccard)
 plot(SWAFR_pcoa$vectors)
 
-BOTH_jaccard <- vegdist(BOTH_matrix, method = "jaccard")
-BOTH_pcoa <- ape::pcoa(BOTH_jaccard)
-plot(BOTH_pcoa$vectors)
+#BOTH_jaccard <- vegdist(BOTH_matrix, method = "jaccard")
+#BOTH_pcoa <- ape::pcoa(BOTH_jaccard)
+#plot(BOTH_pcoa$vectors)
 
 GCFR_jaccard %>%
   as.matrix() %>%
@@ -220,27 +220,27 @@ pcoa_axes <- as_tibble(rbind(
 ))
 pcoa_axes[, 3:4] %<>% map(as.numeric)
 
-BOTH_pcoa_axes <- as_tibble(cbind(
-  QDS = rownames(BOTH_pcoa$vectors),
-  BOTH_pcoa$vectors[, 1:2]
-))
-BOTH_pcoa_axes %<>% mutate(
-  lon = QDS %>%
-    str_extract("E\\d\\d\\d") %>%
-    str_remove("E") %>%
-    as.numeric(),
-  region = ifelse(lon >= 112, "SWAFR", "GCFR")
-)
-BOTH_pcoa_axes[, 2:3] %<>% map(as.numeric)
-BOTH_pcoa_axes %<>% transmute(
-  region = region, QDS = QDS,
-  BOTH_Axis.1 = Axis.1,
-  BOTH_Axis.2 = Axis.2
-)
+#BOTH_pcoa_axes <- as_tibble(cbind(
+#  QDS = rownames(BOTH_pcoa$vectors),
+#  BOTH_pcoa$vectors[, 1:2]
+#))
+#BOTH_pcoa_axes %<>% mutate(
+#  lon = QDS %>%
+#    str_extract("E\\d\\d\\d") %>%
+#    str_remove("E") %>%
+#    as.numeric(),
+#  region = ifelse(lon >= 112, "SWAFR", "GCFR")
+#)
+#BOTH_pcoa_axes[, 2:3] %<>% map(as.numeric)
+#BOTH_pcoa_axes %<>% transmute(
+#  region = region, QDS = QDS,
+#  BOTH_Axis.1 = Axis.1,
+#  BOTH_Axis.2 = Axis.2
+#)
 
 data %<>%
   full_join(pcoa_axes) %>%
-  #full_join(BOTH_pcoa_axes) %>%
+  #full_join(BOTH_pcoa_axes)
   mutate(
     vegtype = case_when(
       (Axis.1 > 0) & (Axis.2 > 0) ~ 1,
@@ -250,8 +250,6 @@ data %<>%
     ),
     vegunique = sqrt((0 - Axis.1)^2 + (0 - Axis.2)^2)
   )
-
-vegan::ordiplot()
 
 GCFR_pcoa_kmeans <- kmeans(GCFR_pcoa$vectors, 4)
 GCFR_pcoa_kmeans <- tibble(
