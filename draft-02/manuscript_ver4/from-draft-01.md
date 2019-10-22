@@ -27,11 +27,7 @@ Another issue related to spatial scales, as with any ecological study, is that o
 
 In addition to the scale of our data, spatial bias in species occurence data must also be considered. GBIF data are sourced from both herbaria and plot-monitoring datasets. The relative contribution of each of these to GBIF data may vary between countries and regions—i.e. between the Cape and SWA. As recently noted by Guerin (2018), herbarium records and plot-based inventories describe regional flora with varying accuracy, especially with respect to documenting high levels of floristic turnover. We emphasise here our concerns that there the floral occurence data and soils information use in this study are especially at risk of spatial bias and/or inaccuracies.
 
-…
-
-Jaccard distances, as used here as {\overline{J}}_{QDS}, are highly richness dependent. Although they represent the proportional floristic turnover between cells, this proportion itself is sensitive to the richness of sites under comparison. For example, the turnover between two low richness sites has is likely to be greater by chance, due to the absence or presence of a few species, than the turnover between two high richness sites, where the absence or presence of a few species does not greatly affect the turnover calculated.
-
-…
+...
 
 Our findings here are correlative. There are, however, many proposed mechanisms to explain the correlative signals demonstrated here. Our findings support the hypothesis that mediterranean systems’ plant species richness is a function of spatial variability in environmental conditions. This can stimulate diversification, and maintain that diversity by providing a range of habitats for species co-existence. Oligtrophic soils can stimulate an increase in functional diversity, through the evolution of diverse nutrient acquisition strategies (Lambers et al., 2010; Verboom et al., 2017)—e.g. sclerophylly (Cramer et al., 2014; Cook et al., 2015). An aspect of the environment I have neglected to consider is fire, shown to also contribute to predictions here in the Cape (Cramer & Verboom, 2016). Cardillo (2012) have shown the structuring forces behind species co-occurrence patterns, and thus likely species richness,differ between species-pairs with different post-fire responses and those with similar post-fire responses.
 
