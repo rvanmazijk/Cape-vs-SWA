@@ -169,11 +169,15 @@ ggplot(data_for_plot, aes(metric_value, fill = region)) +
       "No. DS"
     )
   ) +
-  geom_vline(aes(fill = metric), xintercept = 0.5, linetype = "dashed") +
+  #geom_vline(aes(fill = metric), xintercept = 0.5, linetype = "dashed") +
   facet_grid(scale ~ metric, scales = "free", labeller = label_parsed) +
   scale_fill_manual(name = "Region", values = c("black", "white")) +
   scale_colour_manual(values = c(NA, "black")) +
-  theme(strip.text = element_blank(), legend.position = c(0.75, 0.15))
+  theme(
+    strip.text      = element_blank(),
+    legend.position = c(0.75, 0.15),
+    panel.spacing   = unit(0L, "cm")
+  )
 
 data_for_plot <- data %$%
   rbind(

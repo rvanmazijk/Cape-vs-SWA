@@ -42,11 +42,15 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
     filter(metric_scale == .x) %>%
     ggplot(aes(metric_value, fill = region)) +
       geom_histogram(
-        bins = case_when(
-          str_detect(.x, "QDS") ~ 30,
-          str_detect(.x, "HDS") ~ 20,
-          str_detect(.x, "DS")  ~ 10
-        ),
+        #binwidth = case_when(
+        #  str_detect(.x, "richness") ~ 250,
+        #  str_detect(.x, "turnover") ~ 0.05
+        #),
+        bins = 10, #case_when(
+        #  str_detect(.x, "QDS") ~ 30,
+        #  str_detect(.x, "HDS") ~ 20,
+        #  str_detect(.x, "DS")  ~ 10
+        #),
         position = "dodge",
         colour = "black"
       ) +
@@ -59,19 +63,23 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
           str_detect(.x, "DS")  ~ "No. DS"
         )
       ) +
+      #coord_cartesian(
+      #  xlim = case_when(
+      #    str_detect(.x, "richness") ~ c(0, 5000),
+      #    str_detect(.x, "turnover") ~ c(0,    1)
+      #  ),
+      #  ylim = case_when(
+      #    str_detect(.x, "QDS") ~ c(0, 250),
+      #    str_detect(.x, "HDS") ~ c(0,  60),
+      #    str_detect(.x, "DS")  ~ c(0,  25)
+      #  )
+      #) +
       theme(
         legend.position = c(0.8, 0.8),
         axis.text.y     = element_text(angle = 90, hjust = 0.5)
       )
 )
 names(hist_plots) <- unique(data_for_plot$metric_scale)
-
-hist_plots %$% plot_grid(
-  DS_richness,  DS_turnover_prop  + geom_vline(xintercept = 0.5, linetype = "dashed"),
-  HDS_richness, HDS_turnover_prop + geom_vline(xintercept = 0.5, linetype = "dashed"),
-  QDS_richness,
-  nrow = 3
-)
 
 plot_lim <- data %$%
   HDS %$%
@@ -122,6 +130,13 @@ partition_plot <- partition_plot +
   ) +
   # Flip partition plot to get axes to line up across panels (b/o text heights)
   coord_flip()
+
+hist_plots %$% plot_grid(
+  DS_richness,  DS_turnover_prop  + geom_vline(xintercept = 0.5, linetype = "dashed"),
+  HDS_richness, HDS_turnover_prop + geom_vline(xintercept = 0.5, linetype = "dashed"),
+  QDS_richness,
+  nrow = 3
+)
 
 hist_plots[c("QDS_richness", "HDS_turnover_prop")] %<>% map(
   ~.x + theme(legend.position = "none")
