@@ -157,8 +157,14 @@ data_for_plot <- data %$%
   as_tibble() %>%
   gather(metric, metric_value, richness, turnover_prop) %>%
   na.exclude()
-ggplot(data_for_plot, aes(metric_value, fill = region)) +
-  geom_histogram(colour = "black", position = "dodge") +
+ggplot(data_for_plot, aes(region, metric_value, fill = region)) +
+  geom_boxplot(position = "dodge", aes(
+    ymin   = min(metric_value),
+    lower  = quantile(metric_value, 0.25),
+    middle = median(metric_value),
+    upper  = quantile(metric_value, 0.75),
+    ymax   = max(metric_value)
+  )) +
   labs(
     x = bquote(
       italic("S")~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~italic("T")/italic("S")
@@ -169,13 +175,13 @@ ggplot(data_for_plot, aes(metric_value, fill = region)) +
       "No. DS"
     )
   ) +
-  #geom_vline(aes(fill = metric), xintercept = 0.5, linetype = "dashed") +
+  geom_hline(aes(colour = metric), yintercept = 0.5, linetype = "dashed") +
+  coord_flip() +
   facet_grid(scale ~ metric, scales = "free", labeller = label_parsed) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
-  scale_colour_manual(values = c(NA, "black")) +
+  scale_fill_manual(name = "Region", values = c("grey75", "white")) +
   theme(
     strip.text      = element_blank(),
-    legend.position = c(0.75, 0.15),
+    legend.position = "none",
     panel.spacing   = unit(0L, "cm")
   )
 
