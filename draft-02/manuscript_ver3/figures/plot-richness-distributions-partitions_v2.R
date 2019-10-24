@@ -30,21 +30,6 @@ data_for_plot <- data %$%
   unite(metric_scale, scale, metric) %>%
   na.exclude()
 
-foo <- hist(
-  data$QDS$QDS_richness[data$QDS$region == "GCFR"],
-  breaks = 30
-)
-foo
-
-bar <- hist(
-  data_for_plot$metric_value[
-    data_for_plot$region == "GCFR" &
-      data_for_plot$metric_scale == "QDS_richness"
-  ],
-  breaks = 30
-)
-bar
-
 x_axis_labels <- list(
   QDS_richness      = bquote(italic("S")["QDS"]),
   HDS_richness      = bquote(italic("S")["HDS"]),
@@ -56,123 +41,45 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
   ~ data_for_plot %>%
     filter(metric_scale == .x) %>%
     ggplot(aes(metric_value, fill = region)) +
-    geom_histogram(
-      bins = case_when(
-        str_detect(.x, "QDS") ~ 30,
-        str_detect(.x, "HDS") ~ 20,
-        str_detect(.x, "DS")  ~ 10
-      ),
-      position = "dodge",
-      colour = "black"
-    ) +
-    scale_fill_manual(name = "Region", values = c("black", "white")) +
-    labs(
-      x = x_axis_labels[[.x]],
-      y = case_when(
-        str_detect(.x, "QDS") ~ "No. QDS",
-        str_detect(.x, "HDS") ~ "No. HDS",
-        str_detect(.x, "DS")  ~ "No. DS"
+      geom_histogram(
+        #binwidth = case_when(
+        #  str_detect(.x, "richness") ~ 250,
+        #  str_detect(.x, "turnover") ~ 0.05
+        #),
+        bins = 10, #case_when(
+        #  str_detect(.x, "QDS") ~ 30,
+        #  str_detect(.x, "HDS") ~ 20,
+        #  str_detect(.x, "DS")  ~ 10
+        #),
+        position = "dodge",
+        colour = "black"
+      ) +
+      scale_fill_manual(name = "Region", values = c("black", "white")) +
+      labs(
+        x = x_axis_labels[[.x]],
+        y = case_when(
+          str_detect(.x, "QDS") ~ "No. QDS",
+          str_detect(.x, "HDS") ~ "No. HDS",
+          str_detect(.x, "DS")  ~ "No. DS"
+        )
+      ) +
+      #coord_cartesian(
+      #  xlim = case_when(
+      #    str_detect(.x, "richness") ~ c(0, 5000),
+      #    str_detect(.x, "turnover") ~ c(0,    1)
+      #  ),
+      #  ylim = case_when(
+      #    str_detect(.x, "QDS") ~ c(0, 250),
+      #    str_detect(.x, "HDS") ~ c(0,  60),
+      #    str_detect(.x, "DS")  ~ c(0,  25)
+      #  )
+      #) +
+      theme(
+        legend.position = c(0.8, 0.8),
+        axis.text.y     = element_text(angle = 90, hjust = 0.5)
       )
-    ) +
-    theme(
-      legend.position = c(0.8, 0.8),
-      axis.text.y     = element_text(angle = 90, hjust = 0.5)
-    )
 )
 names(hist_plots) <- unique(data_for_plot$metric_scale)
-
-# Fiddling
-total_QDS <- data$QDS %>%
-  group_by(region) %>%
-  summarise(n_QDS = n()) %>%
-  split(.$region) %>%
-  map(pull, n_QDS)
-total_HDS <- data$HDS %>%
-  group_by(region) %>%
-  summarise(n_HDS = n()) %>%
-  split(.$region) %>%
-  map(pull, n_HDS)
-total_DS <- data$DS %>%
-  group_by(region) %>%
-  summarise(n_DS = n()) %>%
-  split(.$region) %>%
-  map(pull, n_DS)
-adj_n_QDS <- ggplot_build(hist_plots$QDS_richness)$data[[1]] %>%
-  as_tibble() %>%
-  transmute(
-    region       = ifelse(fill == "black", "GCFR", "SWAFR"),
-    n_QDS        = count,
-    QDS_richness = x
-  ) %>%
-  mutate(prop_of_total_QDS =  map2_dbl(n_QDS, region, ~.x/total_QDS[[.y]]))
-adj_n_HDS <- ggplot_build(hist_plots$HDS_richness)$data[[1]] %>%
-  as_tibble() %>%
-  transmute(
-    region       = ifelse(fill == "black", "GCFR", "SWAFR"),
-    n_HDS        = count,
-    HDS_richness = x
-  ) %>%
-  mutate(prop_of_total_HDS =  map2_dbl(n_HDS, region, ~.x/total_HDS[[.y]]))
-adj_n_DS <- ggplot_build(hist_plots$DS_richness)$data[[1]] %>%
-  as_tibble() %>%
-  transmute(
-    region       = ifelse(fill == "black", "GCFR", "SWAFR"),
-    n_DS        = count,
-    DS_richness = x
-  ) %>%
-  mutate(prop_of_total_DS =  map2_dbl(n_DS, region, ~.x/total_DS[[.y]]))
-plot_grid(
-  hist_plots$QDS_richness,
-  ggplot(adj_n_QDS, aes(QDS_richness, prop_of_total_QDS, fill = region)) +
-    geom_col() +
-    theme(legend.position = c(0.8, 0.8))
-)
-plot_grid(
-  hist_plots$HDS_richness,
-  ggplot(adj_n_HDS, aes(HDS_richness, prop_of_total_HDS, fill = region)) +
-    geom_col() +
-    theme(legend.position = c(0.8, 0.8))
-)
-plot_grid(
-  hist_plots$DS_richness,
-  ggplot(adj_n_DS, aes(DS_richness, prop_of_total_DS, fill = region)) +
-    geom_col() +
-    theme(legend.position = c(0.8, 0.8))
-)
-wilcox.test(
-  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "GCFR"],
-  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "SWAFR"]
-)
-CLES(
-  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "SWAFR"],
-  adj_n_QDS$prop_of_total_QDS[adj_n_QDS$region == "GCFR"]
-)
-wilcox.test(
-  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "GCFR"],
-  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "SWAFR"]
-)
-CLES(
-  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "SWAFR"],
-  adj_n_HDS$prop_of_total_HDS[adj_n_HDS$region == "GCFR"]
-)
-wilcox.test(
-  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "GCFR"],
-  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "SWAFR"]
-)
-CLES(
-  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "SWAFR"],
-  adj_n_DS$prop_of_total_DS[adj_n_DS$region == "GCFR"]
-)
-# /Fiddling
-
-# Fiddling again
-plot_grid(
-  hist_plots$QDS_richness, hist_plots$HDS_turnover_prop,
-  hist_plots$HDS_richness, hist_plots$DS_turnover_prop,
-  hist_plots$DS_richness,
-  nrow = 3
-)
-# /Fiddling again
 
 plot_lim <- data %$%
   HDS %$%
@@ -223,6 +130,13 @@ partition_plot <- partition_plot +
   ) +
   # Flip partition plot to get axes to line up across panels (b/o text heights)
   coord_flip()
+
+hist_plots %$% plot_grid(
+  DS_richness,  DS_turnover_prop  + geom_vline(xintercept = 0.5, linetype = "dashed"),
+  HDS_richness, HDS_turnover_prop + geom_vline(xintercept = 0.5, linetype = "dashed"),
+  QDS_richness,
+  nrow = 3
+)
 
 hist_plots[c("QDS_richness", "HDS_turnover_prop")] %<>% map(
   ~.x + theme(legend.position = "none")

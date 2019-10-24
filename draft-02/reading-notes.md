@@ -85,19 +85,19 @@ Summary of drivers of patterns of species occurence:
 Hypotheses for high plant diversity in mediterranean regions[^1]:
 
 1. Diversification
-  a. **Speciation b/o ecological specialisation**
-  b. Low disperal rates
-  c. Low extinction rates (b/of climatic stability)
-  d. High speciation rates (e.g. b/o shorter generation times b/o fire)
-  e. Pollinator specialisation
+    a. **Speciation b/o ecological specialisation**
+    b. Low disperal rates
+    c. Low extinction rates (b/of climatic stability)
+    d. High speciation rates (e.g. b/o shorter generation times b/o fire)
+    e. Pollinator specialisation
 2. Co-existence
-  a. **Spatial heterogeneity**
-  b. Disturbance
-  c. Low competition b/o ecological/life-history specialisation
+    a. **Spatial heterogeneity**
+    b. Disturbance
+    c. Low competition b/o ecological/life-history specialisation
 3. Time for species accumulation
-  a. Climatic stability
-  b. Stable oligotrophic soils
-  c. Pre-adaptation for xerophylly/sclerophylly
+    a. Climatic stability
+    b. Stable oligotrophic soils
+    c. Pre-adaptation for xerophylly/sclerophylly
 
 [^1]: Hypotheses/aspects that my study concerns are in bold
 
@@ -123,6 +123,14 @@ Hypotheses for high plant diversity in mediterranean regions[^1]:
 "While those life forms are prominent in the Cape, that region differs in the great importance of herbaceous families and succulents, both of which are virtually absent from Western Australia."
 
 "It is suggested that the dominant factor shaping the South-West Province flora is the extreme poverty of the area’s soils, a feature that emphasizes sclerophylly, favours habitat specialization and ensures relatively many local endemic species."
+
+#### Born et al. 2007. _J. Biogeog._
+
+(The paper that "defined" the GCFR most recently)
+
+On p. 158, under "Richness and endemism":
+
+> [...] which is probably a consequence of high topographic diversity and rainfall patterns in these regions.
 
 #### Hagger et al. 2017. _PeerJ_
 

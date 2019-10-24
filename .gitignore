@@ -8,6 +8,7 @@ packrat/lib*/
 *_cache
 *.RDS
 *.log
+**/~$*
 
 **/outputs/turnover/*FR_sp*_*/
 
