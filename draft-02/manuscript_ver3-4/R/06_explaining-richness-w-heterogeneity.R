@@ -580,6 +580,19 @@ data$QDS$multivariate_residual <- m_QDS_richness$residuals
 data$HDS$multivariate_residual <- m_HDS_richness$residuals
 data$DS$multivariate_residual  <- m_DS_richness$residuals
 
+# Save results out (especially for Tony)
+models_summary_95 <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.95) %>%
+  rename(conf.low.05 = conf.low, conf.high.05 = conf.high)
+models_summary_99 <- models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.99) %>%
+  rename(conf.low.01 = conf.low, conf.high.01 = conf.high)
+full_join(models_summary_95, models_summary_99) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  mutate_if(is.numeric, ~round(., digits = 3)) %>%
+  mutate(p.value = ifelse(p.value < 0.001, "< 0.001", p.value)) %>%
+  write_csv(here("model-summary-for-Tony.csv"))
+
 # Look at break down of variance explained (ANOVA) by each model
 models %>%
   map(anova) %>%
