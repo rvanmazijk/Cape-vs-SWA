@@ -611,6 +611,12 @@ m_QDS_richness %<>% reparameterise()
 m_HDS_richness %<>% reparameterise()
 m_DS_richness  %<>% reparameterise()
 
+par(mfrow = c(2, 2))
+plot(m_QDS_richness)
+plot(m_HDS_richness)
+plot(m_DS_richness)
+par(op)
+
 # Summarise models
 models <- list(
   QDS_richness = m_QDS_richness,
