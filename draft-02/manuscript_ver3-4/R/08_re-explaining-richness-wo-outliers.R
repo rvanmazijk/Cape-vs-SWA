@@ -459,9 +459,30 @@ data %>%
     PC1_residual2, multivariate_residual2
   ) %>%
   bind_rows(.id = "scale") %>%
-  group_by(region) %>%
+  group_by(scale, region) %>%
   summarise_if(is.numeric, sd, na.rm = TRUE) %>%
+  write_csv(here("sd-of-residuals-w-and-wo-outliers.csv"))
 
+data %$% {
+  QDS %$% {
+    print(round(var.test(PC1_residual           ~ region)$p.value, digits = 3))
+    print(round(var.test(PC1_residual2          ~ region)$p.value, digits = 3))
+    print(round(var.test(multivariate_residual  ~ region)$p.value, digits = 3))
+    print(round(var.test(multivariate_residual2 ~ region)$p.value, digits = 3))
+  }
+  HDS %$% {
+    print(round(var.test(PC1_residual           ~ region)$p.value, digits = 3))
+    print(round(var.test(PC1_residual2          ~ region)$p.value, digits = 3))
+    print(round(var.test(multivariate_residual  ~ region)$p.value, digits = 3))
+    print(round(var.test(multivariate_residual2 ~ region)$p.value, digits = 3))
+  }
+  DS %$% {
+    print(round(var.test(PC1_residual           ~ region)$p.value, digits = 3))
+    print(round(var.test(PC1_residual2          ~ region)$p.value, digits = 3))
+    print(round(var.test(multivariate_residual  ~ region)$p.value, digits = 3))
+    print(round(var.test(multivariate_residual2 ~ region)$p.value, digits = 3))
+  }
+}
 
 # ............ Plot ------------------------------------------------------------
 
