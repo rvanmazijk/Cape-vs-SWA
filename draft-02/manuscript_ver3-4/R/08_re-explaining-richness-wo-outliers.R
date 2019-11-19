@@ -420,17 +420,6 @@ ggsave(
   width = 7, height = 4
 )
 
-# Junk -------------------------------------------------------------------------
-
-ggplot(data$QDS, aes(PC1_residual, fill = region)) +
-  geom_histogram(position = "dodge", colour = "black") +
-  labs(x = bquote("Residual"~italic("S")["QDS"]~"(PC1)"), y = "No. QDS") +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-ggplot(data$QDS, aes(multivariate_residual, fill = region)) +
-  geom_histogram(position = "dodge", colour = "black") +
-  labs(x = bquote("Residual"~italic("S")["QDS"]~"(PC1)"), y = "No. QDS") +
-  scale_fill_manual(name = "Region", values = c("black", "white"))
-
 # ........ Compare variation of residuals before & after outlier removal -------
 
 data$QDS$PC1_residual2 <- NA
@@ -544,6 +533,17 @@ data %$% {
   }
   par(op)
 }
+
+# Junk -------------------------------------------------------------------------
+
+ggplot(data$QDS, aes(PC1_residual, fill = region)) +
+  geom_histogram(position = "dodge", colour = "black") +
+  labs(x = bquote("Residual"~italic("S")["QDS"]~"(PC1)"), y = "No. QDS") +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
+ggplot(data$QDS, aes(multivariate_residual, fill = region)) +
+  geom_histogram(position = "dodge", colour = "black") +
+  labs(x = bquote("Residual"~italic("S")["QDS"]~"(PC1)"), y = "No. QDS") +
+  scale_fill_manual(name = "Region", values = c("black", "white"))
 
 #...
 # %>%
