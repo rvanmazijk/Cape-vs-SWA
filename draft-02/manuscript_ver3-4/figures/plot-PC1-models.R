@@ -90,4 +90,3 @@ ggsave(
   all_scales_plots, dpi = 600,
   width = 9, height = 3
 )
-

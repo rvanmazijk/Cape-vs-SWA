@@ -49,7 +49,12 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
   scale_fill_manual(values = c(NA, "black", "white")) +
   scale_shape_manual(values = c(4, 21, 21)) +
   scale_alpha_manual(values = c(1, 0.25)) +
-  facet_wrap(response ~ ., nrow = 1, scales = "free_x", labeller = label_parsed) +
+  facet_wrap(
+    response ~ .,
+    nrow     = 1,
+    scales   = "free_x",
+    labeller = label_parsed
+  ) +
   guides(
     fill = FALSE,
     shape = guide_legend(
