@@ -161,7 +161,7 @@ fit_univariate_models <- function(response) {
   )
   names(univar_models) <- predictor_names
 
-  univar_model_summary <- univar_models %>%
+  univar_model_summary1 <- univar_models %>%
     map_dfr(.id = "variable",
       ~ tibble(
         model_type = names(.x),
@@ -236,30 +236,31 @@ fit_univariate_models <- function(response) {
     ) %>%
     mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x))
 
-  # Return summary with models
-  return(univar_model_summary)
-
   # Make summary table
-  univar_model_summary %<>%
+  univar_model_summary2 <- univar_model_summary1 %>%
     dplyr::select(
       model_type,  variable,
-      slope_sign,  P_slope,
-      region_sign, P_region,
-      int_sign,    P_int
+      slope,        P_slope,
+      region_coeff, P_region,
+      int_coeff,    P_int
     ) %>%
+    mutate_if(is.numeric, ~format(round(., digits = 3), nsmall = 3)) %>%
     arrange(model_type)
   # Remove variable names after first mention in table
-  univar_model_summary$model_type %<>% as.character()
-  for (pred in unique(univar_model_summary$model_type)) {
-    to_remove <- which(univar_model_summary$model_type == pred)[-1]
-    univar_model_summary$model_type[to_remove] <- " "
+  univar_model_summary2$model_type %<>% as.character()
+  for (pred in unique(univar_model_summary2$model_type)) {
+    to_remove <- which(univar_model_summary2$model_type == pred)[-1]
+    univar_model_summary2$model_type[to_remove] <- " "
   }
 
   # Save results to disc
   write_csv(
-    univar_model_summary,
+    univar_model_summary2,
     glue("{data_dir}/{response}_univariate_model_results.csv")
   )
+
+  # Return summary with models
+  return(univar_model_summary1)
 }
 
 QDS_UVMs <- fit_univariate_models("QDS_richness")
