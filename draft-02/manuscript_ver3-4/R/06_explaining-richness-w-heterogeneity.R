@@ -234,7 +234,13 @@ fit_univariate_models <- function(response) {
         TRUE       ~ " "
       )
     ) %>%
-    mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x)) %>%
+    mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x))
+
+  # Return summary with models
+  return(univar_model_summary)
+
+  # Make summary table
+  univar_model_summary %<>%
     dplyr::select(
       model_type,  variable,
       slope_sign,  P_slope,
@@ -242,16 +248,12 @@ fit_univariate_models <- function(response) {
       int_sign,    P_int
     ) %>%
     arrange(model_type)
-
   # Remove variable names after first mention in table
   univar_model_summary$model_type %<>% as.character()
   for (pred in unique(univar_model_summary$model_type)) {
     to_remove <- which(univar_model_summary$model_type == pred)[-1]
     univar_model_summary$model_type[to_remove] <- " "
   }
-
-  # Print summary table
-  univar_model_summary
 
   # Save results to disc
   write_csv(
@@ -260,9 +262,58 @@ fit_univariate_models <- function(response) {
   )
 }
 
-fit_univariate_models("QDS_richness")
-fit_univariate_models("HDS_richness")
-fit_univariate_models("DS_richness")
+QDS_UVMs <- fit_univariate_models("QDS_richness")
+HDS_UVMs <- fit_univariate_models("HDS_richness")
+DS_UVMs  <- fit_univariate_models("DS_richness")
+QDS_UVMs$plot <- NA
+HDS_UVMs$plot <- NA
+DS_UVMs$plot  <- NA
+QDS_UVMs$plot %<>% as.list()
+HDS_UVMs$plot %<>% as.list()
+DS_UVMs$plot  %<>% as.list()
+my_visreg <- function(m) {
+  terms <- names(m$coefficients)
+  m_plot <-
+    if ("regionSWAFR" %in% terms) {
+      visreg::visreg(m,
+        xvar = terms[[2]], by = "region",
+        overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
+      )
+    } else {
+      visreg::visreg(m,
+        xvar = terms[[2]],
+        overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
+      )
+    }
+  m_plot + theme(
+    axis.text.y     = element_text(angle = 90, hjust = 0.5),
+    legend.position = "none"
+  )
+}
+for (i in 1:10) {
+  QDS_UVMs$model[[i]]$data <- data$QDS
+  HDS_UVMs$model[[i]]$data <- data$HDS
+  DS_UVMs$model[[i]]$data  <- data$DS
+  QDS_UVMs$plot[[i]] <- my_visreg(QDS_UVMs$model[[i]])
+  HDS_UVMs$plot[[i]] <- my_visreg(HDS_UVMs$model[[i]])
+  DS_UVMs$plot[[i]]  <- my_visreg(DS_UVMs$model[[i]])
+}
+QDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
+HDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
+QDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
+HDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
+DS_UVMs$plot[2:10]  %<>% map(~ . + theme(axis.title.y = element_blank()))
+UVM_plots <- plot_grid(
+  plot_grid(plotlist = QDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))),
+  plot_grid(plotlist = HDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))),
+  plot_grid(plotlist = DS_UVMs$plot,  nrow = 1, rel_widths = c(1, rep(0.9, 9))),
+  nrow = 3, rel_heights = c(0.9, 0.9, 1)
+)
+ggsave(
+  here("draft-02/manuscript_ver3-4/figures/plot-univariate-models.pdf"),
+  width = 20, height = 6,
+  UVM_plots
+)
 
 # Multivariate models ----------------------------------------------------------
 
