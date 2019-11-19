@@ -277,67 +277,6 @@ summary(m_DS)
 ## (Intercept)  1541.36      78.98  19.517  < 2e-16 ***
 ## PC1           213.23      44.93   4.746 1.44e-05 ***
 
-# ........ Compare variation of residuals before & after outlier removal -------
-
-data %$% {
-  par(mfrow = c(3, 2))
-  QDS %$% {
-    hist(
-      PC1_residual,
-      main = bquote(
-        italic("SD") ==
-        .(round(sd(PC1_residual),     digits = 2))
-      ),
-      xlab = bquote("Res."~italic("S")["QDS"])
-    )
-    hist(
-      residuals(m_QDS),
-      main = bquote(
-        italic("SD") ==
-        .(round(sd(residuals(m_QDS)), digits = 2))
-      ),
-      xlab = bquote("Res."~italic("S")["QDS"]~"(sans outliers)")
-    )
-  }
-  HDS %$% {
-    hist(
-      PC1_residual,
-      main = bquote(
-        italic("SD") ==
-        .(round(sd(PC1_residual),     digits = 2))
-      ),
-      xlab = bquote("Res."~italic("S")["HDS"])
-    )
-    hist(
-      residuals(m_HDS),
-      main = bquote(
-        italic("SD") ==
-        .(round(sd(residuals(m_HDS)), digits = 2))
-      ),
-      xlab = bquote("Res."~italic("S")["HDS"]~"(sans outliers)")
-    )
-  }
-  DS %$% {
-    hist(
-      PC1_residual,
-      main = bquote(
-        italic("SD") ==
-        .(round(sd(PC1_residual),     digits = 2))
-      ),
-      xlab = bquote("Res."~italic("S")["DS"])
-    )
-    hist(
-      residuals(m_DS),
-      main = bquote(
-        italic("SD") ==
-        .(round(sd(residuals(m_DS)),  digits = 2))
-      ),
-      xlab = bquote("Res."~italic("S")["DS"]~"(sans outliers)")
-    )
-  }
-  par(op)
-}
-
 # .... Multivariate models -----------------------------------------------------
 
 predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
@@ -491,6 +430,99 @@ ggplot(data$QDS, aes(multivariate_residual, fill = region)) +
   geom_histogram(position = "dodge", colour = "black") +
   labs(x = bquote("Residual"~italic("S")["QDS"]~"(PC1)"), y = "No. QDS") +
   scale_fill_manual(name = "Region", values = c("black", "white"))
+
+# ........ Compare variation of residuals before & after outlier removal -------
+
+data$QDS$PC1_residual2 <- NA
+data$HDS$PC1_residual2 <- NA
+data$DS$PC1_residual2  <- NA
+
+data$QDS$PC1_residual2[!data$QDS$is_PC1_outlier] <- residuals(m_QDS)
+data$HDS$PC1_residual2[!data$HDS$is_PC1_outlier] <- residuals(m_HDS)
+data$DS$PC1_residual2[!data$DS$is_PC1_outlier]   <- residuals(m_DS)
+
+data$QDS$multivariate_residual2 <- NA
+data$HDS$multivariate_residual2 <- NA
+data$DS$multivariate_residual2  <- NA
+
+data$QDS$multivariate_residual2[!data$QDS$is_MV_outlier] <-
+  residuals(m_QDS_richness)
+data$HDS$multivariate_residual2[!data$HDS$is_MV_outlier] <-
+  residuals(m_HDS_richness)
+data$DS$multivariate_residual2[!data$DS$is_MV_outlier] <-
+  residuals(m_DS_richness)
+
+data %>%
+  map(dplyr::select,
+    region,
+    PC1_residual,  multivariate_residual,
+    PC1_residual2, multivariate_residual2
+  ) %>%
+  bind_rows(.id = "scale") %>%
+  group_by(region) %>%
+  summarise_if(is.numeric, sd, na.rm = TRUE) %>%
+
+
+# ............ Plot ------------------------------------------------------------
+
+data %$% {
+  par(mfrow = c(3, 2))
+  QDS %$% {
+    hist(
+      PC1_residual,
+      main = bquote(
+        italic("SD") ==
+        .(round(sd(PC1_residual),     digits = 2))
+      ),
+      xlab = bquote("Res."~italic("S")["QDS"])
+    )
+    hist(
+      residuals(m_QDS),
+      main = bquote(
+        italic("SD") ==
+        .(round(sd(residuals(m_QDS)), digits = 2))
+      ),
+      xlab = bquote("Res."~italic("S")["QDS"]~"(sans outliers)")
+    )
+  }
+  HDS %$% {
+    hist(
+      PC1_residual,
+      main = bquote(
+        italic("SD") ==
+        .(round(sd(PC1_residual),     digits = 2))
+      ),
+      xlab = bquote("Res."~italic("S")["HDS"])
+    )
+    hist(
+      residuals(m_HDS),
+      main = bquote(
+        italic("SD") ==
+        .(round(sd(residuals(m_HDS)), digits = 2))
+      ),
+      xlab = bquote("Res."~italic("S")["HDS"]~"(sans outliers)")
+    )
+  }
+  DS %$% {
+    hist(
+      PC1_residual,
+      main = bquote(
+        italic("SD") ==
+        .(round(sd(PC1_residual),     digits = 2))
+      ),
+      xlab = bquote("Res."~italic("S")["DS"])
+    )
+    hist(
+      residuals(m_DS),
+      main = bquote(
+        italic("SD") ==
+        .(round(sd(residuals(m_DS)),  digits = 2))
+      ),
+      xlab = bquote("Res."~italic("S")["DS"]~"(sans outliers)")
+    )
+  }
+  par(op)
+}
 
 #...
 # %>%
