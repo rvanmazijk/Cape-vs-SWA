@@ -1,4 +1,5 @@
 # Import data ------------------------------------------------------------------
+
 data <- list(
   QDS = read_csv(glue("{data_dir}/data-QDS-w-residuals.csv")),
   HDS = read_csv(glue("{data_dir}/data-HDS-w-residuals.csv")),
@@ -11,6 +12,19 @@ data %<>% map(~ mutate(.x,
   is_PC1_outlier = as_vector(scale(PC1_residual)          > 2),
   is_MV_outlier  = as_vector(scale(multivariate_residual) > 2)
 ))
+
+# Save out stuff for Tony
+data %>%
+  bind_rows(.id = "scale") %>%
+  filter(is_PC1_outlier | is_MV_outlier) %>%
+  dplyr::select(
+    scale, region,
+    lon, lat, QDS, HDS, DS,
+    is_PC1_outlier, is_MV_outlier
+  ) %>%
+  mutate_if(is.logical, ~ifelse(., "*", " ")) %>%
+  mutate_if(is.character, ~ifelse(is.na(.), " ", .)) %>%
+  write_csv(here("draft-02/manuscript_ver3-4/list-outlier-squares.csv"))
 
 # .... Maps of outliers --------------------------------------------------------
 
@@ -159,12 +173,10 @@ data %$% {
 
 # Refit models -----------------------------------------------------------------
 
-data2 <- data %>%
-  map(filter, !is_MV_outlier)
+# .... PC1 models --------------------------------------------------------------
+
 data3 <- data %>%
   map(filter, !is_PC1_outlier)
-
-# .... PC1 models --------------------------------------------------------------
 
 # QDS-richness:
 m1 <- lm(QDS_richness ~ PC1,          data3$QDS)
@@ -279,6 +291,9 @@ summary(m_DS)
 
 # .... Multivariate models -----------------------------------------------------
 
+data2 <- data %>%
+  map(filter, !is_MV_outlier)
+
 predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
 
 full_formula <- predictor_names[predictor_names != "PC1"] %>%
@@ -344,15 +359,16 @@ models_R2adjs <- models_summary %>%
     unique() %>%
     round(digits = 2)
   )
+models_R2adjs
 
 # ........ Plot ----------------------------------------------------------------
 
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
-      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.24')",
-      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.33')",
-      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.61')"
+      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.30')",
+      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.36')",
+      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.74')"
     ),
     region =
       case_when(
