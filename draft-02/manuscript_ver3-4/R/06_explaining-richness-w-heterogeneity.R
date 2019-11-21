@@ -79,8 +79,10 @@ summary(m3)
 # Store residuals in master dataset for use in maps below
 data$QDS$PC1_residual <- m3$residuals
 
-# Using this number in text:
+# Using these nos. in text:
 sd(data$QDS$QDS_richness)
+sd(data$HDS$HDS_richness)
+sd(data$DS$DS_richness)
 
 # HDS-richness:
 m1 <- lm(HDS_richness ~ PC1, data$HDS)
