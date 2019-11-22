@@ -6,87 +6,67 @@
 #> $HDS                           0.3902
 #> $DS                            0.4126
 
-m_QDS <- lm(QDS_richness ~ PC1 * region, data$QDS)
-#visreg::visreg(m_QDS, xvar = "PC1", by = "region", overlay = TRUE, gg = TRUE)
-glance(m_QDS)$r.squared
-
-m_HDS <- lm(HDS_richness ~ PC1, data$HDS)
-glance(m_HDS)$r.squared
-
-m_DS <- lm(DS_richness ~ PC1, data$DS)
-glance(m_DS)$r.squared
-
-master_ylim <- c(0, max(data$DS$DS_richness))
-
-QDS_plot <- ggplot(data$QDS, aes(PC1, QDS_richness, fill = region)) +
-  geom_point(shape = 21, size = 1.25) +
-  geom_smooth(aes(colour = region), method = lm, se = FALSE) +
-  labs(
-    x     = "PC1 (42.44%)",
-    y     = bquote(italic("S")),
-    title = bquote("(a)  QDS ("*italic("R")^{"2"}*" = 0.14)")
-  ) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
-  scale_colour_manual(name = "Region", values = c("black", "grey50")) +
-  coord_cartesian(ylim = master_ylim) +
-  theme(
-    legend.position = "none",
-    axis.text.y     = element_text(angle = 90, hjust = 0.5)
-  )
-
-HDS_plot <- ggplot(data$HDS, aes(PC1, HDS_richness)) +
-  geom_point(aes(fill = region), shape = 21, size = 1.5) +
-  geom_smooth(method = lm, colour = "black", se = FALSE) +
-  labs(
-    x     = "PC1 (39.02%)",
-    title = bquote("(b)  HDS ("*italic("R")^{"2"}*" = 0.19)")
-  ) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
-  coord_cartesian(ylim = master_ylim) +
-  theme(
-    legend.position = "none",
-    axis.ticks.y    = element_blank(),
-    axis.text.y     = element_blank(),
-    axis.title.y    = element_blank()
-  )
-
-DS_plot <- ggplot(data$DS, aes(PC1, DS_richness)) +
-  geom_point(aes(fill = region), shape = 21, size = 2.0) +
-  geom_smooth(method = lm, colour = "black", se = FALSE) +
-  labs(
-    x      = "PC1 (41.26%)",
-    title  = bquote("(c)  DS ("*italic("R")^{"2"}*" = 0.28)")
-  ) +
-  scale_fill_manual(name = "Region", values = c("black", "white")) +
-  coord_cartesian(ylim = master_ylim) +
-  theme(
-    axis.ticks.y = element_blank(),
-    axis.text.y  = element_blank(),
-    axis.title.y = element_blank()
-  )
-
-my_legend <- get_legend(DS_plot)
-DS_plot <- DS_plot + theme(legend.position = "none")
-
-all_scales_plots <- plot_grid(
-  QDS_plot, HDS_plot, DS_plot, my_legend,
-  nrow = 1, rel_widths = c(1, 0.9, 0.9, 0.3)
+data <- list(
+  QDS = read_csv(glue("{data_dir}/data-QDS-w-residuals.csv")),
+  HDS = read_csv(glue("{data_dir}/data-HDS-w-residuals.csv")),
+  DS  = read_csv(glue("{data_dir}/data-DS-w-residuals.csv"))
 )
 
-# Save to disc
-ggsave(
-  here(
-    "draft-02/manuscript_ver3/figures",
-    "plot-PC1-models.pdf"
-  ),
-  all_scales_plots,
-  width = 9, height = 3
+m_QDS <- lm(log10(QDS_richness) ~ PC1 * region, data$QDS)
+m_HDS <- lm(log10(HDS_richness) ~ PC1 + region, data$HDS)
+m_DS  <- lm(log10(DS_richness)  ~ PC1,          data$DS)
+
+PC1_seq <- seq(from = -10, to = 10, by = 0.01)
+
+pdf(here("draft-02/manuscript_ver3-4/figures/plot-PC1-models.pdf"), width = 8, height = 3)
+par(mfrow = c(1, 3))
+
+par(mar = c(4, 4, 3, 0))
+plot(
+  QDS_richness ~ PC1, data$QDS,
+  xlab = "PC1 (42.44%)",
+  ylab = expression(paste(italic("S"))),
+  ylim = c(0, max(data$DS$DS_richness)),
+  pch = 21, cex = 1.0,
+  bg = ifelse(data$QDS$region == "GCFR", "black", "white")
 )
-ggsave(
-  here(
-    "draft-02/manuscript_ver3/figures",
-    "plot-PC1-models.pNG"
-  ),
-  all_scales_plots, dpi = 600,
-  width = 9, height = 3
+title(expression(paste("(a) QDS ("*italic("R")^2 == "foo)")), adj = 0)
+PC1_seq <- seq(from = -8, to = 6, by = 0.01)
+fit_GCFR  <- predict.lm(m_QDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
+fit_SWAFR <- predict.lm(m_QDS, newdata = data.frame(region = "SWAFR", PC1 = PC1_seq))
+lines(PC1_seq, 10^fit_GCFR,  col = "black",  lwd = 3)
+lines(PC1_seq, 10^fit_SWAFR, col = "grey50", lwd = 3)
+legend(-8, 4200, legend = unique(data$QDS$region), pch = 21, pt.bg = c("black", "white"), box.col = NA)
+
+par(mar = c(4, 2, 3, 2))
+plot(
+  HDS_richness ~ PC1, data$HDS,
+  xlab = "PC1 (39.02%)",
+  yaxt = "n",
+  ylab = "",
+  ylim = c(0, max(data$DS$DS_richness)),
+  pch = 21, cex = 1.25,
+  bg = ifelse(data$HDS$region == "GCFR", "black", "white")
 )
+title(expression(paste("(b) HDS ("*italic("R")^2 == "foo)")), adj = 0)
+fit_GCFR  <- predict.lm(m_HDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
+fit_SWAFR <- predict.lm(m_HDS, newdata = data.frame(region = "SWAFR", PC1 = PC1_seq))
+lines(PC1_seq, 10^fit_GCFR,  col = "black",  lwd = 3)
+lines(PC1_seq, 10^fit_SWAFR, col = "grey50", lwd = 3)
+
+par(mar = c(4, 0, 3, 4))
+plot(
+  DS_richness ~ PC1, data$DS,
+  xlab = "PC1 (41.26%)",
+  yaxt = "n",
+  ylab = "",
+  ylim = c(0, max(data$DS$DS_richness)),
+  pch = 21, cex = 1.5,
+  bg = ifelse(data$DS$region == "GCFR", "black", "white")
+)
+title(expression(paste("(c) DS ("*italic("R")^2 == "foo)")), adj = 0)
+fit <- predict.lm(m_DS, newdata = data.frame(PC1 = PC1_seq))
+lines(PC1_seq, 10^fit,  col = "black",  lwd = 3)
+
+par(op)
+dev.off()
