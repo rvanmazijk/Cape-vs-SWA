@@ -9,8 +9,8 @@ data <- list(
 # Identify outliers ------------------------------------------------------------
 
 data %<>% map(~ mutate(.x,
-  is_PC1_outlier = as_vector(scale(PC1_residual)          > 2),
-  is_MV_outlier  = as_vector(scale(multivariate_residual) > 2)
+  is_PC1_outlier = as_vector(scale(PC1_residual)          > 1.96),
+  is_MV_outlier  = as_vector(scale(multivariate_residual) > 1.96)
 ))
 
 # Save out stuff for Tony
