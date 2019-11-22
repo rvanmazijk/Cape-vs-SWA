@@ -220,7 +220,7 @@ m_DS  <- lm(DS_richness ~ PC1,           data3$DS)
 m_plots <- list(
   QDS = m_QDS %>%
     visreg::visreg(
-      xvar = "PC1", by = "region", trans = function(x) x^10,
+      xvar = "PC1", by = "region",
       overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
     ) +
     ggtitle(bquote(
@@ -229,7 +229,7 @@ m_plots <- list(
     )),
   HDS = m_HDS %>%
     visreg::visreg(
-      xvar = "PC1", by = "region", trans = function(x) x^10,
+      xvar = "PC1", by = "region",
       overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
     ) +
     ggtitle(bquote(
@@ -238,7 +238,7 @@ m_plots <- list(
     )),
   DS = m_DS %>%
     visreg::visreg(
-      xvar = "PC1", trans = function(x) x^10,
+      xvar = "PC1",
       gg = TRUE
     ) +
     ggtitle(bquote(
@@ -248,8 +248,7 @@ m_plots <- list(
 )
 m_plots %<>% map(~ . +
   ylab(bquote(italic("S"))) +
-  #ylim(0, max(data2$DS$DS_richness)) +
-  scale_fill_manual(values = c(NA, NA)) +
+  ylim(0, max(data2$DS$DS_richness)) +
   theme(
     axis.text.y     = element_text(angle = 90, hjust = 0.5),
     legend.position = "none"
