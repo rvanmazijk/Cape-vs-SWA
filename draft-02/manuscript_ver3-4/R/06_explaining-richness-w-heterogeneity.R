@@ -253,7 +253,7 @@ models_summary1 <- models1 %>%
   map_df(.id = "response", tidy, conf.int = TRUE) %>%
   dplyr::select(-std.error, -statistic) %>%
   filter(term != "(Intercept)")
-models1_R2 <- models %>%
+models1_R2 <- models1 %>%
   map_df(.id = "response", glance) %>%
   dplyr::select(response, adj.r.squared)
 models_summary1 %<>% full_join(models1_R2)
