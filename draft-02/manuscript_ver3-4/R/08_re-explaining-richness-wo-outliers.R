@@ -408,9 +408,9 @@ models_R2adjs
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
-      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.30')",
-      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.36')",
-      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.74')"
+      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.26')",
+      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.26')",
+      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.81')"
     ),
     region =
       case_when(
