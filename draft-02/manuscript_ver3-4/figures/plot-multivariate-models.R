@@ -6,6 +6,7 @@ models_R2adjs <- models_summary %>%
     unique() %>%
     round(digits = 2)
   )
+models_R2adjs
 
 models_summary_for_plot <- models_summary %>%
   mutate(
