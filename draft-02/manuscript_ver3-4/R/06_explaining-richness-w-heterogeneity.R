@@ -66,9 +66,9 @@ data <- list(
 # /Fiddling
 
 # QDS-richness:
-m1 <- lm(QDS_richness ~ PC1, data$QDS)
-m2 <- lm(QDS_richness ~ PC1 + region, data$QDS)
-m3 <- lm(QDS_richness ~ PC1 * region, data$QDS)
+m1 <- lm(log10(QDS_richness) ~ PC1, data$QDS)
+m2 <- lm(log10(QDS_richness) ~ PC1 + region, data$QDS)
+m3 <- lm(log10(QDS_richness) ~ PC1 * region, data$QDS)
 hist(residuals(m1))
 hist(residuals(m2))
 hist(residuals(m3))
@@ -85,9 +85,9 @@ sd(data$HDS$HDS_richness)
 sd(data$DS$DS_richness)
 
 # HDS-richness:
-m1 <- lm(HDS_richness ~ PC1, data$HDS)
-m2 <- lm(HDS_richness ~ PC1 + region, data$HDS)
-m3 <- lm(HDS_richness ~ PC1 * region, data$HDS)
+m1 <- lm(log10(HDS_richness) ~ PC1, data$HDS)
+m2 <- lm(log10(HDS_richness) ~ PC1 + region, data$HDS)
+m3 <- lm(log10(HDS_richness) ~ PC1 * region, data$HDS)
 hist(residuals(m1))
 hist(residuals(m2))
 hist(residuals(m3))
@@ -99,9 +99,9 @@ summary(m1)
 data$HDS$PC1_residual <- m1$residuals
 
 # DS-richness:
-m1 <- lm(DS_richness ~ PC1, data$DS)
-m2 <- lm(DS_richness ~ PC1 + region, data$DS)
-m3 <- lm(DS_richness ~ PC1 * region, data$DS)
+m1 <- lm(log10(DS_richness) ~ PC1, data$DS)
+m2 <- lm(log10(DS_richness) ~ PC1 + region, data$DS)
+m3 <- lm(log10(DS_richness) ~ PC1 * region, data$DS)
 hist(residuals(m1))
 hist(residuals(m2))
 hist(residuals(m3))
@@ -156,9 +156,9 @@ fit_univariate_models <- function(response) {
 
   univar_models <- map(predictor_names,
     ~ list(
-      non_region = lm(glue("{response} ~ {.x}"),          dataset),
-      add_region = lm(glue("{response} ~ {.x} + region"), dataset),
-      int_region = lm(glue("{response} ~ {.x} * region"), dataset)
+      non_region = lm(glue("log10({response}) ~ {.x}"),          dataset),
+      add_region = lm(glue("log10({response}) ~ {.x} + region"), dataset),
+      int_region = lm(glue("log10({response}) ~ {.x} * region"), dataset)
     )
   )
   names(univar_models) <- predictor_names
@@ -572,9 +572,9 @@ full_formula <- predictor_names[predictor_names != "PC1"] %>%
   {c(., paste(., "* region"))} %>%
   paste(collapse = " + ")
 
-m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data$QDS)
-m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data$HDS)
-m_DS_richness  <- lm(glue("DS_richness  ~ {full_formula}"), data$DS)
+m_QDS_richness <- lm(glue("log10(QDS_richness) ~ {full_formula}"), data$QDS)
+m_HDS_richness <- lm(glue("log10(HDS_richness) ~ {full_formula}"), data$HDS)
+m_DS_richness  <- lm(glue("log10(DS_richness)  ~ {full_formula}"), data$DS)
 
 m_QDS_richness %<>% step(direction = "backward", trace = 0)
 m_HDS_richness %<>% step(direction = "backward", trace = 0)
@@ -616,9 +616,9 @@ full_join(models_summary1_95, models_summary1_99) %>%
 reparameterise <- function(m) {
   response <- colnames(m$model)[[1]]
   dataset <- data %$% {
-    if      (response == "QDS_richness") QDS
-    else if (response == "HDS_richness") HDS
-    else if (response == "DS_richness")  DS
+    if      (response == "log10(QDS_richness)") QDS
+    else if (response == "log10(HDS_richness)") HDS
+    else if (response == "log10(DS_richness)")  DS
   }
   preds_w_interactions <- m %$%
     coefficients %>%
