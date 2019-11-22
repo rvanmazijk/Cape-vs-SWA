@@ -26,11 +26,6 @@ summary(m3)
 # Store residuals in master dataset for use in maps below
 data$QDS$PC1_residual <- m3$residuals
 
-# Using these nos. in text:
-sd(data$QDS$QDS_richness)
-sd(data$HDS$HDS_richness)
-sd(data$DS$DS_richness)
-
 # HDS-richness:
 m1 <- lm(log10(HDS_richness) ~ PC1, data$HDS)
 m2 <- lm(log10(HDS_richness) ~ PC1 + region, data$HDS)

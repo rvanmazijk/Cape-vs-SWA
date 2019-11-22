@@ -177,10 +177,6 @@ data %$% {
 
 data3 <- data %>%
   map(filter, !is_PC1_outlier)
-# Using these nos. in text:
-sd(data3$QDS$QDS_richness)
-sd(data3$HDS$HDS_richness)
-sd(data3$DS$DS_richness)
 
 # QDS-richness:
 m1 <- lm(log10(QDS_richness) ~ PC1,          data3$QDS)
@@ -298,10 +294,6 @@ summary(m_DS)
 
 data2 <- data %>%
   map(filter, !is_MV_outlier)
-# Using these nos. in text:
-sd(data2$QDS$QDS_richness)
-sd(data2$HDS$HDS_richness)
-sd(data2$DS$DS_richness)
 
 predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
 
