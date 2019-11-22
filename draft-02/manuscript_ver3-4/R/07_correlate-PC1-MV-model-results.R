@@ -39,8 +39,4 @@ cor_model_results <- function(x) {
 data %>%
   map_dfr(.id = "scale", cor_model_results) %>%
   dplyr::select(test, scale, estimate, p.value) %>%
-  arrange(test, scale) %>%
-  write_csv(here(
-    "draft-02/manuscript_ver3-4/results",
-    "correlate-PC1-MV-model-results.csv"
-  ))
+  arrange(test, scale)
