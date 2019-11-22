@@ -183,31 +183,31 @@ sd(data3$HDS$HDS_richness)
 sd(data3$DS$DS_richness)
 
 # QDS-richness:
-m1 <- lm(QDS_richness ~ PC1,          data3$QDS)
-m2 <- lm(QDS_richness ~ PC1 + region, data3$QDS)
-m3 <- lm(QDS_richness ~ PC1 * region, data3$QDS)
+m1 <- lm(log10(QDS_richness) ~ PC1,          data3$QDS)
+m2 <- lm(log10(QDS_richness) ~ PC1 + region, data3$QDS)
+m3 <- lm(log10(QDS_richness) ~ PC1 * region, data3$QDS)
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
-# Choose m2 (heterogeneity + region difference)
-summary(m2)
+# Choose m3 (heterogeneity * region interaction)
+summary(m3)
 
 # HDS-richness:
-m1 <- lm(HDS_richness ~ PC1,          data3$HDS)
-m2 <- lm(HDS_richness ~ PC1 + region, data3$HDS)
-m3 <- lm(HDS_richness ~ PC1 * region, data3$HDS)
+m1 <- lm(log10(HDS_richness) ~ PC1,          data3$HDS)
+m2 <- lm(log10(HDS_richness) ~ PC1 + region, data3$HDS)
+m3 <- lm(log10(HDS_richness) ~ PC1 * region, data3$HDS)
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
 # Choose m2 (heterogeneity + region difference)
 summary(m2)
 
 # DS-richness:
-m1 <- lm(DS_richness ~ PC1,          data3$DS)
-m2 <- lm(DS_richness ~ PC1 + region, data3$DS)
-m3 <- lm(DS_richness ~ PC1 * region, data3$DS)
+m1 <- lm(log10(DS_richness) ~ PC1,          data3$DS)
+m2 <- lm(log10(DS_richness) ~ PC1 + region, data3$DS)
+m3 <- lm(log10(DS_richness) ~ PC1 * region, data3$DS)
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
 # Choose m1 (heterogeneity main effect only)
-summary(m2)
+summary(m1)
 
 # ........ Plot ----------------------------------------------------------------
 
@@ -217,9 +217,9 @@ summary(m2)
 #> $HDS                           0.3902
 #> $DS                            0.4126
 
-m_QDS <- lm(QDS_richness ~ PC1 + region, data3$QDS)
-m_HDS <- lm(HDS_richness ~ PC1 + region, data3$HDS)
-m_DS  <- lm(DS_richness ~ PC1,           data3$DS)
+m_QDS <- lm(log10(QDS_richness) ~ PC1 * region, data3$QDS)
+m_HDS <- lm(log10(HDS_richness) ~ PC1 + region, data3$HDS)
+m_DS  <- lm(log10(DS_richness)  ~ PC1,           data3$DS)
 
 m_plots <- list(
   QDS = m_QDS %>%
@@ -308,9 +308,9 @@ full_formula <- predictor_names[predictor_names != "PC1"] %>%
   {c(., paste(., "* region"))} %>%
   paste(collapse = " + ")
 
-m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data2$QDS)
-m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data2$HDS)
-m_DS_richness  <- lm(glue("DS_richness  ~ {full_formula}"), data2$DS)
+m_QDS_richness <- lm(glue("log10(QDS_richness) ~ {full_formula}"), data2$QDS)
+m_HDS_richness <- lm(glue("log10(HDS_richness) ~ {full_formula}"), data2$HDS)
+m_DS_richness  <- lm(glue("log10(DS_richness)  ~ {full_formula}"), data2$DS)
 
 m_QDS_richness %<>% step(direction = "backward", trace = 0)
 m_HDS_richness %<>% step(direction = "backward", trace = 0)
@@ -347,9 +347,9 @@ full_join(models_summary1_95, models_summary1_99) %>%
 reparameterise <- function(m) {
   response <- colnames(m$model)[[1]]
   dataset <- data2 %$% {
-    if      (response == "QDS_richness") QDS
-    else if (response == "HDS_richness") HDS
-    else if (response == "DS_richness")  DS
+    if      (response == "log10(QDS_richness)") QDS
+    else if (response == "log10(HDS_richness)") HDS
+    else if (response == "log10(DS_richness)")  DS
   }
   preds_w_interactions <- m %$%
     coefficients %>%
