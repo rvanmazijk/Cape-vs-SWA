@@ -18,7 +18,10 @@ m_DS  <- lm(log10(DS_richness)  ~ PC1,          data$DS)
 
 PC1_seq <- seq(from = -10, to = 10, by = 0.01)
 
-pdf(here("draft-02/manuscript_ver3-4/figures/plot-PC1-models.pdf"), width = 8, height = 3)
+pdf(
+  here("draft-02/manuscript_ver3-4/figures/plot-PC1-models.pdf"),
+  width = 8, height = 3
+)
 par(mfrow = c(1, 3))
 
 par(mar = c(4, 4, 3, 0))
@@ -31,12 +34,18 @@ plot(
   bg = ifelse(data$QDS$region == "GCFR", "black", "white")
 )
 title(expression(paste("(a) QDS ("*italic("R")^2 == "foo)")), adj = 0)
-PC1_seq <- seq(from = -8, to = 6, by = 0.01)
-fit_GCFR  <- predict.lm(m_QDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
-fit_SWAFR <- predict.lm(m_QDS, newdata = data.frame(region = "SWAFR", PC1 = PC1_seq))
+fit_GCFR <-
+  predict.lm(m_QDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
+fit_SWAFR <-
+  predict.lm(m_QDS, newdata = data.frame(region = "SWAFR", PC1 = PC1_seq))
 lines(PC1_seq, 10^fit_GCFR,  col = "black",  lwd = 3)
 lines(PC1_seq, 10^fit_SWAFR, col = "grey50", lwd = 3)
-legend(-8, 4200, legend = unique(data$QDS$region), pch = 21, pt.bg = c("black", "white"), box.col = NA)
+legend(
+  x = -8, y = 4200,
+  legend = unique(data$QDS$region),
+  pch = 21, pt.bg = c("black", "white"),
+  box.col = NA
+)
 
 par(mar = c(4, 2, 3, 2))
 plot(
@@ -49,8 +58,10 @@ plot(
   bg = ifelse(data$HDS$region == "GCFR", "black", "white")
 )
 title(expression(paste("(b) HDS ("*italic("R")^2 == "foo)")), adj = 0)
-fit_GCFR  <- predict.lm(m_HDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
-fit_SWAFR <- predict.lm(m_HDS, newdata = data.frame(region = "SWAFR", PC1 = PC1_seq))
+fit_GCFR <-
+  predict.lm(m_HDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
+fit_SWAFR <-
+  predict.lm(m_HDS, newdata = data.frame(region = "SWAFR", PC1 = PC1_seq))
 lines(PC1_seq, 10^fit_GCFR,  col = "black",  lwd = 3)
 lines(PC1_seq, 10^fit_SWAFR, col = "grey50", lwd = 3)
 
