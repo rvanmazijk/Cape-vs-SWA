@@ -18,23 +18,32 @@ models_summary_for_plot <- models_summary %>%
     region =
       case_when(
         str_detect(term, "regionSWAFR") ~ "SWAFR",
-        str_detect(term, "regionGCFR")  ~ "GCFR",
-        TRUE                            ~ "Main effect only"
+        TRUE                            ~ "Main effect"
       ) %>%
-      factor(levels = c("Main effect only", "GCFR", "SWAFR")),
+      factor(levels = c("Main effect", "SWAFR")),
     term = term %>%
       str_replace_all("_", " ") %>%
-      str_remove_all("regionSWAFR:") %>%
-      str_remove_all("regionGCFR:") %>%
+      str_remove_all(":regionSWAFR") %>%
       str_replace_all("regionSWAFR", "SWAFR") %>%
       factor(levels = c(rev(var_names), "SWAFR")),
     sig = ifelse(p.value < 0.05, "< 0.05", "NS")
-  )
+  ) %>%
+  group_by(response, term) %>%
+  mutate(term_type = case_when(
+    (n() == 2) & (region == "SWAFR")                     ~ "SWAFR vs GCFR",
+    (n() == 2) & (region == "Main effect")               ~ "GCFR",
+    (n() == 1) & (region %in% c("Main effect", "SWAFR")) ~ "Main effect only"
+  ))
+models_summary_for_plot$term_type %<>% factor(levels = c(
+  "Main effect only",
+  "GCFR",
+  "SWAFR vs GCFR"
+))
 
 model_summary_plot <- ggplot(models_summary_for_plot) +
   aes(
     estimate, term, estimate,
-    fill = region, group = region, shape = region,
+    fill = term_type, group = term_type, shape = term_type,
     alpha = sig
   ) +
   geom_vline(xintercept = 0, linetype = "dashed", colour = "grey75") +
