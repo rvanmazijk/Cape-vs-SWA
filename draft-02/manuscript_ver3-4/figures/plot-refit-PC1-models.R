@@ -9,7 +9,8 @@ data <- list(
 # Identify outliers ------------------------------------------------------------
 
 data %<>% map(~ mutate(.x,
-  is_PC1_outlier = as_vector(scale(PC1_residual) > 1.96)
+  is_PC1_outlier = as_vector(scale(PC1_residual)          > 1.96),
+  is_MV_outlier  = as_vector(scale(multivariate_residual) > 1.96)
 ))
 
 # Save out stuff for Tony
@@ -233,7 +234,14 @@ plot(
   pch = 21, cex = 1.0,
   bg = ifelse(data3$QDS$region == "GCFR", "black", "white")
 )
-title(expression(paste("(a) QDS ("*italic("R")^2 == "foo)")), adj = 0)
+title(
+  bquote(
+    "(a) QDS ("*
+      italic("R")^2 == .(round(glance(m_QDS)$r.squared, digits = 2))
+    *")"
+  ),
+  adj = 0
+)
 fit_GCFR <-
   predict.lm(m_QDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
 fit_SWAFR <-
@@ -257,7 +265,14 @@ plot(
   pch = 21, cex = 1.25,
   bg = ifelse(data3$HDS$region == "GCFR", "black", "white")
 )
-title(expression(paste("(b) HDS ("*italic("R")^2 == "foo)")), adj = 0)
+title(
+  bquote(
+    "(b) HDS ("*
+      italic("R")^2 == .(round(glance(m_HDS)$r.squared, digits = 2))
+    *")"
+  ),
+  adj = 0
+)
 fit_GCFR <-
   predict.lm(m_HDS, newdata = data.frame(region = "GCFR",  PC1 = PC1_seq))
 fit_SWAFR <-
@@ -275,7 +290,14 @@ plot(
   pch = 21, cex = 1.5,
   bg = ifelse(data3$DS$region == "GCFR", "black", "white")
 )
-title(expression(paste("(c) DS ("*italic("R")^2 == "foo)")), adj = 0)
+title(
+  bquote(
+    "(c) DS ("*
+      italic("R")^2 == .(round(glance(m_DS)$r.squared, digits = 2))
+    *")"
+  ),
+  adj = 0
+)
 fit <- predict.lm(m_DS, newdata = data.frame(PC1 = PC1_seq))
 lines(PC1_seq, 10^fit,  col = "black",  lwd = 3)
 
