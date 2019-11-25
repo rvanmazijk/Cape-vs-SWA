@@ -9,8 +9,8 @@ data <- list(
 # Identify outliers ------------------------------------------------------------
 
 data %<>% map(~ mutate(.x,
-  is_PC1_outlier = as_vector(scale(PC1_residual)          > 1.96),
-  is_MV_outlier  = as_vector(scale(multivariate_residual) > 1.96)
+  is_PC1_outlier = as_vector(scale(PC1_residual)          > 2),
+  is_MV_outlier  = as_vector(scale(multivariate_residual) > 2)
 ))
 
 # Save out stuff for Tony
@@ -179,31 +179,31 @@ data3 <- data %>%
   map(filter, !is_PC1_outlier)
 
 # QDS-richness:
-m1 <- lm(log10(QDS_richness) ~ PC1,          data3$QDS)
-m2 <- lm(log10(QDS_richness) ~ PC1 + region, data3$QDS)
-m3 <- lm(log10(QDS_richness) ~ PC1 * region, data3$QDS)
+m1 <- lm(QDS_richness ~ PC1,          data3$QDS)
+m2 <- lm(QDS_richness ~ PC1 + region, data3$QDS)
+m3 <- lm(QDS_richness ~ PC1 * region, data3$QDS)
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
-# Choose m3 (heterogeneity * region interaction)
-summary(m3)
+# Choose m2 (heterogeneity + region difference)
+summary(m2)
 
 # HDS-richness:
-m1 <- lm(log10(HDS_richness) ~ PC1,          data3$HDS)
-m2 <- lm(log10(HDS_richness) ~ PC1 + region, data3$HDS)
-m3 <- lm(log10(HDS_richness) ~ PC1 * region, data3$HDS)
+m1 <- lm(HDS_richness ~ PC1,          data3$HDS)
+m2 <- lm(HDS_richness ~ PC1 + region, data3$HDS)
+m3 <- lm(HDS_richness ~ PC1 * region, data3$HDS)
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
 # Choose m2 (heterogeneity + region difference)
 summary(m2)
 
 # DS-richness:
-m1 <- lm(log10(DS_richness) ~ PC1,          data3$DS)
-m2 <- lm(log10(DS_richness) ~ PC1 + region, data3$DS)
-m3 <- lm(log10(DS_richness) ~ PC1 * region, data3$DS)
+m1 <- lm(DS_richness ~ PC1,          data3$DS)
+m2 <- lm(DS_richness ~ PC1 + region, data3$DS)
+m3 <- lm(DS_richness ~ PC1 * region, data3$DS)
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
 # Choose m1 (heterogeneity main effect only)
-summary(m1)
+summary(m2)
 
 # ........ Plot ----------------------------------------------------------------
 
@@ -213,14 +213,14 @@ summary(m1)
 #> $HDS                           0.3902
 #> $DS                            0.4126
 
-m_QDS <- lm(log10(QDS_richness) ~ PC1 * region, data3$QDS)
-m_HDS <- lm(log10(HDS_richness) ~ PC1 + region, data3$HDS)
-m_DS  <- lm(log10(DS_richness)  ~ PC1,           data3$DS)
+m_QDS <- lm(QDS_richness ~ PC1 + region, data3$QDS)
+m_HDS <- lm(HDS_richness ~ PC1 + region, data3$HDS)
+m_DS  <- lm(DS_richness ~ PC1,           data3$DS)
 
 m_plots <- list(
   QDS = m_QDS %>%
     visreg::visreg(
-      xvar = "PC1", by = "region", trans = function(x) x^10,
+      xvar = "PC1", by = "region",
       overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
     ) +
     ggtitle(bquote(
@@ -229,7 +229,7 @@ m_plots <- list(
     )),
   HDS = m_HDS %>%
     visreg::visreg(
-      xvar = "PC1", by = "region", trans = function(x) x^10,
+      xvar = "PC1", by = "region",
       overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
     ) +
     ggtitle(bquote(
@@ -238,7 +238,7 @@ m_plots <- list(
     )),
   DS = m_DS %>%
     visreg::visreg(
-      xvar = "PC1", trans = function(x) x^10,
+      xvar = "PC1",
       gg = TRUE
     ) +
     ggtitle(bquote(
@@ -248,8 +248,7 @@ m_plots <- list(
 )
 m_plots %<>% map(~ . +
   ylab(bquote(italic("S"))) +
-  #ylim(0, max(data2$DS$DS_richness)) +
-  scale_fill_manual(values = c(NA, NA)) +
+  ylim(0, max(data2$DS$DS_richness)) +
   theme(
     axis.text.y     = element_text(angle = 90, hjust = 0.5),
     legend.position = "none"
@@ -301,9 +300,9 @@ full_formula <- predictor_names[predictor_names != "PC1"] %>%
   {c(., paste(., "* region"))} %>%
   paste(collapse = " + ")
 
-m_QDS_richness <- lm(glue("log10(QDS_richness) ~ {full_formula}"), data2$QDS)
-m_HDS_richness <- lm(glue("log10(HDS_richness) ~ {full_formula}"), data2$HDS)
-m_DS_richness  <- lm(glue("log10(DS_richness)  ~ {full_formula}"), data2$DS)
+m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data2$QDS)
+m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data2$HDS)
+m_DS_richness  <- lm(glue("DS_richness  ~ {full_formula}"), data2$DS)
 
 m_QDS_richness %<>% step(direction = "backward", trace = 0)
 m_HDS_richness %<>% step(direction = "backward", trace = 0)
@@ -340,9 +339,9 @@ full_join(models_summary1_95, models_summary1_99) %>%
 reparameterise <- function(m) {
   response <- colnames(m$model)[[1]]
   dataset <- data2 %$% {
-    if      (response == "log10(QDS_richness)") QDS
-    else if (response == "log10(HDS_richness)") HDS
-    else if (response == "log10(DS_richness)")  DS
+    if      (response == "QDS_richness") QDS
+    else if (response == "HDS_richness") HDS
+    else if (response == "DS_richness")  DS
   }
   preds_w_interactions <- m %$%
     coefficients %>%
@@ -408,9 +407,9 @@ models_R2adjs
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
-      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.26')",
-      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.26')",
-      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.81')"
+      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.30')",
+      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.36')",
+      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.74')"
     ),
     region =
       case_when(

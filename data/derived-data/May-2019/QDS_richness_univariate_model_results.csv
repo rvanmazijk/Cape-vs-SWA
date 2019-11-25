@@ -1,11 +1,11 @@
 model_type,variable,slope,P_slope,region_coeff,P_region,int_coeff,P_int
-Main effect * region,MAP,0.279,***, 0.155,***,-0.091,**
- ,Surface T,0.155,***, 0.069,.,-0.096,**
- ,NDVI,0.216,***,-0.005, ,-0.144,***
- ,Soil C,0.194,***, 0.061,.,-0.130,***
- ,pH,0.109,***,-0.004, ,-0.122,***
- ,PC1,0.128,***, 0.205,***,-0.046,*
-Main effect + region,Elevation,0.171,***, 0.202,***,    NA, 
- ,PDQ,0.183,***, 0.159,***,    NA, 
-Main effect only,CEC,0.034,*,    NA, ,    NA, 
- ,Clay,0.069,***,    NA, ,    NA, 
+Main effect * region,MAP,192.090,***, 66.432,**,-73.962,***
+ ,NDVI,137.456,***,-42.103,*,-89.381,***
+ ,Soil C,113.884,***, -4.169, ,-72.422,**
+ ,PC1, 79.365,***, 89.574,***,-24.614,*
+Main effect + region,Elevation, 96.875,***, 72.588,**,     NA, 
+ ,PDQ,112.074,***, 57.572,*,     NA, 
+ ,CEC, 25.038,*,-50.506,*,     NA, 
+ ,Clay, 27.028,**,-53.429,*,     NA, 
+Main effect only,Surface T, 74.639,***,     NA, ,     NA, 
+Region only,pH, 18.504,.,-53.559,*,     NA, 

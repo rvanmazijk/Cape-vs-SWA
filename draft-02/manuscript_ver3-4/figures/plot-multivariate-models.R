@@ -11,9 +11,9 @@ models_R2adjs
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
-      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.22')",
-      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.26')",
-      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.70')"
+      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.24')",
+      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.33')",
+      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.61')"
     ),
     region =
       case_when(
@@ -72,7 +72,7 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
 # Save to disc
 ggsave(
   here(
-    "draft-02/manuscript_ver3-4/figures",
+    "draft-02/manuscript_ver3/figures",
     "plot-multivariate-models.pdf"
   ),
   model_summary_plot,
@@ -80,7 +80,7 @@ ggsave(
 )
 ggsave(
   here(
-    "draft-02/manuscript_ver3-4/figures",
+    "draft-02/manuscript_ver3/figures",
     "plot-multivariate-models.png"
   ),
   model_summary_plot, dpi = 600,
