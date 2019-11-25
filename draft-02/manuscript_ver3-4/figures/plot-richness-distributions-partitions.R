@@ -30,21 +30,6 @@ data_for_plot <- data %$%
   unite(metric_scale, scale, metric) %>%
   na.exclude()
 
-foo <- hist(
-  data$QDS$QDS_richness[data$QDS$region == "GCFR"],
-  breaks = 30
-)
-foo
-
-bar <- hist(
-  data_for_plot$metric_value[
-    data_for_plot$region == "GCFR" &
-      data_for_plot$metric_scale == "QDS_richness"
-  ],
-  breaks = 30
-)
-bar
-
 x_axis_labels <- list(
   QDS_richness      = bquote(italic("S")["QDS"]),
   HDS_richness      = bquote(italic("S")["HDS"]),
