@@ -13,7 +13,7 @@ data <- list(
 # .... Fit PC1 models manually (worthwhile) ------------------------------------
 
 # QDS-richness:
-m1 <- lm(QDS_richness ~ PC1, data$QDS)
+m1 <- lm(QDS_richness ~ PC1,          data$QDS)
 m2 <- lm(QDS_richness ~ PC1 + region, data$QDS)
 m3 <- lm(QDS_richness ~ PC1 * region, data$QDS)
 hist(residuals(m1))
@@ -27,7 +27,7 @@ summary(m3)
 data$QDS$PC1_residual <- m3$residuals
 
 # HDS-richness:
-m1 <- lm(HDS_richness ~ PC1, data$HDS)
+m1 <- lm(HDS_richness ~ PC1,          data$HDS)
 m2 <- lm(HDS_richness ~ PC1 + region, data$HDS)
 m3 <- lm(HDS_richness ~ PC1 * region, data$HDS)
 hist(residuals(m1))
@@ -41,7 +41,7 @@ summary(m1)
 data$HDS$PC1_residual <- m1$residuals
 
 # DS-richness:
-m1 <- lm(DS_richness ~ PC1, data$DS)
+m1 <- lm(DS_richness ~ PC1,          data$DS)
 m2 <- lm(DS_richness ~ PC1 + region, data$DS)
 m3 <- lm(DS_richness ~ PC1 * region, data$DS)
 hist(residuals(m1))
