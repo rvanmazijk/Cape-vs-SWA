@@ -19,6 +19,7 @@ library(cowplot)  # for panelling
 library(ggfortify)  # for autoplot() of PCAs
 library(rasterVis)
 library(scales)
+library(grid)
 
 # Set global variables ---------------------------------------------------------
 
@@ -45,3 +46,5 @@ theme_set(theme_bw() + theme(
   strip.background = element_blank(),
   panel.grid = element_blank()
 ))
+
+white_rect <- grid.rect(gp = gpar(col = "white")) # useful when arranging panels
