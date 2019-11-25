@@ -243,67 +243,6 @@ m_QDS_richness %<>% step(direction = "backward", trace = 0)
 m_HDS_richness %<>% step(direction = "backward", trace = 0)
 m_DS_richness  %<>% step(direction = "backward", trace = 0)
 
-# Summarise models (pre-reparameterisation)
-models1 <- list(
-  QDS_richness = m_QDS_richness,
-  HDS_richness = m_HDS_richness,
-  DS_richness  = m_DS_richness
-)
-models_summary1 <- models1 %>%
-  map_df(.id = "response", tidy, conf.int = TRUE) %>%
-  dplyr::select(-std.error, -statistic) %>%
-  filter(term != "(Intercept)")
-models1_R2 <- models1 %>%
-  map_df(.id = "response", glance) %>%
-  dplyr::select(response, adj.r.squared)
-models_summary1 %<>% full_join(models1_R2)
-
-# Save results out (especially for Tony)
-models_summary1_95 <- models1 %>%
-  map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.95) %>%
-  rename(conf.low.05 = conf.low, conf.high.05 = conf.high)
-models_summary1_99 <- models1 %>%
-  map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.99) %>%
-  rename(conf.low.01 = conf.low, conf.high.01 = conf.high)
-full_join(models_summary1_95, models_summary1_99) %>%
-  dplyr::select(-std.error, -statistic) %>%
-  mutate_if(is.numeric, ~round(., digits = 3)) %>%
-  mutate(p.value = ifelse(p.value < 0.001, "< 0.001", p.value)) %>%
-  write_csv(here("alt-model-summary-for-Tony.csv"))
-
-# Reparameterise models to {*}:regionGCFR & {*}:regionSWAFR
-# a.o.t. {*}*region, so that the figure of the effects actually represents
-# each region, not the baseline (GCFR) and "relative SWAFR"
-# (and that would cause inconsistencies too when their is no interaction with
-# region term for a roughness variable).
-reparameterise <- function(m) {
-  response <- colnames(m$model)[[1]]
-  dataset <- data %$% {
-    if      (response == "QDS_richness") QDS
-    else if (response == "HDS_richness") HDS
-    else if (response == "DS_richness")  DS
-  }
-  preds_w_interactions <- m %$%
-    coefficients %>%
-    names() %>%
-    magrittr::extract(str_which(., ":regionSWAFR"))
-  reparameterisation <- preds_w_interactions %>%
-    str_remove(":regionSWAFR") %>%
-    {glue("-{.}")} %>%
-    paste(collapse = " ")
-  update(m,
-    formula = glue(". ~ . {reparameterisation}"),
-    data    = dataset
-  )
-}
-# Test:
-#   a <- m_HDS_richness
-#   b <- reparameterise(m_HDS_richness)
-#   AIC(a, b) # same model! :)
-m_QDS_richness %<>% reparameterise()
-m_HDS_richness %<>% reparameterise()
-m_DS_richness  %<>% reparameterise()
-
 par(mfrow = c(2, 2))
 plot(m_QDS_richness)
 plot(m_HDS_richness)
