@@ -264,9 +264,6 @@ models_R2 <- models %>%
   dplyr::select(response, adj.r.squared)
 models_summary %<>% full_join(models_R2)
 
-data$QDS$multivariate_residual <- m_QDS_richness$residuals
-data$HDS$multivariate_residual <- m_HDS_richness$residuals
-data$DS$multivariate_residual  <- m_DS_richness$residuals
 
 # Save results out (especially for Tony)
 models_summary_95 <- models %>%
@@ -296,6 +293,11 @@ models %>%
     "draft-02/manuscript_ver3-4/results",
     "model-ANOVA-for-Tony.csv"
   ))
+
+# Store residuals in master dataset for use in maps below
+data$QDS$multivariate_residual <- m_QDS_richness$residuals
+data$HDS$multivariate_residual <- m_HDS_richness$residuals
+data$DS$multivariate_residual  <- m_DS_richness$residuals
 
 # Save new data w/ residuals to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
