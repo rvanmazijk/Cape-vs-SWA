@@ -53,8 +53,8 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
   ) +
   geom_point(size = 2) +
   labs(
-    x = bquote("Effect"~~"("*italic("S")*")"),
-    y = "Heterogeneity predictor"
+    x = bquote("Partial effect"~~"("*italic("S")*")"),
+    y = "Predictor"
   ) +
   scale_fill_manual(values = c(NA, "black", "white")) +
   scale_shape_manual(values = c(4, 21, 21)) +
@@ -81,7 +81,7 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
 # Save to disc
 ggsave(
   here(
-    "draft-02/manuscript_ver3/figures",
+    "draft-02/manuscript_ver3-4/figures",
     "plot-multivariate-models.pdf"
   ),
   model_summary_plot,
@@ -89,7 +89,7 @@ ggsave(
 )
 ggsave(
   here(
-    "draft-02/manuscript_ver3/figures",
+    "draft-02/manuscript_ver3-4/figures",
     "plot-multivariate-models.png"
   ),
   model_summary_plot, dpi = 600,
