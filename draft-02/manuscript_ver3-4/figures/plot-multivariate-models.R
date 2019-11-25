@@ -49,7 +49,7 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
   geom_vline(xintercept = 0, linetype = "dashed", colour = "grey75") +
   geom_errorbarh(
     aes(xmin = conf.low, xmax = conf.high),
-    height = 0.1
+    height = 0
   ) +
   geom_point(size = 2) +
   labs(
