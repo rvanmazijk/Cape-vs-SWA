@@ -41,28 +41,28 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
   ~ data_for_plot %>%
     filter(metric_scale == .x) %>%
     ggplot(aes(metric_value, fill = region)) +
-    geom_histogram(
-      bins = case_when(
-        str_detect(.x, "QDS") ~ 30,
-        str_detect(.x, "HDS") ~ 20,
-        str_detect(.x, "DS")  ~ 10
-      ),
-      position = "dodge",
-      colour = "black"
-    ) +
-    scale_fill_manual(name = "Region", values = c("black", "white")) +
-    labs(
-      x = x_axis_labels[[.x]],
-      y = case_when(
-        str_detect(.x, "QDS") ~ "No. QDS",
-        str_detect(.x, "HDS") ~ "No. HDS",
-        str_detect(.x, "DS")  ~ "No. DS"
+      geom_histogram(
+        bins = case_when(
+          str_detect(.x, "QDS") ~ 30,
+          str_detect(.x, "HDS") ~ 20,
+          str_detect(.x, "DS")  ~ 10
+        ),
+        position = "dodge",
+        colour = "black"
+      ) +
+      scale_fill_manual(name = "Region", values = c("black", "white")) +
+      labs(
+        x = x_axis_labels[[.x]],
+        y = case_when(
+          str_detect(.x, "QDS") ~ "No. QDS",
+          str_detect(.x, "HDS") ~ "No. HDS",
+          str_detect(.x, "DS")  ~ "No. DS"
+        )
+      ) +
+      theme(
+        legend.position = c(0.8, 0.8),
+        axis.text.y     = element_text(angle = 90, hjust = 0.5)
       )
-    ) +
-    theme(
-      legend.position = c(0.8, 0.8),
-      axis.text.y     = element_text(angle = 90, hjust = 0.5)
-    )
 )
 names(hist_plots) <- unique(data_for_plot$metric_scale)
 
