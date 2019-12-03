@@ -92,3 +92,11 @@ imap(heterogeneity2, function(each_scale, each_scales_name) {
   pairs(log10(each_scale), cor = TRUE)
   dev.off()
 })
+
+# Confirm with virtualspecies::
+#library(virtualspecies)
+#map(heterogeneity2, ~ removeCollinearity(
+#  log10(.),
+#  multicollinearity.cutoff = 0.6,
+#  plot = TRUE
+#))
