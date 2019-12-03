@@ -216,15 +216,26 @@ HDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
 QDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
 HDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
 DS_UVMs$plot[2:10]  %<>% map(~ . + theme(axis.title.y = element_blank()))
+QDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["QDS"]))}
+HDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["HDS"]))}
+DS_UVMs$plot[[1]]  %<>% {. + ylab(bquote(italic("S")["DS"]))}
+
 UVM_plots <- plot_grid(
   plot_grid(plotlist = QDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))),
   plot_grid(plotlist = HDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))),
   plot_grid(plotlist = DS_UVMs$plot,  nrow = 1, rel_widths = c(1, rep(0.9, 9))),
   nrow = 3, rel_heights = c(0.9, 0.9, 1)
 )
+
+# Save to disc
 ggsave(
-  here("draft-02/manuscript_ver3-4/figures/plot-univariate-models.pdf"),
-  width = 20, height = 6,
+  here("draft-02/figures/plot-univariate-models.pdf"),
+  width = 25, height = 8,
+  UVM_plots
+)
+ggsave(
+  here("draft-02/figures/plot-univariate-models.png"),
+  width = 25, height = 8,
   UVM_plots
 )
 
@@ -264,7 +275,6 @@ models_R2 <- models %>%
   dplyr::select(response, adj.r.squared)
 models_summary %<>% full_join(models_R2)
 
-
 # Save results out (especially for Tony)
 models_summary_95 <- models %>%
   map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.95) %>%
@@ -277,7 +287,7 @@ full_join(models_summary_95, models_summary_99) %>%
   mutate_if(is.numeric, ~round(., digits = 3)) %>%
   mutate(p.value = ifelse(p.value < 0.001, "< 0.001", p.value)) %>%
   write_csv(here(
-    "draft-02/manuscript_ver3-4/results",
+    "draft-02/results",
     "model-summary-for-Tony.csv"
   ))
 
@@ -290,7 +300,7 @@ models %>%
   map(arrange, desc(var_explained)) %>%
   bind_rows(.id = "response") %>%
   write_csv(here(
-    "draft-02/manuscript_ver3-4/results",
+    "draft-02/results",
     "model-ANOVA-for-Tony.csv"
   ))
 
