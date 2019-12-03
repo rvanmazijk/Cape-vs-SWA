@@ -48,3 +48,24 @@ dev.off()
 pdf("SWAFR-DS-log10-heterogeneity-pairs.pdf", width = 10, height = 10)
 pairs(log10(SWAFR_heterogeneity$DS), cor = TRUE)
 dev.off()
+
+set_origin <- function(r, ox = 0, oy = 0) {
+  origin(r) <- c(ox, oy)
+  r
+}
+
+map(GCFR_heterogeneity,  origin)
+map(SWAFR_heterogeneity, origin)
+
+GCFR_heterogeneity2  <- map(GCFR_heterogeneity,  set_origin)
+SWAFR_heterogeneity2 <- map(SWAFR_heterogeneity, set_origin)
+
+map(GCFR_heterogeneity2, origin)
+map(SWAFR_heterogeneity2, origin)
+
+heterogeneity2 <- map2(GCFR_heterogeneity2, SWAFR_heterogeneity2, merge)
+heterogeneity2 %<>% map(function(r) {
+  names(r) <- str_replace_all(var_names, " ", "_")
+  r
+})
+map(heterogeneity2, ~pairs(log10(.), cor = TRUE))
