@@ -72,12 +72,13 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
           str_detect(.x, "DS")  ~ c(0,  25)
         )
       ) +
-      theme(
-        legend.position = "none",
-        axis.text.y     = element_text(angle = 90, hjust = 0.5)
-      )
+      theme(axis.text.y = element_text(angle = 90, hjust = 0.5))
 )
 names(hist_plots) <- unique(data_for_plot$metric_scale)
+
+my_legend <- get_legend(hist_plots$QDS_richness)
+
+hist_plots %<>% map(~ .x + theme(legend.position = "none"))
 
 hist_plots[c("DS_turnover_prop", "HDS_turnover_prop")] %<>% map(
   ~ .x +
@@ -164,37 +165,35 @@ DS_partition_plot <- S_DS_background_plot +
   scale_fill_manual(values = c("black", "white")) +
   theme(legend.position = "none")
 
-# TODO: Add labels to S_HDS contours manually
-#label1500 <- bquote(italic("S")["HDS"] == 1500)
+label2000 <- bquote(italic("S")["HDS"] == 2000)
 HDS_partition_plot <- HDS_partition_plot +
-  #geom_text(
-  #  data = tibble(
-  #    add_turnover      = c( 10,   10,        60,  560, 1060),
-  #    mean_QDS_richness = c(500, 1000,      1450, 1500, 1500),
-  #    HDS_richness      = c(500, 1000, label1500, 2000, 2500)
-  #  ),
-  #  mapping = aes(add_turnover, mean_QDS_richness, label = HDS_richness),
-  #  angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
-  #  parse = TRUE
-  #) +
+  geom_text(
+    data = tibble(
+      mean_QDS_richness = c(500, 1000, 1500,      1950, 2000, 2000, 2000), # "x"
+      add_turnover      = c( 10,   10,   10,        60,  560, 1060, 1560), # "y"
+      HDS_richness      = c(500, 1000, 1500, label2000, 2500, 3000, 3500)
+    ),
+    mapping = aes(add_turnover, mean_QDS_richness, label = HDS_richness),
+    angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
+    parse = TRUE
+  ) +
   # Flip partition plot to get axes to line up across panels (b/o text heights)
   coord_flip()
 
-# TODO: Add labels to S_DS contours manually
-#label1500 <- bquote(italic("S")["DS"] == 1500)
+label2000 <- bquote(italic("S")["DS"] == 2000)
 DS_partition_plot <- DS_partition_plot +
-  #geom_text(
-  #  data = tibble(
-  #    add_turnover      = c( 10,   10,        60,  560, 1060),
-  #    mean_HDS_richness = c(500, 1000,      1450, 1500, 1500),
-  #    DS_richness       = c(500, 1000, label1500, 2000, 2500)
-  #  ),
-  #  mapping = aes(add_turnover, mean_HDS_richness, label = DS_richness),
-  #  angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
-  #  parse = TRUE
-  #) +
+  geom_text(
+    data = tibble(
+      mean_HDS_richness = c(500, 1000, 1500,      1950, 2000, 2000, 2000), # "x"
+      add_turnover      = c( 10,   10,   10,        60,  560, 1060, 1560), # "y"
+      DS_richness       = c(500, 1000, 1500, label2000, 2500, 3000, 3500)
+    ),
+    mapping = aes(add_turnover, mean_HDS_richness, label = DS_richness),
+    angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
+    parse = TRUE
+  ) +
   # Flip partition plot to get axes to line up across panels (b/o text heights)
-coord_flip()
+  coord_flip()
 
 # Plot panels ------------------------------------------------------------------
 
@@ -210,7 +209,7 @@ richness_plots <- hist_plots %$% plot_grid(
 turnover_plots <- hist_plots %$% plot_grid(
   DS_turnover_prop,
   HDS_turnover_prop,
-  white_rect,
+  my_legend,
   nrow = 3, rel_heights = c(0.85, 1.05, 0.85),
   labels = c("(d)", "(e)", ""), label_fontface = "plain",
   label_x = 0.025, label_y = 0.975
@@ -241,7 +240,7 @@ final_plot <- plot_grid(
 # Save to disc
 ggsave(
   here(
-    "draft-02/manuscript_ver3-4/figures",
+    "draft-02/figures",
     "plot-richness-distributions-partitions.pdf"
   ),
   final_plot,
@@ -249,7 +248,7 @@ ggsave(
 )
 ggsave(
   here(
-    "draft-02/manuscript_ver3-4/figures",
+    "draft-02/figures",
     "plot-richness-distributions-partitions.png"
   ),
   final_plot, dpi = 600,
