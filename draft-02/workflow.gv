@@ -8,7 +8,8 @@ digraph {
   '{GCFR,SWAFR}_{var_names}_masked2.tif' ->
   '02_generate-heterogeneity-data.R' ->
   { '{GCFR,SWAFR}_{var_names}_masked2_{scales}_heterogeneity.tif'
-    'heterogeneity.csv' }
+    'heterogeneity.csv'
+    'plot-PC-biplots.{png,pdf}' }
 
   { '/borders/'
     '/flora/' } ->
