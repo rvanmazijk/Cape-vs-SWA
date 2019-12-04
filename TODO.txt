@@ -1,2 +1,2 @@
-- [ ] Add to methods: "Removed coastal pixels at 0.05 scale" etc.
-- [ ] If we are most interested in which vars contribute to S, then an ANOVA-style-breakdown of the multivariate models would be good?
+- [x] Add to methods: "Removed coastal pixels at 0.05 scale" etc.
+- [x] If we are most interested in which vars contribute to S, then an ANOVA-style-breakdown of the multivariate models would be good?
