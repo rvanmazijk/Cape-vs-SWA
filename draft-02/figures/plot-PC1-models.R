@@ -1,4 +1,8 @@
-# Plot PC1 univariate models
+data <- list(
+  QDS = read_csv(glue("{data_dir}/data-QDS.csv")),
+  HDS = read_csv(glue("{data_dir}/data-HDS.csv")),
+  DS  = read_csv(glue("{data_dir}/data-DS.csv"))
+)
 
 #map(heterogeneity_PCAs, summary)[2:4]
 #>          Proportion of Variance (PC1)
