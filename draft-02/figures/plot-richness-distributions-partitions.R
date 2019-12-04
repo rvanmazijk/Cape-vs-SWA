@@ -9,22 +9,88 @@ data <- list(
 data_for_plot <- data %$%
   rbind(
     QDS %>%
-      dplyr::select(region, QDS_richness) %>%
-      rename(richness = QDS_richness) %>%
+      dplyr::select(region, QDS_richness, QDS) %>%
+      rename(
+        richness      = QDS_richness,
+        cell_name     = QDS
+      ) %>%
       add_column(scale = "QDS", turnover_prop = NA),
     HDS %>%
-      dplyr::select(region, HDS_richness, QDS_turnover_prop) %>%
-      rename(richness = HDS_richness, turnover_prop = QDS_turnover_prop) %>%
+      dplyr::select(region, HDS_richness, QDS_turnover_prop, HDS) %>%
+      rename(
+        richness      = HDS_richness,
+        turnover_prop = QDS_turnover_prop,
+        cell_name     = HDS
+      ) %>%
       add_column(scale = "HDS"),
     DS %>%
-      dplyr::select(region, DS_richness, HDS_turnover_prop) %>%
-      rename(richness = DS_richness, turnover_prop = HDS_turnover_prop) %>%
+      dplyr::select(region, DS_richness, HDS_turnover_prop, DS) %>%
+      rename(
+        richness      = DS_richness,
+        turnover_prop = HDS_turnover_prop,
+        cell_name     = DS
+      ) %>%
       add_column(scale = "DS")
   ) %>%
   as_tibble() %>%
   gather(metric, metric_value, richness, turnover_prop) %>%
   unite(metric_scale, scale, metric) %>%
   na.exclude()
+
+bins <- data_for_plot %>%
+  split(.$metric_scale) %>%
+  map(pull, metric_value) %>%
+  map(range) %>%
+  map(~seq(from = .[[1]] - (.[[1]]/2), to = .[[2]] + (.[[1]]/2), length.out = 10))
+
+data_for_plot2 <- vector("list", length = 5)
+names(data_for_plot2) <- names(bins)
+for (each_metric in names(data_for_plot2)) {
+  data_for_plot2[[each_metric]] <- data_for_plot %>%
+    filter(metric_scale == each_metric) %>%
+    group_by(region) %>%
+    do(data.frame(table(cut(
+      .$metric_value,
+      breaks = bins[[each_metric]],
+      include.lowest = TRUE
+    ))))
+}
+data_for_plot2 %<>%
+  bind_rows(.id = "metric_scale") %>%
+  rename(metric_value_interval = Var1) %>%
+  group_by(region, metric_scale) %>%
+  mutate(
+    proportion = Freq/sum(Freq),
+    bin_start = metric_value_interval %>%
+      str_extract("(\\[|\\().+,") %>%
+      str_remove("\\[") %>%
+      str_remove("\\(") %>%
+      str_remove(",") %>%
+      as.numeric(),
+    bin_end = metric_value_interval %>%
+      str_extract(",.+(\\]|\\))") %>%
+      str_remove("\\]") %>%
+      str_remove("\\)") %>%
+      str_remove(",") %>%
+      as.numeric()
+  )
+
+# Check
+data_for_plot2 %>%
+  summarise(proportion_total = sum(proportion)) %>%
+  pull(proportion_total) %>%
+  equals(1) %>%
+  all()
+
+map(unique(data_for_plot2$metric_scale),
+  ~ data_for_plot2 %>%
+    filter(metric_scale == .x) %>%
+    ggplot(aes(bin_start, proportion, fill = region)) +
+      geom_col(position = "dodge", colour = "black") +
+      scale_fill_manual(name = "Region", values = c("black", "white")) +
+      facet_wrap(~metric_scale, scales = "free_x")
+)
+
 
 # Distribution plots -----------------------------------------------------------
 
@@ -40,6 +106,25 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
     filter(metric_scale == .x) %>%
     ggplot(aes(metric_value, fill = region)) +
       geom_histogram(
+        data = data_for_plot %>%
+          filter(metric_scale == .x, region == "GCFR"),
+        aes(y = stat(count/max(count)), group = region),
+        #binwidth = case_when(
+        #  str_detect(.x, "richness") ~ 250,
+        #  str_detect(.x, "turnover") ~ 0.05
+        #),
+        bins = 10, #case_when(
+        #  str_detect(.x, "QDS") ~ 30,
+        #  str_detect(.x, "HDS") ~ 20,
+        #  str_detect(.x, "DS")  ~ 10
+        #),
+        position = "dodge",
+        colour = "black"
+      ) +
+      geom_histogram(
+        data = data_for_plot %>%
+          filter(metric_scale == .x, region == "SWAFR"),
+        aes(y = stat(count/max(count)), group = region),
         #binwidth = case_when(
         #  str_detect(.x, "richness") ~ 250,
         #  str_detect(.x, "turnover") ~ 0.05
@@ -66,11 +151,11 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
           str_detect(.x, "richness") ~ c(0, 5000),
           str_detect(.x, "turnover") ~ c(0,    1)
         ),
-        ylim = case_when(
-          str_detect(.x, "QDS") ~ c(0, 250),
-          str_detect(.x, "HDS") ~ c(0,  60),
-          str_detect(.x, "DS")  ~ c(0,  25)
-        )
+        ylim = c(0, 1) #case_when(
+        #  str_detect(.x, "QDS") ~ c(0, 250),
+        #  str_detect(.x, "HDS") ~ c(0,  60),
+        #  str_detect(.x, "DS")  ~ c(0,  25)
+        #)
       ) +
       theme(axis.text.y = element_text(angle = 90, hjust = 0.5))
 )
