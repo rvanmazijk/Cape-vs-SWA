@@ -68,6 +68,47 @@ SWAFR_border_gg <- geom_polygon(
   colour = "black", fill = NA
 )
 
+# Make ggplot-points for cities ------------------------------------------------
+
+CT_point <- geom_point(
+  aes(x = 18.4241, y = -33.9249),
+  size = 2
+)
+CT_text <- geom_text(
+  aes(x = 18.4241, y = -33.9249, label = "Cape Town"),
+  size = 2,
+  nudge_x = -1.5
+)
+
+PE_point <- geom_point(
+  aes(x = 25.6022, y = -33.9608),
+  size = 2
+)
+PE_text <- geom_text(
+  aes(x = 25.6022, y = -33.9608, label = "Port Elizabeth"),
+  size = 2,
+  nudge_y = -0.75
+)
+
+PR_point <- geom_point(
+  aes(x = 115.8605, y = -31.9505),
+  size = 2
+)
+PR_text <- geom_text(
+  aes(x = 115.8605, y = -31.9505, label = "Perth"),
+  size = 2,
+  nudge_x = -1.5
+)
+
+ES_point <- geom_point(
+  aes(x = 121.8914, y = -33.8613),
+  size = 2
+)
+ES_text <- geom_text(
+  aes(x = 121.8914, y = -33.8613, label = "Esperance"),
+  size = 2,
+  nudge_y = -0.75
+)
 
 # Richness maps ----------------------------------------------------------------
 
@@ -80,6 +121,10 @@ richness_lims[[2]] <- richness_lims[[2]] + 250
 GCFR_richness_plot <- gplot(GCFR_HDS_richness) +
   geom_tile(aes(fill = value)) +
   GCFR_border_gg +
+  CT_point +
+  CT_text +
+  PE_point +
+  PE_text +
   labs(
     title = "GCFR",
     y     = "Latitude (º)"
@@ -102,6 +147,10 @@ GCFR_richness_plot <- gplot(GCFR_HDS_richness) +
 SWAFR_richness_plot <- gplot(SWAFR_HDS_richness) +
   geom_tile(aes(fill = value)) +
   SWAFR_border_gg +
+  PR_point +
+  PR_text +
+  ES_point +
+  ES_text +
   ggtitle("SWAFR") +
   geom_label(
     aes(x = 113, y = -26, label = "(b)"),
@@ -139,6 +188,10 @@ PC1_lims <- range(
 GCFR_PC1_plot <- gplot(GCFR_HDS_PC1) +
   geom_tile(aes(fill = value)) +
   GCFR_border_gg +
+  CT_point +
+  CT_text +
+  PE_point +
+  PE_text +
   ylab("Latitude (º)") +
   annotate("text", x = 17, y = -26, label = "(c)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
@@ -157,6 +210,10 @@ GCFR_PC1_plot <- gplot(GCFR_HDS_PC1) +
 SWAFR_PC1_plot <- gplot(SWAFR_HDS_PC1) +
   geom_tile(aes(fill = value)) +
   SWAFR_border_gg +
+  PR_point +
+  PR_text +
+  ES_point +
+  ES_text +
   geom_label(
     aes(x = 113, y = -26, label = "(d)"),
     nudge_y = 0.5,
@@ -229,6 +286,10 @@ residuals_lims[[2]] <- residuals_lims[[2]] + 250
 GCFR_residuals_plot <- gplot(GCFR_HDS_residuals) +
   geom_tile(aes(fill = value)) +
   GCFR_border_gg +
+  CT_point +
+  CT_text +
+  PE_point +
+  PE_text +
   ylab("Latitude (º)") +
   annotate("text", x = 17, y = -26, label = "(e)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
@@ -247,6 +308,10 @@ GCFR_residuals_plot <- gplot(GCFR_HDS_residuals) +
 SWAFR_residuals_plot <- gplot(SWAFR_HDS_residuals) +
   geom_tile(aes(fill = value)) +
   SWAFR_border_gg +
+  PR_point +
+  PR_text +
+  ES_point +
+  ES_text +
   geom_label(
     aes(x = 113, y = -26, label = "(f)"),
     nudge_y = 0.5,
@@ -277,6 +342,10 @@ SWAFR_residuals_plot <- gplot(SWAFR_HDS_residuals) +
 GCFR_mresiduals_plot <- gplot(GCFR_multivariate_residuals) +
   geom_tile(aes(fill = value)) +
   GCFR_border_gg +
+  CT_point +
+  CT_text +
+  PE_point +
+  PE_text +
   labs(
     x = "Longitude (º)",
     y = "Latitude (º)"
@@ -293,6 +362,10 @@ GCFR_mresiduals_plot <- gplot(GCFR_multivariate_residuals) +
 SWAFR_mresiduals_plot <- gplot(SWAFR_multivariate_residuals) +
   geom_tile(aes(fill = value)) +
   SWAFR_border_gg +
+  PR_point +
+  PR_text +
+  ES_point +
+  ES_text +
   xlab("Longitude (º)") +
   geom_label(
     aes(x = 113, y = -26, label = "(h)"),
