@@ -54,7 +54,7 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
         # Scale to frequencies/proportions of cells for each region separately
         aes(y = 2*(..density..)/sum(..density..)),
         bins = 10,
-        position = "dodge",#,
+        position = "dodge",
         colour = "black"
       ) +
       scale_fill_manual(name = "Region", values = c("black", "white")) +
