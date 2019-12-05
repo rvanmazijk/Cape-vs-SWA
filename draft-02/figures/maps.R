@@ -1,6 +1,8 @@
 # Import data ------------------------------------------------------------------
 # All at HDS-scale for main figure
 
+# .... Raster data -------------------------------------------------------------
+
 # Richness rasters
 GCFR_HDS_richness  <- raster(glue("{data_dir}/GCFR_HDS_richness.tif"))
 SWAFR_HDS_richness <- raster(glue("{data_dir}/SWAFR_HDS_richness.tif"))
@@ -18,14 +20,54 @@ GCFR_multivariate_residuals <-
 SWAFR_multivariate_residuals <-
   raster(glue("{data_dir}/SWAFR_HDS_multivariate_richness.tif"))
 
-# TODO: Import border shapefiles
-#ZA_border <- read_rds(here("data/raw-data/ZA-border/GADM_2.8_ZAF_adm0.rds"))
-#ZA_border_dissolved <- buffer(ZA_border, width = 0.1, dissolve = TRUE)
-#GCFR_border <- readOGR(here("data/derived-data/borders/GCFR_border"))
-#GCFR_border_dissolved <- buffer(GCFR_border, width = 0, dissolve = TRUE)
-#AU_border <- read_rds(here("data/raw-data/ZA-border/GADM_2.8_ZAF_adm0.rds"))
+# .... Border shapefiles -------------------------------------------------------
 
-my_palette <- rev(viridis::viridis(10)) #rev(terrain.colors(10))
+# Import WGS84-CRS shapes
+GCFR_border  <- readOGR(here("data/derived-data/borders/GCFR_border"))
+SWAFR_border <- readOGR(here("data/derived-data/borders/SWBP_Mike-Cramer"))
+
+# Save WGS84-CRS
+std_CRS <- proj4string(GCFR_border)
+# Check
+proj4string(SWAFR_border) == std_CRS
+
+# Reproject to planar coordinates
+# (so GEOS package can dissolve border & slightly buffer)
+temp_CRS <- CRS("+init=epsg:3347")
+GCFR_border  <- spTransform(GCFR_border,  temp_CRS)
+SWAFR_border <- spTransform(SWAFR_border, temp_CRS)
+
+# Dissolve & slightly buffer borders
+GCFR_border_dissolved  <- buffer(GCFR_border,  width = 2.5e4, dissolve = TRUE)
+SWAFR_border_dissolved <- buffer(SWAFR_border, width = 2.5e4, dissolve = TRUE)
+
+# Reproject **back** to WGS84-CRS for plotting
+GCFR_border_dissolved  <- spTransform(GCFR_border_dissolved,  std_CRS)
+SWAFR_border_dissolved <- spTransform(SWAFR_border_dissolved, std_CRS)
+
+# Check
+par(mfrow = c(1, 2))
+plot(GCFR_border_dissolved)
+plot(SWAFR_border_dissolved)
+par(op)
+
+# Set colour palette for these maps --------------------------------------------
+
+my_palette <- rev(viridis::viridis(10))
+
+# Make ggplot-borders for repeated use -----------------------------------------
+
+GCFR_border_gg <- geom_polygon(
+  data = GCFR_border_dissolved,
+  aes(x = long, y = lat, group = group),
+  colour = "black", fill = NA
+)
+SWAFR_border_gg <- geom_polygon(
+  data = SWAFR_border_dissolved,
+  aes(x = long, y = lat, group = group),
+  colour = "black", fill = NA
+)
+
 
 # Richness maps ----------------------------------------------------------------
 
@@ -37,13 +79,14 @@ richness_lims[[2]] <- richness_lims[[2]] + 250
 
 GCFR_richness_plot <- gplot(GCFR_HDS_richness) +
   geom_tile(aes(fill = value)) +
+  GCFR_border_gg +
   labs(
     title = "GCFR",
     y     = "Latitude (º)"
   ) +
   annotate("text", x = 17, y = -26, label = "(a)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     limits   = richness_lims,
     colours  = my_palette,
@@ -58,9 +101,14 @@ GCFR_richness_plot <- gplot(GCFR_HDS_richness) +
   )
 SWAFR_richness_plot <- gplot(SWAFR_HDS_richness) +
   geom_tile(aes(fill = value)) +
+  SWAFR_border_gg +
   ggtitle("SWAFR") +
-  annotate("text", x = 113, y = -26, label = "(b)", vjust = -0.8) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  geom_label(
+    aes(x = 113, y = -26, label = "(b)"),
+    nudge_y = 0.5,
+    fill = "white", label.size = 0
+  ) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     name     = bquote(italic("S")["HDS"]),
     limits   = richness_lims,
@@ -90,10 +138,11 @@ PC1_lims <- range(
 
 GCFR_PC1_plot <- gplot(GCFR_HDS_PC1) +
   geom_tile(aes(fill = value)) +
+  GCFR_border_gg +
   ylab("Latitude (º)") +
   annotate("text", x = 17, y = -26, label = "(c)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     limits   = PC1_lims,
     colours  = my_palette,
@@ -107,8 +156,13 @@ GCFR_PC1_plot <- gplot(GCFR_HDS_PC1) +
   )
 SWAFR_PC1_plot <- gplot(SWAFR_HDS_PC1) +
   geom_tile(aes(fill = value)) +
-  annotate("text", x = 113, y = -26, label = "(d)", vjust = -0.8) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  SWAFR_border_gg +
+  geom_label(
+    aes(x = 113, y = -26, label = "(d)"),
+    nudge_y = 0.5,
+    fill = "white", label.size = 0
+  ) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     name     = "PC1",
     limits   = PC1_lims,
@@ -174,10 +228,11 @@ residuals_lims[[2]] <- residuals_lims[[2]] + 250
 
 GCFR_residuals_plot <- gplot(GCFR_HDS_residuals) +
   geom_tile(aes(fill = value)) +
+  GCFR_border_gg +
   ylab("Latitude (º)") +
   annotate("text", x = 17, y = -26, label = "(e)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     limits   = residuals_lims,
     colours  = my_palette,
@@ -191,8 +246,13 @@ GCFR_residuals_plot <- gplot(GCFR_HDS_residuals) +
   )
 SWAFR_residuals_plot <- gplot(SWAFR_HDS_residuals) +
   geom_tile(aes(fill = value)) +
-  annotate("text", x = 113, y = -26, label = "(f)", vjust = -0.8) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  SWAFR_border_gg +
+  geom_label(
+    aes(x = 113, y = -26, label = "(f)"),
+    nudge_y = 0.5,
+    fill = "white", label.size = 0
+  ) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     name     = bquote("Res."~italic("S")["HDS"]~"(PC1)"),
     limits   = residuals_lims,
@@ -216,13 +276,14 @@ SWAFR_residuals_plot <- gplot(SWAFR_HDS_residuals) +
 
 GCFR_mresiduals_plot <- gplot(GCFR_multivariate_residuals) +
   geom_tile(aes(fill = value)) +
+  GCFR_border_gg +
   labs(
     x = "Longitude (º)",
     y = "Latitude (º)"
   ) +
   annotate("text", x = 17, y = -26, label = "(g)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     limits   = residuals_lims,
     colours  = my_palette,
@@ -231,9 +292,14 @@ GCFR_mresiduals_plot <- gplot(GCFR_multivariate_residuals) +
   theme(legend.position = "none")
 SWAFR_mresiduals_plot <- gplot(SWAFR_multivariate_residuals) +
   geom_tile(aes(fill = value)) +
+  SWAFR_border_gg +
   xlab("Longitude (º)") +
-  annotate("text", x = 113, y = -26, label = "(h)", vjust = -0.8) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25.5)) +
+  geom_label(
+    aes(x = 113, y = -26, label = "(h)"),
+    nudge_y = 0.5,
+    fill = "white", label.size = 0
+  ) +
+  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
   scale_fill_gradientn(
     name     = bquote("Res."~italic("S")["HDS"]~"(MV)"),
     limits   = residuals_lims,
@@ -249,6 +315,7 @@ SWAFR_mresiduals_plot <- gplot(SWAFR_multivariate_residuals) +
     legend.justification = "right",
     legend.background    = element_rect(fill = NA)
   )
+
 # Panel all together -----------------------------------------------------------
 
 all_maps <- plot_grid(
@@ -262,12 +329,12 @@ all_maps <- plot_grid(
 # Save to disc -----------------------------------------------------------------
 
 ggsave(
-  here("draft-02/manuscript_ver3/figures/maps.pdf"),
+  here("draft-02/figures/maps.pdf"),
   all_maps,
   width = 7, height = 12
 )
 ggsave(
-  here("draft-02/manuscript_ver3/figures/maps.png"),
+  here("draft-02/figures/maps.png"),
   all_maps, dpi = 600,
   width = 7, height = 12
 )
