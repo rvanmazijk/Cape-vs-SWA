@@ -37,61 +37,6 @@ data_for_plot <- data %$%
   unite(metric_scale, scale, metric) %>%
   na.exclude()
 
-bins <- data_for_plot %>%
-  split(.$metric_scale) %>%
-  map(pull, metric_value) %>%
-  map(range) %>%
-  map(~seq(from = .[[1]] - (.[[1]]/2), to = .[[2]] + (.[[1]]/2), length.out = 10))
-
-data_for_plot2 <- vector("list", length = 5)
-names(data_for_plot2) <- names(bins)
-for (each_metric in names(data_for_plot2)) {
-  data_for_plot2[[each_metric]] <- data_for_plot %>%
-    filter(metric_scale == each_metric) %>%
-    group_by(region) %>%
-    do(data.frame(table(cut(
-      .$metric_value,
-      breaks = bins[[each_metric]],
-      include.lowest = TRUE
-    ))))
-}
-data_for_plot2 %<>%
-  bind_rows(.id = "metric_scale") %>%
-  rename(metric_value_interval = Var1) %>%
-  group_by(region, metric_scale) %>%
-  mutate(
-    proportion = Freq/sum(Freq),
-    bin_start = metric_value_interval %>%
-      str_extract("(\\[|\\().+,") %>%
-      str_remove("\\[") %>%
-      str_remove("\\(") %>%
-      str_remove(",") %>%
-      as.numeric(),
-    bin_end = metric_value_interval %>%
-      str_extract(",.+(\\]|\\))") %>%
-      str_remove("\\]") %>%
-      str_remove("\\)") %>%
-      str_remove(",") %>%
-      as.numeric()
-  )
-
-# Check
-data_for_plot2 %>%
-  summarise(proportion_total = sum(proportion)) %>%
-  pull(proportion_total) %>%
-  equals(1) %>%
-  all()
-
-map(unique(data_for_plot2$metric_scale),
-  ~ data_for_plot2 %>%
-    filter(metric_scale == .x) %>%
-    ggplot(aes(bin_start, proportion, fill = region)) +
-      geom_col(position = "dodge", colour = "black") +
-      scale_fill_manual(name = "Region", values = c("black", "white")) +
-      facet_wrap(~metric_scale, scales = "free_x")
-)
-
-
 # Distribution plots -----------------------------------------------------------
 
 x_axis_labels <- list(
@@ -106,44 +51,19 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
     filter(metric_scale == .x) %>%
     ggplot(aes(metric_value, fill = region)) +
       geom_histogram(
-        data = data_for_plot %>%
-          filter(metric_scale == .x, region == "GCFR"),
-        aes(y = stat(count/max(count)), group = region),
-        #binwidth = case_when(
-        #  str_detect(.x, "richness") ~ 250,
-        #  str_detect(.x, "turnover") ~ 0.05
-        #),
-        bins = 10, #case_when(
-        #  str_detect(.x, "QDS") ~ 30,
-        #  str_detect(.x, "HDS") ~ 20,
-        #  str_detect(.x, "DS")  ~ 10
-        #),
-        position = "dodge",
-        colour = "black"
-      ) +
-      geom_histogram(
-        data = data_for_plot %>%
-          filter(metric_scale == .x, region == "SWAFR"),
-        aes(y = stat(count/max(count)), group = region),
-        #binwidth = case_when(
-        #  str_detect(.x, "richness") ~ 250,
-        #  str_detect(.x, "turnover") ~ 0.05
-        #),
-        bins = 10, #case_when(
-        #  str_detect(.x, "QDS") ~ 30,
-        #  str_detect(.x, "HDS") ~ 20,
-        #  str_detect(.x, "DS")  ~ 10
-        #),
-        position = "dodge",
+        # Scale to frequencies/proportions of cells for each region separately
+        aes(y = 2*(..density..)/sum(..density..)),
+        bins = 10,
+        position = "dodge",#,
         colour = "black"
       ) +
       scale_fill_manual(name = "Region", values = c("black", "white")) +
       labs(
         x = x_axis_labels[[.x]],
         y = case_when(
-          str_detect(.x, "QDS") ~ "No. QDS",
-          str_detect(.x, "HDS") ~ "No. HDS",
-          str_detect(.x, "DS")  ~ "No. DS"
+          str_detect(.x, "QDS") ~ "Prop. QDS",
+          str_detect(.x, "HDS") ~ "Prop. HDS",
+          str_detect(.x, "DS")  ~ "Prop. DS"
         )
       ) +
       coord_cartesian(
@@ -151,11 +71,7 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
           str_detect(.x, "richness") ~ c(0, 5000),
           str_detect(.x, "turnover") ~ c(0,    1)
         ),
-        ylim = c(0, 1) #case_when(
-        #  str_detect(.x, "QDS") ~ c(0, 250),
-        #  str_detect(.x, "HDS") ~ c(0,  60),
-        #  str_detect(.x, "DS")  ~ c(0,  25)
-        #)
+        ylim = c(0, 0.6)
       ) +
       theme(axis.text.y = element_text(angle = 90, hjust = 0.5))
 )
@@ -254,7 +170,7 @@ label2000 <- bquote(italic("S")["HDS"] == 2000)
 HDS_partition_plot <- HDS_partition_plot +
   geom_text(
     data = tibble(
-      mean_QDS_richness = c(500, 1000, 1500,      1950, 2000, 2000, 2000), # "x"
+      mean_QDS_richness = c(500, 1000, 1500,      1950, 2100, 2100, 2100), # "x"
       add_turnover      = c( 10,   10,   10,        60,  560, 1060, 1560), # "y"
       HDS_richness      = c(500, 1000, 1500, label2000, 2500, 3000, 3500)
     ),
@@ -269,7 +185,7 @@ label2000 <- bquote(italic("S")["DS"] == 2000)
 DS_partition_plot <- DS_partition_plot +
   geom_text(
     data = tibble(
-      mean_HDS_richness = c(500, 1000, 1500,      1950, 2000, 2000, 2000), # "x"
+      mean_HDS_richness = c(500, 1000, 1500,      1950, 2100, 2100, 2100), # "x"
       add_turnover      = c( 10,   10,   10,        60,  560, 1060, 1560), # "y"
       DS_richness       = c(500, 1000, 1500, label2000, 2500, 3000, 3500)
     ),
@@ -277,7 +193,6 @@ DS_partition_plot <- DS_partition_plot +
     angle = -45, vjust = -0.5, colour = "grey50", size = 2.5,
     parse = TRUE
   ) +
-  # Flip partition plot to get axes to line up across panels (b/o text heights)
   coord_flip()
 
 # Plot panels ------------------------------------------------------------------
