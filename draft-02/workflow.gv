@@ -1,0 +1,91 @@
+digraph {
+
+  '01_setup.R' ->
+  '02_generate-heterogeneity-data.R' ->
+  '03_generate-richness-and-collate-data.R'
+
+  '/data_processing/' ->
+  '{GCFR,SWAFR}_{var_names}_masked2.tif' ->
+  '02_generate-heterogeneity-data.R' ->
+  { '{GCFR,SWAFR}_{var_names}_masked2_{scales}_heterogeneity.tif'
+    'heterogeneity.csv'
+    'plot-PC-biplots.{png,pdf}' }
+
+  { '/borders/'
+    '/flora/' } ->
+  '03_generate-richness-and-collate-data.R' ->
+  { '{GCFR,SWAFR}_species.csv'
+    'data_{scales}.csv'
+    '{GCFR,SWAFR}_{scales}_richness.tif'
+    '{GCFR,SWAFR}_{scales}_PC1.tif' }
+
+  { '01_setup.R'
+    'data_{scales}.csv' } ->
+  '04_compare-species-richness.R' ->
+  'for-Figure-2.csv'
+
+  { '01_setup.R'
+    'data_{scales}.csv'
+    'heterogeneity.csv' } ->
+  '05_compare-environmental-heterogeneity.R' ->
+  'plot-CLES.R' ->
+  'plot-CLES.{pdf,png}'
+
+  { '02_generate-heterogeneity-data.R'
+    'data_{scales}.csv' } ->
+  '06_explaining-richness-w-heterogeneity.R' ->
+  { '{responses}_univariate_model_results.csv'
+    'plot-univariate-models.{pdf,png}'
+    'model-summary-for-Tony.csv'
+    'model-ANOVA-for-Tony.csv'
+    'data-{scales}-w-residuals.csv'
+    '{GCFR,SWAFR}_{scales}_multivariate_residuals.tif' }
+
+  { '01_setup.R'
+    'data-{scales}-w-residuals.csv' } ->
+  '07_correlate-PC1-MV-model-results.R'
+
+  '06_explaining-richness-w-heterogeneity.R' ->
+    'plot-multivariate-models.R' ->
+    'plot-multivariate-models.{pdf,png}'
+
+  { '01_setup.R'
+    'data_{scales}.csv' } ->
+  'plot-PC1-models.R' ->
+  'plot-PC1-models.{pdf,png}'
+
+  { '01_setup.R'
+    'data_{scales}.csv' } ->
+  'plot-richness-distributions-partitions.R' ->
+  'plot-richness-distributions-partitions.{pdf,png}'
+
+  { '{GCFR,SWAFR}_{scales}_richness.tif'
+    '{GCFR,SWAFR}_{scales}_PC1.tif'
+    '{GCFR,SWAFR}_{scales}_multivariate_residuals.tif' } ->
+  'maps.R' ->
+  'maps.{pdf,png}'
+
+  { '01_setup.R'
+    'data-{scales}-w-residuals.csv'
+    '/borders/' } ->
+  '08_re-explaining-richness-wo-outliers.R' ->
+  { 'map-mv-outliers.pdf'
+    'map-PC1-outliers.pdf'
+    'plot-refit-PC1-models.pdf'
+    'refit-model-summary-for-Tony.csv'
+    'plot-refit-multivariate-models.pdf'
+    'sd-of-residuals-w-and-wo-outliers.csv' }
+
+  { '01_setup.R'
+    'data-{scales}-w-residuals.csv' } ->
+  '09_check-univariate-linearity' ->
+  { 'check-univariate-linearity.csv'
+    'check-univariate-linearity_best-only.csv' }
+
+  { '01_setup.R'
+    '{GCFR,SWAFR}_{var_names}_masked2_{scales}_heterogeneity.tif' } ->
+  '10_check-collinearity' ->
+  { '{GCFR,SWAFR}-{scales}-log10-heterogeneity-pairs.pdf'
+    '{scales}-log10-heterogeneity-pairs.pdf' }
+
+}
