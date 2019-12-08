@@ -1,5 +1,3 @@
-# First draft
-
 <p>
   <img src="../logos/UCT-logo.png"       height="100" />
   <img src="../logos/BIO-logo.png"       height="100" />
@@ -17,4 +15,4 @@ Both the manuscript drafts and presentation slides are generated using a [Makefi
 
 ## Acknowledgements
 
-This results presented in this conference presentation contains reiled on computations performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<http://hpc.uct.ac.za>), for which we are grateful.
+This results presented in this conference presentation contains relied on computations performed using facilities provided by the University of Cape Town’s ICTS High Performance Computing team (<http://hpc.uct.ac.za>), for which we are grateful.

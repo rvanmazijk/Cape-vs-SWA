@@ -11,7 +11,6 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
   <img src="logos/DST-logo.png"       height="80"  />
   <img src="logos/NRF-logo.png"       height="80"  />
   <img src="logos/SAAB-logo.png"      height="80"  />
-  <img src="logos/eResearch-logo.png" height="80"  />
 </p>
 
 This is an open access repository for (some) data-sets, reproducible analyses, conference slides and manuscript drafts for a publication based on my BSc Hons project (in preparation for submission to the Journal of Biogeography). Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
@@ -22,4 +21,6 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 
 ## Acknowledgments
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RvM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RvM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage. Many computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>) for results in eariler drafts of this work.
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RvM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RvM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage.
+
+For results used in earlier drafts of this work and then [conference presentation](SAAB-AMA-SASSB-2019-talk), any computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
