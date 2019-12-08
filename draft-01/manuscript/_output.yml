@@ -1,6 +1,0 @@
-bookdown::pdf_document2:
-  latex_engine: xelatex
-  includes:
-    in_header: style.sty
-bookdown::word_document2:
-  reference_docx: style.docx
