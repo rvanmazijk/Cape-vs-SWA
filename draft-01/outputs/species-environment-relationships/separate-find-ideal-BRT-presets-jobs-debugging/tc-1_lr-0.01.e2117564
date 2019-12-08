@@ -1,4 +1,0 @@
-Error in foreach(response_name = response_names, log_response = log_response_options) %do%  : 
-  could not find function "%do%"
-Calls: run_initial_BRTs
-Execution halted
