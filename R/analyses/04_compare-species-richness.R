@@ -50,6 +50,6 @@ write_csv(
   here("results/for-Figure-2.csv")
 )
 write_csv(
-  richness_test_results,
+  richness_test_results_sub_sample,
   here("results/for-Figure-2_sub-sampled.csv")
 )
