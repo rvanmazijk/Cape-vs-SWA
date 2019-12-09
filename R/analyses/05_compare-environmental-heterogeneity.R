@@ -53,9 +53,46 @@ CLES_results <- heterogeneity_for_CLES %$%
       )
     )
   )
+CLES_results_sub_sampled <- heterogeneity_for_CLES %$%
+  map2_dfr(GCFR, SWAFR, .id = "scale",
+    ~ map2_df(.x, .y, .id = "variable",
+      ~ tibble(
+        CLES_value = CLES(
+          sample(.y, min(length(.x), length(.y))),
+          sample(.x, min(length(.x), length(.y)))
+        ),
+        U_test =
+          wilcox.test(
+            sample(.x, min(length(.x), length(.y))),
+            sample(.y, min(length(.x), length(.y))),
+            conf.int = TRUE
+          ) %>%
+          tidy() %>%
+          list()
+      )
+    )
+  )
 
 # Tidy
 CLES_results %<>%
+  mutate(
+    variable = factor(variable, levels = var_names %>%
+      str_replace_all(" ", "_") %>%
+      c("PC1")
+    ),
+    scale = case_when(
+      scale == "point1" ~ 0.10,
+      scale == "QDS"    ~ 0.25,
+      scale == "HDS"    ~ 0.50,
+      scale == "DS"     ~ 1.00
+    ),
+    diff  = map_dbl(U_test, "estimate"),
+    P_U   = map_dbl(U_test, "p.value"),
+    U_low = map_dbl(U_test, "conf.low"),
+    U_upp = map_dbl(U_test, "conf.high")
+  ) %>%
+  dplyr::select(-U_test)
+CLES_results_sub_sampled %<>%
   mutate(
     variable = factor(variable, levels = var_names %>%
       str_replace_all(" ", "_") %>%
@@ -79,6 +116,9 @@ CLES_results %<>%
 CLES_models <- CLES_results %>%
   split(.$variable) %>%
   map(~lm(CLES_value ~ scale, .x))
+CLES_models_sub_sampled <- CLES_results_sub_sampled %>%
+  split(.$variable) %>%
+  map(~lm(CLES_value ~ scale, .x))
 
 # Summarise those models
 CLES_model_summaries <- CLES_models %>%
@@ -95,8 +135,22 @@ CLES_model_summaries <- CLES_models %>%
   )) %>%
   mutate_if(is.numeric, round, digits = 3) %>%
   dplyr::select(variable, estimate, p.value, sig)
+CLES_model_summaries_sub_sampled <- CLES_models_sub_sampled %>%
+  map_df(.id = "variable", tidy) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(sig = case_when(
+    p.value < 0.05 ~ "*",
+    p.value < 0.10 ~ ".",
+    TRUE           ~ " "
+  )) %>%
+  mutate(variable = factor(variable, levels = var_names %>%
+    str_replace_all(" ", "_") %>%
+    c("PC1")
+  )) %>%
+  mutate_if(is.numeric, round, digits = 3) %>%
+  dplyr::select(variable, estimate, p.value, sig)
 
-# Print summary table
+# Print summary tables
 as.data.frame(CLES_model_summaries)
 #>     variable estimate p.value sig
 #> 1  Elevation    0.059   0.168
@@ -109,3 +163,15 @@ as.data.frame(CLES_model_summaries)
 #> 8     Soil_C   -0.030   0.524
 #> 9         pH    0.014   0.678
 #> 10       PC1   -0.014   0.266
+as.data.frame(CLES_model_summaries_sub_sampled)
+#>     variable estimate p.value sig
+#> 1  Elevation    0.051   0.131
+#> 2        MAP   -0.220   0.060   .
+#> 3        PDQ   -0.012   0.804
+#> 4  Surface_T   -0.090   0.165
+#> 5       NDVI    0.089   0.001   *
+#> 6        CEC    0.069   0.263
+#> 7       Clay    0.153   0.069   .
+#> 8     Soil_C    0.001   0.987
+#> 9         pH    0.007   0.890
+#> 10       PC1   -0.009   0.405
