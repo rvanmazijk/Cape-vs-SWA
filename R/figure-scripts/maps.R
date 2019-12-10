@@ -3,22 +3,29 @@
 
 # .... Raster data -------------------------------------------------------------
 
+raster_list_template <- list(QDS = "QDS", HDS = "HDS", DS = "DS")
+
 # Richness rasters
-GCFR_HDS_richness  <- raster(glue("{data_dir}/GCFR_HDS_richness.tif"))
-SWAFR_HDS_richness <- raster(glue("{data_dir}/SWAFR_HDS_richness.tif"))
+GCFR_richness <- SWAFR_richness <- raster_list_template
+GCFR_richness  %<>% map(~raster(glue("{data_dir}/GCFR_{.x}_richness.tif")))
+SWAFR_richness %<>% map(~raster(glue("{data_dir}/SWAFR_{.x}_richness.tif")))
 
 # PC1 rasters
-GCFR_HDS_PC1  <- raster(glue("{data_dir}/GCFR_HDS_PC1.tif"))
-SWAFR_HDS_PC1 <- raster(glue("{data_dir}/SWAFR_HDS_PC1.tif"))
-
-# PC1 model residual rasters
-# (See below)
+GCFR_PC1 <- SWAFR_PC1 <- raster_list_template
+GCFR_PC1  %<>% map(~raster(glue("{data_dir}/GCFR_{.x}_PC1.tif")))
+SWAFR_PC1 %<>% map(~raster(glue("{data_dir}/SWAFR_{.x}_PC1.tif")))
 
 # Multivariate model residual rasters
-GCFR_multivariate_residuals <-
-  raster(glue("{data_dir}/GCFR_HDS_multivariate_richness.tif"))
-SWAFR_multivariate_residuals <-
-  raster(glue("{data_dir}/SWAFR_HDS_multivariate_richness.tif"))
+# (Filenames are correct, I promise!)
+GCFR_MV_residuals <- SWAFR_MV_residuals <- raster_list_template
+GCFR_MV_residuals  %<>% map(~raster(glue(
+  "{data_dir}/GCFR_{.x}_multivariate_richness.tif"
+)))
+SWAFR_MV_residuals %<>% map(~raster(glue(
+  "{data_dir}/SWAFR_{.x}_multivariate_richness.tif"
+)))
+
+# NOTE: See below, where I generate PC1 model residual rasters quickly
 
 # .... Border shapefiles -------------------------------------------------------
 
@@ -76,7 +83,7 @@ CT_point <- geom_point(
 )
 CT_text <- geom_text(
   aes(x = 18.4241, y = -33.9249, label = "Cape Town"),
-  size = 2,
+  size = 3,
   nudge_x = -1.5
 )
 
@@ -86,7 +93,7 @@ PE_point <- geom_point(
 )
 PE_text <- geom_text(
   aes(x = 25.6022, y = -33.9608, label = "Port Elizabeth"),
-  size = 2,
+  size = 3,
   nudge_y = -0.75
 )
 
@@ -96,7 +103,7 @@ PR_point <- geom_point(
 )
 PR_text <- geom_text(
   aes(x = 115.8605, y = -31.9505, label = "Perth"),
-  size = 2,
+  size = 3,
   nudge_x = -1.5
 )
 
@@ -106,138 +113,146 @@ ES_point <- geom_point(
 )
 ES_text <- geom_text(
   aes(x = 121.8914, y = -33.8613, label = "Esperance"),
-  size = 2,
+  size = 3,
   nudge_y = -0.75
 )
 
 # Richness maps ----------------------------------------------------------------
 
-richness_lims <- range(
-  c(SWAFR_HDS_richness[], GCFR_HDS_richness[]),
-  na.rm = TRUE
+# Define richness limits for scales
+# TODO/FIXME
+richness_lims <- map2(GCFR_richness, SWAFR_richness,
+  ~range(c(.x[], .y[]), na.rm = TRUE)
 )
-richness_lims[[2]] <- richness_lims[[2]] + 250
+richness_lims$QDS[[2]] <- richness_lims$QDS[[2]] + 250
+richness_lims$HDS[[2]] <- richness_lims$HDS[[2]] + 250
+richness_lims$DS[[2]]  <- richness_lims$DS[[2]] + 250
 
-GCFR_richness_plot <- gplot(GCFR_HDS_richness) +
-  geom_tile(aes(fill = value)) +
-  GCFR_border_gg +
-  CT_point +
-  CT_text +
-  PE_point +
-  PE_text +
-  labs(
-    title = "GCFR",
-    y     = "Latitude (º)"
-  ) +
-  annotate("text", x = 17, y = -26, label = "(a)", hjust = 1, vjust = -0.8) +
-  scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
-  scale_fill_gradientn(
-    limits   = richness_lims,
-    colours  = my_palette,
-    na.value = NA
-  ) +
-  theme(
-    axis.ticks.x    = element_blank(),
-    axis.text.x     = element_blank(),
-    axis.title.x    = element_blank(),
-    plot.title      = element_text(hjust = 0.5),
-    legend.position = "none"
-  )
-SWAFR_richness_plot <- gplot(SWAFR_HDS_richness) +
-  geom_tile(aes(fill = value)) +
-  SWAFR_border_gg +
-  PR_point +
-  PR_text +
-  ES_point +
-  ES_text +
-  ggtitle("SWAFR") +
-  geom_label(
-    aes(x = 113, y = -26, label = "(b)"),
-    nudge_y = 0.5,
-    fill = "white", label.size = 0
-  ) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
-  scale_fill_gradientn(
-    name     = bquote(italic("S")["HDS"]),
-    limits   = richness_lims,
-    colours  = my_palette,
-    na.value = NA
-  ) +
-  theme(
-    axis.ticks.x         = element_blank(),
-    axis.text.x          = element_blank(),
-    axis.title.x         = element_blank(),
-    axis.ticks.y         = element_blank(),
-    axis.text.y          = element_blank(),
-    axis.title.y         = element_blank(),
-    plot.title           = element_text(hjust = 0.5),
-    legend.direction     = "horizontal",
-    legend.position      = c(1, 0.9),
-    legend.justification = "right",
-    legend.background    = element_rect(fill = NA)
-  )
+# Make each region's map
+GCFR_richness_plots <- map2(GCFR_richness, richness_lims,
+  ~ gplot(.x) +
+    geom_tile(aes(fill = value)) +
+    GCFR_border_gg +
+    CT_point +
+    CT_text +
+    PE_point +
+    PE_text +
+    labs(title = "GCFR", y = "Latitude (º)") +
+    annotate("text", x = 17, y = -26, label = "(a)", hjust = 1, vjust = -0.8) +
+    scale_x_continuous(breaks = c(18, 22, 26)) +
+    scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
+    scale_fill_gradientn(
+      limits   = .y,
+      colours  = my_palette,
+      na.value = NA
+    ) +
+    theme(
+      axis.ticks.x    = element_blank(),
+      axis.text.x     = element_blank(),
+      axis.title.x    = element_blank(),
+      plot.title      = element_text(hjust = 0.5),
+      legend.position = "none"
+    )
+)
+SWAFR_richness_plots <- map2(SWAFR_richness, richness_lims,
+  ~ gplot(.x) +
+    geom_tile(aes(fill = value)) +
+    SWAFR_border_gg +
+    PR_point +
+    PR_text +
+    ES_point +
+    ES_text +
+    ggtitle("SWAFR") +
+    geom_label(
+      aes(x = 113, y = -26, label = "(b)"),
+      nudge_y = 0.5,
+      fill = "white", label.size = 0
+    ) +
+    scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
+    scale_fill_gradientn(
+      name     = bquote(italic("S")["HDS"]),
+      limits   = .y,
+      colours  = my_palette,
+      na.value = NA
+    ) +
+    theme(
+      axis.ticks.x         = element_blank(),
+      axis.text.x          = element_blank(),
+      axis.title.x         = element_blank(),
+      axis.ticks.y         = element_blank(),
+      axis.text.y          = element_blank(),
+      axis.title.y         = element_blank(),
+      plot.title           = element_text(hjust = 0.5),
+      legend.direction     = "horizontal",
+      legend.position      = c(1, 0.9),
+      legend.justification = "right",
+      legend.background    = element_rect(fill = NA)
+    )
+)
 
 # PC1 maps ---------------------------------------------------------------------
 
-PC1_lims <- range(
-  c(SWAFR_HDS_PC1[], GCFR_HDS_PC1[]),
-  na.rm = TRUE
+PC1_lims <- map2(GCFR_PC1, SWAFR_PC1,
+  ~range(c(.x[], .y[]), na.rm = TRUE)
 )
 
-GCFR_PC1_plot <- gplot(GCFR_HDS_PC1) +
-  geom_tile(aes(fill = value)) +
-  GCFR_border_gg +
-  CT_point +
-  CT_text +
-  PE_point +
-  PE_text +
-  ylab("Latitude (º)") +
-  annotate("text", x = 17, y = -26, label = "(c)", hjust = 1, vjust = -0.8) +
-  scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
-  scale_fill_gradientn(
-    limits   = PC1_lims,
-    colours  = my_palette,
-    na.value = NA
-  ) +
-  theme(
-    axis.ticks.x    = element_blank(),
-    axis.text.x     = element_blank(),
-    axis.title.x    = element_blank(),
-    legend.position = "none"
-  )
-SWAFR_PC1_plot <- gplot(SWAFR_HDS_PC1) +
-  geom_tile(aes(fill = value)) +
-  SWAFR_border_gg +
-  PR_point +
-  PR_text +
-  ES_point +
-  ES_text +
-  geom_label(
-    aes(x = 113, y = -26, label = "(d)"),
-    nudge_y = 0.5,
-    fill = "white", label.size = 0
-  ) +
-  scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
-  scale_fill_gradientn(
-    name     = "PC1",
-    limits   = PC1_lims,
-    colours  = my_palette,
-    na.value = NA
-  ) +
-  theme(
-    axis.ticks.x         = element_blank(),
-    axis.text.x          = element_blank(),
-    axis.title.x         = element_blank(),
-    axis.ticks.y         = element_blank(),
-    axis.text.y          = element_blank(),
-    axis.title.y         = element_blank(),
-    legend.direction     = "horizontal",
-    legend.position      = c(1, 0.9),
-    legend.justification = "right",
-    legend.background    = element_rect(fill = NA)
-  )
+GCFR_PC1_plots <- map2(GCFR_PC1, PC1_lims,
+  ~ gplot(.x) +
+    geom_tile(aes(fill = value)) +
+    GCFR_border_gg +
+    CT_point +
+    CT_text +
+    PE_point +
+    PE_text +
+    ylab("Latitude (º)") +
+    annotate("text", x = 17, y = -26, label = "(c)", hjust = 1, vjust = -0.8) +
+    scale_x_continuous(breaks = c(18, 22, 26)) +
+    scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
+    scale_fill_gradientn(
+      limits   = .y,
+      colours  = my_palette,
+      na.value = NA
+    ) +
+    theme(
+      axis.ticks.x    = element_blank(),
+      axis.text.x     = element_blank(),
+      axis.title.x    = element_blank(),
+      legend.position = "none"
+    )
+)
+SWAFR_PC1_plots <- map2(SWAFR_PC1, PC1_lims,
+  ~ gplot(.x) +
+    geom_tile(aes(fill = value)) +
+    SWAFR_border_gg +
+    PR_point +
+    PR_text +
+    ES_point +
+    ES_text +
+    geom_label(
+      aes(x = 113, y = -26, label = "(d)"),
+      nudge_y = 0.5,
+      fill = "white", label.size = 0
+    ) +
+    scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
+    scale_fill_gradientn(
+      name     = "PC1",
+      limits   = .y,
+      colours  = my_palette,
+      na.value = NA
+    ) +
+    theme(
+      axis.ticks.x         = element_blank(),
+      axis.text.x          = element_blank(),
+      axis.title.x         = element_blank(),
+      axis.ticks.y         = element_blank(),
+      axis.text.y          = element_blank(),
+      axis.title.y         = element_blank(),
+      legend.direction     = "horizontal",
+      legend.position      = c(1, 0.9),
+      legend.justification = "right",
+      legend.background    = element_rect(fill = NA)
+    )
+)
 
 # PC1 residuals maps -----------------------------------------------------------
 
