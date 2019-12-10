@@ -76,11 +76,11 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
   guides(
     fill = FALSE,
     shape = guide_legend(
-      title = "Effect type",
+      title = "Effect type", order = 1,
       override.aes = list(fill = c(NA, "black", "white"))
     ),
     alpha = guide_legend(
-      title = "Significance",
+      title = "Significance", order = 2,
       nrow = 2, byrow = TRUE,
       override.aes = list(
         shape    = c(     21,      21,      21,      21),
