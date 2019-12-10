@@ -254,6 +254,7 @@ m_QDS_richness %<>% step(direction = "backward", trace = 0)
 m_HDS_richness %<>% step(direction = "backward", trace = 0)
 m_DS_richness  %<>% step(direction = "backward", trace = 0)
 
+# Check
 par(mfrow = c(2, 2))
 plot(m_QDS_richness)
 plot(m_HDS_richness)
