@@ -73,7 +73,7 @@ DS_plot <- ggplot(data$DS, aes(PC1, DS_richness)) +
     title  = bquote("(c)  DS ("*italic("R")^{"2"}*" = 0.28)")
   ) +
   scale_fill_manual(values = c("black", "white")) +
-  scale_shape_manual(values = c(21, 24), labels = c("\nHotspots", "")) +
+  scale_shape_manual(values = c(21, 24), labels = c("\n\nHotspots", "")) +
   coord_cartesian(ylim = master_ylim) +
   guides(
     fill = guide_legend(
