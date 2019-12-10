@@ -133,10 +133,8 @@ GCFR_richness_plots <- map2(GCFR_richness, richness_lims,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
-    CT_point +
-    CT_text +
-    PE_point +
-    PE_text +
+    CT_point + CT_text +
+    PE_point + PE_text +
     labs(title = "GCFR", y = "Latitude (º)") +
     annotate("text", x = 17, y = -26, label = "(a)", hjust = 1, vjust = -0.8) +
     scale_x_continuous(breaks = c(18, 22, 26)) +
@@ -158,10 +156,8 @@ SWAFR_richness_plots <- map2(SWAFR_richness, richness_lims,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
-    PR_point +
-    PR_text +
-    ES_point +
-    ES_text +
+    PR_point + PR_text +
+    ES_point + ES_text +
     ggtitle("SWAFR") +
     geom_label(
       aes(x = 113, y = -26, label = "(b)"),
@@ -200,10 +196,8 @@ GCFR_PC1_plots <- map2(GCFR_PC1, PC1_lims,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
-    CT_point +
-    CT_text +
-    PE_point +
-    PE_text +
+    CT_point + CT_text +
+    PE_point + PE_text +
     ylab("Latitude (º)") +
     annotate("text", x = 17, y = -26, label = "(c)", hjust = 1, vjust = -0.8) +
     scale_x_continuous(breaks = c(18, 22, 26)) +
@@ -224,10 +218,8 @@ SWAFR_PC1_plots <- map2(SWAFR_PC1, PC1_lims,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
-    PR_point +
-    PR_text +
-    ES_point +
-    ES_text +
+    PR_point + PR_text +
+    ES_point + ES_text +
     geom_label(
       aes(x = 113, y = -26, label = "(d)"),
       nudge_y = 0.5,
@@ -301,10 +293,8 @@ residuals_lims[[2]] <- residuals_lims[[2]] + 250
 GCFR_residuals_plot <- gplot(GCFR_HDS_residuals) +
   geom_tile(aes(fill = value)) +
   GCFR_border_gg +
-  CT_point +
-  CT_text +
-  PE_point +
-  PE_text +
+  CT_point + CT_text +
+  PE_point + PE_text +
   ylab("Latitude (º)") +
   annotate("text", x = 17, y = -26, label = "(e)", hjust = 1, vjust = -0.8) +
   scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
@@ -323,10 +313,8 @@ GCFR_residuals_plot <- gplot(GCFR_HDS_residuals) +
 SWAFR_residuals_plot <- gplot(SWAFR_HDS_residuals) +
   geom_tile(aes(fill = value)) +
   SWAFR_border_gg +
-  PR_point +
-  PR_text +
-  ES_point +
-  ES_text +
+  PR_point + PR_text +
+  ES_point + ES_text +
   geom_label(
     aes(x = 113, y = -26, label = "(f)"),
     nudge_y = 0.5,
@@ -357,10 +345,8 @@ SWAFR_residuals_plot <- gplot(SWAFR_HDS_residuals) +
 GCFR_mresiduals_plot <- gplot(GCFR_multivariate_residuals) +
   geom_tile(aes(fill = value)) +
   GCFR_border_gg +
-  CT_point +
-  CT_text +
-  PE_point +
-  PE_text +
+  CT_point + CT_text +
+  PE_point + PE_text +
   labs(
     x = "Longitude (º)",
     y = "Latitude (º)"
@@ -377,10 +363,8 @@ GCFR_mresiduals_plot <- gplot(GCFR_multivariate_residuals) +
 SWAFR_mresiduals_plot <- gplot(SWAFR_multivariate_residuals) +
   geom_tile(aes(fill = value)) +
   SWAFR_border_gg +
-  PR_point +
-  PR_text +
-  ES_point +
-  ES_text +
+  PR_point + PR_text +
+  ES_point + ES_text +
   xlab("Longitude (º)") +
   geom_label(
     aes(x = 113, y = -26, label = "(h)"),
