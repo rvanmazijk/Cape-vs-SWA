@@ -128,9 +128,12 @@ heterogeneity_PCAs %<>% map(force_positive_PC1)
 # Plot PC-biplots
 PC_biplots <- pmap(list(heterogeneity_PCAs, heterogeneity, names(heterogeneity)),
   ~ autoplot(..1, data = ..2, colour = "region",
-    loadings       = TRUE, loadings.colour       = "black",
-    loadings.label = TRUE, loadings.label.colour = "black",
-    loadings.label.hjust = -0.25
+    loadings = TRUE,
+      loadings.colour = "black",
+      loadings.label = TRUE,
+        loadings.label.colour = "black",
+        loadings.label.hjust = -0.25,
+        loadings.label.size = 3
   ) +
   geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
   geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
