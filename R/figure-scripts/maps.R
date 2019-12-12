@@ -128,7 +128,7 @@ richness_lims$HDS[[2]] <- richness_lims$HDS[[2]] + 250
 richness_lims$DS[[2]]  <- richness_lims$DS[[2]]  + 250
 
 # Make each region's map
-GCFR_richness_plots <- map2(GCFR_richness, richness_lims,
+GCFR_richness_plots <- imap(GCFR_richness,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
@@ -139,7 +139,7 @@ GCFR_richness_plots <- map2(GCFR_richness, richness_lims,
     scale_x_continuous(breaks = c(18, 22, 26)) +
     scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
     scale_fill_gradientn(
-      limits   = .y,
+      limits   = richness_lims[[.y]],
       colours  = my_palette,
       na.value = NA
     ) +
@@ -151,7 +151,7 @@ GCFR_richness_plots <- map2(GCFR_richness, richness_lims,
       legend.position = "none"
     )
 )
-SWAFR_richness_plots <- map2(SWAFR_richness, richness_lims,
+SWAFR_richness_plots <- imap(SWAFR_richness,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
@@ -165,8 +165,8 @@ SWAFR_richness_plots <- map2(SWAFR_richness, richness_lims,
     ) +
     scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
     scale_fill_gradientn(
-      name     = bquote(italic("S")["HDS"]),
-      limits   = .y,
+      name     = bquote(italic("S")[.(.y)]),
+      limits   = richness_lims[[.y]],
       colours  = my_palette,
       na.value = NA
     ) +
@@ -191,7 +191,7 @@ PC1_lims <- map2(GCFR_PC1, SWAFR_PC1,
   ~range(c(.x[], .y[]), na.rm = TRUE)
 )
 
-GCFR_PC1_plots <- map2(GCFR_PC1, PC1_lims,
+GCFR_PC1_plots <- imap(GCFR_PC1,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
@@ -202,7 +202,7 @@ GCFR_PC1_plots <- map2(GCFR_PC1, PC1_lims,
     scale_x_continuous(breaks = c(18, 22, 26)) +
     scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
     scale_fill_gradientn(
-      limits   = .y,
+      limits   = PC1_lims[[.y]],
       colours  = my_palette,
       na.value = NA
     ) +
@@ -213,7 +213,7 @@ GCFR_PC1_plots <- map2(GCFR_PC1, PC1_lims,
       legend.position = "none"
     )
 )
-SWAFR_PC1_plots <- map2(SWAFR_PC1, PC1_lims,
+SWAFR_PC1_plots <- imap(SWAFR_PC1,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
@@ -227,7 +227,7 @@ SWAFR_PC1_plots <- map2(SWAFR_PC1, PC1_lims,
     scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
     scale_fill_gradientn(
       name     = "PC1",
-      limits   = .y,
+      limits   = PC1_lims[[.y]],
       colours  = my_palette,
       na.value = NA
     ) +
@@ -292,7 +292,6 @@ PC1_residuals <- pmap(list(         GCFR_richness,      SWAFR_richness,
 
 })
 
-
 # .... Make maps proper --------------------------------------------------------
 
 residuals_lims <- map(PC1_residuals,
@@ -305,65 +304,63 @@ residuals_lims$DS[[2]]  <- residuals_lims$DS[[2]]  + 250
 
 GCFR_PC1_residuals_plots <- PC1_residuals %$%
   list(QDS = QDS$GCFR, HDS = HDS$GCFR, DS = DS$GCFR) %>%
-  map2(residuals_lims,
-    ~ gplot(.x) +
-      geom_tile(aes(fill = value)) +
-      GCFR_border_gg +
-      CT_point + CT_text +
-      PE_point + PE_text +
-      ylab("Latitude (º)") +
-      annotate("text", x = 17, y = -26, label = "(e)", hjust = 1, vjust = -0.8) +
-      scale_x_continuous(breaks = c(18, 22, 26)) +
-      scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
-      scale_fill_gradientn(
-        limits   = .y,
-        colours  = my_palette,
-        na.value = NA
-      ) +
-      theme(
-        axis.ticks.x    = element_blank(),
-        axis.text.x     = element_blank(),
-        axis.title.x    = element_blank(),
-        legend.position = "none"
-      )
+  imap(~ gplot(.x) +
+    geom_tile(aes(fill = value)) +
+    GCFR_border_gg +
+    CT_point + CT_text +
+    PE_point + PE_text +
+    ylab("Latitude (º)") +
+    annotate("text", x = 17, y = -26, label = "(e)", hjust = 1, vjust = -0.8) +
+    scale_x_continuous(breaks = c(18, 22, 26)) +
+    scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
+    scale_fill_gradientn(
+      limits   = residuals_lims[[.y]],
+      colours  = my_palette,
+      na.value = NA
+    ) +
+    theme(
+      axis.ticks.x    = element_blank(),
+      axis.text.x     = element_blank(),
+      axis.title.x    = element_blank(),
+      legend.position = "none"
+    )
   )
 SWAFR_PC1_residuals_plots <- PC1_residuals %$%
   list(QDS = QDS$SWAFR, HDS = HDS$SWAFR, DS = DS$SWAFR) %>%
-  map2(residuals_lims,
-    ~ gplot(.x) +
-      geom_tile(aes(fill = value)) +
-      SWAFR_border_gg +
-      PR_point + PR_text +
-      ES_point + ES_text +
-      geom_label(
-        aes(x = 113, y = -26, label = "(f)"),
-        nudge_y = 0.5,
-        fill = "white", label.size = 0
-      ) +
-      scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
-      scale_fill_gradientn(
-        name     = bquote("Res."~italic("S")["HDS"]~"(PC1)"),
-        limits   = .y,
-        colours  = my_palette,
-        na.value = NA
-      ) +
-      theme(
-        axis.ticks.x         = element_blank(),
-        axis.text.x          = element_blank(),
-        axis.title.x         = element_blank(),
-        axis.ticks.y         = element_blank(),
-        axis.text.y          = element_blank(),
-        axis.title.y         = element_blank(),
-        legend.direction     = "horizontal",
-        legend.position      = c(1, 0.9),
-        legend.justification = "right",
-        legend.background    = element_rect(fill = NA)
-      )
+  imap(~ gplot(.x) +
+    geom_tile(aes(fill = value)) +
+    SWAFR_border_gg +
+    PR_point + PR_text +
+    ES_point + ES_text +
+    geom_label(
+      aes(x = 113, y = -26, label = "(f)"),
+      nudge_y = 0.5,
+      fill = "white", label.size = 0
+    ) +
+    scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
+    scale_fill_gradientn(
+      name     = bquote("Res."~italic("S")[.(.y)]~"(PC1)"),
+      limits   = residuals_lims[[.y]],
+      colours  = my_palette,
+      na.value = NA
+    ) +
+    theme(
+      axis.ticks.x         = element_blank(),
+      axis.text.x          = element_blank(),
+      axis.title.x         = element_blank(),
+      axis.ticks.y         = element_blank(),
+      axis.text.y          = element_blank(),
+      axis.title.y         = element_blank(),
+      legend.direction     = "horizontal",
+      legend.position      = c(1, 0.9),
+      legend.justification = "right",
+      legend.background    = element_rect(fill = NA)
+    )
   )
 
 # Multivariate residuals maps --------------------------------------------------
 
-GCFR_MV_residuals_plots <- map2(GCFR_MV_residuals, residuals_lims,
+GCFR_MV_residuals_plots <- imap(GCFR_MV_residuals,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
@@ -377,13 +374,13 @@ GCFR_MV_residuals_plots <- map2(GCFR_MV_residuals, residuals_lims,
     scale_x_continuous(breaks = c(18, 22, 26)) +#, limits = c(16, 28)) +
     scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
     scale_fill_gradientn(
-      limits   = .y,
+      limits   = residuals_lims[[.y]],
       colours  = my_palette,
       na.value = NA
     ) +
     theme(legend.position = "none")
 )
-SWAFR_MV_residuals_plots <- map2(SWAFR_MV_residuals, residuals_lims,
+SWAFR_MV_residuals_plots <- imap(SWAFR_MV_residuals,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
@@ -397,8 +394,8 @@ SWAFR_MV_residuals_plots <- map2(SWAFR_MV_residuals, residuals_lims,
     ) +
     scale_y_continuous(breaks = c(-34, -30, -26), limits = c(-35.5, -25)) +
     scale_fill_gradientn(
-      name     = bquote("Res."~italic("S")["HDS"]~"(MV)"),
-      limits   = .y,
+      name     = bquote("Res."~italic("S")[.(.y)]~"(MV)"),
+      limits   = residuals_lims[[.y]],
       colours  = my_palette,
       na.value = NA
     ) +
