@@ -419,7 +419,7 @@ writeRaster(
   overwrite = TRUE
 )
 writeRaster(
-  SWAFR_QDS_richness,
+  SWAFR_QDS_PC1,
   glue("{data_dir}/SWAFR_QDS_PC1.tif"),
   overwrite = TRUE
 )
