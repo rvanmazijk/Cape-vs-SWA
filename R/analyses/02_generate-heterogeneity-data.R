@@ -113,8 +113,6 @@ map(heterogeneity_PCAs, summary)
 #> $QDS                           0.4244
 #> $HDS                           0.3902
 #> $DS                            0.4126
-map(heterogeneity_PCAs_clim, summary)
-map(heterogeneity_PCAs_soil, summary)
 
 # Force PC1 scores to be positive if all vars' rotations are negative
 force_positive_PC1 <- function(PCA) {
