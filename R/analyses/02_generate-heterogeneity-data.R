@@ -170,12 +170,12 @@ PC_biplots
 
 # Save for SI
 ggsave(
-  here("draft-02/figures/plot-PC-biplots.pdf"),
+  here("figures/plot-PC-biplots.pdf"),
   PC_biplots,
   width = 8, height = 6
 )
 ggsave(
-  here("draft-02/figures/plot-PC-biplots.png"),
+  here("figures/plot-PC-biplots.png"),
   PC_biplots,
   width = 8, height = 6
 )
