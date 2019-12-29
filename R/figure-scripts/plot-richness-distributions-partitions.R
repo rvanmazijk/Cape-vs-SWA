@@ -201,7 +201,7 @@ richness_plots <- hist_plots %$% plot_grid(
   DS_richness,
   HDS_richness,
   QDS_richness,
-  nrow = 3,rel_heights = c(0.85, 0.9, 1),
+  nrow = 3, rel_heights = c(0.85, 0.9, 1),
   labels = c("(a)", "(b)", "(c)"), label_fontface = "plain",
   label_x = 0.125, label_y = 0.975
 )

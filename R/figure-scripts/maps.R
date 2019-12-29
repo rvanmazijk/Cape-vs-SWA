@@ -466,10 +466,99 @@ outliers %>%
 
 # .... Plot maps outliers ------------------------------------------------------
 
+code2midpt <- function(x, type = c("lon", "lat"), scale = c("QDS", "HDS")) {
+  if (scale == "QDS") {
+    if (type == "lon") {
+      case_when(
+        x %in% c("AA", "AC", "CA", "CC") ~ 0.125,
+        x %in% c("AB", "AD", "CB", "CD") ~ 0.375,
+        x %in% c("BA", "BC", "DA", "DC") ~ 0.625,
+        x %in% c("BB", "BD", "DB", "DD") ~ 0.875
+      )
+    } else if (type == "lat") {
+      case_when(
+        x %in% c("AA", "AB", "BA", "BB") ~ 0.125,
+        x %in% c("AC", "AD", "BC", "BD") ~ 0.375,
+        x %in% c("CA", "CB", "DA", "DB") ~ 0.625,
+        x %in% c("CC", "CD", "DC", "DD") ~ 0.875
+      )
+    }
+  } else if (scale == "HDS") {
+    if (type == "lon") {
+      case_when(
+        x %in% c("A", "C") ~ 0.25,
+        x %in% c("B", "D") ~ 0.75
+      )
+    } else if (type == "lat") {
+      case_when(
+        x %in% c("A", "B") ~ 0.25,
+        x %in% c("C", "D") ~ 0.75
+      )
+    }
+  }
+}
+
+# Reverse-engineer true cell midpoints from their grid-cell codes
+outliers2 <- outliers %>%
+  mutate(
+    lon1 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("E\\d{3}") %>%
+        str_remove("E") %>%
+        as.numeric(),
+      scale == "HDS" ~ HDS %>%
+        str_extract("E\\d{3}") %>%
+        str_remove("E") %>%
+        as.numeric(),
+      scale == "DS" ~ DS %>%
+        str_extract("E\\d{3}") %>%
+        str_remove("E") %>%
+        as.numeric()
+    ),
+    lon2 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("[ABCD]{2}") %>%
+        code2midpt("lon", "QDS"),
+      scale == "HDS" ~ HDS %>%
+        str_extract("[ABCD]{1}") %>%
+        code2midpt("lon", "HDS"),
+      scale == "DS" ~ 0.5
+    ),
+    lat1 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("S\\d{2}") %>%
+        str_remove("S") %>%
+        as.numeric(),
+      scale == "HDS" ~ HDS %>%
+        str_extract("S\\d{2}") %>%
+        str_remove("S") %>%
+        as.numeric(),
+      scale == "DS" ~ DS %>%
+        str_extract("S\\d{2}") %>%
+        str_remove("S") %>%
+        as.numeric()
+    ),
+    lat2 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("[ABCD]{2}") %>%
+        code2midpt("lat", "QDS"),
+      scale == "HDS" ~ HDS %>%
+        str_extract("[ABCD]{1}") %>%
+        code2midpt("lat", "HDS"),
+      scale == "DS" ~ 0.5
+    ),
+  ) %>%
+  mutate(
+    lon = lon1 + lon2,
+    lat = -(lat1 + lat2)  # bc all southern hemisphere
+  ) %>%
+  dplyr::select(-lon1, -lon2, -lat1, -lat2) %>%
+  as.data.frame()
+
 # Combine annotations for each region for use in loop below
 border_gg   <- list(GCFR = GCFR_border_gg, SWAFR = SWAFR_border_gg)
 city1_point <- list(GCFR = CT_point,       SWAFR = PR_point)
-city1_text  <- list(GCFR = CT_point,       SWAFR = PR_text)
+city1_text  <- list(GCFR = CT_text,        SWAFR = PR_text)
 city2_point <- list(GCFR = PE_point,       SWAFR = ES_point)
 city2_text  <- list(GCFR = PE_text,        SWAFR = ES_text)
 
@@ -481,7 +570,7 @@ outlier_maps <-
         function(each_scale) {
       map(list(GCFR = "GCFR", SWAFR = "SWAFR"),
           function(each_region) {
-        outliers %>%
+        outliers2 %>%
           filter(region == each_region, scale == each_scale) %>%
           ggplot() +
             aes_string(
@@ -489,7 +578,11 @@ outlier_maps <-
               colour = each_outlier_type,
               fill   = each_outlier_type
             ) +
-            geom_tile(size = 0.5) +
+            geom_tile(size = 0.5, width = case_when(
+              each_scale == "QDS" ~ 0.25,
+              each_scale == "HDS" ~ 0.50,
+              each_scale == "DS"  ~ 1.00
+            )) +
             border_gg[[each_region]] +
             city1_point[[each_region]] + city1_text[[each_region]] +
             city2_point[[each_region]] + city2_text[[each_region]] +
@@ -497,12 +590,40 @@ outlier_maps <-
               x = "Longitude (º)",
               y = "Latitude (º)"
             ) +
+            geom_label(
+              aes(
+                x = ifelse(each_region == "GCFR", 17, 113),
+                y = -26, size = 0.5,
+                label = case_when(
+                  (each_region == "GCFR")  & (each_scale == "QDS") ~ "(a)",
+                  # FIXME: (a) not showing up?
+                  (each_region == "SWAFR") & (each_scale == "QDS") ~ "(b)",
+                  (each_region == "GCFR")  & (each_scale == "HDS") ~ "(c)",
+                  (each_region == "SWAFR") & (each_scale == "HDS") ~ "(d)",
+                  (each_region == "GCFR")  & (each_scale == "DS")  ~ "(e)",
+                  (each_region == "SWAFR") & (each_scale == "DS")  ~ "(f)"
+                ),
+              ),
+              nudge_y = 0.5,
+              fill = "white", label.size = 0
+            ) +
+            # FIXME: causes blank panels...
+            #scale_x_continuous(
+            #  breaks = ifelse(each_region == "GCFR",
+            #    c(18, 22, 26),
+            #    c(114, 118, 122)
+            #  ),
+            #  limits = ifelse(each_region == "GCFR",
+            #    c(16, 28),
+            #    c(112, 127)
+            #  )
+            #) +
             scale_y_continuous(
               breaks = c(-34, -30, -26),
-              limits = c(-35.5, -25)
+              limits = c(-35.5, -24.5)
             ) +
-            scale_colour_manual(values = "black", na.value = NA) +
-            scale_fill_manual(values = "grey75",     na.value = NA) +
+            scale_colour_manual(values = "black",  na.value = NA) +
+            scale_fill_manual(values   = "grey75", na.value = NA) +
             theme(legend.position = "none")
       })
     })
@@ -530,29 +651,59 @@ all_plots <- pmap(list(GCFR_richness_plots,      SWAFR_richness_plots,
 )
 
 # For outlier maps
-#no_x_axis <- theme(
-#  axis.ticks.x    = element_blank(),
-#  axis.text.x     = element_blank(),
-#  axis.title.x    = element_blank()
-#)
-#no_y_axis <- theme(
-#  axis.ticks.y    = element_blank(),
-#  axis.text.y     = element_blank(),
-#  axis.title.y    = element_blank()
-#)
+no_x_axis <- theme(
+  axis.ticks.x    = element_blank(),
+  axis.text.x     = element_blank(),
+  axis.title.x    = element_blank()
+)
+no_y_axis <- theme(
+  axis.ticks.y    = element_blank(),
+  axis.text.y     = element_blank(),
+  axis.title.y    = element_blank()
+)
 PC1_outlier_maps <- outlier_maps$PC1 %$% plot_grid(
-  QDS$GCFR, QDS$SWAFR,
-  HDS$GCFR, HDS$SWAFR,
-  DS$GCFR,
-  nrow = 3, labels = c("(a)", "(b)", "(c)", "(d)", "(e)"),
-  rel_widths = c(0.9, 1)
+  nrow = 1, rel_widths = c(0.9, 1),
+  plot_grid(
+    nrow = 3,
+    QDS$GCFR +
+      no_x_axis +
+      ggtitle("GCFR") +
+      theme(plot.title = element_text(hjust = 0.5)),
+    HDS$GCFR + no_x_axis,
+    DS$GCFR
+  ),
+  plot_grid(
+    nrow = 3, rel_heights = c(0.95, 1.025, 0.875),
+    QDS$SWAFR +
+      no_x_axis +
+      no_y_axis +
+      ggtitle("SWAFR") +
+      theme(plot.title = element_text(hjust = 0.5)),
+    HDS$SWAFR + no_y_axis,
+    white_rect
+  )
 )
 MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
-  QDS$GCFR, QDS$SWAFR,
-  HDS$GCFR, HDS$SWAFR,
-  DS$GCFR,
-  nrow = 3, labels = c("(a)", "(b)", "(c)", "(d)", "(e)"),
-  rel_widths = c(0.9, 1)
+    nrow = 1, rel_widths = c(0.9, 1),
+  plot_grid(
+    nrow = 3,
+    QDS$GCFR +
+      no_x_axis +
+      ggtitle("GCFR") +
+      theme(plot.title = element_text(hjust = 0.5)),
+    HDS$GCFR + no_x_axis,
+    DS$GCFR
+  ),
+  plot_grid(
+    nrow = 3, rel_heights = c(0.95, 1.025, 0.875),
+    QDS$SWAFR +
+      no_x_axis +
+      no_y_axis +
+      ggtitle("SWAFR") +
+      theme(plot.title = element_text(hjust = 0.5)),
+    HDS$SWAFR + no_y_axis,
+    white_rect
+  )
 )
 
 # Save all to disc -------------------------------------------------------------
@@ -573,21 +724,21 @@ imap(all_plots, ~ {
 ggsave(
   here("figures/map-PC1-outliers.pdf"),
   PC1_outlier_maps,
-  width = 7, height = 12
+  width = 9, height = 12
 )
 ggsave(
   here("figures/map-PC1-outliers.png"),
   PC1_outlier_maps, dpi = 600,
-  width = 7, height = 12
+  width = 9, height = 12
 )
 
 ggsave(
   here("figures/map-mv-outliers.pdf"),
   MV_outlier_maps,
-  width = 7, height = 12
+  width = 9, height = 12
 )
 ggsave(
-  here("figures/map-mv-outliers.pdf"),
+  here("figures/map-mv-outliers.png"),
   MV_outlier_maps, dpi = 600,
-  width = 7, height = 12
+  width = 9, height = 12
 )
