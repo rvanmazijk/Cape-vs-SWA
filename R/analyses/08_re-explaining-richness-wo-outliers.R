@@ -24,7 +24,7 @@ data %>%
   ) %>%
   mutate_if(is.logical, ~ifelse(., "*", " ")) %>%
   mutate_if(is.character, ~ifelse(is.na(.), " ", .)) %>%
-  write_csv(here("draft-02/manuscript_ver3-4/list-outlier-squares.csv"))
+  write_csv(here("results/list-outlier-squares.csv"))
 
 # .... Maps of outliers --------------------------------------------------------
 
