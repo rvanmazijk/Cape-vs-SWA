@@ -464,16 +464,16 @@ outliers %>%
   summarise(n())
 # Same :)
 
-# .... Plot outliers -----------------------------------------------------------
+# .... Plot maps outliers ------------------------------------------------------
 
+# Combine annotations for each region for use in loop below
 border_gg   <- list(GCFR = GCFR_border_gg, SWAFR = SWAFR_border_gg)
-
 city1_point <- list(GCFR = CT_point,       SWAFR = PR_point)
 city1_text  <- list(GCFR = CT_point,       SWAFR = PR_text)
-
 city2_point <- list(GCFR = PE_point,       SWAFR = ES_point)
 city2_text  <- list(GCFR = PE_text,        SWAFR = ES_text)
 
+# Loops to make all possible panels
 outlier_maps <-
   map(list(PC1 = "is_PC1_outlier", MV = "is_MV_outlier"),
       function(each_outlier_type) {
@@ -487,8 +487,8 @@ outlier_maps <-
             aes_string(
               "lon", "lat",
               colour = each_outlier_type,
-              fill = each_outlier_type
-              ) +
+              fill   = each_outlier_type
+            ) +
             geom_tile(size = 0.5) +
             border_gg[[each_region]] +
             city1_point[[each_region]] + city1_text[[each_region]] +
@@ -502,16 +502,20 @@ outlier_maps <-
               limits = c(-35.5, -25)
             ) +
             scale_colour_manual(values = "black", na.value = NA) +
-            scale_fill_manual(values = "red",     na.value = NA) +
+            scale_fill_manual(values = "grey75",     na.value = NA) +
             theme(legend.position = "none")
       })
     })
   })
 
-outlier_maps
+# Tidy up
+# No outliers for SWAFR for these
+outlier_maps$PC1$DS$SWAFR <- NULL
+outlier_maps$MV$DS$SWAFR  <- NULL
 
 # Panel all together -----------------------------------------------------------
 
+# For main variables' maps
 all_plots <- pmap(list(GCFR_richness_plots,      SWAFR_richness_plots,
                        GCFR_PC1_plots,           SWAFR_PC1_plots,
                        GCFR_PC1_residuals_plots, SWAFR_PC1_residuals_plots,
@@ -525,7 +529,33 @@ all_plots <- pmap(list(GCFR_richness_plots,      SWAFR_richness_plots,
   )
 )
 
-# Save to disc -----------------------------------------------------------------
+# For outlier maps
+#no_x_axis <- theme(
+#  axis.ticks.x    = element_blank(),
+#  axis.text.x     = element_blank(),
+#  axis.title.x    = element_blank()
+#)
+#no_y_axis <- theme(
+#  axis.ticks.y    = element_blank(),
+#  axis.text.y     = element_blank(),
+#  axis.title.y    = element_blank()
+#)
+PC1_outlier_maps <- outlier_maps$PC1 %$% plot_grid(
+  QDS$GCFR, QDS$SWAFR,
+  HDS$GCFR, HDS$SWAFR,
+  DS$GCFR,
+  nrow = 3, labels = c("(a)", "(b)", "(c)", "(d)", "(e)"),
+  rel_widths = c(0.9, 1)
+)
+MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
+  QDS$GCFR, QDS$SWAFR,
+  HDS$GCFR, HDS$SWAFR,
+  DS$GCFR,
+  nrow = 3, labels = c("(a)", "(b)", "(c)", "(d)", "(e)"),
+  rel_widths = c(0.9, 1)
+)
+
+# Save all to disc -------------------------------------------------------------
 
 imap(all_plots, ~ {
   ggsave(
@@ -539,3 +569,25 @@ imap(all_plots, ~ {
     width = 7, height = 12
   )
 })
+
+ggsave(
+  here("figures/map-PC1-outliers.pdf"),
+  PC1_outlier_maps,
+  width = 7, height = 12
+)
+ggsave(
+  here("figures/map-PC1-outliers.png"),
+  PC1_outlier_maps, dpi = 600,
+  width = 7, height = 12
+)
+
+ggsave(
+  here("figures/map-mv-outliers.pdf"),
+  MV_outlier_maps,
+  width = 7, height = 12
+)
+ggsave(
+  here("figures/map-mv-outliers.pdf"),
+  MV_outlier_maps, dpi = 600,
+  width = 7, height = 12
+)
