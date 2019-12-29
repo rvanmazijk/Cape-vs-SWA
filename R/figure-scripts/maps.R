@@ -58,6 +58,10 @@ plot(GCFR_border_dissolved)
 plot(SWAFR_border_dissolved)
 par(op)
 
+# .... Outlier squares ---------------------------------------------------------
+
+outliers <- read_csv(here("results/list-outlier-squares.csv"))
+
 # Set colour palette for these maps --------------------------------------------
 
 my_palette <- rev(viridis::viridis(10))
@@ -409,6 +413,102 @@ SWAFR_MV_residuals_plots <- imap(SWAFR_MV_residuals,
       legend.background    = element_rect(fill = NA)
     )
 )
+
+# Outlier maps -----------------------------------------------------------------
+
+# .... Confirm that outliers are same in these rasters as in dataset -----------
+
+# ........ PC1-outliers --------------------------------------------------------
+
+# To merge regions' rasters together, ammend origins to be same
+set_origin <- function(r, ox = 0, oy = 0) {
+  origin(r) <- c(ox, oy)
+  r
+}
+
+# Merge
+PC1_residuals2 <- PC1_residuals %>%
+  map(map, set_origin) %>%
+  map(~merge(.$GCFR, .$SWAFR))
+
+# Check
+PC1_residuals2 %>%
+  map(~which(scale(.[]) > 2)) %>%
+  map(length)
+outliers %>%
+  filter(is_PC1_outlier == "*") %>%
+  group_by(scale) %>%
+  summarise(n())
+# FIXME: not the same
+
+# ........ MV-outliers ---------------------------------------------------------
+
+# Ammend origins to be same
+GCFR_MV_residuals2  <- map(GCFR_MV_residuals,  set_origin)
+SWAFR_MV_residuals2 <- map(SWAFR_MV_residuals, set_origin)
+
+# Check
+map(GCFR_MV_residuals2, origin)
+map(SWAFR_MV_residuals2, origin)
+
+# Merge
+MV_residuals2 <- map2(GCFR_MV_residuals2, SWAFR_MV_residuals2, merge)
+
+# Check
+MV_residuals2 %>%
+  map(~which(scale(.[]) > 2)) %>%
+  map(length)
+outliers %>%
+  filter(is_MV_outlier == "*") %>%
+  group_by(scale) %>%
+  summarise(n())
+# Same :)
+
+# .... Plot outliers -----------------------------------------------------------
+
+border_gg   <- list(GCFR = GCFR_border_gg, SWAFR = SWAFR_border_gg)
+
+city1_point <- list(GCFR = CT_point,       SWAFR = PR_point)
+city1_text  <- list(GCFR = CT_point,       SWAFR = PR_text)
+
+city2_point <- list(GCFR = PE_point,       SWAFR = ES_point)
+city2_text  <- list(GCFR = PE_text,        SWAFR = ES_text)
+
+outlier_maps <-
+  map(list(PC1 = "is_PC1_outlier", MV = "is_MV_outlier"),
+      function(each_outlier_type) {
+    map(list(QDS = "QDS", HDS = "HDS", DS = "DS"),
+        function(each_scale) {
+      map(list(GCFR = "GCFR", SWAFR = "SWAFR"),
+          function(each_region) {
+        outliers %>%
+          filter(region == each_region, scale == each_scale) %>%
+          ggplot() +
+            aes_string(
+              "lon", "lat",
+              colour = each_outlier_type,
+              fill = each_outlier_type
+              ) +
+            geom_tile(size = 0.5) +
+            border_gg[[each_region]] +
+            city1_point[[each_region]] + city1_text[[each_region]] +
+            city2_point[[each_region]] + city2_text[[each_region]] +
+            labs(
+              x = "Longitude (º)",
+              y = "Latitude (º)"
+            ) +
+            scale_y_continuous(
+              breaks = c(-34, -30, -26),
+              limits = c(-35.5, -25)
+            ) +
+            scale_colour_manual(values = "black", na.value = NA) +
+            scale_fill_manual(values = "red",     na.value = NA) +
+            theme(legend.position = "none")
+      })
+    })
+  })
+
+outlier_maps
 
 # Panel all together -----------------------------------------------------------
 
