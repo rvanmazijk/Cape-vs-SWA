@@ -594,16 +594,9 @@ outlier_maps <-
               fill = NA, label.size = 0
             ) +
             # FIXME: causes blank panels...
-            #scale_x_continuous(
-            #  breaks = ifelse(each_region == "GCFR",
-            #    c(18, 22, 26),
-            #    c(114, 118, 122)
-            #  ),
-            #  limits = ifelse(each_region == "GCFR",
-            #    c(16, 28),
-            #    c(112, 127)
-            #  )
-            #) +
+            scale_x_continuous(breaks =
+                   if (each_region == "GCFR")  c(18, 22, 26)
+              else if (each_region == "SWAFR") c(114, 118, 122, 126)) +
             scale_y_continuous(
               breaks = c(-34, -30, -26),
               limits = c(-35.5, -24.5)
