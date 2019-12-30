@@ -62,9 +62,20 @@ par(op)
 
 outliers <- read_csv(here("results/list-outlier-squares.csv"))
 
-# Set colour palette for these maps --------------------------------------------
+# Set palette & some reusable gg-objects ---------------------------------------
 
 my_palette <- rev(viridis::viridis(10))
+
+no_x_axis <- theme(
+  axis.ticks.x    = element_blank(),
+  axis.text.x     = element_blank(),
+  axis.title.x    = element_blank()
+)
+no_y_axis <- theme(
+  axis.ticks.y    = element_blank(),
+  axis.text.y     = element_blank(),
+  axis.title.y    = element_blank()
+)
 
 # Make ggplot-borders for repeated use -----------------------------------------
 
@@ -148,12 +159,10 @@ GCFR_richness_plots <- imap(GCFR_richness,
       na.value = NA
     ) +
     theme(
-      axis.ticks.x    = element_blank(),
-      axis.text.x     = element_blank(),
-      axis.title.x    = element_blank(),
       plot.title      = element_text(hjust = 0.5),
       legend.position = "none"
-    )
+    ) +
+    no_x_axis
 )
 SWAFR_richness_plots <- imap(SWAFR_richness,
   ~ gplot(.x) +
@@ -175,18 +184,14 @@ SWAFR_richness_plots <- imap(SWAFR_richness,
       na.value = NA
     ) +
     theme(
-      axis.ticks.x         = element_blank(),
-      axis.text.x          = element_blank(),
-      axis.title.x         = element_blank(),
-      axis.ticks.y         = element_blank(),
-      axis.text.y          = element_blank(),
-      axis.title.y         = element_blank(),
       plot.title           = element_text(hjust = 0.5),
       legend.direction     = "horizontal",
       legend.position      = c(1, 0.9),
       legend.justification = "right",
       legend.background    = element_rect(fill = NA)
-    )
+    ) +
+    no_x_axis +
+    no_y_axis
 )
 
 # PC1 maps ---------------------------------------------------------------------
@@ -210,12 +215,8 @@ GCFR_PC1_plots <- imap(GCFR_PC1,
       colours  = my_palette,
       na.value = NA
     ) +
-    theme(
-      axis.ticks.x    = element_blank(),
-      axis.text.x     = element_blank(),
-      axis.title.x    = element_blank(),
-      legend.position = "none"
-    )
+    theme(legend.position = "none") +
+    no_x_axis
 )
 SWAFR_PC1_plots <- imap(SWAFR_PC1,
   ~ gplot(.x) +
@@ -236,17 +237,13 @@ SWAFR_PC1_plots <- imap(SWAFR_PC1,
       na.value = NA
     ) +
     theme(
-      axis.ticks.x         = element_blank(),
-      axis.text.x          = element_blank(),
-      axis.title.x         = element_blank(),
-      axis.ticks.y         = element_blank(),
-      axis.text.y          = element_blank(),
-      axis.title.y         = element_blank(),
       legend.direction     = "horizontal",
       legend.position      = c(1, 0.9),
       legend.justification = "right",
       legend.background    = element_rect(fill = NA)
-    )
+    ) +
+    no_x_axis +
+    no_y_axis
 )
 
 # PC1 residuals maps -----------------------------------------------------------
@@ -322,12 +319,8 @@ GCFR_PC1_residuals_plots <- PC1_residuals %$%
       colours  = my_palette,
       na.value = NA
     ) +
-    theme(
-      axis.ticks.x    = element_blank(),
-      axis.text.x     = element_blank(),
-      axis.title.x    = element_blank(),
-      legend.position = "none"
-    )
+    theme(legend.position = "none") +
+    no_x_axis
   )
 SWAFR_PC1_residuals_plots <- PC1_residuals %$%
   list(QDS = QDS$SWAFR, HDS = HDS$SWAFR, DS = DS$SWAFR) %>%
@@ -349,17 +342,13 @@ SWAFR_PC1_residuals_plots <- PC1_residuals %$%
       na.value = NA
     ) +
     theme(
-      axis.ticks.x         = element_blank(),
-      axis.text.x          = element_blank(),
-      axis.title.x         = element_blank(),
-      axis.ticks.y         = element_blank(),
-      axis.text.y          = element_blank(),
-      axis.title.y         = element_blank(),
       legend.direction     = "horizontal",
       legend.position      = c(1, 0.9),
       legend.justification = "right",
       legend.background    = element_rect(fill = NA)
-    )
+    ) +
+    no_x_axis +
+    no_y_axis
   )
 
 # Multivariate residuals maps --------------------------------------------------
@@ -404,14 +393,12 @@ SWAFR_MV_residuals_plots <- imap(SWAFR_MV_residuals,
       na.value = NA
     ) +
     theme(
-      axis.ticks.y         = element_blank(),
-      axis.text.y          = element_blank(),
-      axis.title.y         = element_blank(),
       legend.direction     = "horizontal",
       legend.position      = c(1, 0.9),
       legend.justification = "right",
       legend.background    = element_rect(fill = NA)
-    )
+    ) +
+    no_y_axis
 )
 
 # Outlier maps -----------------------------------------------------------------
@@ -651,16 +638,6 @@ all_plots <- pmap(list(GCFR_richness_plots,      SWAFR_richness_plots,
 )
 
 # For outlier maps
-no_x_axis <- theme(
-  axis.ticks.x    = element_blank(),
-  axis.text.x     = element_blank(),
-  axis.title.x    = element_blank()
-)
-no_y_axis <- theme(
-  axis.ticks.y    = element_blank(),
-  axis.text.y     = element_blank(),
-  axis.title.y    = element_blank()
-)
 PC1_outlier_maps <- outlier_maps$PC1 %$% plot_grid(
   nrow = 1, rel_widths = c(0.9, 1),
   plot_grid(
@@ -708,7 +685,7 @@ MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
 
 # Save all to disc -------------------------------------------------------------
 
-imap(all_plots, ~ {
+iwalk(all_plots, ~ {
   ggsave(
     here("figures", glue("maps-{.y}.pdf")),
     .x,
