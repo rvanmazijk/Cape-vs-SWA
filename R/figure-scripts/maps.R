@@ -94,7 +94,7 @@ SWAFR_border_gg <- geom_polygon(
 
 CT_point <- geom_point(
   aes(x = 18.4241, y = -33.9249),
-  size = 2
+  size = 1.5
 )
 CT_text <- geom_text(
   aes(x = 18.4241, y = -33.9249, label = "Cape\nTown"),
@@ -104,7 +104,7 @@ CT_text <- geom_text(
 
 PE_point <- geom_point(
   aes(x = 25.6022, y = -33.9608),
-  size = 2
+  size = 1.5
 )
 PE_text <- geom_text(
   aes(x = 25.6022, y = -33.9608, label = "Port Elizabeth"),
@@ -114,7 +114,7 @@ PE_text <- geom_text(
 
 PR_point <- geom_point(
   aes(x = 115.8605, y = -31.9505),
-  size = 2
+  size = 1.5
 )
 PR_text <- geom_text(
   aes(x = 115.8605, y = -31.9505, label = "Perth"),
@@ -124,7 +124,7 @@ PR_text <- geom_text(
 
 ES_point <- geom_point(
   aes(x = 121.8914, y = -33.8613),
-  size = 2
+  size = 1.5
 )
 ES_text <- geom_text(
   aes(x = 121.8914, y = -33.8613, label = "Esperance"),
@@ -579,20 +579,19 @@ outlier_maps <-
             ) +
             geom_label(
               aes(
-                x = ifelse(each_region == "GCFR", 17, 113),
-                y = -26, size = 0.5,
+                x = ifelse(each_region == "GCFR", 17.5, 113.5),
+                y = -25.5, size = 1,
                 label = case_when(
-                  (each_region == "GCFR")  & (each_scale == "QDS") ~ "(a)",
-                  # FIXME: (a) not showing up?
+                  (each_region == "GCFR")  & (each_scale == "QDS") ~ "(a) QDS",
                   (each_region == "SWAFR") & (each_scale == "QDS") ~ "(b)",
-                  (each_region == "GCFR")  & (each_scale == "HDS") ~ "(c)",
+                  (each_region == "GCFR")  & (each_scale == "HDS") ~ "(c) HDS",
                   (each_region == "SWAFR") & (each_scale == "HDS") ~ "(d)",
-                  (each_region == "GCFR")  & (each_scale == "DS")  ~ "(e)",
+                  (each_region == "GCFR")  & (each_scale == "DS")  ~ "(e) DS",
                   (each_region == "SWAFR") & (each_scale == "DS")  ~ "(f)"
                 ),
               ),
               nudge_y = 0.5,
-              fill = "white", label.size = 0
+              fill = NA, label.size = 0
             ) +
             # FIXME: causes blank panels...
             #scale_x_continuous(
@@ -650,7 +649,7 @@ PC1_outlier_maps <- outlier_maps$PC1 %$% plot_grid(
     DS$GCFR
   ),
   plot_grid(
-    nrow = 3, rel_heights = c(0.95, 1.025, 0.875),
+    nrow = 3, rel_heights = c(0.95, 1.05, 0.85),
     QDS$SWAFR +
       no_x_axis +
       no_y_axis +
@@ -672,7 +671,7 @@ MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
     DS$GCFR
   ),
   plot_grid(
-    nrow = 3, rel_heights = c(0.95, 1.025, 0.875),
+    nrow = 3, rel_heights = c(0.95, 1.05, 0.85),
     QDS$SWAFR +
       no_x_axis +
       no_y_axis +
@@ -701,21 +700,21 @@ iwalk(all_plots, ~ {
 ggsave(
   here("figures/map-PC1-outliers.pdf"),
   PC1_outlier_maps,
-  width = 9, height = 12
+  width = 7, height = 10
 )
 ggsave(
   here("figures/map-PC1-outliers.png"),
   PC1_outlier_maps, dpi = 600,
-  width = 9, height = 12
+  width = 7, height = 10
 )
 
 ggsave(
   here("figures/map-mv-outliers.pdf"),
   MV_outlier_maps,
-  width = 9, height = 12
+  width = 7, height = 10
 )
 ggsave(
   here("figures/map-mv-outliers.png"),
   MV_outlier_maps, dpi = 600,
-  width = 9, height = 12
+  width = 7, height = 10
 )
