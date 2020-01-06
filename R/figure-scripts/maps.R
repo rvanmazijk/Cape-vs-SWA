@@ -463,20 +463,95 @@ PC1_residuals <- pmap(list(         GCFR_richness,      SWAFR_richness,
 
 })
 
-# .... Make maps proper --------------------------------------------------------
+# .... Check rasters to line up with Larsen grid ------------------------------
+
+foo <- PC1_residuals %$%
+  QDS %$%
+  GCFR %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x
+foo$y
+foo <- PC1_residuals %$%
+  QDS %$%
+  SWAFR %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x
+foo$y
+
+foo <- PC1_residuals %$%
+  HDS %$%
+  GCFR %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x
+foo$y
+foo <- PC1_residuals %$%
+  HDS %$%
+  SWAFR %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x
+foo$y
+
+foo <- PC1_residuals %$%
+  DS %$%
+  GCFR %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x
+foo$y
+foo <- PC1_residuals %$%
+  DS %$%
+  SWAFR %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x
+foo$y
+
+# They all line up!
+# Makes sense b/c derived from the richness/PC1 rasters' skeletons
+
+# .... Define Res. S limits for scales -----------------------------------------
 
 residuals_lims <- map(PC1_residuals,
   ~range(c(.$SWAFR[], .$GCFR[]), na.rm = TRUE)
 )
-
 residuals_lims$QDS[[2]] <- residuals_lims$QDS[[2]] + 250
 residuals_lims$HDS[[2]] <- residuals_lims$HDS[[2]] + 250
 residuals_lims$DS[[2]]  <- residuals_lims$DS[[2]]  + 250
 
+# .... Make each region's map --------------------------------------------------
+
 GCFR_PC1_residuals_plots <- PC1_residuals %$%
   list(QDS = QDS$GCFR, HDS = HDS$GCFR, DS = DS$GCFR) %>%
   imap(~ gplot(.x) +
-    geom_raster(aes(fill = value), hjust = 0) +
+    geom_tile(aes(fill = value)) +
     GCFR_border_gg +
     CT_point + CT_text +
     PE_point + PE_text +
@@ -495,7 +570,7 @@ GCFR_PC1_residuals_plots <- PC1_residuals %$%
 SWAFR_PC1_residuals_plots <- PC1_residuals %$%
   list(QDS = QDS$SWAFR, HDS = HDS$SWAFR, DS = DS$SWAFR) %>%
   imap(~ gplot(.x) +
-    geom_raster(aes(fill = value), hjust = 0) +
+    geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
     PR_point + PR_text +
     ES_point + ES_text +
@@ -523,9 +598,85 @@ SWAFR_PC1_residuals_plots <- PC1_residuals %$%
 
 # Multivariate residuals maps --------------------------------------------------
 
+# .... Ammend rasters to line up with Larsen grid ------------------------------
+
+foo <- GCFR_MV_residuals %$%
+  QDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.05
+foo$y - 0.10
+foo <- SWAFR_MV_residuals %$%
+  QDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.10
+foo$y
+
+GCFR_MV_residuals$QDS  %<>% shift(dx = +0.05, dy = -0.10)
+SWAFR_MV_residuals$QDS %<>% shift(dx = +0.10)
+
+foo <- GCFR_MV_residuals %$%
+  HDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.55
+foo$y + 0.15
+foo <- SWAFR_MV_residuals %$%
+  HDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.10
+foo$y + 0.50
+
+GCFR_MV_residuals$HDS  %<>% shift(dx = +0.55, dy = +0.15)
+SWAFR_MV_residuals$HDS %<>% shift(dx = +0.10, dy = +0.55)
+
+foo <- GCFR_MV_residuals %$%
+  DS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x - 0.45
+foo$y + 0.15
+foo <- SWAFR_MV_residuals %$%
+  DS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.10
+foo$y - 0.50
+
+GCFR_MV_residuals$HDS  %<>% shift(dx = -0.45, dy = +0.15)
+SWAFR_MV_residuals$HDS %<>% shift(dx = +0.10, dy = -0.50)
+
+# .... Make each region's map --------------------------------------------------
+
 GCFR_MV_residuals_plots <- imap(GCFR_MV_residuals,
   ~ gplot(.x) +
-    geom_raster(aes(fill = value), hjust = 0) +
+    geom_tile(aes(fill = value)) +
     GCFR_border_gg +
     CT_point + CT_text +
     PE_point + PE_text +
@@ -545,7 +696,7 @@ GCFR_MV_residuals_plots <- imap(GCFR_MV_residuals,
 )
 SWAFR_MV_residuals_plots <- imap(SWAFR_MV_residuals,
   ~ gplot(.x) +
-    geom_raster(aes(fill = value), hjust = 0) +
+    geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
     PR_point + PR_text +
     ES_point + ES_text +
@@ -596,7 +747,7 @@ outliers %>%
   filter(is_PC1_outlier == "*") %>%
   group_by(scale) %>%
   summarise(n())
-# FIXME: not the same
+# FIXME: not the same...
 
 # ........ MV-outliers ---------------------------------------------------------
 
