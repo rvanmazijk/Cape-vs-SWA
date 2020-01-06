@@ -1,5 +1,4 @@
 # Import data ------------------------------------------------------------------
-# All at HDS-scale for main figure
 
 # .... Raster data -------------------------------------------------------------
 
@@ -134,7 +133,11 @@ ES_text <- geom_text(
 
 # Richness maps ----------------------------------------------------------------
 
-# Ammend raster to line up with Larsen grid
+# .... Ammend rasters to line up with Larsen grid ------------------------------
+
+QDS_midpts <- c(0.125, 0.375, 0.625, 0.875)
+HDS_midpts <- c(0.25,  0.75)
+DS_midpts  <- 0.50
 
 foo <- GCFR_richness %$%
   QDS %>%
@@ -144,8 +147,11 @@ foo <- GCFR_richness %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x + 0.05
-foo$y - 0.10
+# FIXME: They are equal but not according to `==`?
+#stopifnot(exprs = {
+  (foo$x + 0.05) == QDS_midpts
+  (foo$y - 0.10) == QDS_midpts
+#})
 foo <- SWAFR_richness %$%
   QDS %>%
   rasterToPoints() %>%
@@ -154,8 +160,10 @@ foo <- SWAFR_richness %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x + 0.10
-foo$y
+#stopifnot(exprs = {
+  (foo$x + 0.10) == QDS_midpts
+  (foo$y)        == QDS_midpts
+#})
 
 GCFR_richness$QDS  %<>% shift(dx = +0.05, dy = -0.10)
 SWAFR_richness$QDS %<>% shift(dx = +0.10)
@@ -168,8 +176,10 @@ foo <- GCFR_richness %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x + 0.05
-foo$y + 0.15
+#stopifnot(exprs = {
+  (foo$x + 0.05) == HDS_midpts
+  (foo$y + 0.15) == HDS_midpts
+#})
 foo <- SWAFR_richness %$%
   HDS %>%
   rasterToPoints() %>%
@@ -178,8 +188,10 @@ foo <- SWAFR_richness %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x + 0.10
-foo$y
+#stopifnot(exprs = {
+  (foo$x + 0.10) == HDS_midpts
+  (foo$y)        == HDS_midpts
+#})
 
 GCFR_richness$HDS  %<>% shift(dx = +0.05, dy = +0.15)
 SWAFR_richness$HDS %<>% shift(dx = +0.10)
@@ -192,8 +204,10 @@ foo <- GCFR_richness %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x - 0.45
-foo$y + 0.15
+#stopifnot(exprs = {
+  (foo$x - 0.45) == DS_midpts
+  (foo$y + 0.15) == DS_midpts
+#})
 foo <- SWAFR_richness %$%
   DS %>%
   rasterToPoints() %>%
@@ -202,13 +216,16 @@ foo <- SWAFR_richness %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x + 0.10
-foo$y - 0.50
+#stopifnot(exprs = {
+  (foo$x + 0.10) == DS_midpts
+  (foo$y - 0.50) == DS_midpts
+#})
 
 GCFR_richness$DS  %<>% shift(dx = -0.45, dy = +0.15)
 SWAFR_richness$DS %<>% shift(dx = +0.10, dy = -0.50)
 
-# Define richness limits for scales
+# .... Define richness limits for scales ---------------------------------------
+
 richness_lims <- map2(GCFR_richness, SWAFR_richness,
   ~range(c(.x[], .y[]), na.rm = TRUE)
 )
@@ -216,7 +233,8 @@ richness_lims$QDS[[2]] <- richness_lims$QDS[[2]] + 250
 richness_lims$HDS[[2]] <- richness_lims$HDS[[2]] + 250
 richness_lims$DS[[2]]  <- richness_lims$DS[[2]]  + 250
 
-# Make each region's map
+# .... Make each region's map --------------------------------------------------
+
 GCFR_richness_plots <- imap(GCFR_richness,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
@@ -270,13 +288,91 @@ SWAFR_richness_plots <- imap(SWAFR_richness,
 
 # PC1 maps ---------------------------------------------------------------------
 
+# .... Ammend rasters to line up with Larsen grid ------------------------------
+
+foo <- GCFR_PC1 %$%
+  QDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.05
+foo$y - 0.10
+foo <- SWAFR_PC1 %$%
+  QDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.10
+foo$y
+
+GCFR_PC1$QDS  %<>% shift(dx = +0.05, dy = -0.10)
+SWAFR_PC1$QDS %<>% shift(dx = +0.10)
+
+foo <- GCFR_PC1 %$%
+  HDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.05
+foo$y + 0.15
+foo <- SWAFR_PC1 %$%
+  HDS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.10
+foo$y
+
+GCFR_PC1$HDS  %<>% shift(dx = +0.05, dy = +0.15)
+SWAFR_PC1$HDS %<>% shift(dx = +0.10)
+
+foo <- GCFR_PC1 %$%
+  DS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x - 0.45
+foo$y + 0.15
+foo <- SWAFR_PC1 %$%
+  DS %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(x = x %% 1, y = y %% 1) %>%
+  as.list() %>%
+  map(unique) %>%
+  map(sort)
+foo$x + 0.10
+foo$y - 0.50
+
+GCFR_PC1$DS  %<>% shift(dx = -0.45, dy = +0.15)
+SWAFR_PC1$DS %<>% shift(dx = +0.10, dy = -0.50)
+
+# .... Define PC1 limits for scales --------------------------------------------
+
 PC1_lims <- map2(GCFR_PC1, SWAFR_PC1,
   ~range(c(.x[], .y[]), na.rm = TRUE)
 )
 
+# .... Make each region's map --------------------------------------------------
+
 GCFR_PC1_plots <- imap(GCFR_PC1,
   ~ gplot(.x) +
-    geom_raster(aes(fill = value), hjust = 0) +
+    geom_tile(aes(fill = value)) +
     GCFR_border_gg +
     CT_point + CT_text +
     PE_point + PE_text +
@@ -294,7 +390,7 @@ GCFR_PC1_plots <- imap(GCFR_PC1,
 )
 SWAFR_PC1_plots <- imap(SWAFR_PC1,
   ~ gplot(.x) +
-    geom_raster(aes(fill = value), hjust = 0) +
+    geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
     PR_point + PR_text +
     ES_point + ES_text +
