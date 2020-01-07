@@ -632,7 +632,7 @@ foo <- GCFR_MV_residuals %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x + 0.55
+foo$x + 0.05
 foo$y + 0.15
 foo <- SWAFR_MV_residuals %$%
   HDS %>%
@@ -643,10 +643,10 @@ foo <- SWAFR_MV_residuals %$%
   map(unique) %>%
   map(sort)
 foo$x + 0.10
-foo$y + 0.50
+foo$y
 
-GCFR_MV_residuals$HDS  %<>% shift(dx = +0.55, dy = +0.15)
-SWAFR_MV_residuals$HDS %<>% shift(dx = +0.10, dy = +0.55)
+GCFR_MV_residuals$HDS  %<>% shift(dx = +0.05, dy = +0.15)
+SWAFR_MV_residuals$HDS %<>% shift(dx = +0.10)
 
 foo <- GCFR_MV_residuals %$%
   DS %>%
@@ -656,7 +656,7 @@ foo <- GCFR_MV_residuals %$%
   as.list() %>%
   map(unique) %>%
   map(sort)
-foo$x - 0.45
+foo$x - 1.45
 foo$y + 0.15
 foo <- SWAFR_MV_residuals %$%
   DS %>%
@@ -667,10 +667,10 @@ foo <- SWAFR_MV_residuals %$%
   map(unique) %>%
   map(sort)
 foo$x + 0.10
-foo$y - 0.50
+foo$y - 1.50
 
-GCFR_MV_residuals$HDS  %<>% shift(dx = -0.45, dy = +0.15)
-SWAFR_MV_residuals$HDS %<>% shift(dx = +0.10, dy = -0.50)
+GCFR_MV_residuals$DS  %<>% shift(dx = -0.45, dy = +0.15)
+SWAFR_MV_residuals$DS %<>% shift(dx = +0.10, dy = -0.50)
 
 # .... Make each region's map --------------------------------------------------
 
