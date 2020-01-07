@@ -41,7 +41,10 @@ var_names <- c(
 # Preserve clean plotting environment
 op <- par()
 
-# Global ggplot2 theme settings
+white_rect <- grid.rect(gp = gpar(col = "white")) # useful when arranging panels
+
+# Set global ggplot2:: theme ---------------------------------------------------
+
 my_theme <-
   theme_bw() +
   theme(
@@ -50,4 +53,3 @@ my_theme <-
   )
 theme_set(my_theme)
 
-white_rect <- grid.rect(gp = gpar(col = "white")) # useful when arranging panels
