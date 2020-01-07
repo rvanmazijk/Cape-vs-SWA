@@ -48,7 +48,7 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
   aes(
     estimate, term, estimate,
     fill = term_type, group = term_type, shape = term_type,
-    alpha = paste(sig, region)
+    alpha = sig
   ) +
   geom_vline(xintercept = 0, linetype = "dashed", colour = "grey75") +
   geom_errorbarh(
@@ -63,10 +63,7 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
   scale_y_discrete(labels = parse(text = levels(models_summary_for_plot$term))) +
   scale_fill_manual(values = c(NA, "black", "white")) +
   scale_shape_manual(values = c(4, 21, 21)) +
-  scale_alpha_manual(
-    values = c(1, 0.25, 1, 0.25),
-    labels = c(" ", bquote(italic("P")~"< 0.05"), " ", "NS")
-  ) +
+  scale_alpha_manual(values = c(1, 0.25)) +
   facet_wrap(
     response ~ .,
     nrow     = 1,
@@ -80,14 +77,8 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
       override.aes = list(fill = c(NA, "black", "white"))
     ),
     alpha = guide_legend(
-      title = "Significance", order = 2,
-      nrow = 2, byrow = TRUE,
-      override.aes = list(
-        shape    = c(     21,      21,      21,      21),
-        fill     = c("black", "white", "black", "white"),
-        alpha    = c(      1,       1,    0.25,    0.25),
-        linetype = NA
-      )
+      title = bquote(italic("P")["Effect"]),
+      override.aes = list(alpha = c(1, 0.25), linetype = NA)
     )
   ) +
   theme(
@@ -97,12 +88,18 @@ model_summary_plot <- ggplot(models_summary_for_plot) +
 
 # Save to disc
 ggsave(
-  here("figures/plot-multivariate-models.pdf"),
+  here(
+    "draft-02/figures",
+    "plot-multivariate-models.pdf"
+  ),
   model_summary_plot,
   width = 7, height = 4
 )
 ggsave(
-  here("figures/plot-multivariate-models.png"),
+  here(
+    "draft-02/figures",
+    "plot-multivariate-models.png"
+  ),
   model_summary_plot, dpi = 600,
   width = 7, height = 4
 )
