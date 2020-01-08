@@ -72,77 +72,108 @@ m_QDS <- lm(QDS_richness ~ PC1 + region, data3$QDS)
 m_HDS <- lm(HDS_richness ~ PC1 + region, data3$HDS)
 m_DS  <- lm(DS_richness  ~ PC1,          data3$DS)
 
-m_plots <- list(
-  QDS = m_QDS %>%
-    visreg::visreg(
-      xvar = "PC1", by = "region",
-      overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
-    ) +
-    ggtitle(bquote(
-      "(a)  QDS"~
-      "("*italic("R")^"2" == .(round(glance(m_QDS)$r.squared, digits = 2))*")"
-    )),
-  HDS = m_HDS %>%
-    visreg::visreg(
-      xvar = "PC1", by = "region",
-      overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
-    ) +
-    ggtitle(bquote(
-      "(b)  HDS"~
-      "("*italic("R")^"2" == .(round(glance(m_HDS)$r.squared, digits = 2))*")"
-    )),
-  DS = m_DS %>%
-    visreg::visreg(
-      xvar = "PC1",
-      gg = TRUE
-    ) +
-    ggtitle(bquote(
-      "(c)  DS"~
-      "("*italic("R")^"2" == .(round(glance(m_DS)$r.squared, digits = 2))*")"
-    ))
-)
-m_plots %<>% map(~ . +
-  ylab(bquote(italic("S"))) +
-  ylim(0, max(data2$DS$DS_richness)) +
-  theme(
-    axis.text.y     = element_text(angle = 90, hjust = 0.5),
-    legend.position = "none"
+PC1_seq <- seq(from = -10, to = 10, by = 0.01)
+
+plot_refit_PC1_models <- function(ext = c("pdf", "png")) {
+  if (ext == "pdf") {
+    pdf(
+      here("figures/plot-refit-PC1-models.pdf"),
+      width = 8, height = 3
+    )
+  } else if (ext == "png") {
+    png(
+      here("figures/plot-refit-PC1-models.png"),
+      width = 8, height = 3, units = "in",
+      res = 600
+    )
+  }
+  par(mfrow = c(1, 3))
+
+  par(mar = c(4, 4, 3, 0))
+  plot(
+    QDS_richness ~ PC1, data3$QDS,
+    xlab = "PC1 (42.44%)",
+    ylab = expression(paste(italic("S"))),
+    ylim = c(0, max(data3$DS$DS_richness)),
+    pch  = 21, cex = 1.0,
+    bg   = ifelse(data3$QDS$region == "GCFR", "black", "white")
   )
-)
-m_plots[2:3] %<>% map(~ . + theme(
-  axis.title.y = element_blank(),
-  axis.text.y  = element_blank(),
-  axis.ticks.y = element_blank()
-))
-m_plots2 <- plot_grid(plotlist = m_plots, nrow = 1, rel_widths = c(1, 0.9, 0.9))
 
-# Save to disc
-ggsave(
-  here(
-    "draft-02/manuscript_ver3-4/figures",
-    "plot-refit-PC1-models.pdf"
-  ),
-  m_plots2,
-  width = 9, height = 3
-)
+  glance(m_QDS)$r.squared
+  ## [1] 0.151429
+  title(adj = 0, expression(paste(
+    "(a) QDS ("*italic("R")^2 == "0.15)"
+  )))
+  fit_GCFR <- predict(
+    m_QDS,
+    newdata = data.frame(region = "GCFR", PC1 = PC1_seq)
+  )
+  fit_SWAFR <- predict.lm(
+    m_QDS,
+    newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
+  )
+  lines(PC1_seq, fit_GCFR,  col = "black",  lwd = 3)
+  lines(PC1_seq, fit_SWAFR, col = "grey50", lwd = 3)
+  legend(
+    x = -8, y = 2800,
+    legend  = unique(data3$QDS$region),
+    pch     = 21,
+    pt.bg   = c("black", "white"),
+    box.col = NA
+  )
 
-summary(m_QDS)
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)
-## (Intercept)  250.462     13.520  18.525  < 2e-16 ***
-## PC1           55.177      4.486  12.300  < 2e-16 ***
-## regionSWAFR  101.188     17.804   5.684 1.81e-08 ***
-summary(m_HDS)
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)
-## (Intercept)   629.30      50.06  12.570  < 2e-16 ***
-## PC1           145.82      17.24   8.459 3.33e-15 ***
-## regionSWAFR   219.28      63.46   3.455 0.000656 ***
-summary(m_DS)
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)
-## (Intercept)  1541.36      78.98  19.517  < 2e-16 ***
-## PC1           213.23      44.93   4.746 1.44e-05 ***
+  par(mar = c(4, 2, 3, 2))
+  plot(
+    HDS_richness ~ PC1, data3$HDS,
+    xlab = "PC1 (39.02%)",
+    yaxt = "n",
+    ylab = "",
+    ylim = c(0, max(data3$DS$DS_richness)),
+    pch  = 21, cex = 1.25,
+    bg   = ifelse(data3$HDS$region == "GCFR", "black", "white")
+  )
+
+  glance(m_HDS)$r.squared
+  ## [1] 0.242504
+  title(adj = 0, expression(paste(
+    "(b) HDS ("*italic("R")^2 == "0.24)"
+  )))
+  fit_GCFR <- predict(
+    m_HDS,
+    newdata = data.frame(region = "GCFR",  PC1 = PC1_seq)
+  )
+  fit_SWAFR <- predict.lm(
+    m_HDS,
+    newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
+  )
+  lines(PC1_seq, fit_GCFR,  col = "black",  lwd = 3)
+  lines(PC1_seq, fit_SWAFR, col = "grey50", lwd = 3)
+
+  par(mar = c(4, 0, 3, 4))
+  plot(
+    DS_richness ~ PC1, data3$DS,
+    xlab = "PC1 (41.26%)",
+    yaxt = "n",
+    ylab = "",
+    ylim = c(0, max(data3$DS$DS_richness)),
+    pch  = 21, cex = 1.5,
+    bg   = ifelse(data3$DS$region == "GCFR", "black", "white")
+  )
+
+  glance(m_DS)$r.squared
+  ## [1] 0.2832038
+  title(adj = 0, expression(paste(
+    "(c) DS ("*italic("R")^2 == "0.28)"
+  )))
+  fit <- predict.lm(m_DS, newdata = data.frame(PC1 = PC1_seq))
+  lines(PC1_seq, fit,  col = "black",  lwd = 3)
+
+  par(op)
+  dev.off()
+}
+
+plot_refit_PC1_models("pdf")
+plot_refit_PC1_models("png")
 
 # .... Multivariate models -----------------------------------------------------
 
