@@ -70,7 +70,7 @@ summary(m2)
 
 m_QDS <- lm(QDS_richness ~ PC1 + region, data3$QDS)
 m_HDS <- lm(HDS_richness ~ PC1 + region, data3$HDS)
-m_DS  <- lm(DS_richness ~ PC1,           data3$DS)
+m_DS  <- lm(DS_richness  ~ PC1,          data3$DS)
 
 m_plots <- list(
   QDS = m_QDS %>%
