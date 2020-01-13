@@ -266,6 +266,24 @@ species_occ_data <- species_occ@data %>%
 
 species_occ_data %<>% na.exclude()
 
+# Check species counts now:
+species_occ_data %>%
+  mutate(region = EDS %>%
+    str_extract("E[0-9]{3}") %>%
+    str_remove("E") %>%
+    as.numeric() %>%
+    is_greater_than(60) %>%
+    ifelse("SWAFR", "GCFR")
+  ) %>%
+  group_by(region) %>%
+  summarise(n_spp = length(unique(species)))
+## # A tibble: 3 x 2
+##   region n_spp
+##   <chr>  <int>
+## 1 GCFR    9494
+## 2 SWAFR   6793
+## 3 NA        14
+
 # Collate richness measures at each scale
 # At QDS-scale:
 QDS_richness <- species_occ_data %>%
@@ -340,6 +358,29 @@ map(data,
     facet_grid(~region, scales = "free_x")
 )
 # Good!
+
+# Check species counts used to create the data frames above
+# (i.e. excluding the last few QDS):
+species_occ_data %>%
+  mutate(
+    region = EDS %>%
+      str_extract("E[0-9]{3}") %>%
+      str_remove("E") %>%
+      as.numeric() %>%
+      is_greater_than(60) %>%
+      ifelse("SWAFR", "GCFR"),
+    QDS_in_region = QDS %in% data$QDS$QDS,
+    HDS_in_region = HDS %in% data$HDS$HDS,
+    DS_in_region  = DS  %in% data$DS$DS,
+  ) %>%
+  filter(QDS_in_region) %>% #filter(HDS_in_region); #filter(DS_in_region)
+  group_by(region) %>%
+  summarise(n_spp = length(unique(species)))
+## # A tibble: 2 x 2
+##   region n_spp
+##   <chr>  <int>
+## 1 GCFR    9419
+## 2 SWAFR   6696
 
 # Save to disc
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}.csv")))
