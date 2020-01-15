@@ -1,4 +1,4 @@
-digraph workflow { rankdir = LR
+digraph workflow { rankdir = LR splines = true
   subgraph R_scripts {
     node [color = blue]
     subgraph level0_level_R_scripts { rank = same
@@ -35,6 +35,11 @@ digraph workflow { rankdir = LR
       node
         [label = '06_explaining-richness-w-heterogeneity.R']
         explaining_richness_w_heterogeneity
+      subgraph intermediate_data {
+        node [color = green]
+        node [label = 'heterogeneity.csv']             heterogeneity
+        node [label = 'data_{scales}.csv']             data_scales
+      }
     }
     subgraph figure_scripts { rank = same
       node [label = 'plot-CLES.R']                plot_CLES
@@ -49,8 +54,8 @@ digraph workflow { rankdir = LR
   subgraph data {
     subgraph TIFFs {
       node [color = orange]
-      node [label = "/raw-data/"] raw_data
       subgraph rawish_data { rank = same
+        node [label = 'raw-data/'] raw_data
         node
           [label = '{GCFR,SWAFR}_{var_names}_masked2.tif']
           GCFR_SWAFR_var_names_masked2
@@ -77,9 +82,7 @@ digraph workflow { rankdir = LR
         node [label = '/borders/'] borders
       }
       subgraph derived_data { rank = same
-        node [label = 'heterogeneity.csv']             heterogeneity
         node [label = '{GCFR,SWAFR}_species.csv']      GCFR_SWAFR_species
-        node [label = 'data_{scales}.csv']             data_scales
         node [label = 'data-{scales}-w-residuals.csv'] data_scales_w_residuals
       }
     }
@@ -193,7 +196,8 @@ digraph workflow { rankdir = LR
   plot_richness_distributions_partitions ->
   richness_distributions_partitions
 
-  { GCFR_SWAFR_scales_richness
+  { setup
+    GCFR_SWAFR_scales_richness
     GCFR_SWAFR_scales_PC1
     GCFR_SWAFR_scales_multivariate_residuals } ->
   plot_maps ->
