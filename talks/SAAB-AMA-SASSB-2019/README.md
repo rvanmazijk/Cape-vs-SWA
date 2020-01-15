@@ -1,13 +1,13 @@
 <p>
-  <img src="../logos/UCT-logo.png"       height="100" />
-  <img src="../logos/BIO-logo.png"       height="100" />
-  <img src="../logos/DST-logo.png"       height="80"  />
-  <img src="../logos/NRF-logo.png"       height="80"  />
-  <img src="../logos/SAAB-logo.png"      height="80"  />
-  <img src="../logos/eResearch-logo.png" height="80"  />
+  <img src="../../logos/UCT-logo.png"       height="100" />
+  <img src="../../logos/BIO-logo.png"       height="100" />
+  <img src="../../logos/DST-logo.png"       height="80"  />
+  <img src="../../logos/NRF-logo.png"       height="80"  />
+  <img src="../../logos/SAAB-logo.png"      height="80"  />
+  <img src="../../logos/eResearch-logo.png" height="80"  />
 </p>
 
-**Note, all directory names references in code and markdown documents here have not been updated to reflect all these files' new positions within this directory (`SAAB-AMA-SASSB-2019-talk/`), and will thus not run or render properly.**
+**Note, all directory names references in code and markdown documents here have not been updated to reflect all these files' new positions within this directory, and will thus not run or render properly.**
 
 RVM performed the analyses and wrote the draft associated with this [conference presentation](https://www.researchgate.net/publication/330262656_Environmental_turnover_predicts_plant_species_richness_turnover_-_Comparing_the_Greater_Cape_Floristic_Region_the_Southwest_Australia_Floristic_Region) was presented at the 45th Annual SAAB, AMA and SASSB Joint Congress, held at the University of Johannesburg, Auckland Park, Johannesburg, South Africa in January 2019. RVM presented the core findings of this work, comparing macro-ecological models and environmental correlates of species richness in the Cape and SW Australia. This presentation was created using R Markdown, using the beamer presentation output option.
 
