@@ -117,7 +117,42 @@ for (i in 1:nrow(SWAFR_matrix)) {
 }
 ```
 
-```{r explore-community-matrices}
-GCFR_matrix
-SWAFR_matrix
+```{r tidy-community-matrices}
+GCFR_range_sizes <- GCFR_matrix %>%
+  apply(2, sum) %>%
+  sort(decreasing = TRUE) %>%
+  {tibble(region = "GCFR", species = names(.), n_QDS = .)}
+SWAFR_range_sizes <- SWAFR_matrix %>%
+  apply(2, sum) %>%
+  sort(decreasing = TRUE) %>%
+  {tibble(region = "SWAFR", species = names(.), n_QDS = .)}
+range_sizes <- 
+  full_join(GCFR_range_sizes, SWAFR_range_sizes) %>%
+  mutate(log10_n_QDS = log10(n_QDS))
+```
+
+```{r plot-range-size-distributions}
+ggplot(range_sizes) +
+  aes(n_QDS, fill = region, alpha = region) +
+  geom_density(colour = NA) +
+  scale_fill_manual(name = "Region", values = c("black", "grey50")) +
+  scale_alpha_manual(values = c(1, 0.5)) +
+  theme_classic()
+ggplot(range_sizes[range_sizes$log10_n_QDS >= 0, ]) +
+  aes(log10_n_QDS, fill = region, alpha = region) +
+  geom_density(colour = NA) +
+  scale_fill_manual(name = "Region", values = c("black", "grey50")) +
+  scale_alpha_manual(values = c(1, 0.5)) +
+  theme_classic()
+```
+
+```{r test-range-size-distributions}
+t.test(
+  log10_n_QDS ~ region,
+  range_sizes[range_sizes$log10_n_QDS >= 0, ]
+)
+wilcox.test(
+  n_QDS ~ region,
+  range_sizes[range_sizes$log10_n_QDS >= 0, ]
+)
 ```
