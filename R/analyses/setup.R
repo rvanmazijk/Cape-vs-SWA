@@ -1,3 +1,7 @@
+# Heterogeneity and species richness: analysis setup
+# R. van Mazijk
+# CC-BY-4.0 2019
+
 # Load packages ----------------------------------------------------------------
 
 # General programming
@@ -38,13 +42,12 @@ var_names <- c(
   "pH"
 )
 
-# Preserve clean plotting environment
+# Figure things ----------------------------------------------------------------
+
+# Preserve clean plotting environment (for base:: figures)
 op <- par()
 
-white_rect <- grid.rect(gp = gpar(col = "white")) # useful when arranging panels
-
-# Set global ggplot2:: theme ---------------------------------------------------
-
+# Set global theme (for ggplot2:: figures)
 my_theme <-
   theme_bw() +
   theme(
@@ -53,3 +56,5 @@ my_theme <-
   )
 theme_set(my_theme)
 
+# Make a blank plot object (useful as filler when arranging panels)
+white_rect <- grid.rect(gp = gpar(col = "white"))

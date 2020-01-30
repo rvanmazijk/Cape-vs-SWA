@@ -1,91 +1,223 @@
-digraph {
+digraph workflow { rankdir = LR splines = true
+  subgraph R_scripts {
+    node [color = blue]
+    subgraph level0_level_R_scripts { rank = same
+      node [label = '/data_processing/**/*.R'] data_processing
+      node [label = '01_setup.R']              setup
+    }
+    subgraph level1_analyses_R_scripts { rank = same
+      node
+        [label = '02_generate-heterogeneity-data.R']
+        generate_heterogeneity_data
+      node
+        [label = '04_compare-species-richness.R']
+        compare_species_richness
+      node
+        [label = '05_compare-environmental-heterogeneity.R']
+        compare_environmental_heterogeneity
+      node
+        [label = '07_correlate-PC1-MV-model-results.R']
+        correlate_PC1_MV_model_results
+      node
+        [label = '08_re-explaining-richness-wo-outliers.R']
+        re_explaining_richness_wo_outliers
+      node
+        [label = '09_check-univariate-linearity.R']
+        check_univariate_linearity
+      node
+        [label = '10_check-collinearity.R']
+        check_collinearity
+    }
+    subgraph level2_analyses_R_scripts { rank = same
+      subgraph intermediate_data {
+        node [color = green]
+        node [label = 'heterogeneity.csv'] heterogeneity
+        node [label = 'data_{scales}.csv'] data_scales
+      node
+        [label = '03_generate-richness-and-collate-data.R']
+        generate_richness_and_collate_data
+      node
+        [label = '06_explaining-richness-w-heterogeneity.R']
+        explaining_richness_w_heterogeneity
+      }
+    }
+    subgraph figure_scripts { rank = same
+      node [label = 'plot-CLES.R']                plot_CLES
+      node [label = 'plot-multivariate-models.R'] plot_multivariate_models
+      node [label = 'plot-PC1-models.R']          plot_PC1_models
+      node [label = 'maps.R']                     plot_maps
+      node
+        [label = 'plot-richness-distributions-partitions.R']
+        plot_richness_distributions_partitions
+    }
+  }
+  subgraph data {
+    subgraph TIFFs {
+      node [color = orange]
+      subgraph rawish_data { rank = same
+        node [label = 'raw-data/'] raw_data
+        node
+          [label = '{GCFR,SWAFR}_{var_names}_masked2.tif']
+          GCFR_SWAFR_var_names_masked2
+      }
+      subgraph derived_data { rank = same
+        node
+          [label = '{GCFR,SWAFR}_{var_names}_masked2_{scales}_heterogeneity.tif']
+          GCFR_SWAFR_var_names_masked2_scales_heterogeneity
+        node
+          [label = '{GCFR,SWAFR}_{scales}_richness.tif']
+          GCFR_SWAFR_scales_richness
+        node
+          [label = '{GCFR,SWAFR}_{scales}_PC1.tif']
+          GCFR_SWAFR_scales_PC1
+        node
+          [label = '{GCFR,SWAFR}_{scales}_multivariate_residuals.tif']
+          GCFR_SWAFR_scales_multivariate_residuals
+      }
+    }
+    subgraph CSVs {
+      node [color = green]
+      subgraph rawish_data { rank = same
+        node [label = '/flora/']   flora
+        node [label = '/borders/'] borders
+      }
+      subgraph derived_data { rank = same
+        node [label = '{GCFR,SWAFR}_species.csv']      GCFR_SWAFR_species
+        node [label = 'data-{scales}-w-residuals.csv'] data_scales_w_residuals
+      }
+    }
+  }
+  subgraph results { rank = same
+    subgraph tables {
+      node [color = green]
+      node [label = 'for-Figure-2.csv']           for_Figure_2
+      node [label = 'model-summary-for-Tony.csv'] model_summary_for_Tony
+      node [label = 'model-ANOVA-for-Tony.csv']   model_ANOVA_for_Tony
+      node
+        [label = '{responses}_univariate_model_results.csv']
+        responses_univariate_model_results
+      node
+        [label = 'refit-model-summary-for-Tony.csv']
+        refit_model_summary_for_Tony
+      node
+        [label = 'sd-of-residuals-w-and-wo-outliers.csv']
+        sd_of_residuals_w_and_wo_outliers
+      node
+        [label = 'check-univariate-linearity{_best-only}.csv']
+        univariate_linearity
+    }
+    subgraph figures {
+      node [color = red]
+      node [label = 'plot-PC-biplots.{png,pdf}']          PC_biplots
+      node [label = 'plot-CLES.{pdf,png}']                CLES
+      node [label = 'plot-univariate-models.{pdf,png}']   univariate_models
+      node [label = 'plot-multivariate-models.{pdf,png}'] multivariate_models
+      node [label = 'plot-PC1-models.{pdf,png}']          PC1_models
+      node [label = 'maps.{pdf,png}']                     maps
+      node [label = 'map-mv-outliers.{pdf,png}']          mv_outliers
+      node [label = 'map-PC1-outliers.{pdf,png}']         PC1_outliers
+      node [label = 'plot-refit-PC1-models.{pdf,png}']    refit_PC1_models
+      node
+        [label = 'plot-richness-distributions-partitions.{pdf,png}']
+        richness_distributions_partitions
+      node
+        [label = 'plot-refit-multivariate-models.{pdf,png}']
+        refit_multivariate_models
+      node
+        [label = '{scales}-log10-heterogeneity-pairs.pdf']
+        scales_log10_heterogeneity_pairs
+    }
+  }
+  node [color = black label = ""]
 
-  '01_setup.R' ->
-  '02_generate-heterogeneity-data.R' ->
-  '03_generate-richness-and-collate-data.R'
+  setup ->
+    generate_heterogeneity_data ->
+    generate_richness_and_collate_data
 
-  '/data_processing/' ->
-  '{GCFR,SWAFR}_{var_names}_masked2.tif' ->
-  '02_generate-heterogeneity-data.R' ->
-  { '{GCFR,SWAFR}_{var_names}_masked2_{scales}_heterogeneity.tif'
-    'heterogeneity.csv'
-    'plot-PC-biplots.{png,pdf}' }
+  raw_data ->
+    data_processing ->
+    GCFR_SWAFR_var_names_masked2 ->
+    generate_heterogeneity_data ->
+    {
+      GCFR_SWAFR_var_names_masked2_scales_heterogeneity
+      heterogeneity
+      PC_biplots
+    }
 
-  { '/borders/'
-    '/flora/' } ->
-  '03_generate-richness-and-collate-data.R' ->
-  { '{GCFR,SWAFR}_species.csv'
-    'data_{scales}.csv'
-    '{GCFR,SWAFR}_{scales}_richness.tif'
-    '{GCFR,SWAFR}_{scales}_PC1.tif' }
+  { borders flora } ->
+    data_processing
 
-  { '01_setup.R'
-    'data_{scales}.csv' } ->
-  '04_compare-species-richness.R' ->
-  'for-Figure-2.csv'
+  setup ->
+    data_processing ->
+    { borders flora } ->
+    generate_richness_and_collate_data ->
+    {
+      GCFR_SWAFR_species
+      data_scales
+      GCFR_SWAFR_scales_richness
+      GCFR_SWAFR_scales_PC1
+    }
 
-  { '01_setup.R'
-    'data_{scales}.csv'
-    'heterogeneity.csv' } ->
-  '05_compare-environmental-heterogeneity.R' ->
-  'plot-CLES.R' ->
-  'plot-CLES.{pdf,png}'
+  { setup data_scales } ->
+    compare_species_richness ->
+    for_Figure_2
 
-  { '02_generate-heterogeneity-data.R'
-    'data_{scales}.csv' } ->
-  '06_explaining-richness-w-heterogeneity.R' ->
-  { '{responses}_univariate_model_results.csv'
-    'plot-univariate-models.{pdf,png}'
-    'model-summary-for-Tony.csv'
-    'model-ANOVA-for-Tony.csv'
-    'data-{scales}-w-residuals.csv'
-    '{GCFR,SWAFR}_{scales}_multivariate_residuals.tif' }
+  { setup data_scales heterogeneity } ->
+    compare_environmental_heterogeneity ->
+    plot_CLES ->
+    CLES
 
-  { '01_setup.R'
-    'data-{scales}-w-residuals.csv' } ->
-  '07_correlate-PC1-MV-model-results.R'
+  { generate_heterogeneity_data data_scales } ->
+    explaining_richness_w_heterogeneity ->
+    {
+      responses_univariate_model_results
+      univariate_models
+      model_summary_for_Tony
+      model_ANOVA_for_Tony
+      data_scales_w_residuals
+      GCFR_SWAFR_scales_multivariate_residuals
+    }
 
-  '06_explaining-richness-w-heterogeneity.R' ->
-    'plot-multivariate-models.R' ->
-    'plot-multivariate-models.{pdf,png}'
+  { setup data_scales_w_residuals } ->
+    correlate_PC1_MV_model_results
 
-  { '01_setup.R'
-    'data_{scales}.csv' } ->
-  'plot-PC1-models.R' ->
-  'plot-PC1-models.{pdf,png}'
+  explaining_richness_w_heterogeneity ->
+    plot_multivariate_models ->
+    multivariate_models
 
-  { '01_setup.R'
-    'data_{scales}.csv' } ->
-  'plot-richness-distributions-partitions.R' ->
-  'plot-richness-distributions-partitions.{pdf,png}'
+  { setup data_scales } ->
+    plot_PC1_models ->
+    PC1_models
 
-  { '{GCFR,SWAFR}_{scales}_richness.tif'
-    '{GCFR,SWAFR}_{scales}_PC1.tif'
-    '{GCFR,SWAFR}_{scales}_multivariate_residuals.tif' } ->
-  'maps.R' ->
-  'maps.{pdf,png}'
+  { setup data_scales } ->
+    plot_richness_distributions_partitions ->
+    richness_distributions_partitions
 
-  { '01_setup.R'
-    'data-{scales}-w-residuals.csv'
-    '/borders/' } ->
-  '08_re-explaining-richness-wo-outliers.R' ->
-  { 'map-mv-outliers.pdf'
-    'map-PC1-outliers.pdf'
-    'plot-refit-PC1-models.pdf'
-    'refit-model-summary-for-Tony.csv'
-    'plot-refit-multivariate-models.pdf'
-    'sd-of-residuals-w-and-wo-outliers.csv' }
+  {
+    setup
+    GCFR_SWAFR_scales_richness
+    GCFR_SWAFR_scales_PC1
+    GCFR_SWAFR_scales_multivariate_residuals
+  } ->
+    plot_maps ->
+    maps
 
-  { '01_setup.R'
-    'data-{scales}-w-residuals.csv' } ->
-  '09_check-univariate-linearity' ->
-  { 'check-univariate-linearity.csv'
-    'check-univariate-linearity_best-only.csv' }
+  { setup data_scales_w_residuals borders } ->
+    re_explaining_richness_wo_outliers ->
+    {
+      mv_outliers
+      PC1_outliers
+      refit_PC1_models
+      refit_model_summary_for_Tony
+      refit_multivariate_models
+      sd_of_residuals_w_and_wo_outliers
+    }
 
-  { '01_setup.R'
-    '{GCFR,SWAFR}_{var_names}_masked2_{scales}_heterogeneity.tif' } ->
-  '10_check-collinearity' ->
-  { '{GCFR,SWAFR}-{scales}-log10-heterogeneity-pairs.pdf'
-    '{scales}-log10-heterogeneity-pairs.pdf' }
+  { setup data_scales_w_residuals } ->
+    check_univariate_linearity ->
+    univariate_linearity
 
+  { setup GCFR_SWAFR_var_names_masked2_scales_heterogeneity } ->
+    check_collinearity ->
+    scales_log10_heterogeneity_pairs
 }
