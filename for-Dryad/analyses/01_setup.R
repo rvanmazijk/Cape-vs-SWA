@@ -13,6 +13,7 @@ library(magrittr)  # for %<>% & %$%
 # GIS
 library(raster)
 library(rgdal)
+library(rgeos)
 
 # Analyses
 library(canprot)  # for CLES
