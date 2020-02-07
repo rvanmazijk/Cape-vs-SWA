@@ -139,3 +139,159 @@ plot(border = "blue", add = TRUE, Larsen_grid_HDS[
   Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
   Larsen_grid_HDS$region == "SWAFR",
 ])
+
+# Collate richness data into grids ---------------------------------------------
+
+make_SpatialPointsDataFrame <- function(df) {
+  SpatialPointsDataFrame(
+    coords      = df[, c("decimallongitude", "decimallatitude")],
+    data        = df[, "species"],
+    proj4string = crs(borders_buffered)
+  )
+}
+GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
+  "data/derived-data/flora",
+  "GCFR_clean_flora_2017-09-14.csv"
+)))
+SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
+  "data/derived-data/flora",
+  "SWAFR_clean_flora_2017-09-14.csv"
+)))
+species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
+
+# Add grid codes to species data
+species_occ$EDS <- species_occ %over%
+  Larsen_grid_EDS %>%
+  pull(edgc) %>%
+  as.character()
+species_occ$QDS <- str_remove(species_occ$EDS, ".$")
+species_occ$HDS <- str_remove(species_occ$QDS, ".$")
+species_occ$DS  <- str_remove(species_occ$HDS, ".$")
+
+# Export final lists of species
+GCFR_species_occ@data %>%
+  group_by(species)  %>%
+  summarise(n_collections = n()) %>%
+  arrange(desc(n_collections)) %>%
+  write_csv(here("for-Dryad/GCFR-species.csv"))
+SWAFR_species_occ@data %>%
+  group_by(species) %>%
+  summarise(n_collections = n()) %>%
+  arrange(desc(n_collections)) %>%
+  write_csv(here("for-Dryad/SWAFR-species.csv"))
+
+# Flag species w/ < 5 collections total in each region
+GCFR_bad_species <-
+  read_csv(here("for-Dryad/GCFR-species.csv")) %>%
+  filter(n_collections < 5) %>%
+  pull(species)
+SWAFR_bad_species <-
+  read_csv(here("for-Dryad/SWAFR-species.csv")) %>%
+  filter(n_collections < 5) %>%
+  pull(species)
+# Filter them out
+species_occ_data <- species_occ@data %>%
+  filter(!(species %in% c(GCFR_bad_species, SWAFR_bad_species))) %>%
+  na.exclude()
+
+# Check species counts now:
+species_occ_data %>%
+  mutate(region = EDS %>%
+    str_extract("E[0-9]{3}") %>%
+    str_remove("E") %>%
+    as.numeric() %>%
+    is_greater_than(60) %>%
+    ifelse("SWAFR", "GCFR")
+  ) %>%
+  group_by(region) %>%
+  summarise(n_spp = length(unique(species)))
+## # A tibble: 2 x 2
+##   region n_spp
+##   <chr>  <int>
+## 1 GCFR    9489
+## 2 SWAFR   6757
+
+# Collate richness measures at each scale
+# At QDS-scale:
+QDS_richness <- species_occ_data %>%
+  filter(QDS %in% QDS_w_all_EDS) %>%
+  distinct() %>%  # just in case
+  group_by(QDS) %>%
+  summarise(
+    n_collections   = length(species),
+    QDS_richness    = length(unique(species))
+  )
+# At HDS-scale:
+mean_QDS_richness <- QDS_richness %>%
+  mutate(HDS = str_remove(QDS, ".$")) %>%
+  group_by(HDS) %>%
+  summarise(mean_QDS_richness = mean(QDS_richness, na.rm = TRUE))
+HDS_richness <- species_occ_data %>%
+  group_by(HDS) %>%
+  filter(HDS %in% HDS_w_all_QDS) %>%
+  summarise(
+    n_collections   = length(species),
+    HDS_richness    = length(unique(species))
+  ) %>%
+  full_join(mean_QDS_richness)
+# At DS-scale:
+mean_HDS_richness <- HDS_richness %>%
+  mutate(DS = str_remove(HDS, ".$")) %>%
+  group_by(DS) %>%
+  summarise(mean_HDS_richness = mean(HDS_richness, na.rm = TRUE))
+DS_richness <- species_occ_data %>%
+  group_by(DS) %>%
+  filter(DS %in% DS_w_all_HDS) %>%
+  summarise(
+    n_collections   = length(species),
+    DS_richness     = length(unique(species))
+  ) %>%
+  full_join(mean_HDS_richness)
+
+# Check
+ggplot(DS_richness, aes(mean_HDS_richness, DS_richness - mean_HDS_richness)) +
+  geom_point() +
+  lims(x = c(0, 3000), y = c(0, 3000))
+
+ggplot(HDS_richness, aes(mean_QDS_richness, HDS_richness - mean_QDS_richness)) +
+  geom_point() +
+  lims(x = c(0, 3000), y = c(0, 3000))
+
+# Import environmental data ----------------------------------------------------
+
+GCFR_file_names  <- glue("{data_dir}/GCFR_{var_names}_masked2.tif")
+SWAFR_file_names <- glue("{data_dir}/SWAFR_{var_names}_masked2.tif")
+
+GCFR_variables  <- stack(GCFR_file_names)
+SWAFR_variables <- stack(SWAFR_file_names)
+
+enviro_data <- raster::merge(GCFR_variables, SWAFR_variables)
+names(enviro_data)  <- str_replace_all(var_names, " ", "_")
+
+# Check
+plot(GCFR_variables[[1]])
+plot(border = "green", add = TRUE, Larsen_grid_EDS[
+  Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS &
+  Larsen_grid_EDS$region == "GCFR",
+])
+plot(border = "red", add = TRUE, Larsen_grid_QDS[
+  Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
+  Larsen_grid_QDS$region == "GCFR",
+])
+plot(border = "blue", add = TRUE, Larsen_grid_HDS[
+  Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
+  Larsen_grid_HDS$region == "GCFR",
+])
+
+# Resample environmental data to EDS -------------------------------------------
+
+Larsen_grid_EDS2 <- Larsen_grid_EDS
+for (variable in names(enviro_data)) {
+  Larsen_grid_EDS2[[variable]] <- extract(
+    enviro_data[[variable]],
+    Larsen_grid_EDS2,
+    fun = mean, na.rm = TRUE
+  )
+  message(variable, " done")
+}
+save(Larsen_grid_EDS2, file = "Larsen_grid_EDS2")
