@@ -1,0 +1,158 @@
+---
+output: pdf_document
+---
+
+```{r load-packages}
+library(here)
+library(tidyverse)
+library(magrittr)
+library(raster)
+library(rgdal)
+library(vegan)
+```
+
+```{r import-data}
+data <- read_csv(here(
+  "data/derived-data/May-2019",
+  "data-QDS.csv"
+))
+
+GCFR_species <- read_csv(here(
+  "data/derived-data/May-2019",
+  "GCFR-species.csv"
+))
+SWAFR_species <- read_csv(here(
+  "data/derived-data/May-2019",
+  "SWAFR-species.csv"
+))
+
+GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
+SWAFR_box <- readOGR(here("data/derived-data/borders/SWAFR_box"))
+
+ZA_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_03_zaf")
+AU_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_03_aus")
+```
+
+```{r tidy-spatial-data}
+GCFR_EDS  <- crop(ZA_EDS, GCFR_box)
+SWAFR_EDS <- crop(AU_EDS, SWAFR_box)
+
+Larsen_grid <- rbind(GCFR_EDS, SWAFR_EDS)
+
+Larsen_grid$edgc <- Larsen_grid$qdgc
+Larsen_grid$qdgc <- str_remove(Larsen_grid$edgc, ".$")
+Larsen_grid$hdgc <- str_remove(Larsen_grid$qdgc, ".$")
+Larsen_grid$dgc  <- str_remove(Larsen_grid$hdgc, ".$")
+```
+
+```{r make-species-community-matrices}
+make_SpatialPointsDataFrame <- function(df) {
+  SpatialPointsDataFrame(
+    coords      = df[, c("decimallongitude", "decimallatitude")],
+    data        = df[, "species"],
+    proj4string = crs(Larsen_grid)
+  )
+}
+GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
+  "data/derived-data/flora",
+  "GCFR_clean_flora_2017-09-14.csv"
+)))
+SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
+  "data/derived-data/flora",
+  "SWAFR_clean_flora_2017-09-14.csv"
+)))
+species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
+
+species_occ$EDS <- species_occ %over%
+  Larsen_grid %>%
+  pull(edgc)
+species_occ@data$EDS %<>% as.character()
+species_occ$QDS <- str_remove(species_occ$EDS, ".$")
+species_occ$HDS <- str_remove(species_occ$QDS, ".$")
+species_occ$DS  <- str_remove(species_occ$HDS, ".$")
+
+species_occ2 <- species_occ@data %>%
+  mutate(
+    lon = DS %>%
+      str_extract("E\\d\\d\\d") %>%
+      str_remove("E") %>%
+      as.numeric(),
+    region = ifelse(lon >= 112, "SWAFR", "GCFR")
+  ) %>%
+  split(.$region) %>%
+  map(dplyr::select, -EDS, -lon, -region) %>%
+  map(distinct)
+
+GCFR_species  %<>% filter(n_collections >= 5)
+SWAFR_species %<>% filter(n_collections >= 5)
+
+cells <- sort(unique(species_occ2$GCFR$QDS))
+cells <- cells[cells %in% data$QDS]
+species <- sort(unique(species_occ2$GCFR$species))
+species <- species[species %in% GCFR_species$species]
+n_cells <- length(cells)
+n_species <- length(species)
+GCFR_matrix <- matrix(nrow = n_cells, ncol = n_species)
+rownames(GCFR_matrix) <- cells
+colnames(GCFR_matrix) <- species
+for (i in 1:nrow(GCFR_matrix)) {
+  GCFR_matrix[i, ] <- species %in% species_occ2$GCFR$species[
+    species_occ2$GCFR$QDS == cells[[i]]
+  ]
+}
+
+cells <- sort(unique(species_occ2$SWAFR$QDS))
+cells <- cells[cells %in% data$QDS]
+species <- sort(unique(species_occ2$SWAFR$species))
+species <- species[species %in% SWAFR_species$species]
+n_cells <- length(cells)
+n_species <- length(species)
+SWAFR_matrix <- matrix(nrow = n_cells, ncol = n_species)
+rownames(SWAFR_matrix) <- cells
+colnames(SWAFR_matrix) <- species
+for (i in 1:nrow(SWAFR_matrix)) {
+  SWAFR_matrix[i, ] <- species %in% species_occ2$SWAFR$species[
+    species_occ2$SWAFR$QDS == cells[[i]]
+  ]
+}
+```
+
+```{r tidy-community-matrices}
+GCFR_range_sizes <- GCFR_matrix %>%
+  apply(2, sum) %>%
+  sort(decreasing = TRUE) %>%
+  {tibble(region = "GCFR", species = names(.), n_QDS = .)}
+SWAFR_range_sizes <- SWAFR_matrix %>%
+  apply(2, sum) %>%
+  sort(decreasing = TRUE) %>%
+  {tibble(region = "SWAFR", species = names(.), n_QDS = .)}
+range_sizes <- 
+  full_join(GCFR_range_sizes, SWAFR_range_sizes) %>%
+  mutate(log10_n_QDS = log10(n_QDS))
+```
+
+```{r plot-range-size-distributions}
+ggplot(range_sizes) +
+  aes(n_QDS, fill = region, alpha = region) +
+  geom_density(colour = NA) +
+  scale_fill_manual(name = "Region", values = c("black", "grey50")) +
+  scale_alpha_manual(values = c(1, 0.5)) +
+  theme_classic()
+ggplot(range_sizes[range_sizes$log10_n_QDS >= 0, ]) +
+  aes(log10_n_QDS, fill = region, alpha = region) +
+  geom_density(colour = NA) +
+  scale_fill_manual(name = "Region", values = c("black", "grey50")) +
+  scale_alpha_manual(values = c(1, 0.5)) +
+  theme_classic()
+```
+
+```{r test-range-size-distributions}
+t.test(
+  log10_n_QDS ~ region,
+  range_sizes[range_sizes$log10_n_QDS >= 0, ]
+)
+wilcox.test(
+  n_QDS ~ region,
+  range_sizes[range_sizes$log10_n_QDS >= 0, ]
+)
+```
