@@ -1,3 +1,15 @@
+# Import Larsen-grid rasters ----------------------------------------------------\
+
+Larsen_grid_EDS_ras <- raster(here(
+  "data/derived-data/May-2019/Larsen_grid_EDS_ras.tif"
+))
+Larsen_grid_QDS_ras <- raster(here(
+  "data/derived-data/May-2019/Larsen_grid_QDS_ras.tif"
+))
+Larsen_grid_HDS_ras <- raster(here(
+  "data/derived-data/May-2019/Larsen_grid_HDS_ras.tif"
+))
+
 # Collate richness data into grids ---------------------------------------------
 
 make_SpatialPointsDataFrame <- function(df) {
@@ -76,8 +88,8 @@ QDS_richness <- species_occ_data %>%
   distinct() %>%  # just in case
   group_by(QDS) %>%
   summarise(
-    n_collections   = length(species),
-    QDS_richness    = length(unique(species))
+    n_collections = length(species),
+    QDS_richness  = length(unique(species))
   )
 # At HDS-scale:
 mean_QDS_richness <- QDS_richness %>%
@@ -110,7 +122,6 @@ DS_richness <- species_occ_data %>%
 ggplot(DS_richness, aes(mean_HDS_richness, DS_richness - mean_HDS_richness)) +
   geom_point() +
   lims(x = c(0, 3000), y = c(0, 3000))
-
 ggplot(HDS_richness, aes(mean_QDS_richness, HDS_richness - mean_QDS_richness)) +
   geom_point() +
   lims(x = c(0, 3000), y = c(0, 3000))
@@ -126,22 +137,136 @@ SWAFR_variables <- stack(SWAFR_file_names)
 enviro_data <- raster::merge(GCFR_variables, SWAFR_variables)
 names(enviro_data)  <- str_replace_all(var_names, " ", "_")
 
-# Check
-plot(GCFR_variables[[1]])
-plot(border = "green", add = TRUE, Larsen_grid_EDS[
-  Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS &
-  Larsen_grid_EDS$region == "GCFR",
-])
-plot(border = "red", add = TRUE, Larsen_grid_QDS[
-  Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
-  Larsen_grid_QDS$region == "GCFR",
-])
-plot(border = "blue", add = TRUE, Larsen_grid_HDS[
-  Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
-  Larsen_grid_HDS$region == "GCFR",
-])
-
 # Resample environmental data to EDS -------------------------------------------
+
+enviro_data_EDS <- resample(
+  enviro_data, Larsen_grid_EDS_ras
+)
+enviro_data_QDS <- resample(
+  enviro_data, Larsen_grid_QDS_ras
+)
+enviro_data_HDS <- resample(
+  enviro_data, Larsen_grid_HDS_ras
+)
+
+# Merge environmental data from rasters into dataframes ------------------------
+
+raster2df <- function(r, Larsen_grid_data) {
+  df <- cbind(
+    xyFromCell(r, 1:ncell(r)),
+    as.data.frame(r)
+  )
+  names(df)[1:2] <- c("lon", "lat")
+  full_join(Larsen_grid_data, df)
+}
+
+enviro_data_EDS_df <- raster2df(enviro_data_EDS, Larsen_grid_EDS_data)
+enviro_data_QDS_df <- raster2df(enviro_data_QDS, Larsen_grid_QDS_data)
+enviro_data_HDS_df <- raster2df(enviro_data_HDS, Larsen_grid_HDS_data)
+
+# Calculate heterogeneity within QDS, HDS, DS ----------------------------------
+
+heterogeneity_QDS_df <- enviro_data_EDS_df %>%
+  filter(qdgc %in% QDS_w_all_EDS) %>%
+  filter(!is.na(region)) %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  group_by(region, qdgc) %>%
+  summarise_at(vars(str_replace(var_names, " ", "_")), ~var(., na.rm = TRUE)) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+
+heterogeneity_HDS_df <- enviro_data_QDS_df %>%
+  filter(hdgc %in% HDS_w_all_QDS) %>%
+  filter(!is.na(region)) %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  group_by(region, hdgc) %>%
+  summarise_at(vars(str_replace(var_names, " ", "_")), ~var(., na.rm = TRUE)) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+
+heterogeneity_DS_df <- enviro_data_HDS_df %>%
+  filter(dgc %in% DS_w_all_HDS) %>%
+  filter(!is.na(region)) %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  group_by(region, dgc) %>%
+  summarise_at(vars(str_replace(var_names, " ", "_")), ~var(., na.rm = TRUE)) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+
+# Run PCA of heterogeneity -----------------------------------------------------
+
+force_positive_PC1 <- function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+}
+
+heterogeneity_QDS_PCA <- heterogeneity_QDS_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+heterogeneity_HDS_PCA <- heterogeneity_HDS_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+heterogeneity_DS_PCA <- heterogeneity_DS_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+summary(heterogeneity_QDS_PCA)
+summary(heterogeneity_HDS_PCA)
+summary(heterogeneity_DS_PCA)
+
+heterogeneity_QDS_df$PC1 <- heterogeneity_QDS_PCA$x[, 1]
+heterogeneity_QDS_df$PC2 <- heterogeneity_QDS_PCA$x[, 2]
+
+heterogeneity_HDS_df$PC1 <- heterogeneity_HDS_PCA$x[, 1]
+heterogeneity_HDS_df$PC2 <- heterogeneity_HDS_PCA$x[, 2]
+
+heterogeneity_DS_df$PC1 <- heterogeneity_DS_PCA$x[, 1]
+heterogeneity_DS_df$PC2 <- heterogeneity_DS_PCA$x[, 2]
+
+# Merge richness data into dataframes ------------------------------------------
+
+QDS_richness %>%
+  rename(qdgc = QDS) %>%
+  full_join(heterogeneity_QDS_df) %>%
+  filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+  ggplot() +
+    aes(PC1, QDS_richness, colour = region) +
+    geom_point()
+
+HDS_richness %>%
+  rename(hdgc = HDS) %>%
+  full_join(heterogeneity_HDS_df) %>%
+  filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+  ggplot() +
+    aes(PC1, HDS_richness, colour = region) +
+    geom_point()
+
+DS_richness %>%
+  rename(dgc = DS) %>%
+  full_join(heterogeneity_DS_df) %>%
+  filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+  ggplot() +
+    aes(PC1, DS_richness, colour = region) +
+    geom_point()
+
+# YAY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#####
 
 Larsen_grid_EDS2 <- Larsen_grid_EDS
 for (variable in names(enviro_data)) {
@@ -206,15 +331,6 @@ heterogeneity_QDS2 <- Larsen_grid_EDS2@data %>%
   mutate_if(is.numeric, log10) %>%
   mutate_if(is.numeric, scale)
 
-force_positive_PC1 <- function(PCA) {
-  if (all(PCA$rotation[, 1] <= 0)) {
-    message("Multiplying this one by -1")
-    PCA$rotation[, 1] %<>% multiply_by(-1)
-    PCA$x[, 1]        %<>% multiply_by(-1)
-  }
-  PCA
-}
-
 heterogeneity_PCA <- heterogeneity_QDS2 %>%
   dplyr::select(Elevation:pH) %>%
   prcomp(center = TRUE, scale. = TRUE) %>%
@@ -237,95 +353,3 @@ plot(border = "red", add = TRUE, Larsen_grid_QDS[
   Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
   Larsen_grid_QDS$region == "GCFR",
 ])
-
-#####
-
-code2midpt <- function(x, type = c("lon", "lat"), scale = c("QDS", "HDS")) {
-  if (scale == "QDS") {
-    if (type == "lon") {
-      case_when(
-        x %in% c("AA", "AC", "CA", "CC") ~ 0.125,
-        x %in% c("AB", "AD", "CB", "CD") ~ 0.375,
-        x %in% c("BA", "BC", "DA", "DC") ~ 0.625,
-        x %in% c("BB", "BD", "DB", "DD") ~ 0.875
-      )
-    } else if (type == "lat") {
-      case_when(
-        x %in% c("AA", "AB", "BA", "BB") ~ 0.125,
-        x %in% c("AC", "AD", "BC", "BD") ~ 0.375,
-        x %in% c("CA", "CB", "DA", "DB") ~ 0.625,
-        x %in% c("CC", "CD", "DC", "DD") ~ 0.875
-      )
-    }
-  } else if (scale == "HDS") {
-    if (type == "lon") {
-      case_when(
-        x %in% c("A", "C") ~ 0.25,
-        x %in% c("B", "D") ~ 0.75
-      )
-    } else if (type == "lat") {
-      case_when(
-        x %in% c("A", "B") ~ 0.25,
-        x %in% c("C", "D") ~ 0.75
-      )
-    }
-  }
-}
-
-GCFR_heterogeneity_QDS2
-
-outliers2 <- outliers %>%
-  mutate(
-    lon1 = case_when(
-      scale == "QDS" ~ QDS %>%
-        str_extract("E\\d{3}") %>%
-        str_remove("E") %>%
-        as.numeric(),
-      scale == "HDS" ~ HDS %>%
-        str_extract("E\\d{3}") %>%
-        str_remove("E") %>%
-        as.numeric(),
-      scale == "DS" ~ DS %>%
-        str_extract("E\\d{3}") %>%
-        str_remove("E") %>%
-        as.numeric()
-    ),
-    lon2 = case_when(
-      scale == "QDS" ~ QDS %>%
-        str_extract("[ABCD]{2}") %>%
-        code2midpt("lon", "QDS"),
-      scale == "HDS" ~ HDS %>%
-        str_extract("[ABCD]{1}") %>%
-        code2midpt("lon", "HDS"),
-      scale == "DS" ~ 0.5
-    ),
-    lat1 = case_when(
-      scale == "QDS" ~ QDS %>%
-        str_extract("S\\d{2}") %>%
-        str_remove("S") %>%
-        as.numeric(),
-      scale == "HDS" ~ HDS %>%
-        str_extract("S\\d{2}") %>%
-        str_remove("S") %>%
-        as.numeric(),
-      scale == "DS" ~ DS %>%
-        str_extract("S\\d{2}") %>%
-        str_remove("S") %>%
-        as.numeric()
-    ),
-    lat2 = case_when(
-      scale == "QDS" ~ QDS %>%
-        str_extract("[ABCD]{2}") %>%
-        code2midpt("lat", "QDS"),
-      scale == "HDS" ~ HDS %>%
-        str_extract("[ABCD]{1}") %>%
-        code2midpt("lat", "HDS"),
-      scale == "DS" ~ 0.5
-    ),
-  ) %>%
-  mutate(
-    lon = lon1 + lon2,
-    lat = -(lat1 + lat2)  # bc all southern hemisphere
-  ) %>%
-  dplyr::select(-lon1, -lon2, -lat1, -lat2) %>%
-  as.data.frame()

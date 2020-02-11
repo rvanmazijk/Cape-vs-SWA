@@ -77,11 +77,11 @@ Larsen_grid_EDS@data <- cbind(
 # are in the regions (from EDS above)
 Larsen_grid_QDS@data$region <-
   ifelse(Larsen_grid_QDS@data$lon > 90,
-         "SWAFR", "GCFR"
+    "SWAFR", "GCFR"
   )
 Larsen_grid_HDS@data$region <-
   ifelse(Larsen_grid_HDS@data$lon > 90,
-         "SWAFR", "GCFR"
+    "SWAFR", "GCFR"
   )
 
 # Filter to EDS that are within the regions' borders
@@ -130,42 +130,42 @@ if (FALSE) {
   # GCFR:
   plot(border = "green", Larsen_grid_EDS[
     Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS &
-      Larsen_grid_EDS$region == "GCFR",
-    ])
+    Larsen_grid_EDS$region == "GCFR",
+  ])
   points(col = "green",
-         Larsen_grid_EDS$lon[Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS],
-         Larsen_grid_EDS$lat[Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS]
+    Larsen_grid_EDS$lon[Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS],
+    Larsen_grid_EDS$lat[Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS]
   )
   plot(border = "red", add = TRUE, Larsen_grid_QDS[
     Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
-      Larsen_grid_QDS$region == "GCFR",
-    ])
+    Larsen_grid_QDS$region == "GCFR",
+  ])
   points(col = "red",
-         Larsen_grid_QDS$lon[Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS],
-         Larsen_grid_QDS$lat[Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS]
+    Larsen_grid_QDS$lon[Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS],
+    Larsen_grid_QDS$lat[Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS]
   )
   plot(border = "blue", add = TRUE, Larsen_grid_HDS[
     Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
-      Larsen_grid_HDS$region == "GCFR",
-    ])
+    Larsen_grid_HDS$region == "GCFR",
+  ])
   points(col = "blue",
-         Larsen_grid_HDS$lon[Larsen_grid_HDS$dgc %in% DS_w_all_HDS],
-         Larsen_grid_HDS$lat[Larsen_grid_HDS$dgc %in% DS_w_all_HDS]
+    Larsen_grid_HDS$lon[Larsen_grid_HDS$dgc %in% DS_w_all_HDS],
+    Larsen_grid_HDS$lat[Larsen_grid_HDS$dgc %in% DS_w_all_HDS]
   )
 
   # SWAFR:
   plot(border = "green", Larsen_grid_EDS[
     Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS &
-      Larsen_grid_EDS$region == "SWAFR",
-    ])
+    Larsen_grid_EDS$region == "SWAFR",
+  ])
   plot(border = "red", add = TRUE, Larsen_grid_QDS[
     Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
-      Larsen_grid_QDS$region == "SWAFR",
-    ])
+    Larsen_grid_QDS$region == "SWAFR",
+  ])
   plot(border = "blue", add = TRUE, Larsen_grid_HDS[
     Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
-      Larsen_grid_HDS$region == "SWAFR",
-    ])
+    Larsen_grid_HDS$region == "SWAFR",
+  ])
 }
 
 # Create my own blank rasters of/from the Larsen grids -------------------------
