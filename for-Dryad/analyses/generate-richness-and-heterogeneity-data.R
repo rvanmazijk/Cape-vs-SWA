@@ -295,3 +295,179 @@ for (variable in names(enviro_data)) {
   message(variable, " done")
 }
 save(Larsen_grid_EDS2, file = "Larsen_grid_EDS2")
+
+#####
+
+# 2020-02-10
+
+GCFR_heterogeneity_QDS1 <- var_names %>%
+  str_replace(" ", "_") %>%
+  {glue("for-Dryad/raster-layers/GCFR_heterogeneity_{.}_QDS.tif")} %>%
+  map(raster) %>%
+  stack()
+
+load(file = "Larsen_grid_EDS2")
+GCFR_heterogeneity_QDS2 <- Larsen_grid_EDS2@data %>%
+  as_tibble() %>%
+  filter(region == "GCFR") %>%
+  group_by(qdgc) %>%
+  dplyr::select(Elevation:pH) %>%
+  summarise_if(is.numeric, var) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_if(is.numeric, log10) %>%
+  mutate_if(is.numeric, scale)
+
+GCFR_heterogeneity_QDS1 %>%
+  as.data.frame() %>%
+  map_dfc(log10) %>%
+  map_dfc(scale) %>%
+  gather(var, val) %>%
+  filter(!is.na(val)) %>%
+  ggplot() +
+    aes(var, val) +
+    geom_boxplot() +
+    coord_flip()
+
+GCFR_heterogeneity_QDS2 %>%
+  gather(var, val, -qdgc) %>%
+  ggplot() +
+    aes(var, val) +
+    geom_boxplot() +
+    coord_flip()
+
+#####
+
+heterogeneity_QDS2 <- Larsen_grid_EDS2@data %>%
+  as_tibble() %>%
+  group_by(region, qdgc) %>%
+  dplyr::select(Elevation:pH) %>%
+  summarise_if(is.numeric, var) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_if(is.numeric, log10) %>%
+  mutate_if(is.numeric, scale)
+
+force_positive_PC1 <- function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+}
+
+heterogeneity_PCA <- heterogeneity_QDS2 %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+summary(heterogeneity_PCA)
+
+heterogeneity_QDS2$PC1 <- heterogeneity_PCA$x[, 1]
+heterogeneity_QDS2$PC2 <- heterogeneity_PCA$x[, 2]
+
+ggplot(heterogeneity_QDS2) +
+  aes(PC1, PC2, colour = region) +
+  geom_point()
+
+#####
+
+plot(GCFR_heterogeneity_QDS1$GCFR_heterogeneity_Elevation_QDS)
+points(xyFromCell(GCFR_heterogeneity_QDS1, 1:1232), pch = 3)
+plot(border = "red", add = TRUE, Larsen_grid_QDS[
+  Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
+  Larsen_grid_QDS$region == "GCFR",
+])
+
+#####
+
+code2midpt <- function(x, type = c("lon", "lat"), scale = c("QDS", "HDS")) {
+  if (scale == "QDS") {
+    if (type == "lon") {
+      case_when(
+        x %in% c("AA", "AC", "CA", "CC") ~ 0.125,
+        x %in% c("AB", "AD", "CB", "CD") ~ 0.375,
+        x %in% c("BA", "BC", "DA", "DC") ~ 0.625,
+        x %in% c("BB", "BD", "DB", "DD") ~ 0.875
+      )
+    } else if (type == "lat") {
+      case_when(
+        x %in% c("AA", "AB", "BA", "BB") ~ 0.125,
+        x %in% c("AC", "AD", "BC", "BD") ~ 0.375,
+        x %in% c("CA", "CB", "DA", "DB") ~ 0.625,
+        x %in% c("CC", "CD", "DC", "DD") ~ 0.875
+      )
+    }
+  } else if (scale == "HDS") {
+    if (type == "lon") {
+      case_when(
+        x %in% c("A", "C") ~ 0.25,
+        x %in% c("B", "D") ~ 0.75
+      )
+    } else if (type == "lat") {
+      case_when(
+        x %in% c("A", "B") ~ 0.25,
+        x %in% c("C", "D") ~ 0.75
+      )
+    }
+  }
+}
+
+GCFR_heterogeneity_QDS2
+
+outliers2 <- outliers %>%
+  mutate(
+    lon1 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("E\\d{3}") %>%
+        str_remove("E") %>%
+        as.numeric(),
+      scale == "HDS" ~ HDS %>%
+        str_extract("E\\d{3}") %>%
+        str_remove("E") %>%
+        as.numeric(),
+      scale == "DS" ~ DS %>%
+        str_extract("E\\d{3}") %>%
+        str_remove("E") %>%
+        as.numeric()
+    ),
+    lon2 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("[ABCD]{2}") %>%
+        code2midpt("lon", "QDS"),
+      scale == "HDS" ~ HDS %>%
+        str_extract("[ABCD]{1}") %>%
+        code2midpt("lon", "HDS"),
+      scale == "DS" ~ 0.5
+    ),
+    lat1 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("S\\d{2}") %>%
+        str_remove("S") %>%
+        as.numeric(),
+      scale == "HDS" ~ HDS %>%
+        str_extract("S\\d{2}") %>%
+        str_remove("S") %>%
+        as.numeric(),
+      scale == "DS" ~ DS %>%
+        str_extract("S\\d{2}") %>%
+        str_remove("S") %>%
+        as.numeric()
+    ),
+    lat2 = case_when(
+      scale == "QDS" ~ QDS %>%
+        str_extract("[ABCD]{2}") %>%
+        code2midpt("lat", "QDS"),
+      scale == "HDS" ~ HDS %>%
+        str_extract("[ABCD]{1}") %>%
+        code2midpt("lat", "HDS"),
+      scale == "DS" ~ 0.5
+    ),
+  ) %>%
+  mutate(
+    lon = lon1 + lon2,
+    lat = -(lat1 + lat2)  # bc all southern hemisphere
+  ) %>%
+  dplyr::select(-lon1, -lon2, -lat1, -lat2) %>%
+  as.data.frame()
