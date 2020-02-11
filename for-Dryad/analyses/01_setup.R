@@ -59,3 +59,27 @@ theme_set(my_theme)
 
 # Make a blank plot object (useful as filler when arranging panels)
 white_rect <- grid.rect(gp = gpar(col = "white"))
+
+# Helper-functions -------------------------------------------------------------
+
+grid_dim <- function(x) {
+  # Gets the latitudinal and longitudinal range of a SpatialPolygonsDataFrame
+  list(
+    width  = extent(x)[2] - extent(x)[1],
+    height = extent(x)[4] - extent(x)[3],
+    crs    = proj4string(x)
+  )
+}
+
+grid2raster <- function(x, resol = c(0.125, 0.25, 0.5)) {
+  # Creates a raster with the same dimensions and number of cells
+  # as a Larsen-type grid SpatialPolygonsDataFrame
+  n_gc_wide <- grid_dim(x)$width  / resol
+  n_gc_high <- grid_dim(x)$height / resol
+  raster(
+    nrow = n_gc_high, ncol = n_gc_wide,
+    crs = proj4string(x),
+    xmn = extent(x)[1], xmx = extent(x)[2],
+    ymn = extent(x)[3], ymx = extent(x)[4]
+  )
+}
