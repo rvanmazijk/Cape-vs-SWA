@@ -83,3 +83,21 @@ grid2raster <- function(x, resol = c(0.125, 0.25, 0.5)) {
     ymn = extent(x)[3], ymx = extent(x)[4]
   )
 }
+
+raster2df <- function(r, Larsen_grid_data) {
+  df <- cbind(
+    xyFromCell(r, 1:ncell(r)),
+    as.data.frame(r)
+  )
+  names(df)[1:2] <- c("lon", "lat")
+  full_join(Larsen_grid_data, df)
+}
+
+force_positive_PC1 <- function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+}

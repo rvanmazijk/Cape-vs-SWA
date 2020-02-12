@@ -1,4 +1,8 @@
-# Import Larsen-grid rasters ----------------------------------------------------\
+# Heterogeneity and species richness: replicating Larsen et al. 2009 grids
+# R. van Mazijk
+# CC-BY-4.0 2019
+
+# Import Larsen-grid rasters ---------------------------------------------------
 
 Larsen_grid_EDS_ras <- raster(here(
   "data/derived-data/May-2019/Larsen_grid_EDS_ras.tif"
@@ -118,13 +122,17 @@ DS_richness <- species_occ_data %>%
   ) %>%
   full_join(mean_HDS_richness)
 
-# Check
-ggplot(DS_richness, aes(mean_HDS_richness, DS_richness - mean_HDS_richness)) +
-  geom_point() +
-  lims(x = c(0, 3000), y = c(0, 3000))
-ggplot(HDS_richness, aes(mean_QDS_richness, HDS_richness - mean_QDS_richness)) +
-  geom_point() +
-  lims(x = c(0, 3000), y = c(0, 3000))
+# Plot to check
+if (FALSE) {
+  ggplot(DS_richness) +
+    aes(mean_HDS_richness, DS_richness - mean_HDS_richness) +
+    geom_point() +
+    lims(x = c(0, 3000), y = c(0, 3000))
+  ggplot(HDS_richness) +
+    aes(mean_QDS_richness, HDS_richness - mean_QDS_richness) +
+    geom_point() +
+    lims(x = c(0, 3000), y = c(0, 3000))
+}
 
 # Import environmental data ----------------------------------------------------
 
@@ -151,15 +159,6 @@ enviro_data_HDS <- resample(
 
 # Merge environmental data from rasters into dataframes ------------------------
 
-raster2df <- function(r, Larsen_grid_data) {
-  df <- cbind(
-    xyFromCell(r, 1:ncell(r)),
-    as.data.frame(r)
-  )
-  names(df)[1:2] <- c("lon", "lat")
-  full_join(Larsen_grid_data, df)
-}
-
 enviro_data_EDS_df <- raster2df(enviro_data_EDS, Larsen_grid_EDS_data)
 enviro_data_QDS_df <- raster2df(enviro_data_QDS, Larsen_grid_QDS_data)
 enviro_data_HDS_df <- raster2df(enviro_data_HDS, Larsen_grid_HDS_data)
@@ -171,7 +170,10 @@ heterogeneity_QDS_df <- enviro_data_EDS_df %>%
   filter(!is.na(region)) %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
   group_by(region, qdgc) %>%
-  summarise_at(vars(str_replace(var_names, " ", "_")), ~var(., na.rm = TRUE)) %>%
+  summarise_at(
+    vars(str_replace(var_names, " ", "_")),
+    ~var(., na.rm = TRUE)
+  ) %>%
   ungroup() %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
   mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
@@ -182,7 +184,10 @@ heterogeneity_HDS_df <- enviro_data_QDS_df %>%
   filter(!is.na(region)) %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
   group_by(region, hdgc) %>%
-  summarise_at(vars(str_replace(var_names, " ", "_")), ~var(., na.rm = TRUE)) %>%
+  summarise_at(
+    vars(str_replace(var_names, " ", "_")),
+    ~var(., na.rm = TRUE)
+  ) %>%
   ungroup() %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
   mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
@@ -193,22 +198,16 @@ heterogeneity_DS_df <- enviro_data_HDS_df %>%
   filter(!is.na(region)) %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
   group_by(region, dgc) %>%
-  summarise_at(vars(str_replace(var_names, " ", "_")), ~var(., na.rm = TRUE)) %>%
+  summarise_at(
+    vars(str_replace(var_names, " ", "_")),
+    ~var(., na.rm = TRUE)
+  ) %>%
   ungroup() %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
   mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
   mutate_at(vars(str_replace(var_names, " ", "_")), scale)
 
 # Run PCA of heterogeneity -----------------------------------------------------
-
-force_positive_PC1 <- function(PCA) {
-  if (all(PCA$rotation[, 1] <= 0)) {
-    message("Multiplying this one by -1")
-    PCA$rotation[, 1] %<>% multiply_by(-1)
-    PCA$x[, 1]        %<>% multiply_by(-1)
-  }
-  PCA
-}
 
 heterogeneity_QDS_PCA <- heterogeneity_QDS_df %>%
   dplyr::select(Elevation:pH) %>%
@@ -240,31 +239,31 @@ heterogeneity_DS_df$PC2 <- heterogeneity_DS_PCA$x[, 2]
 
 # Merge richness data into dataframes ------------------------------------------
 
-QDS_richness %>%
-  rename(qdgc = QDS) %>%
-  full_join(heterogeneity_QDS_df) %>%
-  filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
-  ggplot() +
-    aes(PC1, QDS_richness, colour = region) +
-    geom_point()
-
-HDS_richness %>%
-  rename(hdgc = HDS) %>%
-  full_join(heterogeneity_HDS_df) %>%
-  filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
-  ggplot() +
-    aes(PC1, HDS_richness, colour = region) +
-    geom_point()
-
-DS_richness %>%
-  rename(dgc = DS) %>%
-  full_join(heterogeneity_DS_df) %>%
-  filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
-  ggplot() +
-    aes(PC1, DS_richness, colour = region) +
-    geom_point()
-
-# YAY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Plot to check
+if (FALSE) {
+  QDS_richness %>%
+    rename(qdgc = QDS) %>%
+    full_join(heterogeneity_QDS_df) %>%
+    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+    ggplot() +
+      aes(PC1, QDS_richness, colour = region) +
+      geom_point()
+  HDS_richness %>%
+    rename(hdgc = HDS) %>%
+    full_join(heterogeneity_HDS_df) %>%
+    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+    ggplot() +
+      aes(PC1, HDS_richness, colour = region) +
+      geom_point()
+  DS_richness %>%
+    rename(dgc = DS) %>%
+    full_join(heterogeneity_DS_df) %>%
+    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+    ggplot() +
+      aes(PC1, DS_richness, colour = region) +
+      geom_point()
+  # YAY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
 
 #####
 

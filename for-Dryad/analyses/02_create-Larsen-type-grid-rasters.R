@@ -220,13 +220,15 @@ if (FALSE) {
 
 # Test putting arbitrary data into raster via lon-lat lookup from tibble -------
 
-Larsen_grid_EDS_ras2 <- Larsen_grid_EDS_ras
-cells_to_fill <- cellFromXY(
-  Larsen_grid_EDS_ras2,
-  as.data.frame(Larsen_grid_EDS_data[, c("lon", "lat")])
-)
-Larsen_grid_EDS_ras2[cells_to_fill] <- Larsen_grid_EDS_data$areakm2
-plot(Larsen_grid_EDS_ras2)
+if (FALSE) {
+  Larsen_grid_EDS_ras2 <- Larsen_grid_EDS_ras
+  cells_to_fill <- cellFromXY(
+    Larsen_grid_EDS_ras2,
+    as.data.frame(Larsen_grid_EDS_data[, c("lon", "lat")])
+  )
+  Larsen_grid_EDS_ras2[cells_to_fill] <- Larsen_grid_EDS_data$areakm2
+  plot(Larsen_grid_EDS_ras2)
+}
 
 # Save these blank template rasters --------------------------------------------
 
