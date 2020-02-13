@@ -1,3 +1,28 @@
+# Import my Larsen-type grid polygons and rasters ------------------------------
+
+Larsen_grid_EDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_EDS"),
+  layer = "Larsen_grid_EDS"
+)
+Larsen_grid_QDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_QDS"),
+  layer = "Larsen_grid_QDS"
+)
+Larsen_grid_HDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_HDS"),
+  layer = "Larsen_grid_HDS"
+)
+
+Larsen_grid_EDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_EDS_ras.tif")
+)
+Larsen_grid_QDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_QDS_ras.tif")
+)
+Larsen_grid_HDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif")
+)
+
 # Import region polygons -------------------------------------------------------
 
 GCFR_border_buffered <- readOGR(
