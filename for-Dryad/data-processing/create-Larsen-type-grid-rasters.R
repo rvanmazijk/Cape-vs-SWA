@@ -64,109 +64,25 @@ Larsen_grid_HDS@data[, c("lon", "lat", "areakm2")] %<>%
   map(as.numeric)
 # NOTE: lon, lat data for grid polygons are the midpoints
 
-# Detemine which DS, HDS & QDS have all 4 of their HDS, QDS & EDS --------------
-# (within the regions' borders)
-
-# Query the border polygon and store results in Larsen grid
-Larsen_grid_EDS@data <- cbind(
-  Larsen_grid_EDS@data,
-  Larsen_grid_EDS %over% borders_buffered
+# Save to disc
+writeOGR(
+  Larsen_grid_EDS,
+  here("data/derived-data/May-2019/Larsen_grid_EDS"),
+  layer = "Larsen_grid_EDS",
+  driver = "ESRI Shapefile"
 )
-# For larger cells, just use longitude for region classification,
-# because later I filter the cells based on whether their constituent cells
-# are in the regions (from EDS above)
-Larsen_grid_QDS@data$region <-
-  ifelse(Larsen_grid_QDS@data$lon > 90,
-    "SWAFR", "GCFR"
-  )
-Larsen_grid_HDS@data$region <-
-  ifelse(Larsen_grid_HDS@data$lon > 90,
-    "SWAFR", "GCFR"
-  )
-
-# Filter to EDS that are within the regions' borders
-Larsen_grid_EDS <- Larsen_grid_EDS[!is.na(Larsen_grid_EDS$region), ]
-
-# Make grids tibbles for easier wrangling
-Larsen_grid_EDS_data <- as_tibble(Larsen_grid_EDS@data)
-Larsen_grid_QDS_data <- as_tibble(Larsen_grid_QDS@data)
-Larsen_grid_HDS_data <- as_tibble(Larsen_grid_HDS@data)
-
-# Pull out QDS-codes of QDS with all 4 EDS (within borders)
-QDS_w_all_EDS <- Larsen_grid_EDS_data %>%
-  group_by(qdgc, region) %>%
-  dplyr::select(edgc) %>%
-  distinct() %>%  # just in case
-  summarise(n_EDS = n()) %>%
-  filter(n_EDS == 4) %>%
-  pull(qdgc)
-
-# Pull out HDS-codes of HDS with all 4 HDS (within borders)
-HDS_w_all_QDS <- Larsen_grid_QDS_data %>%
-  group_by(hdgc, region) %>%
-  dplyr::select(qdgc) %>%
-  distinct() %>%
-  filter(qdgc %in% QDS_w_all_EDS) %>%
-  summarise(n_QDS = n()) %>%
-  filter(n_QDS == 4) %>%
-  pull(hdgc)
-
-# Pull out DS-codes of DS with all 4 DS (within borders)
-DS_w_all_HDS <- Larsen_grid_HDS_data %>%
-  group_by(dgc, region) %>%
-  dplyr::select(hdgc) %>%
-  distinct() %>%
-  filter(hdgc %in% HDS_w_all_QDS) %>%
-  summarise(n_HDS = n()) %>%
-  filter(n_HDS == 4) %>%
-  pull(dgc)
-
-# Plot grids and cell midpoints to check
-# NOTE:
-#   Plots EDS that belong to a QDS with all 4 EDS in region,
-#   **not** the QDS themselves,
-#   etc. for other scales
-if (FALSE) {
-  # GCFR:
-  plot(border = "green", Larsen_grid_EDS[
-    Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS &
-    Larsen_grid_EDS$region == "GCFR",
-  ])
-  points(col = "green",
-    Larsen_grid_EDS$lon[Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS],
-    Larsen_grid_EDS$lat[Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS]
-  )
-  plot(border = "red", add = TRUE, Larsen_grid_QDS[
-    Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
-    Larsen_grid_QDS$region == "GCFR",
-  ])
-  points(col = "red",
-    Larsen_grid_QDS$lon[Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS],
-    Larsen_grid_QDS$lat[Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS]
-  )
-  plot(border = "blue", add = TRUE, Larsen_grid_HDS[
-    Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
-    Larsen_grid_HDS$region == "GCFR",
-  ])
-  points(col = "blue",
-    Larsen_grid_HDS$lon[Larsen_grid_HDS$dgc %in% DS_w_all_HDS],
-    Larsen_grid_HDS$lat[Larsen_grid_HDS$dgc %in% DS_w_all_HDS]
-  )
-
-  # SWAFR:
-  plot(border = "green", Larsen_grid_EDS[
-    Larsen_grid_EDS$qdgc %in% QDS_w_all_EDS &
-    Larsen_grid_EDS$region == "SWAFR",
-  ])
-  plot(border = "red", add = TRUE, Larsen_grid_QDS[
-    Larsen_grid_QDS$hdgc %in% HDS_w_all_QDS &
-    Larsen_grid_QDS$region == "SWAFR",
-  ])
-  plot(border = "blue", add = TRUE, Larsen_grid_HDS[
-    Larsen_grid_HDS$dgc %in% DS_w_all_HDS &
-    Larsen_grid_HDS$region == "SWAFR",
-  ])
-}
+writeOGR(
+  Larsen_grid_QDS,
+  here("data/derived-data/May-2019/Larsen_grid_QDS"),
+  layer = "Larsen_grid_QDS",
+  driver = "ESRI Shapefile"
+)
+writeOGR(
+  Larsen_grid_QDS,
+  here("data/derived-data/May-2019/Larsen_grid_QDS"),
+  layer = "Larsen_grid_QDS",
+  driver = "ESRI Shapefile"
+)
 
 # Create my own blank rasters of/from the Larsen grids -------------------------
 
