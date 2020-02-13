@@ -1,151 +1,332 @@
-# Import region polygons -------------------------------------------------------
+# Import environmental data ----------------------------------------------------
 
-GCFR_border  <- readOGR(here("data/derived-data/borders/GCFR_border"))
-SWAFR_border <- readOGR(here("data/derived-data/borders/SWBP_Mike-Cramer"))
+GCFR_file_names  <- glue("{data_dir}/GCFR_{var_names}_masked2.tif")
+SWAFR_file_names <- glue("{data_dir}/SWAFR_{var_names}_masked2.tif")
 
-GCFR_border_buffered <-
-  readOGR(here("data/derived-data/borders/GCFR_border_buffered/"))
-SWAFR_border_buffered <-
-  readOGR(here("data/derived-data/borders/SWAFR_border_buffered/"))
+GCFR_variables  <- stack(GCFR_file_names)
+SWAFR_variables <- stack(SWAFR_file_names)
 
-GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
-SWAFR_box <- readOGR(here("data/derived-data/borders/SWAFR_box"))
+enviro_data <- raster::merge(GCFR_variables, SWAFR_variables)
+names(enviro_data)  <- str_replace_all(var_names, " ", "_")
 
-# Import Larsen grid polygons
-ZA_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_03_zaf")
-AU_EDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_03_aus")
-ZA_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_02_zaf")
-AU_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_02_aus")
-ZA_HDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_01_zaf")
-AU_HDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_01_aus")
+# Resample environmental data to EDS -------------------------------------------
 
-# Crop to regions
-GCFR_EDS  <- crop(ZA_EDS, GCFR_box)
-SWAFR_EDS <- crop(AU_EDS, SWAFR_box)
-
-# Get DS, HDS, QDS codes from EDS codes
-Larsen_grid <- rbind(GCFR_EDS, SWAFR_EDS)
-Larsen_grid$edgc <- Larsen_grid$qdgc
-Larsen_grid$qdgc <- str_remove(Larsen_grid$edgc, ".$")
-Larsen_grid$hdgc <- str_remove(Larsen_grid$qdgc, ".$")
-Larsen_grid$dgc  <- str_remove(Larsen_grid$hdgc, ".$")
-
-# Detemine which DS, HDS & QDS have all 4 of their HDS, QDS & EDS --------------
-
-# .... QDS-scale ---------------------------------------------------------------
-
-# Test
-ZA_EDS@data %<>% cbind(ZA_EDS %over% GCFR_border_buffered)
-ZA_QDS@data %<>% cbind(ZA_QDS %over% GCFR_border_buffered)
-
-ZA_EDS@data$region %<>% {!is.na(.)}
-ZA_QDS@data$region %<>% {!is.na(.)}
-
-GCFR_EDS <- ZA_EDS[ZA_EDS$region, ]
-GCFR_QDS <- ZA_QDS[ZA_QDS$region, ]
-
-GCFR_QDS_EDS <- intersect(GCFR_QDS, GCFR_EDS)
-
-GCFR_QDS_w_all_EDS <- GCFR_QDS_EDS@data %>%
-  group_by(qdgc.1) %>%
-  summarise(n_EDS = n()) %>%
-  filter(n_EDS == 4) %>%
-  pull(qdgc.1) %>%
-  as.character()
-
-# Check
-plot(GCFR_EDS, lwd = 2)
-plot(
-  ZA_QDS[ZA_QDS$qdgc %in% GCFR_QDS_w_all_EDS, ],
-  border = "green", add = TRUE
+enviro_data_EDS <- resample(
+  enviro_data, Larsen_grid_EDS_ras
 )
-# Works!
-
-AU_EDS@data %<>% cbind(AU_EDS %over% SWAFR_border_buffered)
-AU_QDS@data %<>% cbind(AU_QDS %over% SWAFR_border_buffered)
-
-AU_EDS@data$region %<>% {!is.na(.)}
-AU_QDS@data$region %<>% {!is.na(.)}
-
-SWAFR_EDS <- AU_EDS[AU_EDS$region, ]
-SWAFR_QDS <- AU_QDS[AU_QDS$region, ]
-
-SWAFR_QDS_EDS <- intersect(SWAFR_QDS, SWAFR_EDS)
-
-SWAFR_QDS_w_all_EDS <- SWAFR_QDS_EDS@data %>%
-  group_by(qdgc.1) %>%
-  summarise(n_EDS = n()) %>%
-  filter(n_EDS == 4) %>%
-  pull(qdgc.1) %>%
-  as.character()
-
-# .... HDS-scale ---------------------------------------------------------------
-
-ZA_HDS@data %<>% cbind(ZA_HDS %over% GCFR_border_buffered)
-
-ZA_HDS@data$region %<>% {!is.na(.)}
-
-GCFR_HDS <- ZA_HDS[ZA_HDS$region, ]
-
-GCFR_HDS_QDS <- intersect(GCFR_HDS, GCFR_QDS)
-
-GCFR_HDS_w_all_QDS <- GCFR_HDS_QDS@data %>%
-  group_by(qdgc.1) %>%
-  summarise(n_QDS = n()) %>%
-  filter(n_QDS == 4) %>%
-  pull(qdgc.1) %>%
-  as.character()
-
-# Check
-plot(GCFR_QDS, lwd = 2)
-plot(
-  ZA_HDS[ZA_HDS$qdgc %in% GCFR_HDS_w_all_QDS, ],
-  border = "green", add = TRUE
+enviro_data_QDS <- resample(
+  enviro_data, Larsen_grid_QDS_ras
 )
-# Works!
-
-AU_HDS@data %<>% cbind(AU_HDS %over% SWAFR_border_buffered)
-
-AU_HDS@data$region %<>% {!is.na(.)}
-
-SWAFR_HDS <- AU_HDS[AU_HDS$region, ]
-
-SWAFR_HDS_QDS <- intersect(SWAFR_HDS, SWAFR_QDS)
-
-SWAFR_HDS_w_all_QDS <- SWAFR_HDS_QDS@data %>%
-  group_by(qdgc.1) %>%
-  summarise(n_QDS = n()) %>%
-  filter(n_QDS == 4) %>%
-  pull(qdgc.1) %>%
-  as.character()
-
-# .... DS-scale ----------------------------------------------------------------
-
-GCFR_HDS$dgc <- str_remove(GCFR_HDS$qdgc, ".$")
-
-GCFR_DS_w_all_HDS <- GCFR_HDS@data %>%
-  group_by(dgc) %>%
-  summarise(n_HDS = n()) %>%
-  filter(n_HDS == 4) %>%
-  pull(dgc) %>%
-  as.character()
-
-# Check
-plot(GCFR_HDS, lwd = 2)
-plot(
-  GCFR_HDS[GCFR_HDS$dgc %in% GCFR_DS_w_all_HDS, ],
-  border = "green", add = TRUE
+enviro_data_HDS <- resample(
+  enviro_data, Larsen_grid_HDS_ras
 )
-# Works!
 
-SWAFR_HDS$dgc <- str_remove(SWAFR_HDS$qdgc, ".$")
+# Merge environmental data from rasters into dataframes ------------------------
 
-SWAFR_DS_w_all_HDS <- SWAFR_HDS@data %>%
-  group_by(dgc) %>%
-  summarise(n_HDS = n()) %>%
-  filter(n_HDS == 4) %>%
-  pull(dgc) %>%
-  as.character()
+enviro_data_EDS_df <- raster2df(enviro_data_EDS, Larsen_grid_EDS_data)
+enviro_data_QDS_df <- raster2df(enviro_data_QDS, Larsen_grid_QDS_data)
+enviro_data_HDS_df <- raster2df(enviro_data_HDS, Larsen_grid_HDS_data)
+
+# Calculate heterogeneity within QDS, HDS, DS ----------------------------------
+
+heterogeneity_QDS_df <- enviro_data_EDS_df %>%
+  filter(qdgc %in% QDS_w_all_EDS) %>%
+  filter(!is.na(region)) %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  group_by(region, qdgc) %>%
+  summarise_at(
+    vars(str_replace(var_names, " ", "_")),
+    ~var(., na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+
+heterogeneity_HDS_df <- enviro_data_QDS_df %>%
+  filter(hdgc %in% HDS_w_all_QDS) %>%
+  filter(!is.na(region)) %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  group_by(region, hdgc) %>%
+  summarise_at(
+    vars(str_replace(var_names, " ", "_")),
+    ~var(., na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+
+heterogeneity_DS_df <- enviro_data_HDS_df %>%
+  filter(dgc %in% DS_w_all_HDS) %>%
+  filter(!is.na(region)) %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  group_by(region, dgc) %>%
+  summarise_at(
+    vars(str_replace(var_names, " ", "_")),
+    ~var(., na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
+  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+
+# Run PCA of heterogeneity -----------------------------------------------------
+
+heterogeneity_QDS_PCA <- heterogeneity_QDS_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+heterogeneity_HDS_PCA <- heterogeneity_HDS_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+heterogeneity_DS_PCA <- heterogeneity_DS_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
+summary(heterogeneity_QDS_PCA)
+summary(heterogeneity_HDS_PCA)
+summary(heterogeneity_DS_PCA)
+
+heterogeneity_QDS_df$PC1 <- heterogeneity_QDS_PCA$x[, 1]
+heterogeneity_QDS_df$PC2 <- heterogeneity_QDS_PCA$x[, 2]
+
+heterogeneity_HDS_df$PC1 <- heterogeneity_HDS_PCA$x[, 1]
+heterogeneity_HDS_df$PC2 <- heterogeneity_HDS_PCA$x[, 2]
+
+heterogeneity_DS_df$PC1 <- heterogeneity_DS_PCA$x[, 1]
+heterogeneity_DS_df$PC2 <- heterogeneity_DS_PCA$x[, 2]
+
+# Merge richness data into dataframes ------------------------------------------
+
+# Plot to check
+if (FALSE) {
+  QDS_richness %>%
+    rename(qdgc = QDS) %>%
+    full_join(heterogeneity_QDS_df) %>%
+    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+    ggplot() +
+    aes(PC1, QDS_richness, colour = region) +
+    geom_point()
+  HDS_richness %>%
+    rename(hdgc = HDS) %>%
+    full_join(heterogeneity_HDS_df) %>%
+    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+    ggplot() +
+    aes(PC1, HDS_richness, colour = region) +
+    geom_point()
+  DS_richness %>%
+    rename(dgc = DS) %>%
+    full_join(heterogeneity_DS_df) %>%
+    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
+    ggplot() +
+    aes(PC1, DS_richness, colour = region) +
+    geom_point()
+  # YAY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
+
+#####
+
+# Import environmental data ----------------------------------------------------
+
+GCFR_file_names  <- glue("{data_dir}/GCFR_{var_names}_masked2.tif")
+SWAFR_file_names <- glue("{data_dir}/SWAFR_{var_names}_masked2.tif")
+
+GCFR_variables  <- stack(GCFR_file_names)
+SWAFR_variables <- stack(SWAFR_file_names)
+
+names(GCFR_variables)  <- str_replace_all(var_names, " ", "_")
+names(SWAFR_variables) <- str_replace_all(var_names, " ", "_")
+
+# Resample environmental data from 0.05 x 0.05 to EDS --------------------------
+
+GCFR_EDS_template_raster <- GCFR_variables$Elevation %>%
+  aggregate(fact = 5) %>%  # aggregate up to QDS
+  disaggregate(fact = 2)   # disaggregate down to EDS
+SWAFR_EDS_template_raster <- SWAFR_variables$Elevation %>%
+  aggregate(fact = 5) %>%
+  disaggregate(fact = 2)
+
+GCFR_variables_EDS <- GCFR_variables %>%
+  resample(GCFR_EDS_template_raster, method = "bilinear")
+SWAFR_variables_EDS <- SWAFR_variables %>%
+  resample(SWAFR_EDS_template_raster, method = "bilinear")
+
+# Generate heterogeneity data --------------------------------------------------
+
+scales <- list(QDS = 1, HDS = 2, DS = 4)
+
+GCFR_heterogeneity <- map(scales,
+                          ~ GCFR_variables_EDS %>%
+                            aggregate(fact = .x) %>%
+                            aggregate(fun = var)
+)
+GCFR_heterogeneity <- c(
+  point1 = aggregate(GCFR_variables, fun = var),
+  GCFR_heterogeneity
+)
+
+SWAFR_heterogeneity <- map(scales,
+                           ~ SWAFR_variables_EDS %>%
+                             aggregate(fact = .x) %>%
+                             aggregate(fun = var)
+)
+SWAFR_heterogeneity <- c(
+  point1 = aggregate(SWAFR_variables, fun = var),
+  SWAFR_heterogeneity
+)
+
+# Save heterogeneity rasters to disc -------------------------------------------
+
+iwalk(GCFR_heterogeneity, function(each_scale, each_scales_name) {
+  each_scale %<>%
+    as.list() %>%
+    set_names(str_replace_all(var_names, " ", "_"))
+  iwalk(each_scale, function(each_layer, each_layers_name) {
+    writeRaster(each_layer, overwrite = TRUE, filename = glue(
+      "{data_dir}/",
+      "GCFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
+    ))
+  })
+})
+
+iwalk(SWAFR_heterogeneity, function(each_scale, each_scales_name) {
+  each_scale %<>%
+    as.list() %>%
+    set_names(str_replace_all(var_names, " ", "_"))
+  iwalk(each_scale, function(each_layer, each_layers_name) {
+    writeRaster(each_layer, overwrite = TRUE, filename = glue(
+      "{data_dir}/",
+      "SWAFR_{each_layers_name}_masked2_{each_scales_name}_heterogeneity.tif"
+    ))
+  })
+})
+
+# Tidy heterogeneity data ------------------------------------------------------
+
+# Join regions' datasets
+heterogeneity <- map2(GCFR_heterogeneity, SWAFR_heterogeneity,
+                      function(each_GCFR_layer, each_SWAFR_layer) {
+                        each_GCFR_df <- each_GCFR_layer %>%
+                          log10() %>%
+                          as.data.frame() %>%
+                          cbind(region = "GCFR")
+                        each_SWAFR_df <- each_SWAFR_layer %>%
+                          log10() %>%
+                          as.data.frame() %>%
+                          cbind(region = "SWAFR")
+                        each_heterogeneity_df <- na.exclude(rbind(
+                          each_GCFR_df,
+                          each_SWAFR_df
+                        ))
+                        each_heterogeneity_df
+                      }
+)
+# Scale and centre all heterogeneity values _across_ regions
+heterogeneity %<>%
+  map(mutate_if, is.numeric, scale) %>%
+  map(as_tibble)
+
+# Generate PC1 of heterogeneity ------------------------------------------------
+
+heterogeneity_PCAs <- map(heterogeneity,
+                          ~ .x %>%
+                            dplyr::select(-region) %>%
+                            prcomp(center = TRUE, scale. = TRUE)
+)
+
+# Look at results
+map(heterogeneity_PCAs, summary)
+#>          Proportion of Variance (PC1)
+#> $point1                        0.3819
+#> $QDS                           0.4244
+#> $HDS                           0.3902
+#> $DS                            0.4126
+
+# Force PC1 scores to be positive if all vars' rotations are negative
+force_positive_PC1 <- function(PCA) {
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+}
+heterogeneity_PCAs %<>% map(force_positive_PC1)
+
+# Plot PC-biplots
+PC_biplots <- pmap(list(heterogeneity_PCAs, heterogeneity, names(heterogeneity)),
+                   ~ autoplot(..1, data = ..2, colour = "region",
+                              loadings = TRUE,
+                              loadings.colour = "black",
+                              loadings.label = TRUE,
+                              loadings.label.colour = "black",
+                              loadings.label.hjust = -0.25,
+                              loadings.label.size = 3
+                   ) +
+                     geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+                     geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
+                     lims(
+                       x = case_when(
+                         ..3 == "point1" ~ c(-0.10, 0.10),
+                         ..3 == "QDS"    ~ c(-0.20, 0.20),
+                         ..3 == "HDS"    ~ c(-0.25, 0.25),
+                         ..3 == "DS"     ~ c(-0.25, 0.25)
+                       ),
+                       y = case_when(
+                         ..3 == "point1" ~ c(-0.10, 0.10),
+                         ..3 == "QDS"    ~ c(-0.20, 0.20),
+                         ..3 == "HDS"    ~ c(-0.25, 0.25),
+                         ..3 == "DS"     ~ c(-0.25, 0.25)
+                       )
+                     ) +
+                     scale_colour_manual(name = "Region", values = c("grey25", "grey75")) +
+                     theme(axis.text.y = element_text(angle = 90, hjust = 0.5))
+)
+my_legend <- get_legend(PC_biplots$point1)
+PC_biplots %<>% map(~ . + theme(legend.position = "none"))
+PC_biplots <- plot_grid(
+  plotlist = PC_biplots,
+  nrow = 2,
+  labels         = c("(a) 0.10°×0.10°", "(b) QDS", "(c) HDS", "(d) DS"),
+  label_fontface = "plain",
+  label_x        = 0.150,
+  label_y        = 0.975,
+  hjust          = 0
+)
+PC_biplots <- plot_grid(
+  PC_biplots, my_legend,
+  nrow = 1, rel_widths = c(1, 0.2)
+)
+PC_biplots
+
+# Save for SI
+ggsave(
+  here("figures/plot-PC-biplots.pdf"),
+  PC_biplots,
+  width = 8, height = 6
+)
+ggsave(
+  here("figures/plot-PC-biplots.png"),
+  PC_biplots,
+  width = 8, height = 6
+)
+
+# Add PC1 to heterogeneity dataset
+PC1s <- map(heterogeneity_PCAs,
+            ~tibble(PC1 = .x$x[, 1])
+)
+heterogeneity %<>%
+  map2(PC1s, ~as_tibble(cbind(.x, .y)))
+
+# Save to disc
+heterogeneity %>%
+  bind_rows(.id = "scale") %>%
+  write_csv(glue("{data_dir}/heterogeneity.csv"))
 
 # Collate heterogeneity data into grids ----------------------------------------
 

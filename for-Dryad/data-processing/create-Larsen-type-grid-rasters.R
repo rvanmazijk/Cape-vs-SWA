@@ -76,64 +76,11 @@ writeOGR(
   driver = "ESRI Shapefile"
 )
 
-# Create my own blank rasters of/from the Larsen grids -------------------------
+# Create my own blank template rasters of/from the Larsen grids ----------------
 
 Larsen_grid_EDS_ras <- grid2raster(Larsen_grid_EDS, 0.125)
 Larsen_grid_QDS_ras <- grid2raster(Larsen_grid_QDS, 0.25)
 Larsen_grid_HDS_ras <- grid2raster(Larsen_grid_HDS, 0.5)
-
-# Plots to check
-if (FALSE) {
-  # Create dummy data in rasters for plottign
-  Larsen_grid_EDS_ras2 <- Larsen_grid_EDS_ras
-  Larsen_grid_QDS_ras2 <- Larsen_grid_QDS_ras
-  Larsen_grid_HDS_ras2 <- Larsen_grid_HDS_ras
-  Larsen_grid_EDS_ras2[] <- 1:ncell(Larsen_grid_EDS_ras2)
-  Larsen_grid_QDS_ras2[] <- 1:ncell(Larsen_grid_QDS_ras2)
-  Larsen_grid_HDS_ras2[] <- 1:ncell(Larsen_grid_HDS_ras2)
-
-  # Plot rasters and region polygons to check extents
-  plot(Larsen_grid_EDS_ras2)
-  plot(borders_buffered, add = TRUE)
-
-  plot(Larsen_grid_QDS_ras2)
-  plot(borders_buffered, add = TRUE)
-
-  plot(Larsen_grid_HDS_ras2)
-  plot(borders_buffered, add = TRUE)
-
-  # Plot rasters and cells midpoints check
-  Larsen_grid_EDS_ras2 %>%
-    crop(GCFR_border_buffered) %>%
-    {
-      plot(.)
-      points(xyFromCell(., 1:ncell(.)))
-    }
-  Larsen_grid_QDS_ras2 %>%
-    crop(GCFR_border_buffered) %>%
-    {
-      plot(.)
-      points(xyFromCell(., 1:ncell(.)))
-    }
-  Larsen_grid_HDS_ras2 %>%
-    crop(GCFR_border_buffered) %>%
-    {
-      plot(.)
-      points(xyFromCell(., 1:ncell(.)))
-    }
-}
-
-# Test putting arbitrary data into raster via lon-lat lookup from tibble -------
-
-if (FALSE) {
-  Larsen_grid_EDS_ras2 <- Larsen_grid_EDS_ras
-  cells_to_fill <- cellFromXY(
-    Larsen_grid_EDS_ras2,
-    as.data.frame(Larsen_grid_EDS_data[, c("lon", "lat")])
-  )
-  Larsen_grid_EDS_ras2[cells_to_fill] <- Larsen_grid_EDS_data$areakm2
-  plot(Larsen_grid_EDS_ras2)
-}
 
 # Save these blank template rasters --------------------------------------------
 
