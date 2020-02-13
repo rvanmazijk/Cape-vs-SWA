@@ -74,6 +74,8 @@ Checklist
         - [ ] 07_correlate-PC1-MV-model-results.R
     - [ ] Data processing
         - ...
+        - [ ] *_create-Larsen-type-grid-rasters.R
+        - ...
     - Figure-scripts?
 
 - [ ] Larsen shapefile URL
