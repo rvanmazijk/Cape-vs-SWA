@@ -6,9 +6,9 @@ Checklist
 ================================================================================
 
 - [ ] Data
-    - [ ] Cleaned species lists
-        - [ ] GCFR
-        - [ ] SWAFR
+    - [x] Cleaned species lists
+        - [x] GCFR
+        - [x] SWAFR
     - [ ] Species occurence matrix (QDS-scale, both regions together)
     - [ ] CSVs (at 3x scales):
 
@@ -61,8 +61,8 @@ Checklist
 
 - [ ] R-scripts
     - [ ] Analyses
-        - [ ] 01_setup.R
-            - [ ] Incl. all helper-functions
+        - [x] 01_setup.R
+            - [x] Incl. all helper-functions
         - [ ] 02_generate-richness-data.R
         - [ ] 03_generate-heterogeneity-data.R
         - [ ] 04_compare-species-richness.R
