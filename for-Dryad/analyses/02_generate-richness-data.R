@@ -1,3 +1,15 @@
+# Import region polygons -------------------------------------------------------
+
+GCFR_border_buffered <- readOGR(
+  here("data/derived-data/borders/GCFR_border_buffered/")
+)
+SWAFR_border_buffered <- readOGR(
+  here("data/derived-data/borders/SWAFR_border_buffered/")
+)
+
+# Merge regions' borders
+borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
+
 # Detemine which DS, HDS & QDS have all 4 of their HDS, QDS & EDS --------------
 # (within the regions' borders)
 

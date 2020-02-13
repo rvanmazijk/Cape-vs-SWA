@@ -2,12 +2,7 @@
 # R. van Mazijk
 # CC-BY-4.0 2019
 
-# Import region polygons -------------------------------------------------------
-
-GCFR_border_buffered <-
-  readOGR(here("data/derived-data/borders/GCFR_border_buffered/"))
-SWAFR_border_buffered <-
-  readOGR(here("data/derived-data/borders/SWAFR_border_buffered/"))
+# Import region extent polygons ------------------------------------------------
 
 GCFR_box  <- readOGR(here("data/derived-data/borders/GCFR_box"))
 SWAFR_box <- readOGR(here("data/derived-data/borders/SWAFR_box"))
@@ -22,9 +17,6 @@ ZA_HDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_01_zaf")
 AU_HDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_01_aus")
 
 # Generate polygons I need -----------------------------------------------------
-
-# Merge regions' borders
-borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
 
 # Crop each Larsen grid to regions' extents
 GCFR_EDS  <- crop(ZA_EDS, GCFR_box)
