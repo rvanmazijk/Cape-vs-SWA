@@ -85,6 +85,8 @@ grid2raster <- function(x, resol = c(0.125, 0.25, 0.5)) {
 }
 
 raster2df <- function(r, Larsen_grid_data) {
+  # Creates a dataframe of raster layer/stack/brick data
+  # with columns for the lon and lat of the midpoint of each cell
   df <- cbind(
     xyFromCell(r, 1:ncell(r)),
     as.data.frame(r)
@@ -94,6 +96,8 @@ raster2df <- function(r, Larsen_grid_data) {
 }
 
 force_positive_PC1 <- function(PCA) {
+  # Ammends all variables' loadings in a PCA to be positive
+  # if they are all negative, for simplicity
   if (all(PCA$rotation[, 1] <= 0)) {
     message("Multiplying this one by -1")
     PCA$rotation[, 1] %<>% multiply_by(-1)
