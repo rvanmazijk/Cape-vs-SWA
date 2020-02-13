@@ -78,20 +78,17 @@ writeOGR(
   driver = "ESRI Shapefile"
 )
 writeOGR(
-  Larsen_grid_QDS,
-  here("data/derived-data/May-2019/Larsen_grid_QDS"),
-  layer = "Larsen_grid_QDS",
+  Larsen_grid_HDS,
+  here("data/derived-data/May-2019/Larsen_grid_HDS"),
+  layer = "Larsen_grid_HDS",
   driver = "ESRI Shapefile"
 )
 
 # Create my own blank rasters of/from the Larsen grids -------------------------
 
-# (Remake un-filtered EDS grid)
-Larsen_grid_EDS_raw <- rbind(GCFR_EDS, SWAFR_EDS)
-
-Larsen_grid_EDS_ras <- grid2raster(Larsen_grid_EDS_raw, 0.125)
-Larsen_grid_QDS_ras <- grid2raster(Larsen_grid_QDS,     0.25)
-Larsen_grid_HDS_ras <- grid2raster(Larsen_grid_HDS,     0.5)
+Larsen_grid_EDS_ras <- grid2raster(Larsen_grid_EDS, 0.125)
+Larsen_grid_QDS_ras <- grid2raster(Larsen_grid_QDS, 0.25)
+Larsen_grid_HDS_ras <- grid2raster(Larsen_grid_HDS, 0.5)
 
 # Plots to check
 if (FALSE) {
@@ -149,20 +146,19 @@ if (FALSE) {
 # Save these blank template rasters --------------------------------------------
 
 Larsen_grid_EDS_ras[] <- 0
+Larsen_grid_QDS_ras[] <- 0
+Larsen_grid_HDS_ras[] <- 0
+
 writeRaster(
   Larsen_grid_EDS_ras,
   here("data/derived-data/May-2019/Larsen_grid_EDS_ras.tif"),
   overwrite = TRUE
 )
-
-Larsen_grid_QDS_ras[] <- 0
 writeRaster(
   Larsen_grid_QDS_ras,
   here("data/derived-data/May-2019/Larsen_grid_QDS_ras.tif"),
   overwrite = TRUE
 )
-
-Larsen_grid_HDS_ras[] <- 0
 writeRaster(
   Larsen_grid_HDS_ras,
   here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif"),
