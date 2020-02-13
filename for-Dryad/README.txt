@@ -63,6 +63,7 @@ Checklist
     - [ ] Analyses
         - [x] 01_setup.R
             - [x] Incl. all helper-functions
+            - [ ] Move data-processing/-used helper functions back there
         - [ ] 02_generate-richness-data.R
         - [ ] 03_generate-heterogeneity-data.R
         - [ ] 04_compare-species-richness.R
