@@ -22,6 +22,9 @@ Larsen_grid_QDS_ras <- raster(
 Larsen_grid_HDS_ras <- raster(
   here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif")
 )
+Larsen_grid_DS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_DS_ras.tif")
+)
 
 # Import region polygons -------------------------------------------------------
 
@@ -92,15 +95,8 @@ DS_w_all_HDS <- Larsen_grid_HDS_data %>%
   filter(n_HDS == 4) %>%
   pull(dgc)
 
-# Collate richness data into grids ---------------------------------------------
+# Collate richness data by grid cell codes -------------------------------------
 
-make_SpatialPointsDataFrame <- function(df) {
-  SpatialPointsDataFrame(
-    coords      = df[, c("decimallongitude", "decimallatitude")],
-    data        = df[, "species"],
-    proj4string = crs(borders_buffered)
-  )
-}
 GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
   "data/derived-data/flora",
   "GCFR_clean_flora_2017-09-14.csv"
@@ -109,6 +105,8 @@ SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
   "data/derived-data/flora",
   "SWAFR_clean_flora_2017-09-14.csv"
 )))
+
+# Merge regions' data
 species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
 
 # Add grid codes to species data
@@ -125,20 +123,20 @@ GCFR_species_occ@data %>%
   group_by(species)  %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(here("for-Dryad/GCFR-species.csv"))
+  write_csv(here("for-Dryad/data/GCFR-species.csv"))
 SWAFR_species_occ@data %>%
   group_by(species) %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(here("for-Dryad/SWAFR-species.csv"))
+  write_csv(here("for-Dryad/data/SWAFR-species.csv"))
 
 # Flag species w/ < 5 collections total in each region
 GCFR_bad_species <-
-  read_csv(here("for-Dryad/GCFR-species.csv")) %>%
+  read_csv(here("for-Dryad/data/GCFR-species.csv")) %>%
   filter(n_collections < 5) %>%
   pull(species)
 SWAFR_bad_species <-
-  read_csv(here("for-Dryad/SWAFR-species.csv")) %>%
+  read_csv(here("for-Dryad/data/SWAFR-species.csv")) %>%
   filter(n_collections < 5) %>%
   pull(species)
 # Filter them out
@@ -149,11 +147,11 @@ species_occ_data <- species_occ@data %>%
 # Check species counts now:
 species_occ_data %>%
   mutate(region = EDS %>%
-           str_extract("E[0-9]{3}") %>%
-           str_remove("E") %>%
-           as.numeric() %>%
-           is_greater_than(60) %>%
-           ifelse("SWAFR", "GCFR")
+    str_extract("E[0-9]{3}") %>%
+    str_remove("E") %>%
+    as.numeric() %>%
+    is_greater_than(60) %>%
+    ifelse("SWAFR", "GCFR")
   ) %>%
   group_by(region) %>%
   summarise(n_spp = length(unique(species)))
@@ -210,4 +208,49 @@ if (FALSE) {
     aes(mean_QDS_richness, HDS_richness - mean_QDS_richness) +
     geom_point() +
     lims(x = c(0, 3000), y = c(0, 3000))
+}
+
+# Rasterise richness data ------------------------------------------------------
+
+QDS_richness_data <- QDS_richness %>%
+  rename(qdgc = QDS, richness = QDS_richness) %>%
+  full_join(Larsen_grid_QDS_data)
+HDS_richness_data <- HDS_richness %>%
+  rename(hdgc = HDS, richness = HDS_richness) %>%
+  full_join(Larsen_grid_HDS_data)
+DS_richness_data <- DS_richness %>%
+  rename(dgc = DS, richness = DS_richness) %>%
+  full_join(Larsen_grid_HDS_data) %>%
+  dplyr::select(region, dgc, richness) %>%
+  distinct() %>%
+  # Make DS-cell midpoints manually
+  mutate(
+    lon = dgc %>%
+      str_extract("E[0-9]{3}") %>%
+      str_remove("E") %>%
+      as.numeric() %>%
+      add(0.5),
+    lat = dgc %>%
+      str_extract("S[0-9]{2}") %>%
+      str_remove("S") %>%
+      as.numeric() %>%
+      add(0.5) %>%
+      multiply_by(-1)
+  )
+
+rasterise_data <- function(df, r) {
+  r[cellFromXY(r, as.data.frame(df[, c("lon", "lat")]))] <- df$richness
+  r[r == 0] <- NA
+  r
+}
+
+QDS_richness_ras <- rasterise_data(QDS_richness_data, Larsen_grid_QDS_ras)
+HDS_richness_ras <- rasterise_data(HDS_richness_data, Larsen_grid_HDS_ras)
+DS_richness_ras  <- rasterise_data(DS_richness_data,  Larsen_grid_DS_ras)
+
+# Plot to check
+if (FALSE) {
+  plot(QDS_richness_ras)
+  plot(HDS_richness_ras)
+  plot(DS_richness_ras)
 }

@@ -81,12 +81,15 @@ writeOGR(
 Larsen_grid_EDS_ras <- grid2raster(Larsen_grid_EDS, 0.125)
 Larsen_grid_QDS_ras <- grid2raster(Larsen_grid_QDS, 0.25)
 Larsen_grid_HDS_ras <- grid2raster(Larsen_grid_HDS, 0.5)
+Larsen_grid_DS_ras  <- grid2raster(Larsen_grid_HDS, 1)
+# NOTE: DS-scale raster generation just using HDS polygon for extent
 
 # Save these blank template rasters --------------------------------------------
 
 Larsen_grid_EDS_ras[] <- 0
 Larsen_grid_QDS_ras[] <- 0
 Larsen_grid_HDS_ras[] <- 0
+Larsen_grid_DS_ras[]  <- 0
 
 writeRaster(
   Larsen_grid_EDS_ras,
@@ -101,5 +104,10 @@ writeRaster(
 writeRaster(
   Larsen_grid_HDS_ras,
   here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif"),
+  overwrite = TRUE
+)
+writeRaster(
+  Larsen_grid_DS_ras,
+  here("data/derived-data/May-2019/Larsen_grid_DS_ras.tif"),
   overwrite = TRUE
 )

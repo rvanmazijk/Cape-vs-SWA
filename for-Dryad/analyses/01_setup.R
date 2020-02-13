@@ -71,7 +71,7 @@ grid_dim <- function(x) {
   )
 }
 
-grid2raster <- function(x, resol = c(0.125, 0.25, 0.5)) {
+grid2raster <- function(x, resol = c(0.125, 0.25, 0.5, 1)) {
   # Creates a raster with the same dimensions and number of cells
   # as a Larsen-type grid SpatialPolygonsDataFrame
   n_gc_wide <- grid_dim(x)$width  / resol
@@ -104,4 +104,14 @@ force_positive_PC1 <- function(PCA) {
     PCA$x[, 1]        %<>% multiply_by(-1)
   }
   PCA
+}
+
+make_SpatialPointsDataFrame <- function(df) {
+  # Make a SpatialPointsDataFrame out of the (cleaned) GBIF occurrence data
+  # for GCFR and SWAFR vascular plants
+  SpatialPointsDataFrame(
+    coords      = df[, c("decimallongitude", "decimallatitude")],
+    data        = df[, "species"],
+    proj4string = crs(borders_buffered)  # depends on this object existing!
+  )
 }
