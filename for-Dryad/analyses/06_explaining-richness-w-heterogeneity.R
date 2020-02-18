@@ -1,12 +1,23 @@
-predictor_names <- c(str_replace_all(var_names, " ", "_"), "PC1")
+# Import richness and heterogeneity data ---------------------------------------
 
-# Import data ------------------------------------------------------------------
-
-data <- list(
-  QDS = read_csv(glue("{data_dir}/data-QDS.csv")),
-  HDS = read_csv(glue("{data_dir}/data-HDS.csv")),
-  DS  = read_csv(glue("{data_dir}/data-DS.csv"))
+richness_data <- list(
+  QDS = read_csv("for-Dryad/data/richness-data-QDS.csv"),
+  HDS = read_csv("for-Dryad/data/richness-data-HDS.csv"),
+  DS  = read_csv("for-Dryad/data/richness-data-DS.csv")
 )
+
+heterogeneity_data <- list(
+  QDS    = read_csv("for-Dryad/data/heterogeneity-data-QDS.csv"),
+  HDS    = read_csv("for-Dryad/data/heterogeneity-data-HDS.csv"),
+  DS     = read_csv("for-Dryad/data/heterogeneity-data-DS.csv")
+)
+
+data <- map2(richness_data, heterogeneity_data, full_join)
+data %<>% map(na.exclude)
+
+predictor_names <- var_names %>%
+  str_replace_all(" ", "_") %>%
+  c("PC1")
 
 # Univariate models ------------------------------------------------------------
 
@@ -168,7 +179,7 @@ fit_univariate_models <- function(response) {
   # Save results to disc
   write_csv(
     univar_model_summary2,
-    glue("{data_dir}/{response}_univariate_model_results.csv")
+    here("for-Dryad", glue("{response}_univariate_model_results.csv"))
   )
 
   # Return summary with models
@@ -178,6 +189,9 @@ fit_univariate_models <- function(response) {
 QDS_UVMs <- fit_univariate_models("QDS_richness")
 HDS_UVMs <- fit_univariate_models("HDS_richness")
 DS_UVMs  <- fit_univariate_models("DS_richness")
+
+#####
+
 QDS_UVMs$plot <- NA
 HDS_UVMs$plot <- NA
 DS_UVMs$plot  <- NA
