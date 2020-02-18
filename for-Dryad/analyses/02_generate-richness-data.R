@@ -95,7 +95,8 @@ DS_w_all_HDS <- Larsen_grid_HDS_data %>%
   filter(n_HDS == 4) %>%
   pull(dgc)
 
-# Collate richness data by grid cell codes -------------------------------------
+# Collate species occurrences into richness, turnover data ---------------------
+# (by grid-cell codes)
 
 GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
   "data/derived-data/flora",
@@ -183,7 +184,9 @@ HDS_richness <- species_occ_data %>%
     n_collections   = length(species),
     HDS_richness    = length(unique(species))
   ) %>%
-  full_join(mean_QDS_richness)
+  full_join(mean_QDS_richness) %>%
+  filter(HDS %in% HDS_w_all_QDS)  # (again because `mean_QDS_richness` introduces
+                                # some extra cells with less than 4 sub-cells)
 # At DS-scale:
 mean_HDS_richness <- HDS_richness %>%
   mutate(DS = str_remove(HDS, ".$")) %>%
@@ -196,7 +199,9 @@ DS_richness <- species_occ_data %>%
     n_collections   = length(species),
     DS_richness     = length(unique(species))
   ) %>%
-  full_join(mean_HDS_richness)
+  full_join(mean_HDS_richness) %>%
+  filter(DS %in% DS_w_all_HDS)  # (again because `mean_HDS_richness` introduces
+                                # some extra cells with less than 4 sub-cells)
 
 # Plot to check
 if (FALSE) {
@@ -210,18 +215,18 @@ if (FALSE) {
     lims(x = c(0, 3000), y = c(0, 3000))
 }
 
-# Rasterise richness data ------------------------------------------------------
+# Merge richness dataframes with extra grid-cell data --------------------------
 
 QDS_richness_data <- QDS_richness %>%
-  rename(qdgc = QDS, richness = QDS_richness) %>%
+  rename(qdgc = QDS) %>%
   full_join(Larsen_grid_QDS_data)
 HDS_richness_data <- HDS_richness %>%
-  rename(hdgc = HDS, richness = HDS_richness) %>%
+  rename(hdgc = HDS) %>%
   full_join(Larsen_grid_HDS_data)
 DS_richness_data <- DS_richness %>%
-  rename(dgc = DS, richness = DS_richness) %>%
+  rename(dgc = DS) %>%
   full_join(Larsen_grid_HDS_data) %>%
-  dplyr::select(region, dgc, richness) %>%
+  dplyr::select(region, dgc, n_collections, DS_richness, mean_HDS_richness) %>%
   distinct() %>%
   # Make DS-cell midpoints manually
   mutate(
@@ -238,15 +243,80 @@ DS_richness_data <- DS_richness %>%
       multiply_by(-1)
   )
 
-# Rasterise richness data ------------------------------------------------------
+# Save richness dataframes to disc ---------------------------------------------
 
-QDS_richness_ras <- rasterise_data(QDS_richness_data, Larsen_grid_QDS_ras)
-HDS_richness_ras <- rasterise_data(HDS_richness_data, Larsen_grid_HDS_ras)
-DS_richness_ras  <- rasterise_data(DS_richness_data,  Larsen_grid_DS_ras)
+QDS_richness_data %>%
+  dplyr::select(
+    region, qdgc, hdgc, dgc, lat, lon,
+    n_collections, QDS_richness
+  ) %>%
+  write_csv(here("for-Dryad/data/richness-data-QDS.csv"))
+
+HDS_richness_data %>%
+  dplyr::select(
+    region, hdgc, dgc, lat, lon,
+    n_collections, HDS_richness, mean_QDS_richness
+  ) %>%
+  write_csv(here("for-Dryad/data/richness-data-HDS.csv"))
+
+DS_richness_data %>%
+  dplyr::select(
+    region, dgc, lat, lon,
+    n_collections, DS_richness, mean_HDS_richness
+  ) %>%
+  write_csv(here("for-Dryad/data/richness-data-DS.csv"))
+
+# Rasterise richness dataframes ------------------------------------------------
+
+QDS_richness_ras <- rasterise_data(
+  QDS_richness_data, "QDS_richness",
+  Larsen_grid_QDS_ras
+)
+mean_QDS_richness_ras <- rasterise_data(
+  HDS_richness_data, "mean_QDS_richness",
+  Larsen_grid_HDS_ras
+)
+HDS_richness_ras <- rasterise_data(
+  HDS_richness_data, "HDS_richness",
+  Larsen_grid_HDS_ras
+)
+mean_HDS_richness_ras  <- rasterise_data(
+  DS_richness_data,  "mean_HDS_richness",
+  Larsen_grid_DS_ras
+)
+DS_richness_ras  <- rasterise_data(
+  DS_richness_data,  "DS_richness",
+  Larsen_grid_DS_ras
+)
 
 # Plot to check
 if (FALSE) {
   plot(QDS_richness_ras)
+  plot(mean_QDS_richness_ras)
   plot(HDS_richness_ras)
+  plot(mean_HDS_richness_ras)
   plot(DS_richness_ras)
 }
+
+# Save richnes rasters to disc -------------------------------------------------
+
+writeRaster(
+  QDS_richness_ras,
+  here("for-Dryad/data/raster-layers/QDS-richness_QDS.tif")
+)
+writeRaster(
+  mean_QDS_richness_ras,
+  here("for-Dryad/data/raster-layers/mean-QDS-richness_HDS.tif")
+)
+writeRaster(
+  HDS_richness_ras,
+  here("for-Dryad/data/raster-layers/HDS-richness_HDS.tif")
+)
+writeRaster(
+  mean_HDS_richness_ras,
+  here("for-Dryad/data/raster-layers/mean-HDS-richness_DS.tif")
+)
+writeRaster(
+  DS_richness_ras,
+  here("for-Dryad/data/raster-layers/DS-richness_DS.tif")
+)
