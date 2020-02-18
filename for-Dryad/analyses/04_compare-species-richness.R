@@ -1,55 +1,38 @@
-# Import data ------------------------------------------------------------------
+# Import richness data ---------------------------------------------------------
 
 data <- list(
-  QDS = read_csv(glue("{data_dir}/data-QDS.csv")),
-  HDS = read_csv(glue("{data_dir}/data-HDS.csv")),
-  DS  = read_csv(glue("{data_dir}/data-DS.csv"))
+  QDS = read_csv("for-Dryad/data/richness-data-QDS.csv"),
+  HDS = read_csv("for-Dryad/data/richness-data-HDS.csv"),
+  DS  = read_csv("for-Dryad/data/richness-data-DS.csv")
 )
+
+data %<>% map(na.exclude)
+
+# Derive turnover partition of richness at HDS- and DS-scale -------------------
+
+data$HDS %<>%
+  mutate(HDS_turnover_prop = (HDS_richness - mean_QDS_richness)/HDS_richness)
+
+data$DS %<>%
+  mutate(DS_turnover_prop = (DS_richness - mean_HDS_richness)/DS_richness)
 
 # Test for differences in richness and turnover --------------------------------
 
-test_diff <- function(response, sub_sample = FALSE) {
-  dataset <- data %$% {
-    if      (response ==     "QDS_richness")                       QDS
-    else if (response %in% c("HDS_richness", "QDS_turnover_prop")) HDS
-    else if (response %in% c("DS_richness",  "HDS_turnover_prop")) DS
-  }
-
-  x_GCFR  <- dataset[[response]][dataset$region == "GCFR"]
-  x_SWAFR <- dataset[[response]][dataset$region == "SWAFR"]
-
-  if (sub_sample) {
-    # Ensure GCFR and SWAFR are compared w/ same no. of cells
-    n <- min(length(x_GCFR), length(x_SWAFR))
-    x_GCFR  %<>% sample(n)
-    x_SWAFR %<>% sample(n)
-  }
-
-  U_test <- wilcox.test(x_GCFR, x_SWAFR, conf.int = TRUE)
-  tibble(
-    metric     = response,
-    GCFR_mean  = mean(x_GCFR),
-    SWAR_mean  = mean(x_SWAFR),
-    P_U        = tidy(U_test)$p.value,
-    CLES_value = CLES(x_SWAFR, x_GCFR)
-  )
-}
-
 responses <- c(
-  "QDS_richness", "HDS_richness", "DS_richness",
-  "QDS_turnover_prop", "HDS_turnover_prop"
+  "QDS_richness", "HDS_richness",      "DS_richness",
+                  "HDS_turnover_prop", "DS_turnover_prop"
 )
-richness_test_results <-
-  map_dfr(responses, test_diff)
-richness_test_results_sub_sample <-
-  map_dfr(responses, test_diff, sub_sample = TRUE)
+richness_test_results <- map_dfr(responses, test_diff)
 
-# Save
-write_csv(
-  richness_test_results,
-  here("results/for-Figure-2.csv")
-)
-write_csv(
-  richness_test_results_sub_sample,
-  here("results/for-Figure-2_sub-sampled.csv")
-)
+# Print results
+as.data.frame(richness_test_results)
+##              metric    GCFR_mean    SWAR_mean          P_U CLES_value
+## 1      QDS_richness  389.9917127  341.0304487 6.243103e-01  0.4899773
+## 2      HDS_richness 1073.1549296  839.9104478 6.070644e-02  0.5794618
+## 3       DS_richness 2385.8000000 1735.5416667 5.046383e-02  0.7166667
+## 4 HDS_turnover_prop    0.6456831    0.5962909 4.029911e-09  0.7499474
+## 5  DS_turnover_prop    0.5732989    0.4947685 1.021901e-06  0.9666667
+
+# Save results to disc ---------------------------------------------------------
+
+write_csv(richness_test_results, here("for-Dryad/richness-test-results.csv"))

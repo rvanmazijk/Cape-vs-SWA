@@ -125,3 +125,22 @@ rasterise_data <- function(df, df_col, r) {
   r[r == 0] <- NA
   r
 }
+
+test_diff <- function(response, sub_sample = FALSE) {
+  # TODO: describe this function
+  dataset <- data %$% {  # depends on this object existing!
+    if      (response ==     "QDS_richness")                       QDS
+    else if (response %in% c("HDS_richness", "HDS_turnover_prop")) HDS
+    else if (response %in% c("DS_richness",  "DS_turnover_prop"))  DS
+  }
+  x_GCFR  <- dataset[[response]][dataset$region == "GCFR"]
+  x_SWAFR <- dataset[[response]][dataset$region == "SWAFR"]
+  U_test <- wilcox.test(x_GCFR, x_SWAFR)
+  tibble(
+    metric     = response,
+    GCFR_mean  = mean(x_GCFR),
+    SWAR_mean  = mean(x_SWAFR),
+    P_U        = tidy(U_test)$p.value,
+    CLES_value = CLES(x_SWAFR, x_GCFR)
+  )
+}
