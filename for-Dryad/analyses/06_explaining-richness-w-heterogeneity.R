@@ -73,67 +73,75 @@ DS_UVMs  <- fit_univariate_models("DS_richness")
 
 #####
 
-QDS_UVMs$plot <- NA
-HDS_UVMs$plot <- NA
-DS_UVMs$plot  <- NA
-QDS_UVMs$plot %<>% as.list()
-HDS_UVMs$plot %<>% as.list()
-DS_UVMs$plot  %<>% as.list()
-my_visreg <- function(m) {
-  terms <- names(m$coefficients)
-  m_plot <-
-    if ("regionSWAFR" %in% terms) {
-      visreg::visreg(m,
-        xvar = terms[[2]], by = "region",
-        overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
-      )
-    } else {
-      visreg::visreg(m,
-        xvar = terms[[2]],
-        overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
-      )
-    }
-  m_plot + theme(
-    axis.text.y     = element_text(angle = 90, hjust = 0.5),
-    legend.position = "none"
+if (FALSE) {
+  QDS_UVMs$plot <- NA
+  HDS_UVMs$plot <- NA
+  DS_UVMs$plot  <- NA
+  QDS_UVMs$plot %<>% as.list()
+  HDS_UVMs$plot %<>% as.list()
+  DS_UVMs$plot  %<>% as.list()
+  my_visreg <- function(m) {
+    terms <- names(m$coefficients)
+    m_plot <-
+      if ("regionSWAFR" %in% terms) {
+        visreg::visreg(m,
+          xvar = terms[[2]], by = "region",
+          overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
+        )
+      } else {
+        visreg::visreg(m,
+          xvar = terms[[2]],
+          overlay = TRUE, gg = TRUE, points = list(alpha = 0.25)
+        )
+      }
+    m_plot + theme(
+      axis.text.y     = element_text(angle = 90, hjust = 0.5),
+      legend.position = "none"
+    )
+  }
+  for (i in 1:10) {
+    QDS_UVMs$model[[i]]$data <- data$QDS
+    HDS_UVMs$model[[i]]$data <- data$HDS
+    DS_UVMs$model[[i]]$data  <- data$DS
+    QDS_UVMs$plot[[i]] <- my_visreg(QDS_UVMs$model[[i]])
+    HDS_UVMs$plot[[i]] <- my_visreg(HDS_UVMs$model[[i]])
+    DS_UVMs$plot[[i]]  <- my_visreg(DS_UVMs$model[[i]])
+  }
+  QDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
+  HDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
+  QDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
+  HDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
+  DS_UVMs$plot[2:10]  %<>% map(~ . + theme(axis.title.y = element_blank()))
+  QDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["QDS"]))}
+  HDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["HDS"]))}
+  DS_UVMs$plot[[1]]  %<>% {. + ylab(bquote(italic("S")["DS"]))}
+
+  UVM_plots <- plot_grid(
+    plot_grid(
+      plotlist = QDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))
+    ),
+    plot_grid(
+      plotlist = HDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))
+    ),
+    plot_grid(
+      plotlist = DS_UVMs$plot,  nrow = 1, rel_widths = c(1, rep(0.9, 9))
+    ),
+    nrow = 3, rel_heights = c(0.9, 0.9, 1)
   )
+
+  # Save to disc
+  ggsave(
+    here("draft-02/figures/plot-univariate-models.pdf"),
+    width = 25, height = 8,
+    UVM_plots
+  )
+  ggsave(
+    here("draft-02/figures/plot-univariate-models.png"),
+    width = 25, height = 8,
+    UVM_plots
+  )
+
 }
-for (i in 1:10) {
-  QDS_UVMs$model[[i]]$data <- data$QDS
-  HDS_UVMs$model[[i]]$data <- data$HDS
-  DS_UVMs$model[[i]]$data  <- data$DS
-  QDS_UVMs$plot[[i]] <- my_visreg(QDS_UVMs$model[[i]])
-  HDS_UVMs$plot[[i]] <- my_visreg(HDS_UVMs$model[[i]])
-  DS_UVMs$plot[[i]]  <- my_visreg(DS_UVMs$model[[i]])
-}
-QDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
-HDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
-QDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
-HDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
-DS_UVMs$plot[2:10]  %<>% map(~ . + theme(axis.title.y = element_blank()))
-QDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["QDS"]))}
-HDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["HDS"]))}
-DS_UVMs$plot[[1]]  %<>% {. + ylab(bquote(italic("S")["DS"]))}
-
-UVM_plots <- plot_grid(
-  plot_grid(plotlist = QDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))),
-  plot_grid(plotlist = HDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))),
-  plot_grid(plotlist = DS_UVMs$plot,  nrow = 1, rel_widths = c(1, rep(0.9, 9))),
-  nrow = 3, rel_heights = c(0.9, 0.9, 1)
-)
-
-# Save to disc
-ggsave(
-  here("draft-02/figures/plot-univariate-models.pdf"),
-  width = 25, height = 8,
-  UVM_plots
-)
-ggsave(
-  here("draft-02/figures/plot-univariate-models.png"),
-  width = 25, height = 8,
-  UVM_plots
-)
-
 # Multivariate models ----------------------------------------------------------
 
 # Fit multivariate models
@@ -150,11 +158,13 @@ m_HDS_richness %<>% step(direction = "backward", trace = 0)
 m_DS_richness  %<>% step(direction = "backward", trace = 0)
 
 # Check
-par(mfrow = c(2, 2))
-plot(m_QDS_richness)
-plot(m_HDS_richness)
-plot(m_DS_richness)
-par(op)
+if (FALSE) {
+  par(mfrow = c(2, 2))
+  plot(m_QDS_richness)
+  plot(m_HDS_richness)
+  plot(m_DS_richness)
+  par(op)
+}
 
 # Summarise models
 models <- list(
