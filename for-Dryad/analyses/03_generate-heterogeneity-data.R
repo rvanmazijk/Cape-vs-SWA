@@ -54,13 +54,16 @@ names(enviro_data)  <- str_replace_all(var_names, " ", "_")
 # Resample environmental data to EDS -------------------------------------------
 
 enviro_data_EDS <- resample(
-  enviro_data, Larsen_grid_EDS_ras
+  enviro_data, Larsen_grid_EDS_ras,
+  method = "bilinear"
 )
 enviro_data_QDS <- resample(
-  enviro_data, Larsen_grid_QDS_ras
+  enviro_data, Larsen_grid_QDS_ras,
+  method = "bilinear"
 )
 enviro_data_HDS <- resample(
-  enviro_data, Larsen_grid_HDS_ras
+  enviro_data, Larsen_grid_HDS_ras,
+  method = "bilinear"
 )
 
 # Merge environmental data from rasters into dataframes ------------------------
