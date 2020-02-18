@@ -115,3 +115,10 @@ make_SpatialPointsDataFrame <- function(df) {
     proj4string = crs(borders_buffered)  # depends on this object existing!
   )
 }
+
+rasterise_data <- function(df, df_col, r) {
+  # TODO: describe this function
+  r[cellFromXY(r, as.data.frame(df[, c("lon", "lat")]))] <- df[[df_col]]
+  r[r == 0] <- NA
+  r
+}

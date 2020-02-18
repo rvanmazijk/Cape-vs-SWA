@@ -238,11 +238,7 @@ DS_richness_data <- DS_richness %>%
       multiply_by(-1)
   )
 
-rasterise_data <- function(df, r) {
-  r[cellFromXY(r, as.data.frame(df[, c("lon", "lat")]))] <- df$richness
-  r[r == 0] <- NA
-  r
-}
+# Rasterise richness data ------------------------------------------------------
 
 QDS_richness_ras <- rasterise_data(QDS_richness_data, Larsen_grid_QDS_ras)
 HDS_richness_ras <- rasterise_data(HDS_richness_data, Larsen_grid_HDS_ras)
