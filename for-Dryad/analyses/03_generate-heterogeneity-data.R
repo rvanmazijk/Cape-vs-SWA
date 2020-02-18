@@ -137,6 +137,8 @@ summary(heterogeneity_QDS_PCA)
 summary(heterogeneity_HDS_PCA)
 summary(heterogeneity_DS_PCA)
 
+# Save PC1 and PC2 into dataframes ---------------------------------------------
+
 heterogeneity_QDS_df$PC1 <- heterogeneity_QDS_PCA$x[, 1]
 heterogeneity_QDS_df$PC2 <- heterogeneity_QDS_PCA$x[, 2]
 
