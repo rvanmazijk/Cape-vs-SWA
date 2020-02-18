@@ -37,7 +37,7 @@ Checklist
       | Res. S [PC1]       | x   | x   | x   |
       | Res. S [MV]        | x   | x   | x   |
 
-    - [ ] Raster layers (at 4x scales):
+    - [x] Raster layers (at 4x scales):
 
       | Variable           | 0.01 | QDS  | HDS  | DS   |
       |====================|======|======|======|======|
@@ -55,8 +55,8 @@ Checklist
       | Soil C             | x    | x    | x    | x    |
       | PC1                | x    | x    | x    | x    |
       |--------------------|------|------|------|------|
-      | Res. S [PC1]       | -    |      |      |      |
-      | Res. S [MV]        | -    |      |      |      |
+      | Res. S [PC1]       | -    | x    | x    | x    |
+      | Res. S [MV]        | -    | x    | x    | x    |
 
 - [ ] R-scripts
     - [ ] Analyses
