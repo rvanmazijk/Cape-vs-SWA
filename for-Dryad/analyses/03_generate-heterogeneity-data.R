@@ -53,6 +53,11 @@ names(enviro_data)  <- str_replace_all(var_names, " ", "_")
 
 # Resample environmental data to EDS -------------------------------------------
 
+enviro_data_0.05 <- resample(
+  enviro_data, Larsen_grid_EDS_ras,
+  method = "bilinear"
+)
+
 enviro_data_EDS <- resample(
   enviro_data, Larsen_grid_EDS_ras,
   method = "bilinear"
@@ -72,7 +77,17 @@ enviro_data_EDS_df <- raster2df(enviro_data_EDS, Larsen_grid_EDS_data)
 enviro_data_QDS_df <- raster2df(enviro_data_QDS, Larsen_grid_QDS_data)
 enviro_data_HDS_df <- raster2df(enviro_data_HDS, Larsen_grid_HDS_data)
 
-# Calculate heterogeneity within QDS, HDS, DS ----------------------------------
+# Calculate heterogeneity within 0.10, QDS, HDS, DS ----------------------------
+
+heterogeneity_0.10 <- enviro_data %>%
+  aggregate(fun = var) %>%
+  log() %>%
+  scale()
+heterogeneity_0.10_df <- heterogeneity_0.10 %>%
+  raster2df() %>%
+  na.exclude() %>%
+  mutate(region = ifelse(lon > 60, "SWAFR", "GCFR")) %>%
+  dplyr::select(region, lon, lat, Elevation:pH)
 
 heterogeneity_QDS_df <- enviro_data_EDS_df %>%
   filter(qdgc %in% QDS_w_all_EDS) %>%
@@ -118,6 +133,11 @@ heterogeneity_DS_df <- enviro_data_HDS_df %>%
 
 # Run PCA of heterogeneity -----------------------------------------------------
 
+heterogeneity_0.10_PCA <- heterogeneity_0.10_df %>%
+  dplyr::select(Elevation:pH) %>%
+  prcomp(center = TRUE, scale. = TRUE) %>%
+  force_positive_PC1()
+
 heterogeneity_QDS_PCA <- heterogeneity_QDS_df %>%
   dplyr::select(Elevation:pH) %>%
   prcomp(center = TRUE, scale. = TRUE) %>%
@@ -133,11 +153,15 @@ heterogeneity_DS_PCA <- heterogeneity_DS_df %>%
   prcomp(center = TRUE, scale. = TRUE) %>%
   force_positive_PC1()
 
+summary(heterogeneity_0.10_PCA)
 summary(heterogeneity_QDS_PCA)
 summary(heterogeneity_HDS_PCA)
 summary(heterogeneity_DS_PCA)
 
 # Save PC1 and PC2 into dataframes ---------------------------------------------
+
+heterogeneity_0.10_df$PC1 <- heterogeneity_0.10_PCA$x[, 1]
+heterogeneity_0.10_df$PC2 <- heterogeneity_0.10_PCA$x[, 2]
 
 heterogeneity_QDS_df$PC1 <- heterogeneity_QDS_PCA$x[, 1]
 heterogeneity_QDS_df$PC2 <- heterogeneity_QDS_PCA$x[, 2]
@@ -149,6 +173,11 @@ heterogeneity_DS_df$PC1 <- heterogeneity_DS_PCA$x[, 1]
 heterogeneity_DS_df$PC2 <- heterogeneity_DS_PCA$x[, 2]
 
 # Save heterogeneity dataframes to disc ----------------------------------------
+
+write_csv(
+  heterogeneity_0.10_df,
+  here("for-Dryad/data/heterogeneity-data-0.10.csv")
+)
 
 write_csv(
   heterogeneity_QDS_df,
@@ -166,6 +195,7 @@ write_csv(
 )
 
 # Rasterise heterogeneity dataframes -------------------------------------------
+# (not needed for 0.10-scale)
 
 heterogeneity_QDS_ras <- var_names %>%
   str_replace_all(" ", "_") %>%
@@ -223,6 +253,12 @@ if (FALSE) {
 # Save heterogeneity rasters to disc -------------------------------------------
 
 writeRaster(
+  heterogeneity_0.10,
+  here("for-Dryad/data/raster-layers/heterogeneity-0.10"),
+  bylayer = TRUE, suffix = "names", format = "GTiff"
+)
+
+writeRaster(
   heterogeneity_QDS_ras,
   here("for-Dryad/data/raster-layers/heterogeneity-QDS"),
   bylayer = TRUE, suffix = "names", format = "GTiff"
@@ -239,34 +275,6 @@ writeRaster(
   here("for-Dryad/data/raster-layers/heterogeneity-DS"),
   bylayer = TRUE, suffix = "names", format = "GTiff"
 )
-
-#####
-
-# Plot to check
-if (FALSE) {
-  QDS_richness %>%
-    rename(qdgc = QDS) %>%
-    full_join(heterogeneity_QDS_df) %>%
-    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
-    ggplot() +
-    aes(PC1, QDS_richness, colour = region) +
-    geom_point()
-  HDS_richness %>%
-    rename(hdgc = HDS) %>%
-    full_join(heterogeneity_HDS_df) %>%
-    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
-    ggplot() +
-    aes(PC1, HDS_richness, colour = region) +
-    geom_point()
-  DS_richness %>%
-    rename(dgc = DS) %>%
-    full_join(heterogeneity_DS_df) %>%
-    filter_all(~ (!is.nan(.)) & (!is.na(.))) %>%
-    ggplot() +
-    aes(PC1, DS_richness, colour = region) +
-    geom_point()
-  # YAY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-}
 
 #####
 
