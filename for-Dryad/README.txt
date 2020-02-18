@@ -10,7 +10,7 @@ Checklist
         - [x] GCFR
         - [x] SWAFR
     - [ ] Species occurence matrix (QDS-scale, both regions together)
-    - [ ] CSVs (at 3x scales):
+    - [x] CSVs (at 3x scales):
 
       | Column             | QDS | HDS | DS  |
       |====================|=====|=====|=====|
@@ -34,8 +34,8 @@ Checklist
       | Soil C             | x   | x   | x   |
       | PC1                | x   | x   | x   |
       |--------------------|-----|-----|-----|
-      | Res. S [PC1]       |     |     |     |
-      | Res. S [MV]        |     |     |     |
+      | Res. S [PC1]       | x   | x   | x   |
+      | Res. S [MV]        | x   | x   | x   |
 
     - [ ] Raster layers (at 4x scales):
 
@@ -44,16 +44,16 @@ Checklist
       | S                  | -    | x    | x    | x    |
       | Mean S partition   | -    | -    | x    | x    |
       |--------------------|------|------|------|------|
-      | Elev.              |      | x    | x    | x    |
-      | MAP                |      | x    | x    | x    |
-      | PDQ                |      | x    | x    | x    |
-      | Surf. T            |      | x    | x    | x    |
-      | NDVI               |      | x    | x    | x    |
-      | CEC                |      | x    | x    | x    |
-      | Clay               |      | x    | x    | x    |
-      | pH                 |      | x    | x    | x    |
-      | Soil C             |      | x    | x    | x    |
-      | PC1                |      | x    | x    | x    |
+      | Elev.              | x    | x    | x    | x    |
+      | MAP                | x    | x    | x    | x    |
+      | PDQ                | x    | x    | x    | x    |
+      | Surf. T            | x    | x    | x    | x    |
+      | NDVI               | x    | x    | x    | x    |
+      | CEC                | x    | x    | x    | x    |
+      | Clay               | x    | x    | x    | x    |
+      | pH                 | x    | x    | x    | x    |
+      | Soil C             | x    | x    | x    | x    |
+      | PC1                | x    | x    | x    | x    |
       |--------------------|------|------|------|------|
       | Res. S [PC1]       | -    |      |      |      |
       | Res. S [MV]        | -    |      |      |      |
@@ -66,9 +66,9 @@ Checklist
         - [x] 02_generate-richness-data.R
         - [x] 03_generate-heterogeneity-data.R
             - [ ] Move PCA-biplots -> figure-scripts/
-        - [ ] 04_compare-species-richness.R
+        - [x] 04_compare-species-richness.R
             - [ ] Move results' CSVs -> results/
-        - [ ] 05_compare-environmental-heterogeneity.R
+        - [x] 05_compare-environmental-heterogeneity.R
             - [ ] Move results' CSVs -> results/
         - [ ] 06_explaining-richness-w-heterogeneity.R
             - [ ] Move UVM-plots -> figure-scripts/
