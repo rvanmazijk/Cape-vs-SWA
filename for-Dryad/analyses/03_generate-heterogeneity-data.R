@@ -236,18 +236,6 @@ ggsave(
   width = 8, height = 6
 )
 
-# Add PC1 to heterogeneity dataset
-PC1s <- map(heterogeneity_PCAs,
-            ~tibble(PC1 = .x$x[, 1])
-)
-heterogeneity %<>%
-  map2(PC1s, ~as_tibble(cbind(.x, .y)))
-
-# Save to disc
-heterogeneity %>%
-  bind_rows(.id = "scale") %>%
-  write_csv(glue("{data_dir}/heterogeneity.csv"))
-
 # Collate heterogeneity data into grids ----------------------------------------
 
 # Include lon/lat when converting from Raster* to data.frame
