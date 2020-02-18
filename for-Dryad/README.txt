@@ -14,25 +14,25 @@ Checklist
 
       | Column             | QDS | HDS | DS  |
       |====================|=====|=====|=====|
-      | Region             |     |     |     |
-      | Grid-cell          |     |     |     |
-      | Lat.               |     |     |     |
-      | Lon.               |     |     |     |
+      | Region             | x   | x   | x   |
+      | Grid-cell          | x   | x   | x   |
+      | Lat.               | x   | x   | x   |
+      | Lon.               | x   | x   | x   |
       |--------------------|-----|-----|-----|
-      | S                  |     |     |     |
-      | Mean S partition   | -   |     |     |
-      | Turnover partition | -   |     |     |
+      | S                  | x   | x   | x   |
+      | Mean S partition   | -   | x   | x   |
+      | Turnover partition | -   | x   | x   |
       |--------------------|-----|-----|-----|
-      | Elev.              |     |     |     |
-      | MAP                |     |     |     |
-      | PDQ                |     |     |     |
-      | Surf. T            |     |     |     |
-      | NDVI               |     |     |     |
-      | CEC                |     |     |     |
-      | Clay               |     |     |     |
-      | pH                 |     |     |     |
-      | Soil C             |     |     |     |
-      | PC1                |     |     |     |
+      | Elev.              | x   | x   | x   |
+      | MAP                | x   | x   | x   |
+      | PDQ                | x   | x   | x   |
+      | Surf. T            | x   | x   | x   |
+      | NDVI               | x   | x   | x   |
+      | CEC                | x   | x   | x   |
+      | Clay               | x   | x   | x   |
+      | pH                 | x   | x   | x   |
+      | Soil C             | x   | x   | x   |
+      | PC1                | x   | x   | x   |
       |--------------------|-----|-----|-----|
       | Res. S [PC1]       |     |     |     |
       | Res. S [MV]        |     |     |     |
@@ -41,20 +41,19 @@ Checklist
 
       | Variable           | 0.01 | QDS  | HDS  | DS   |
       |====================|======|======|======|======|
-      | S                  | -    |      |      |      |
-      | Mean S partition   | -    | -    |      |      |
-      | Turnover partition | -    | -    |      |      |
+      | S                  | -    | x    | x    | x    |
+      | Mean S partition   | -    | -    | x    | x    |
       |--------------------|------|------|------|------|
-      | Elev.              |      |      |      |      |
-      | MAP                |      |      |      |      |
-      | PDQ                |      |      |      |      |
-      | Surf. T            |      |      |      |      |
-      | NDVI               |      |      |      |      |
-      | CEC                |      |      |      |      |
-      | Clay               |      |      |      |      |
-      | pH                 |      |      |      |      |
-      | Soil C             |      |      |      |      |
-      | PC1                |      |      |      |      |
+      | Elev.              |      | x    | x    | x    |
+      | MAP                |      | x    | x    | x    |
+      | PDQ                |      | x    | x    | x    |
+      | Surf. T            |      | x    | x    | x    |
+      | NDVI               |      | x    | x    | x    |
+      | CEC                |      | x    | x    | x    |
+      | Clay               |      | x    | x    | x    |
+      | pH                 |      | x    | x    | x    |
+      | Soil C             |      | x    | x    | x    |
+      | PC1                |      | x    | x    | x    |
       |--------------------|------|------|------|------|
       | Res. S [PC1]       | -    |      |      |      |
       | Res. S [MV]        | -    |      |      |      |
@@ -64,8 +63,8 @@ Checklist
         - [x] 01_setup.R
             - [x] Incl. all helper-functions
             - [ ] Move data-processing/-used helper functions back there
-        - [ ] 02_generate-richness-data.R
-        - [ ] 03_generate-heterogeneity-data.R
+        - [x] 02_generate-richness-data.R
+        - [x] 03_generate-heterogeneity-data.R
         - [ ] 04_compare-species-richness.R
         - [ ] 05_compare-environmental-heterogeneity.R
         - [ ] 06_explaining-richness-w-heterogeneity.R
