@@ -84,7 +84,7 @@ grid2raster <- function(x, resol = c(0.125, 0.25, 0.5, 1)) {
   )
 }
 
-raster2df <- function(r, Larsen_grid_data) {
+raster2df <- function(r, Larsen_grid_data = NULL) {
   # Creates a dataframe of raster layer/stack/brick data
   # with columns for the lon and lat of the midpoint of each cell
   df <- cbind(
@@ -92,7 +92,10 @@ raster2df <- function(r, Larsen_grid_data) {
     as.data.frame(r)
   )
   names(df)[1:2] <- c("lon", "lat")
-  full_join(Larsen_grid_data, df)
+  if (!is.null(Larsen_grid_data)) {
+    df <- full_join(Larsen_grid_data, df)
+  }
+  df
 }
 
 force_positive_PC1 <- function(PCA) {
