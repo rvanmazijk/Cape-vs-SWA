@@ -1,4 +1,6 @@
-# Import richness and heterogeneity data ---------------------------------------
+# Import data ------------------------------------------------------------------
+
+# .... Species richness and heterogeneity data ---------------------------------
 
 richness_data <- list(
   QDS = read_csv("for-Dryad/data/richness-data-QDS.csv"),
@@ -6,18 +8,46 @@ richness_data <- list(
   DS  = read_csv("for-Dryad/data/richness-data-DS.csv")
 )
 
+# .... Environmental heterogeneity ---------------------------------------------
+
 heterogeneity_data <- list(
   QDS    = read_csv("for-Dryad/data/heterogeneity-data-QDS.csv"),
   HDS    = read_csv("for-Dryad/data/heterogeneity-data-HDS.csv"),
   DS     = read_csv("for-Dryad/data/heterogeneity-data-DS.csv")
 )
 
+# .... Merge richness and heterogeneity datasets -------------------------------
+
 data <- map2(richness_data, heterogeneity_data, full_join)
 data %<>% map(na.exclude)
 
-predictor_names <- var_names %>%
-  str_replace_all(" ", "_") %>%
-  c("PC1")
+# .... My Larsen-type grid polygons and rasters --------------------------------
+
+Larsen_grid_EDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_EDS"),
+  layer = "Larsen_grid_EDS"
+)
+Larsen_grid_QDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_QDS"),
+  layer = "Larsen_grid_QDS"
+)
+Larsen_grid_HDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_HDS"),
+  layer = "Larsen_grid_HDS"
+)
+
+Larsen_grid_EDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_EDS_ras.tif")
+)
+Larsen_grid_QDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_QDS_ras.tif")
+)
+Larsen_grid_HDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif")
+)
+Larsen_grid_DS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_DS_ras.tif")
+)
 
 # Univariate models ------------------------------------------------------------
 
@@ -67,9 +97,15 @@ data$DS$PC1_residual <- m1$residuals
 
 # .... Fit other all vars univariate models ------------------------------------
 
+predictor_names <- var_names %>%  # needed within fit_univariate_models()
+  str_replace_all(" ", "_") %>%
+  c("PC1")
+
 QDS_UVMs <- fit_univariate_models("QDS_richness")
 HDS_UVMs <- fit_univariate_models("HDS_richness")
 DS_UVMs  <- fit_univariate_models("DS_richness")
+
+# NOTE: fit_univariate_models() also saves the results to disc
 
 #####
 
@@ -211,7 +247,63 @@ iwalk(data, ~write_csv(
   here("for-Dryad/data", glue("/data-{.y}-w-residuals.csv"))
 ))
 
-#####
+# Rasterise model-residuals' data ----------------------------------------------
+
+PC1_residual_QDS_ras <- data$QDS %>%
+  dplyr::select(region, qdgc, lon, lat, PC1_residual) %>%
+  rasterise_data("PC1_residual", Larsen_grid_QDS_ras)
+
+PC1_residual_HDS_ras <- data$HDS %>%
+  dplyr::select(region, hdgc, lon, lat, PC1_residual) %>%
+  rasterise_data("PC1_residual", Larsen_grid_HDS_ras)
+
+PC1_residual_DS_ras <- data$DS %>%
+  dplyr::select(region, dgc, lon, lat, PC1_residual) %>%
+  rasterise_data("PC1_residual", Larsen_grid_DS_ras)
+
+MV_residual_QDS_ras <- data$QDS %>%
+  dplyr::select(region, qdgc, lon, lat, multivariate_residual) %>%
+  rasterise_data("multivariate_residual", Larsen_grid_QDS_ras)
+
+MV_residual_HDS_ras <- data$HDS %>%
+  dplyr::select(region, hdgc, lon, lat, multivariate_residual) %>%
+  rasterise_data("multivariate_residual", Larsen_grid_HDS_ras)
+
+MV_residual_DS_ras <- data$DS %>%
+  dplyr::select(region, dgc, lon, lat, multivariate_residual) %>%
+  rasterise_data("multivariate_residual", Larsen_grid_DS_ras)
+
+# Save model resisudals' rasters to disc ---------------------------------------
+
+writeRaster(
+  PC1_residual_QDS_ras,
+  here("for-Dryad/data/raster-layers/PC1_residual_QDS.tif")
+)
+
+writeRaster(
+  PC1_residual_HDS_ras,
+  here("for-Dryad/data/raster-layers/PC1_residual_HDS.tif")
+)
+
+writeRaster(
+  PC1_residual_DS_ras,
+  here("for-Dryad/data/raster-layers/PC1_residual_DS.tif")
+)
+
+writeRaster(
+  MV_residual_QDS_ras,
+  here("for-Dryad/data/raster-layers/MV_residual_QDS.tif")
+)
+
+writeRaster(
+  MV_residual_HDS_ras,
+  here("for-Dryad/data/raster-layers/MV_residual_HDS.tif")
+)
+
+writeRaster(
+  MV_residual_DS_ras,
+  here("for-Dryad/data/raster-layers/MV_residual_DS.tif")
+)
 
 # .... Store residuals in rasters ----------------------------------------------
 
