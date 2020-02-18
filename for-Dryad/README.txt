@@ -65,12 +65,17 @@ Checklist
             - [ ] Move data-processing/-used helper functions back there
         - [x] 02_generate-richness-data.R
         - [x] 03_generate-heterogeneity-data.R
+            - [ ] Move PCA-biplots -> figure-scripts/
         - [ ] 04_compare-species-richness.R
+            - [ ] Move results' CSVs -> results/
         - [ ] 05_compare-environmental-heterogeneity.R
+            - [ ] Move results' CSVs -> results/
         - [ ] 06_explaining-richness-w-heterogeneity.R
             - [ ] Incl. refits w/o richness hotspots
             - [ ] Incl. collinearity checks
             - [ ] Incl. univariate linearity checks
+            - [ ] Move UVM-plots -> figure-scripts/
+            - [ ] Move results' CSVs -> results/
         - [ ] 07_correlate-PC1-MV-model-results.R
     - [ ] Data processing
         - ...
@@ -82,6 +87,8 @@ Checklist
     - [ ] In manuscript too
 - [ ] data/raw/docs/SoilGrids250m.txt in this README
 - [ ] Other data/raw/docs/*.txt in this README
+
+- [ ] Merge "for-Dryad/"-approach back into main folders?
 
 Outline and contents
 ================================================================================
