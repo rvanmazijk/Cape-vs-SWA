@@ -71,12 +71,14 @@ Checklist
         - [ ] 05_compare-environmental-heterogeneity.R
             - [ ] Move results' CSVs -> results/
         - [ ] 06_explaining-richness-w-heterogeneity.R
-            - [ ] Incl. refits w/o richness hotspots
-            - [ ] Incl. collinearity checks
-            - [ ] Incl. univariate linearity checks
             - [ ] Move UVM-plots -> figure-scripts/
             - [ ] Move results' CSVs -> results/
-        - [ ] 07_correlate-PC1-MV-model-results.R
+            - [ ] Save ANOVA results to disc
+            - [ ] Store residuals in rasters
+            - [ ] Incl. univariate linearity checks
+            - [ ] Incl. collinearity checks
+            - [ ] Incl. refits w/o richness hotspots
+            - [ ] Incl. correlation of PC1- and multivariate-model-based results
     - [ ] Data processing
         - ...
         - [ ] *_create-Larsen-type-grid-rasters.R
@@ -101,7 +103,6 @@ Outline and contents
     - 04_compare-species-richness.R
     - 05_compare-environmental-heterogeneity.R
     - 06_explaining-richness-w-heterogeneity.R
-    - 07_correlate-PC1-MV-model-results.R
 - data-processing/
     - ...
 - data/
