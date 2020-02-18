@@ -144,7 +144,8 @@ if (FALSE) {
 }
 # Multivariate models ----------------------------------------------------------
 
-# Fit multivariate models
+# .... Fit multivariate models -------------------------------------------------
+
 full_formula <- predictor_names[predictor_names != "PC1"] %>%
   {c(., paste(., "* region"))} %>%
   paste(collapse = " + ")
@@ -166,7 +167,13 @@ if (FALSE) {
   par(op)
 }
 
-# Summarise models
+# Store residuals in master dataset for use in maps below
+data$QDS$multivariate_residual <- m_QDS_richness$residuals
+data$HDS$multivariate_residual <- m_HDS_richness$residuals
+data$DS$multivariate_residual  <- m_DS_richness$residuals
+
+# .... Summarise models --------------------------------------------------------
+
 models <- list(
   QDS_richness = m_QDS_richness,
   HDS_richness = m_HDS_richness,
@@ -181,42 +188,30 @@ models_R2 <- models %>%
   dplyr::select(response, adj.r.squared)
 models_summary %<>% full_join(models_R2)
 
-# Save results out (especially for Tony)
-models_summary_95 <- models %>%
-  map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.95) %>%
-  rename(conf.low.05 = conf.low, conf.high.05 = conf.high)
-models_summary_99 <- models %>%
-  map_df(.id = "response", tidy, conf.int = TRUE, conf.level = 0.99) %>%
-  rename(conf.low.01 = conf.low, conf.high.01 = conf.high)
-full_join(models_summary_95, models_summary_99) %>%
-  dplyr::select(-std.error, -statistic) %>%
-  mutate_if(is.numeric, ~round(., digits = 3)) %>%
-  mutate(p.value = ifelse(p.value < 0.001, "< 0.001", p.value)) %>%
-  write_csv(here(
-    "draft-02/results",
-    "model-summary-for-Tony.csv"
-  ))
+# Save results to disc ---------------------------------------------------------
 
-# Look at break down of variance explained (ANOVA) by each model
+write_csv(models_summary, here("for-Dryad/multivariate-model-results.csv"))
+
+#####
+
+# TODO: Look at break down of variance explained (ANOVA) by each model
 models %>%
   map(anova) %>%
   map(tidy) %>%
   map(mutate, var_explained = sumsq / sum(sumsq)) %>%
   map(dplyr::select, term, var_explained, p.value) %>%
   map(arrange, desc(var_explained)) %>%
-  bind_rows(.id = "response") %>%
-  write_csv(here(
-    "draft-02/results",
-    "model-ANOVA-for-Tony.csv"
-  ))
+  bind_rows(.id = "response")
 
-# Store residuals in master dataset for use in maps below
-data$QDS$multivariate_residual <- m_QDS_richness$residuals
-data$HDS$multivariate_residual <- m_HDS_richness$residuals
-data$DS$multivariate_residual  <- m_DS_richness$residuals
 
-# Save new data w/ residuals to disc
-iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
+# Save new data with PC1- and multivariate-based residuals to disc -------------
+
+iwalk(data, ~write_csv(
+  .x,
+  here("for-Dryad/data", glue("/data-{.y}-w-residuals.csv"))
+))
+
+#####
 
 # .... Store residuals in rasters ----------------------------------------------
 
