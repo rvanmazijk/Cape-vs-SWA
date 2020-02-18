@@ -1,4 +1,6 @@
-# Import my Larsen-type grid polygons and rasters ------------------------------
+# Import data ------------------------------------------------------------------
+
+# .... My Larsen-type grid polygons and rasters --------------------------------
 
 Larsen_grid_EDS <- readOGR(
   here("data/derived-data/May-2019/Larsen_grid_EDS"),
@@ -26,7 +28,7 @@ Larsen_grid_DS_ras <- raster(
   here("data/derived-data/May-2019/Larsen_grid_DS_ras.tif")
 )
 
-# Import region polygons -------------------------------------------------------
+# .... Region polygons ---------------------------------------------------------
 
 GCFR_border_buffered <- readOGR(
   here("data/derived-data/borders/GCFR_border_buffered/")
@@ -37,6 +39,20 @@ SWAFR_border_buffered <- readOGR(
 
 # Merge regions' borders
 borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
+
+# .... GBIF species occurrence datasets ----------------------------------------
+
+GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
+  "data/derived-data/flora",
+  "GCFR_clean_flora_2017-09-14.csv"
+)))
+SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
+  "data/derived-data/flora",
+  "SWAFR_clean_flora_2017-09-14.csv"
+)))
+
+# Merge regions' data
+species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
 
 # Detemine which DS, HDS & QDS have all 4 of their HDS, QDS & EDS --------------
 # (within the regions' borders)
@@ -97,18 +113,6 @@ DS_w_all_HDS <- Larsen_grid_HDS_data %>%
 
 # Collate species occurrences into richness, turnover data ---------------------
 # (by grid-cell codes)
-
-GCFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
-  "data/derived-data/flora",
-  "GCFR_clean_flora_2017-09-14.csv"
-)))
-SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv(here(
-  "data/derived-data/flora",
-  "SWAFR_clean_flora_2017-09-14.csv"
-)))
-
-# Merge regions' data
-species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
 
 # Add grid codes to species data
 species_occ$EDS <- species_occ %over%

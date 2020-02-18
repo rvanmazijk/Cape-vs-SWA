@@ -1,4 +1,46 @@
-# Import environmental data ----------------------------------------------------
+# Import data ------------------------------------------------------------------
+
+# .... My Larsen-type grid polygons and rasters --------------------------------
+
+Larsen_grid_EDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_EDS"),
+  layer = "Larsen_grid_EDS"
+)
+Larsen_grid_QDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_QDS"),
+  layer = "Larsen_grid_QDS"
+)
+Larsen_grid_HDS <- readOGR(
+  here("data/derived-data/May-2019/Larsen_grid_HDS"),
+  layer = "Larsen_grid_HDS"
+)
+
+Larsen_grid_EDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_EDS_ras.tif")
+)
+Larsen_grid_QDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_QDS_ras.tif")
+)
+Larsen_grid_HDS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif")
+)
+Larsen_grid_DS_ras <- raster(
+  here("data/derived-data/May-2019/Larsen_grid_DS_ras.tif")
+)
+
+# .... Region polygons ---------------------------------------------------------
+
+GCFR_border_buffered <- readOGR(
+  here("data/derived-data/borders/GCFR_border_buffered/")
+)
+SWAFR_border_buffered <- readOGR(
+  here("data/derived-data/borders/SWAFR_border_buffered/")
+)
+
+# Merge regions' borders
+borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
+
+# .... Environmental data ------------------------------------------------------
 
 GCFR_file_names  <- glue("{data_dir}/GCFR_{var_names}_masked2.tif")
 SWAFR_file_names <- glue("{data_dir}/SWAFR_{var_names}_masked2.tif")
