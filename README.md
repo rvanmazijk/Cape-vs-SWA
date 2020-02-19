@@ -80,9 +80,9 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
         - [x] 03_generate-heterogeneity-data.R
             - [ ] Move PCA-biplots -> figure-scripts/
         - [x] 04_compare-species-richness.R
-            - [ ] Move results' CSVs -> results/
+            - [x] Move results' CSVs -> results/
         - [x] 05_compare-environmental-heterogeneity.R
-            - [ ] Move results' CSVs -> results/
+            - [x] Move results' CSVs -> results/
         - [ ] 06_explaining-richness-w-heterogeneity.R
             - [ ] Move UVM-plots -> figure-scripts/
             - [ ] Move results' CSVs -> results/
@@ -94,9 +94,8 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
             - [ ] Incl. correlation of PC1- and multivariate-model-based results
     - [ ] Data processing
         - ...
-        - [ ] *_create-Larsen-type-grid-rasters.R
+        - [x] *_create-Larsen-type-grid-rasters.R
         - ...
-    - Figure-scripts?
 
 - [ ] Larsen shapefile URL
     - [ ] In manuscript too
@@ -106,7 +105,7 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 - [x] Merge "for-Dryad/"-approach back into main folders?
     - [ ] Update scripts to reflect this merge
 
-## Outline of DataDryad files
+## Outline-concept for DataDryad repository
 
 - README.txt
 - analyses/
