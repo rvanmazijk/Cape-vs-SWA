@@ -28,7 +28,7 @@ library(grid)
 
 # Set global variables ---------------------------------------------------------
 
-data_dir <- here("data/derived-data/May-2019")
+data_dir <- here("data/derived-data/Feb-2020")
 
 # Environmental variable names in nice order
 var_names <- c(
@@ -40,8 +40,11 @@ var_names <- c(
   "CEC",
   "Clay",
   "Soil C",
-  "pH"
+  "pH",
+  "PC1"
 )
+# And a syntactically valid version
+var_names_tidy <- str_replace(var_names, " ", "_")
 
 # Figure things ----------------------------------------------------------------
 
@@ -110,7 +113,7 @@ force_positive_PC1 <- function(PCA) {
 }
 
 make_SpatialPointsDataFrame <- function(df) {
-  # Make a SpatialPointsDataFrame out of the (cleaned) GBIF occurrence data
+  # Makes a SpatialPointsDataFrame out of the (cleaned) GBIF occurrence data
   # for GCFR and SWAFR vascular plants
   SpatialPointsDataFrame(
     coords      = df[, c("decimallongitude", "decimallatitude")],
@@ -127,7 +130,8 @@ rasterise_data <- function(df, df_col, r) {
 }
 
 test_diff <- function(response, sub_sample = FALSE) {
-  # TODO: describe this function
+  # Tests for differences between GCFR and SWAFR richness and turnover
+  # using Mann-Whitney U-tests and describes those differences using CLES
   dataset <- data %$% {  # depends on this object existing!
     if      (response ==     "QDS_richness")                       QDS
     else if (response %in% c("HDS_richness", "HDS_turnover_prop")) HDS
@@ -147,19 +151,17 @@ test_diff <- function(response, sub_sample = FALSE) {
 
 fit_univariate_models <- function(response) {
   # TODO: explain this univariate-model-fitting helper-function
-  dataset <- data %$% {
+  dataset <- data %$% {  # depends on this object existing!
     if      (response == "QDS_richness") QDS
     else if (response == "HDS_richness") HDS
     else if (response == "DS_richness")  DS
   }
 
-  univar_models <- map(predictor_names,
-    ~ list(
-      non_region = lm(glue("{response} ~ {.x}"),          dataset),
-      add_region = lm(glue("{response} ~ {.x} + region"), dataset),
-      int_region = lm(glue("{response} ~ {.x} * region"), dataset)
-    )
-  )
+  univar_models <- map(predictor_names, ~list(
+    non_region = lm(glue("{response} ~ {.x}"),          dataset),
+    add_region = lm(glue("{response} ~ {.x} + region"), dataset),
+    int_region = lm(glue("{response} ~ {.x} * region"), dataset)
+  ))
   names(univar_models) <- predictor_names
 
   univar_model_summary1 <- univar_models %>%
@@ -254,12 +256,12 @@ fit_univariate_models <- function(response) {
     univar_model_summary2$model_type[to_remove] <- " "
   }
 
-  # Save results to disc
+  # Save (tidy) results to disc
   write_csv(
     univar_model_summary2,
     here("for-Dryad", glue("{response}_univariate_model_results.csv"))
   )
 
-  # Return summary with models
+  # Return full summary with models
   return(univar_model_summary1)
 }
