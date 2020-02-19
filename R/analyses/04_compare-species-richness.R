@@ -1,9 +1,9 @@
 # Import richness data ---------------------------------------------------------
 
 data <- list(
-  QDS = read_csv("for-Dryad/data/richness-data-QDS.csv"),
-  HDS = read_csv("for-Dryad/data/richness-data-HDS.csv"),
-  DS  = read_csv("for-Dryad/data/richness-data-DS.csv")
+  QDS = read_csv(glue("{data_dir}/richness-data-QDS.csv")),
+  HDS = read_csv(glue("{data_dir}/richness-data-HDS.csv")),
+  DS  = read_csv(glue("{data_dir}/richness-data-DS.csv"))
 )
 
 data %<>% map(na.exclude)
@@ -35,4 +35,4 @@ as.data.frame(richness_test_results)
 
 # Save results to disc ---------------------------------------------------------
 
-write_csv(richness_test_results, here("for-Dryad/richness-test-results.csv"))
+write_csv(richness_test_results, here("results/richness-test-results.csv"))
