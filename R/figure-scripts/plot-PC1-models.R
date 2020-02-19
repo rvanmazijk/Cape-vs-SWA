@@ -37,7 +37,7 @@ QDS_plot <- ggplot(data$QDS, aes(PC1, QDS_richness, fill = region)) +
   labs(
     x     = "PC1 (42.44%)",
     y     = bquote(italic("S")),
-    title = bquote("(a)  QDS ("*italic("R")^{"2"}*" = 0.14)")
+    title = bquote("(a)  QDS ("*italic("R")^{"2"}*" = 0.13)")
   ) +
   scale_fill_manual(values = c("black", "white")) +
   scale_colour_manual(values = c("black", "grey50")) +
@@ -53,7 +53,7 @@ HDS_plot <- ggplot(data$HDS, aes(PC1, HDS_richness)) +
   geom_smooth(method = lm, colour = "black", se = FALSE) +
   labs(
     x     = "PC1 (39.02%)",
-    title = bquote("(b)  HDS ("*italic("R")^{"2"}*" = 0.19)")
+    title = bquote("(b)  HDS ("*italic("R")^{"2"}*" = 0.22)")
   ) +
   scale_fill_manual(values = c("black", "white")) +
   scale_shape_manual(values = c(21, 24)) +
@@ -70,7 +70,7 @@ DS_plot <- ggplot(data$DS, aes(PC1, DS_richness)) +
   geom_smooth(method = lm, colour = "black", se = FALSE) +
   labs(
     x      = "PC1 (41.26%)",
-    title  = bquote("(c)  DS ("*italic("R")^{"2"}*" = 0.28)")
+    title  = bquote("(c)  DS ("*italic("R")^{"2"}*" = 0.49)")
   ) +
   scale_fill_manual(values = c("black", "white")) +
   scale_shape_manual(values = c(21, 24), labels = c("\n\nHotspots", "")) +
