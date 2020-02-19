@@ -170,12 +170,12 @@ if (FALSE) {
 
   # Save to disc
   ggsave(
-    here("draft-02/figures/plot-univariate-models.pdf"),
+    here("figures/plot-univariate-models.pdf"),
     width = 25, height = 8,
     UVM_plots
   )
   ggsave(
-    here("draft-02/figures/plot-univariate-models.png"),
+    here("figures/plot-univariate-models.png"),
     width = 25, height = 8,
     UVM_plots
   )
