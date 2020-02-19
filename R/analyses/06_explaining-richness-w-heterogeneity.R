@@ -3,17 +3,17 @@
 # .... Species richness and heterogeneity data ---------------------------------
 
 richness_data <- list(
-  QDS = read_csv("for-Dryad/data/richness-data-QDS.csv"),
-  HDS = read_csv("for-Dryad/data/richness-data-HDS.csv"),
-  DS  = read_csv("for-Dryad/data/richness-data-DS.csv")
+  QDS = read_csv(glue("{data_dir}/richness-data-QDS.csv")),
+  HDS = read_csv(glue("{data_dir}/richness-data-HDS.csv")),
+  DS  = read_csv(glue("{data_dir}/richness-data-DS.csv"))
 )
 
 # .... Environmental heterogeneity ---------------------------------------------
 
 heterogeneity_data <- list(
-  QDS    = read_csv("for-Dryad/data/heterogeneity-data-QDS.csv"),
-  HDS    = read_csv("for-Dryad/data/heterogeneity-data-HDS.csv"),
-  DS     = read_csv("for-Dryad/data/heterogeneity-data-DS.csv")
+  QDS    = read_csv(glue("{data_dir}/heterogeneity-data-QDS.csv")),
+  HDS    = read_csv(glue("{data_dir}/heterogeneity-data-HDS.csv")),
+  DS     = read_csv(glue("{data_dir}/heterogeneity-data-DS.csv"))
 )
 
 # .... Merge richness and heterogeneity datasets -------------------------------
@@ -24,30 +24,34 @@ data %<>% map(na.exclude)
 # .... My Larsen-type grid polygons and rasters --------------------------------
 
 Larsen_grid_EDS <- readOGR(
-  here("data/derived-data/May-2019/Larsen_grid_EDS"),
+  glue("{data_dir}/Larsen_grid_EDS"),
   layer = "Larsen_grid_EDS"
 )
 Larsen_grid_QDS <- readOGR(
-  here("data/derived-data/May-2019/Larsen_grid_QDS"),
+  glue("{data_dir}/Larsen_grid_QDS"),
   layer = "Larsen_grid_QDS"
 )
 Larsen_grid_HDS <- readOGR(
-  here("data/derived-data/May-2019/Larsen_grid_HDS"),
+  glue("{data_dir}/Larsen_grid_HDS"),
   layer = "Larsen_grid_HDS"
 )
 
-Larsen_grid_EDS_ras <- raster(
-  here("data/derived-data/May-2019/Larsen_grid_EDS_ras.tif")
-)
-Larsen_grid_QDS_ras <- raster(
-  here("data/derived-data/May-2019/Larsen_grid_QDS_ras.tif")
-)
-Larsen_grid_HDS_ras <- raster(
-  here("data/derived-data/May-2019/Larsen_grid_HDS_ras.tif")
-)
-Larsen_grid_DS_ras <- raster(
-  here("data/derived-data/May-2019/Larsen_grid_DS_ras.tif")
-)
+Larsen_grid_EDS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_EDS_ras.tif"
+))
+Larsen_grid_QDS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_QDS_ras.tif"
+))
+Larsen_grid_HDS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_HDS_ras.tif"
+))
+Larsen_grid_DS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_DS_ras.tif"
+))
 
 # Univariate models ------------------------------------------------------------
 

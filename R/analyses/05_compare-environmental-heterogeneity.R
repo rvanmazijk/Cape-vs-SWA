@@ -1,10 +1,10 @@
 # Import heterogeneity data ----------------------------------------------------
 
 data <- list(
-  point1 = read_csv("for-Dryad/data/heterogeneity-data-0.10.csv"),
-  QDS    = read_csv("for-Dryad/data/heterogeneity-data-QDS.csv"),
-  HDS    = read_csv("for-Dryad/data/heterogeneity-data-HDS.csv"),
-  DS     = read_csv("for-Dryad/data/heterogeneity-data-DS.csv")
+  point1 = read_csv(glue("{data_dir}/heterogeneity-data-0.10.csv")),
+  QDS    = read_csv(glue("{data_dir}/heterogeneity-data-QDS.csv")),
+  HDS    = read_csv(glue("{data_dir}/heterogeneity-data-HDS.csv")),
+  DS     = read_csv(glue("{data_dir}/heterogeneity-data-DS.csv"))
 )
 
 data %<>% map(na.exclude)
@@ -74,5 +74,5 @@ as.data.frame(CLES_model_summaries)
 
 # Save results to disc ---------------------------------------------------------
 
-write_csv(CLES_results,         here("for-Dryad/CLES-results.csv"))
-write_csv(CLES_model_summaries, here("for-Dryad/CLES-model-summaries.csv"))
+write_csv(CLES_results,         here("results/CLES-results.csv"))
+write_csv(CLES_model_summaries, here("results/CLES-model-summaries.csv"))
