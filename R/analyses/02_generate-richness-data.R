@@ -134,7 +134,7 @@ GCFR_species_occ@data %>%
   group_by(species)  %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(glue("{data_dir}//GCFR-species.csv"))
+  write_csv(glue("{data_dir}/GCFR-species.csv"))
 SWAFR_species_occ@data %>%
   group_by(species) %>%
   summarise(n_collections = n()) %>%
