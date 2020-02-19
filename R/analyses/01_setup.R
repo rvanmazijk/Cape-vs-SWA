@@ -40,8 +40,7 @@ var_names <- c(
   "CEC",
   "Clay",
   "Soil C",
-  "pH",
-  "PC1"
+  "pH"
 )
 # And a syntactically valid version
 var_names_tidy <- str_replace(var_names, " ", "_")
