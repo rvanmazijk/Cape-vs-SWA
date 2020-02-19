@@ -6,7 +6,13 @@ CLES_results %<>% mutate(
     as.character() %>%
     str_replace_all("_", " "),
   letters = rep(letters[1:10], 4),
-  label = glue("({letters}) {variable}")
+  label = glue("({letters}) {variable}"),
+  scale = case_when(
+    scale == "point1" ~ 0.10,
+    scale == "QDS"    ~ 0.25,
+    scale == "HDS"    ~ 0.50,
+    scale == "DS"     ~ 1.00
+  )
 )
 
 # Create empty panels
@@ -50,18 +56,12 @@ CLES_plots <- empty_plots +
 
 # Save to disc
 ggsave(
-  here(
-    "draft-02/manuscript_ver3/figures",
-    "plot-CLES.pdf"
-  ),
+  here("figures/plot-CLES.pdf"),
   CLES_plots,
   width = 7, height = 4
 )
 ggsave(
-  here(
-    "draft-02/manuscript_ver3/figures",
-    "plot-CLES.png"
-  ),
+  here("figures/plot-CLES.png"),
   CLES_plots, dpi = 600,
   width = 7, height = 4
 )
