@@ -107,7 +107,6 @@ predictor_names <- c(var_names_tidy, "PC1")
 QDS_UVMs <- fit_univariate_models("QDS_richness")
 HDS_UVMs <- fit_univariate_models("HDS_richness")
 DS_UVMs  <- fit_univariate_models("DS_richness")
-
 # NOTE: fit_univariate_models() also saves the results to disc
 
 #####
@@ -179,8 +178,8 @@ if (FALSE) {
     width = 25, height = 8,
     UVM_plots
   )
-
 }
+
 # Multivariate models ----------------------------------------------------------
 
 # .... Fit multivariate models -------------------------------------------------
