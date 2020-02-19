@@ -84,10 +84,10 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
             - [ ] Move PCA-biplots -> figure-scripts/
         - [x] 04_compare-species-richness.R
             - [x] Move results' CSVs -> results/
-            - [ ] Update paths
+            - [x] Update paths
         - [x] 05_compare-environmental-heterogeneity.R
             - [x] Move results' CSVs -> results/
-            - [ ] Update paths
+            - [x] Update paths
         - [ ] 06_explaining-richness-w-heterogeneity.R
             - [ ] Move UVM-plots -> figure-scripts/
             - [ ] Move results' CSVs -> results/
