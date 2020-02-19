@@ -75,14 +75,19 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
     - [ ] Analyses
         - [x] 01_setup.R
             - [x] Incl. all helper-functions
+            - [x] Update paths
             - [ ] Move data-processing/-used helper functions back there
         - [x] 02_generate-richness-data.R
+            - [ ] Update paths
         - [x] 03_generate-heterogeneity-data.R
             - [ ] Move PCA-biplots -> figure-scripts/
+            - [ ] Update paths
         - [x] 04_compare-species-richness.R
             - [x] Move results' CSVs -> results/
+            - [ ] Update paths
         - [x] 05_compare-environmental-heterogeneity.R
             - [x] Move results' CSVs -> results/
+            - [ ] Update paths
         - [ ] 06_explaining-richness-w-heterogeneity.R
             - [ ] Move UVM-plots -> figure-scripts/
             - [ ] Move results' CSVs -> results/
@@ -92,9 +97,11 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
             - [ ] Incl. collinearity checks
             - [ ] Incl. refits w/o richness hotspots
             - [ ] Incl. correlation of PC1- and multivariate-model-based results
+            - [ ] Update paths
     - [ ] Data processing
         - ...
         - [x] *_create-Larsen-type-grid-rasters.R
+            - [ ] Update paths
         - ...
 
 - [ ] Larsen shapefile URL
