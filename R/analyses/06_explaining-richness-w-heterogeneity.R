@@ -228,7 +228,7 @@ models_summary %<>% full_join(models_R2)
 
 # Save results to disc ---------------------------------------------------------
 
-write_csv(models_summary, here("for-Dryad/multivariate-model-results.csv"))
+write_csv(models_summary, here("results/multivariate-model-results.csv"))
 
 #####
 
@@ -244,10 +244,7 @@ models %>%
 
 # Save new data with PC1- and multivariate-based residuals to disc -------------
 
-iwalk(data, ~write_csv(
-  .x,
-  here("for-Dryad/data", glue("/data-{.y}-w-residuals.csv"))
-))
+iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
 
 # Rasterise model-residuals' data ----------------------------------------------
 
@@ -279,30 +276,36 @@ MV_residual_DS_ras <- data$DS %>%
 
 writeRaster(
   PC1_residual_QDS_ras,
-  here("for-Dryad/data/raster-layers/PC1_residual_QDS.tif")
+  glue("{data_dir}/raster-layers/PC1_residual_QDS.tif"),
+  overwrite = TRUE
 )
 
 writeRaster(
   PC1_residual_HDS_ras,
-  here("for-Dryad/data/raster-layers/PC1_residual_HDS.tif")
+  glue("{data_dir}/raster-layers/PC1_residual_HDS.tif"),
+  overwrite = TRUE
 )
 
 writeRaster(
   PC1_residual_DS_ras,
-  here("for-Dryad/data/raster-layers/PC1_residual_DS.tif")
+  glue("{data_dir}/raster-layers/PC1_residual_DS.tif"),
+  overwrite = TRUE
 )
 
 writeRaster(
   MV_residual_QDS_ras,
-  here("for-Dryad/data/raster-layers/MV_residual_QDS.tif")
+  glue("{data_dir}/raster-layers/MV_residual_QDS.tif"),
+  overwrite = TRUE
 )
 
 writeRaster(
   MV_residual_HDS_ras,
-  here("for-Dryad/data/raster-layers/MV_residual_HDS.tif")
+  glue("{data_dir}/raster-layers/MV_residual_HDS.tif"),
+  overwrite = TRUE
 )
 
 writeRaster(
   MV_residual_DS_ras,
-  here("for-Dryad/data/raster-layers/MV_residual_DS.tif")
+  glue("{data_dir}/raster-layers/MV_residual_DS.tif"),
+  overwrite = TRUE
 )
