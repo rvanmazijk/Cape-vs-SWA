@@ -253,18 +253,12 @@ final_plot <- plot_grid(
 
 # Save to disc
 ggsave(
-  here(
-    "draft-02/figures",
-    "plot-richness-distributions-partitions.pdf"
-  ),
+  here("figures/plot-richness-distributions-partitions.pdf"),
   final_plot,
   width = 8, height = 7
 )
 ggsave(
-  here(
-    "draft-02/figures",
-    "plot-richness-distributions-partitions.png"
-  ),
+  here("figures/plot-richness-distributions-partitions.png"),
   final_plot, dpi = 600,
   width = 8, height = 7
 )
