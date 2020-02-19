@@ -66,11 +66,11 @@ Larsen_grid_EDS@data <- cbind(
 # because later I filter the cells based on whether their constituent cells
 # are in the regions (from EDS above)
 Larsen_grid_QDS@data$region <-
-  ifelse(Larsen_grid_QDS@data$lon > 90,
+  ifelse(Larsen_grid_QDS@data$lon > 60,
     "SWAFR", "GCFR"
   )
 Larsen_grid_HDS@data$region <-
-  ifelse(Larsen_grid_HDS@data$lon > 90,
+  ifelse(Larsen_grid_HDS@data$lon > 60,
     "SWAFR", "GCFR"
   )
 
