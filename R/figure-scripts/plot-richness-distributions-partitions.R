@@ -9,26 +9,34 @@ data <- list(
 data_for_plot <- data %$%
   rbind(
     QDS %>%
-      dplyr::select(region, QDS_richness, QDS) %>%
+      dplyr::select(region, QDS_richness, qdgc) %>%
       rename(
         richness      = QDS_richness,
-        cell_name     = QDS
+        cell_name     = qdgc
       ) %>%
       add_column(scale = "QDS", turnover_prop = NA),
     HDS %>%
-      dplyr::select(region, HDS_richness, QDS_turnover_prop, HDS) %>%
+      mutate(HDS_turnover_prop =
+        (HDS_richness - mean_QDS_richness)/
+        HDS_richness
+      ) %>%
+      dplyr::select(region, HDS_richness, HDS_turnover_prop, hdgc) %>%
       rename(
         richness      = HDS_richness,
-        turnover_prop = QDS_turnover_prop,
-        cell_name     = HDS
+        turnover_prop = HDS_turnover_prop,
+        cell_name     = hdgc
       ) %>%
       add_column(scale = "HDS"),
     DS %>%
-      dplyr::select(region, DS_richness, HDS_turnover_prop, DS) %>%
+      mutate(DS_turnover_prop =
+        (DS_richness - mean_HDS_richness)/
+        DS_richness
+      ) %>%
+      dplyr::select(region, DS_richness, DS_turnover_prop, dgc) %>%
       rename(
         richness      = DS_richness,
-        turnover_prop = HDS_turnover_prop,
-        cell_name     = DS
+        turnover_prop = DS_turnover_prop,
+        cell_name     = dgc
       ) %>%
       add_column(scale = "DS")
   ) %>%
@@ -102,9 +110,15 @@ hist_plots[c("DS_richness", "DS_turnover_prop", "HDS_richness")] %<>% map(
 
 # Partition plots --------------------------------------------------------------
 
+data$HDS %<>%
+  mutate(HDS_turnover = HDS_richness - mean_QDS_richness)
+
+data$DS %<>%
+  mutate(DS_turnover = DS_richness - mean_HDS_richness)
+
 DS_plot_lim <- data %$%
   DS %$%
-  ceiling(max(c(mean_HDS_richness, HDS_turnover))) + 10
+  ceiling(max(c(mean_HDS_richness, DS_turnover))) + 10
 
 S_HDS_background <- DS_plot_lim %>%
   {seq(from = 0, to = ., by = 10)} %>%
@@ -130,7 +144,7 @@ S_HDS_background_plot <- ggplot(S_HDS_background) +
 HDS_partition_plot <- S_HDS_background_plot +
   geom_point(
     data    = data$HDS,
-    mapping = aes(QDS_turnover, mean_QDS_richness, fill = region),
+    mapping = aes(HDS_turnover, mean_QDS_richness, fill = region),
     shape   = 21
   ) +
   scale_fill_manual(values = c("black", "white")) +
@@ -160,7 +174,7 @@ S_DS_background_plot <- ggplot(S_DS_background) +
 DS_partition_plot <- S_DS_background_plot +
   geom_point(
     data    = data$DS,
-    mapping = aes(HDS_turnover, mean_HDS_richness, fill = region),
+    mapping = aes(DS_turnover, mean_HDS_richness, fill = region),
     shape   = 21
   ) +
   scale_fill_manual(values = c("black", "white")) +
