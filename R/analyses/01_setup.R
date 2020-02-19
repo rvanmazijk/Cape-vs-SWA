@@ -258,7 +258,7 @@ fit_univariate_models <- function(response) {
   # Save (tidy) results to disc
   write_csv(
     univar_model_summary2,
-    here("for-Dryad", glue("{response}_univariate_model_results.csv"))
+    here("results", glue("{response}_univariate_model_results.csv"))
   )
 
   # Return full summary with models
