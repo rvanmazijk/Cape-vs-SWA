@@ -101,9 +101,8 @@ data$DS$PC1_residual <- m1$residuals
 
 # .... Fit other all vars univariate models ------------------------------------
 
-predictor_names <- var_names %>%  # needed within fit_univariate_models()
-  str_replace_all(" ", "_") %>%
-  c("PC1")
+predictor_names <- c(var_names_tidy, "PC1")
+# (needed within fit_univariate_models())
 
 QDS_UVMs <- fit_univariate_models("QDS_richness")
 HDS_UVMs <- fit_univariate_models("HDS_richness")
