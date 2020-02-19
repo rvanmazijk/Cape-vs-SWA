@@ -15,10 +15,22 @@ Larsen_grid_HDS <- readOGR(
   layer = "Larsen_grid_HDS"
 )
 
-Larsen_grid_EDS_ras <- raster(glue("{data_dir}/Larsen_grid_EDS_ras.tif"))
-Larsen_grid_QDS_ras <- raster(glue("{data_dir}/Larsen_grid_QDS_ras.tif"))
-Larsen_grid_HDS_ras <- raster(glue("{data_dir}/Larsen_grid_HDS_ras.tif"))
-Larsen_grid_DS_ras  <- raster(glue("{data_dir}/Larsen_grid_DS_ras.tif"))
+Larsen_grid_EDS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_EDS_ras.tif"
+))
+Larsen_grid_QDS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_QDS_ras.tif"
+))
+Larsen_grid_HDS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_HDS_ras.tif"
+))
+Larsen_grid_DS_ras <- raster(glue(
+  "{data_dir}/raster-layers/",
+  "Larsen_grid_DS_ras.tif"
+))
 
 # .... Region polygons ---------------------------------------------------------
 
