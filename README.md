@@ -103,8 +103,8 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 - [ ] data/raw/docs/SoilGrids250m.txt in this README
 - [ ] Other data/raw/docs/*.txt in this README
 
-- [ ] Merge "for-Dryad/"-approach back into main folders?
-
+- [x] Merge "for-Dryad/"-approach back into main folders?
+    - [ ] Update scripts to reflect this merge
 
 ## Outline of DataDryad files
 
