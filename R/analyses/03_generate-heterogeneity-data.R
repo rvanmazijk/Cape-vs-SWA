@@ -188,22 +188,22 @@ heterogeneity_DS_df$PC2 <- heterogeneity_DS_PCA$x[, 2]
 
 write_csv(
   heterogeneity_0.10_df,
-  here("for-Dryad/data/heterogeneity-data-0.10.csv")
+  glue("{data_dir}/heterogeneity-data-0.10.csv")
 )
 
 write_csv(
   heterogeneity_QDS_df,
-  here("for-Dryad/data/heterogeneity-data-QDS.csv")
+  glue("{data_dir}/heterogeneity-data-QDS.csv")
 )
 
 write_csv(
   heterogeneity_HDS_df,
-  here("for-Dryad/data/heterogeneity-data-HDS.csv")
+  glue("{data_dir}/heterogeneity-data-HDS.csv")
 )
 
 write_csv(
   heterogeneity_DS_df,
-  here("for-Dryad/data/heterogeneity-data-DS.csv")
+  glue("{data_dir}/heterogeneity-data-DS.csv")
 )
 
 # Rasterise heterogeneity dataframes -------------------------------------------
@@ -266,25 +266,25 @@ if (FALSE) {
 
 writeRaster(
   heterogeneity_0.10,
-  here("for-Dryad/data/raster-layers/heterogeneity-0.10"),
+  glue("{data_dir}/raster-layers/heterogeneity-0.10"),
   bylayer = TRUE, suffix = "names", format = "GTiff"
 )
 
 writeRaster(
   heterogeneity_QDS_ras,
-  here("for-Dryad/data/raster-layers/heterogeneity-QDS"),
+  glue("{data_dir}/raster-layers/heterogeneity-QDS"),
   bylayer = TRUE, suffix = "names", format = "GTiff"
 )
 
 writeRaster(
   heterogeneity_HDS_ras,
-  here("for-Dryad/data/raster-layers/heterogeneity-HDS"),
+  glue("{data_dir}/raster-layers/heterogeneity-HDS"),
   bylayer = TRUE, suffix = "names", format = "GTiff"
 )
 
 writeRaster(
   heterogeneity_DS_ras,
-  here("for-Dryad/data/raster-layers/heterogeneity-DS"),
+  glue("{data_dir}/raster-layers/heterogeneity-DS"),
   bylayer = TRUE, suffix = "names", format = "GTiff"
 )
 
