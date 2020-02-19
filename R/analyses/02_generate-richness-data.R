@@ -3,39 +3,33 @@
 # .... My Larsen-type grid polygons and rasters --------------------------------
 
 Larsen_grid_EDS <- readOGR(
-  here("data/derived-data/Feb-2020/Larsen_grid_EDS"),
+  glue("{data_dir}/Larsen_grid_EDS"),
   layer = "Larsen_grid_EDS"
 )
 Larsen_grid_QDS <- readOGR(
-  here("data/derived-data/Feb-2020/Larsen_grid_QDS"),
+  glue("{data_dir}/Larsen_grid_QDS"),
   layer = "Larsen_grid_QDS"
 )
 Larsen_grid_HDS <- readOGR(
-  here("data/derived-data/Feb-2020/Larsen_grid_HDS"),
+  glue("{data_dir}/Larsen_grid_HDS"),
   layer = "Larsen_grid_HDS"
 )
 
-Larsen_grid_EDS_ras <- raster(
-  here("data/derived-data/Feb-2020/Larsen_grid_EDS_ras.tif")
-)
-Larsen_grid_QDS_ras <- raster(
-  here("data/derived-data/Feb-2020/Larsen_grid_QDS_ras.tif")
-)
-Larsen_grid_HDS_ras <- raster(
-  here("data/derived-data/Feb-2020/Larsen_grid_HDS_ras.tif")
-)
-Larsen_grid_DS_ras <- raster(
-  here("data/derived-data/Feb-2020/Larsen_grid_DS_ras.tif")
-)
+Larsen_grid_EDS_ras <- raster(glue("{data_dir}/Larsen_grid_EDS_ras.tif"))
+Larsen_grid_QDS_ras <- raster(glue("{data_dir}/Larsen_grid_QDS_ras.tif"))
+Larsen_grid_HDS_ras <- raster(glue("{data_dir}/Larsen_grid_HDS_ras.tif"))
+Larsen_grid_DS_ras  <- raster(glue("{data_dir}/Larsen_grid_DS_ras.tif"))
 
 # .... Region polygons ---------------------------------------------------------
 
-GCFR_border_buffered <- readOGR(
-  here("data/derived-data/borders/GCFR_border_buffered/")
-)
-SWAFR_border_buffered <- readOGR(
-  here("data/derived-data/borders/SWAFR_border_buffered/")
-)
+GCFR_border_buffered <- readOGR(here(
+  "data/derived-data/borders",
+  "GCFR_border_buffered/"
+))
+SWAFR_border_buffered <- readOGR(here(
+  "data/derived-data/borders",
+  "SWAFR_border_buffered/"
+))
 
 # Merge regions' borders
 borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
@@ -128,20 +122,20 @@ GCFR_species_occ@data %>%
   group_by(species)  %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(here("for-Dryad/data/GCFR-species.csv"))
+  write_csv(glue("{data_dir}//GCFR-species.csv"))
 SWAFR_species_occ@data %>%
   group_by(species) %>%
   summarise(n_collections = n()) %>%
   arrange(desc(n_collections)) %>%
-  write_csv(here("for-Dryad/data/SWAFR-species.csv"))
+  write_csv(glue("{data_dir}/SWAFR-species.csv"))
 
 # Flag species w/ < 5 collections total in each region
 GCFR_bad_species <-
-  read_csv(here("for-Dryad/data/GCFR-species.csv")) %>%
+  read_csv(glue("{data_dir}/GCFR-species.csv")) %>%
   filter(n_collections < 5) %>%
   pull(species)
 SWAFR_bad_species <-
-  read_csv(here("for-Dryad/data/SWAFR-species.csv")) %>%
+  read_csv(glue("{data_dir}/SWAFR-species.csv")) %>%
   filter(n_collections < 5) %>%
   pull(species)
 # Filter them out
@@ -254,21 +248,21 @@ QDS_richness_data %>%
     region, qdgc, hdgc, dgc, lat, lon,
     n_collections, QDS_richness
   ) %>%
-  write_csv(here("for-Dryad/data/richness-data-QDS.csv"))
+  write_csv(glue("{data_dir}/richness-data-QDS.csv"))
 
 HDS_richness_data %>%
   dplyr::select(
     region, hdgc, dgc, lat, lon,
     n_collections, HDS_richness, mean_QDS_richness
   ) %>%
-  write_csv(here("for-Dryad/data/richness-data-HDS.csv"))
+  write_csv(glue("{data_dir}/richness-data-HDS.csv"))
 
 DS_richness_data %>%
   dplyr::select(
     region, dgc, lat, lon,
     n_collections, DS_richness, mean_HDS_richness
   ) %>%
-  write_csv(here("for-Dryad/data/richness-data-DS.csv"))
+  write_csv(glue("{data_dir}/richness-data-DS.csv"))
 
 # Rasterise richness dataframes ------------------------------------------------
 
@@ -306,21 +300,21 @@ if (FALSE) {
 
 writeRaster(
   QDS_richness_ras,
-  here("for-Dryad/data/raster-layers/QDS-richness_QDS.tif")
+  glue("{data_dir}/raster-layers/QDS-richness_QDS.tif")
 )
 writeRaster(
   mean_QDS_richness_ras,
-  here("for-Dryad/data/raster-layers/mean-QDS-richness_HDS.tif")
+  glue("{data_dir}/raster-layers/mean-QDS-richness_HDS.tif")
 )
 writeRaster(
   HDS_richness_ras,
-  here("for-Dryad/data/raster-layers/HDS-richness_HDS.tif")
+  glue("{data_dir}/raster-layers/HDS-richness_HDS.tif")
 )
 writeRaster(
   mean_HDS_richness_ras,
-  here("for-Dryad/data/raster-layers/mean-HDS-richness_DS.tif")
+  glue("{data_dir}/raster-layers/mean-HDS-richness_DS.tif")
 )
 writeRaster(
   DS_richness_ras,
-  here("for-Dryad/data/raster-layers/DS-richness_DS.tif")
+  glue("{data_dir}/raster-layers/DS-richness_DS.tif")
 )
