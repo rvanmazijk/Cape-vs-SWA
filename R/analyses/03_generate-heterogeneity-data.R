@@ -61,7 +61,7 @@ GCFR_variables  <- stack(GCFR_file_names)
 SWAFR_variables <- stack(SWAFR_file_names)
 
 enviro_data <- raster::merge(GCFR_variables, SWAFR_variables)
-names(enviro_data)  <- str_replace_all(var_names, " ", "_")
+names(enviro_data)  <- var_names_tidy
 
 # Resample environmental data to EDS -------------------------------------------
 
@@ -112,8 +112,8 @@ heterogeneity_QDS_df <- enviro_data_EDS_df %>%
   ) %>%
   ungroup() %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
-  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
-  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+  mutate_at(vars(var_names_tidy), log10) %>%
+  mutate_at(vars(var_names_tidy), scale)
 
 heterogeneity_HDS_df <- enviro_data_QDS_df %>%
   filter(hdgc %in% HDS_w_all_QDS) %>%
@@ -126,8 +126,8 @@ heterogeneity_HDS_df <- enviro_data_QDS_df %>%
   ) %>%
   ungroup() %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
-  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
-  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+  mutate_at(vars(var_names_tidy), log10) %>%
+  mutate_at(vars(var_names_tidy), scale)
 
 heterogeneity_DS_df <- enviro_data_HDS_df %>%
   filter(dgc %in% DS_w_all_HDS) %>%
@@ -140,8 +140,8 @@ heterogeneity_DS_df <- enviro_data_HDS_df %>%
   ) %>%
   ungroup() %>%
   filter_if(is.numeric, ~ (!is.nan(.)) & (!is.na(.))) %>%
-  mutate_at(vars(str_replace(var_names, " ", "_")), log10) %>%
-  mutate_at(vars(str_replace(var_names, " ", "_")), scale)
+  mutate_at(vars(var_names_tidy), log10) %>%
+  mutate_at(vars(var_names_tidy), scale)
 
 # Run PCA of heterogeneity -----------------------------------------------------
 
@@ -209,8 +209,7 @@ write_csv(
 # Rasterise heterogeneity dataframes -------------------------------------------
 # (not needed for 0.10-scale)
 
-heterogeneity_QDS_ras <- var_names %>%
-  str_replace_all(" ", "_") %>%
+heterogeneity_QDS_ras <- var_names_tidy %>%
   map(function(each_var) {
     heterogeneity_QDS_df %>%
       full_join(Larsen_grid_QDS_data) %>%
@@ -220,8 +219,7 @@ heterogeneity_QDS_ras <- var_names %>%
   stack() %>%
   set_names(str_replace_all(var_names, " ", "_"))
 
-heterogeneity_HDS_ras <- var_names %>%
-  str_replace_all(" ", "_") %>%
+heterogeneity_HDS_ras <- var_names_tidy %>%
   map(function(each_var) {
     heterogeneity_HDS_df %>%
       full_join(Larsen_grid_HDS_data) %>%
@@ -231,8 +229,7 @@ heterogeneity_HDS_ras <- var_names %>%
   stack() %>%
   set_names(str_replace_all(var_names, " ", "_"))
 
-heterogeneity_DS_ras <- var_names %>%
-  str_replace_all(" ", "_") %>%
+heterogeneity_DS_ras <- var_names_tidy %>%
   map(function(each_var) {
     heterogeneity_DS_df %>%
       # Make DS-cell midpoints manually
@@ -253,7 +250,7 @@ heterogeneity_DS_ras <- var_names %>%
       rasterise_data(each_var, Larsen_grid_DS_ras)
   }) %>%
   stack() %>%
-  set_names(str_replace_all(var_names, " ", "_"))
+  set_names(var_names_tidy)
 
 # Plot to check
 if (FALSE) {

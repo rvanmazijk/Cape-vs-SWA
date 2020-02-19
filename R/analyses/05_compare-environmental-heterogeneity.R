@@ -11,9 +11,7 @@ data %<>% map(na.exclude)
 
 # CLES analysis ----------------------------------------------------------------
 
-vars <- var_names %>%
-  str_replace_all(" ", "_") %>%
-  c("PC1")
+vars <- c(var_names_tidy, "PC1")
 
 CLES_results <- map_dfr(data, .id = "scale", function(each_scale) {
   map_df(vars, function(each_var) {
