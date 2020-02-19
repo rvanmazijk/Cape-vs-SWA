@@ -312,21 +312,26 @@ if (FALSE) {
 
 writeRaster(
   QDS_richness_ras,
-  glue("{data_dir}/raster-layers/QDS-richness_QDS.tif")
+  glue("{data_dir}/raster-layers/QDS-richness_QDS.tif"),
+  overwrite = TRUE
 )
 writeRaster(
   mean_QDS_richness_ras,
-  glue("{data_dir}/raster-layers/mean-QDS-richness_HDS.tif")
+  glue("{data_dir}/raster-layers/mean-QDS-richness_HDS.tif"),
+  overwrite = TRUE
 )
 writeRaster(
   HDS_richness_ras,
-  glue("{data_dir}/raster-layers/HDS-richness_HDS.tif")
+  glue("{data_dir}/raster-layers/HDS-richness_HDS.tif"),
+  overwrite = TRUE
 )
 writeRaster(
   mean_HDS_richness_ras,
-  glue("{data_dir}/raster-layers/mean-HDS-richness_DS.tif")
+  glue("{data_dir}/raster-layers/mean-HDS-richness_DS.tif"),
+  overwrite = TRUE
 )
 writeRaster(
   DS_richness_ras,
-  glue("{data_dir}/raster-layers/DS-richness_DS.tif")
+  glue("{data_dir}/raster-layers/DS-richness_DS.tif"),
+  overwrite = TRUE
 )

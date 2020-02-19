@@ -264,25 +264,29 @@ if (FALSE) {
 writeRaster(
   heterogeneity_0.10,
   glue("{data_dir}/raster-layers/heterogeneity-0.10"),
-  bylayer = TRUE, suffix = "names", format = "GTiff"
+  bylayer = TRUE, suffix = "names", format = "GTiff",
+  overwrite = TRUE
 )
 
 writeRaster(
   heterogeneity_QDS_ras,
   glue("{data_dir}/raster-layers/heterogeneity-QDS"),
-  bylayer = TRUE, suffix = "names", format = "GTiff"
+  bylayer = TRUE, suffix = "names", format = "GTiff",
+  overwrite = TRUE
 )
 
 writeRaster(
   heterogeneity_HDS_ras,
   glue("{data_dir}/raster-layers/heterogeneity-HDS"),
-  bylayer = TRUE, suffix = "names", format = "GTiff"
+  bylayer = TRUE, suffix = "names", format = "GTiff",
+  overwrite = TRUE
 )
 
 writeRaster(
   heterogeneity_DS_ras,
   glue("{data_dir}/raster-layers/heterogeneity-DS"),
-  bylayer = TRUE, suffix = "names", format = "GTiff"
+  bylayer = TRUE, suffix = "names", format = "GTiff",
+  overwrite = TRUE
 )
 
 #####
