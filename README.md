@@ -78,10 +78,10 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
             - [x] Update paths
             - [ ] Move data-processing/-used helper functions back there
         - [x] 02_generate-richness-data.R
-            - [ ] Update paths
+            - [x] Update paths
         - [x] 03_generate-heterogeneity-data.R
+            - [x] Update paths
             - [ ] Move PCA-biplots -> figure-scripts/
-            - [ ] Update paths
         - [x] 04_compare-species-richness.R
             - [x] Move results' CSVs -> results/
             - [ ] Update paths
