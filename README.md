@@ -70,27 +70,14 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
       |                    |      |      |      |      |
       | Res. S [PC1]       | -    | x    | x    | x    |
       | Res. S [MV]        | -    | x    | x    | x    |
-
 - [ ] R-scripts
     - [ ] Analyses
         - [x] 01_setup.R
-            - [x] Incl. all helper-functions
-            - [x] Update paths
             - [ ] Move data-processing/-used helper functions back there
         - [x] 02_generate-richness-data.R
-            - [x] Update paths
-            - [x] Move data import lines -> 01_setup.R
         - [x] 03_generate-heterogeneity-data.R
-            - [x] Update paths
-            - [x] Move data import lines -> 01_setup.R
-            - [x] Move PCA-biplots -> figure-scripts/
-                - [x] Update to work properly, too
         - [x] 04_compare-species-richness.R
-            - [x] Move results' CSVs -> results/
-            - [x] Update paths
         - [x] 05_compare-environmental-heterogeneity.R
-            - [x] Move results' CSVs -> results/
-            - [x] Update paths
         - [ ] 06_explaining-richness-w-heterogeneity.R
             - [ ] Move UVM-plots -> figure-scripts/
             - [ ] Move results' CSVs -> results/
@@ -100,42 +87,16 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
             - [ ] Incl. collinearity checks
             - [ ] Incl. refits w/o richness hotspots
             - [ ] Incl. correlation of PC1- and multivariate-model-based results
-            - [ ] Update paths
     - [ ] Data processing
         - ...
         - [x] *_create-Larsen-type-grid-rasters.R
             - [ ] Update paths
         - ...
-
 - [ ] Larsen shapefile URL
     - [ ] In manuscript too
 - [ ] data/raw/docs/SoilGrids250m.txt in this README
 - [ ] Other data/raw/docs/*.txt in this README
-
-- [x] Merge "for-Dryad/"-approach back into main folders?
-    - [x] Update scripts to reflect this merge
-
-## Outline-concept for DataDryad repository
-
-- README.txt
-- analyses/
-    - 01_setup.R
-    - 02_generate-richness-data.R
-    - 03_generate-heterogeneity-data.R
-    - 04_compare-species-richness.R
-    - 05_compare-environmental-heterogeneity.R
-    - 06_explaining-richness-w-heterogeneity.R
-- data-processing/
-    - ...
-- data/
-    - data-QDS.csv
-    - data-HDS.csv
-    - data-DS.csv
-    - GCFR-species.csv
-    - SWAFR-species.csv
-    - species-occurence-matrix-QDS.csv
-    - raster-layers/
-        - ...
+- [ ] Range-size figure?
 
 ## Acknowledgments
 
