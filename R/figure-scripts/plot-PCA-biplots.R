@@ -84,7 +84,7 @@ ggsave(
   width = 8, height = 6
 )
 ggsave(
-  here("figures/plot-PC-biplots.png"),
+  here("figures/plot-PCA-biplots.png"),
   PC_biplots,
   width = 8, height = 6
 )
