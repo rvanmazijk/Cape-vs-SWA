@@ -269,6 +269,7 @@ fit_univariate_models <- function(response) {
 
 # .... My Larsen-type grid polygons and rasters --------------------------------
 
+# Shapefiles
 Larsen_grid_EDS <- readOGR(
   glue("{data_dir}/Larsen_grid_EDS"),
   layer = "Larsen_grid_EDS"
@@ -282,6 +283,64 @@ Larsen_grid_HDS <- readOGR(
   layer = "Larsen_grid_HDS"
 )
 
+# Query the border polygon and store results in Larsen grid
+Larsen_grid_EDS@data <- cbind(
+  Larsen_grid_EDS@data,
+  Larsen_grid_EDS %over% borders_buffered
+)
+# For larger cells, just use longitude for region classification,
+# because later I filter the cells based on whether their constituent cells
+# are in the regions (from EDS above)
+Larsen_grid_QDS@data$region <-
+  ifelse(Larsen_grid_QDS@data$lon > 60,
+    "SWAFR", "GCFR"
+  )
+Larsen_grid_HDS@data$region <-
+  ifelse(Larsen_grid_HDS@data$lon > 60,
+    "SWAFR", "GCFR"
+  )
+
+# Filter to EDS that are within the regions' borders
+Larsen_grid_EDS <- Larsen_grid_EDS[!is.na(Larsen_grid_EDS$region), ]
+
+# Make grids tibbles for easier wrangling
+Larsen_grid_EDS_data <- as_tibble(Larsen_grid_EDS@data)
+Larsen_grid_QDS_data <- as_tibble(Larsen_grid_QDS@data)
+Larsen_grid_HDS_data <- as_tibble(Larsen_grid_HDS@data)
+
+# Detemine which DS, HDS & QDS have all 4 of their HDS, QDS & EDS --------------
+# (within the regions' borders)
+
+# Pull out QDS-codes of QDS with all 4 EDS (within borders)
+QDS_w_all_EDS <- Larsen_grid_EDS_data %>%
+  group_by(qdgc, region) %>%
+  dplyr::select(edgc) %>%
+  distinct() %>%  # just in case
+  summarise(n_EDS = n()) %>%
+  filter(n_EDS == 4) %>%
+  pull(qdgc)
+
+# Pull out HDS-codes of HDS with all 4 HDS (within borders)
+HDS_w_all_QDS <- Larsen_grid_QDS_data %>%
+  group_by(hdgc, region) %>%
+  dplyr::select(qdgc) %>%
+  distinct() %>%
+  filter(qdgc %in% QDS_w_all_EDS) %>%
+  summarise(n_QDS = n()) %>%
+  filter(n_QDS == 4) %>%
+  pull(hdgc)
+
+# Pull out DS-codes of DS with all 4 DS (within borders)
+DS_w_all_HDS <- Larsen_grid_HDS_data %>%
+  group_by(dgc, region) %>%
+  dplyr::select(hdgc) %>%
+  distinct() %>%
+  filter(hdgc %in% HDS_w_all_QDS) %>%
+  summarise(n_HDS = n()) %>%
+  filter(n_HDS == 4) %>%
+  pull(dgc)
+
+# Raster-layers
 Larsen_grid_EDS_ras <- raster(glue(
   "{data_dir}/raster-layers/",
   "Larsen_grid_EDS_ras.tif"
