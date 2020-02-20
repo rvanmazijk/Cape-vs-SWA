@@ -83,8 +83,8 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
         - [x] 03_generate-heterogeneity-data.R
             - [x] Update paths
             - [x] Move data import lines -> 01_setup.R
-            - [ ] Move PCA-biplots -> figure-scripts/
-                - [ ] Update to work properly, too
+            - [x] Move PCA-biplots -> figure-scripts/
+                - [x] Update to work properly, too
         - [x] 04_compare-species-richness.R
             - [x] Move results' CSVs -> results/
             - [x] Update paths
@@ -113,7 +113,7 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 - [ ] Other data/raw/docs/*.txt in this README
 
 - [x] Merge "for-Dryad/"-approach back into main folders?
-    - [ ] Update scripts to reflect this merge
+    - [x] Update scripts to reflect this merge
 
 ## Outline-concept for DataDryad repository
 
