@@ -1,10 +1,5 @@
 # Resample environmental data to EDS -------------------------------------------
 
-enviro_data_0.05 <- resample(
-  enviro_data, Larsen_grid_EDS_ras,
-  method = "bilinear"
-)
-
 enviro_data_EDS <- resample(
   enviro_data, Larsen_grid_EDS_ras,
   method = "bilinear"
@@ -104,6 +99,13 @@ summary(heterogeneity_0.10_PCA)
 summary(heterogeneity_QDS_PCA)
 summary(heterogeneity_HDS_PCA)
 summary(heterogeneity_DS_PCA)
+
+# Save PCA-objects to disc for use in figure -----------------------------------
+
+write_rds(heterogeneity_0.10_PCA, here("results/heterogeneity_0.10_PCA"))
+write_rds(heterogeneity_QDS_PCA,  here("results/heterogeneity_QDS_PCA"))
+write_rds(heterogeneity_HDS_PCA,  here("results/heterogeneity_HDS_PCA"))
+write_rds(heterogeneity_DS_PCA,   here("results/heterogeneity_DS_PCA"))
 
 # Save PC1 and PC2 into dataframes ---------------------------------------------
 
@@ -223,67 +225,3 @@ writeRaster(
   bylayer = TRUE, suffix = "names", format = "GTiff",
   overwrite = TRUE
 )
-
-#####
-
-if (FALSE) {
-  # Plot PC-biplots
-  PC_biplots <- pmap(list(heterogeneity_PCAs,
-                          heterogeneity,
-                          names(heterogeneity)),
-    ~ autoplot(..1, data = ..2, colour = "region",
-        loadings = TRUE,
-        loadings.colour = "black",
-        loadings.label = TRUE,
-        loadings.label.colour = "black",
-        loadings.label.hjust = -0.25,
-        loadings.label.size = 3
-      ) +
-      geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
-      geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
-      lims(
-        x = case_when(
-          ..3 == "point1" ~ c(-0.10, 0.10),
-          ..3 == "QDS"    ~ c(-0.20, 0.20),
-          ..3 == "HDS"    ~ c(-0.25, 0.25),
-          ..3 == "DS"     ~ c(-0.25, 0.25)
-        ),
-        y = case_when(
-          ..3 == "point1" ~ c(-0.10, 0.10),
-          ..3 == "QDS"    ~ c(-0.20, 0.20),
-          ..3 == "HDS"    ~ c(-0.25, 0.25),
-          ..3 == "DS"     ~ c(-0.25, 0.25)
-        )
-      ) +
-      scale_colour_manual(name = "Region", values = c("grey25", "grey75")) +
-      theme(axis.text.y = element_text(angle = 90, hjust = 0.5))
-  )
-  my_legend <- get_legend(PC_biplots$point1)
-  PC_biplots %<>% map(~ . + theme(legend.position = "none"))
-  PC_biplots <- plot_grid(
-    plotlist = PC_biplots,
-    nrow = 2,
-    labels         = c("(a) 0.10°×0.10°", "(b) QDS", "(c) HDS", "(d) DS"),
-    label_fontface = "plain",
-    label_x        = 0.150,
-    label_y        = 0.975,
-    hjust          = 0
-  )
-  PC_biplots <- plot_grid(
-    PC_biplots, my_legend,
-    nrow = 1, rel_widths = c(1, 0.2)
-  )
-  PC_biplots
-
-  # Save for SI
-  ggsave(
-    here("figures/plot-PC-biplots.pdf"),
-    PC_biplots,
-    width = 8, height = 6
-  )
-  ggsave(
-    here("figures/plot-PC-biplots.png"),
-    PC_biplots,
-    width = 8, height = 6
-  )
-}
