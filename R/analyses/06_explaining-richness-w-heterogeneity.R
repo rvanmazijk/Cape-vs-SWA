@@ -294,6 +294,19 @@ write_csv(model_ANOVAs,   here("results/multivariate-model-ANOVAs.csv"))
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
 
 # .... Rasterise model-residuals' data -----------------------------------------
+# (And PC1 itself)
+
+PC1_QDS_ras <- data$QDS %>%
+  dplyr::select(region, qdgc, lon, lat, PC1) %>%
+  rasterise_data("PC1", Larsen_grid_QDS_ras)
+
+PC1_HDS_ras <- data$HDS %>%
+  dplyr::select(region, hdgc, lon, lat, PC1) %>%
+  rasterise_data("PC1", Larsen_grid_HDS_ras)
+
+PC1_DS_ras <- data$DS %>%
+  dplyr::select(region, dgc, lon, lat, PC1) %>%
+  rasterise_data("PC1", Larsen_grid_DS_ras)
 
 PC1_residual_QDS_ras <- data$QDS %>%
   dplyr::select(region, qdgc, lon, lat, PC1_residual) %>%
@@ -320,6 +333,25 @@ MV_residual_DS_ras <- data$DS %>%
   rasterise_data("multivariate_residual", Larsen_grid_DS_ras)
 
 # .... Save model resisudals' rasters to disc ----------------------------------
+# (And PC1 itself)
+
+writeRaster(
+  PC1_QDS_ras,
+  glue("{data_dir}/raster-layers/PC1_QDS.tif"),
+  overwrite = TRUE
+)
+
+writeRaster(
+  PC1_HDS_ras,
+  glue("{data_dir}/raster-layers/PC1_HDS.tif"),
+  overwrite = TRUE
+)
+
+writeRaster(
+  PC1_DS_ras,
+  glue("{data_dir}/raster-layers/PC1_DS.tif"),
+  overwrite = TRUE
+)
 
 writeRaster(
   PC1_residual_QDS_ras,
