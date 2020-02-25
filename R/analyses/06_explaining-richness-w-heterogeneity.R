@@ -53,6 +53,35 @@ Larsen_grid_DS_ras <- raster(glue(
   "Larsen_grid_DS_ras.tif"
 ))
 
+# Check for collinearity among heterogeneity variables -------------------------
+
+# .... Import heterogeneity raster-layers --------------------------------------
+
+heterogeneity_ras <- map(c(QDS = "QDS",
+                           HDS = "HDS",
+                           DS  = "DS"), function(each_scale) {
+  vars <- brick(map(var_names_tidy, function(each_var) {
+    raster(glue(
+      "{data_dir}/raster-layers/",
+      "heterogeneity-{each_scale}_{each_var}.tif"
+    ))
+  }))
+  names(vars) <- var_names_tidy
+  vars
+})
+heterogeneity_ras
+
+# .... Do the check proper (using pairs()) -------------------------------------
+
+imap(heterogeneity_ras, function(each_scale, each_scales_name) {
+  pdf(width = 10, height = 10, here(
+    "figures",
+    glue("{each_scales_name}-log10-heterogeneity-pairs.pdf")
+  ))
+  pairs(each_scale, cor = TRUE)
+  dev.off()
+})
+
 # Univariate models ------------------------------------------------------------
 
 # .... Fit PC1 models manually (worthwhile) ------------------------------------
@@ -239,7 +268,7 @@ model_ANOVAs <- models %>%
     var_explained = var_explained %>%
       round(digits = 2) %>%
       format(nsmall = 2) %>%
-      {ifelse(. == 0.00, "< 0.01", .)},
+      {ifelse(. == "0.00", "< 0.01", .)},
     p.value = case_when(
       is.na(p.value)  ~ "-",
       p.value < 0.001 ~ "***",
@@ -250,6 +279,7 @@ model_ANOVAs <- models %>%
     )
   )
 
+# Print
 as.data.frame(model_ANOVAs)
 
 # Save results to disc ---------------------------------------------------------
