@@ -1,32 +1,58 @@
-# Import data ------------------------------------------------------------------
-
-# .... Raster data -------------------------------------------------------------
+# Import raster data -----------------------------------------------------------
 
 raster_list_template <- list(QDS = "QDS", HDS = "HDS", DS = "DS")
 
-# Richness rasters
-GCFR_richness <- SWAFR_richness <- raster_list_template
-GCFR_richness  %<>% map(~raster(glue("{data_dir}/GCFR_{.x}_richness.tif")))
-SWAFR_richness %<>% map(~raster(glue("{data_dir}/SWAFR_{.x}_richness.tif")))
-
-# PC1 rasters
-GCFR_PC1 <- SWAFR_PC1 <- raster_list_template
-GCFR_PC1  %<>% map(~raster(glue("{data_dir}/GCFR_{.x}_PC1.tif")))
-SWAFR_PC1 %<>% map(~raster(glue("{data_dir}/SWAFR_{.x}_PC1.tif")))
-
-# Multivariate model residual rasters
-# (Filenames are correct, I promise!)
-GCFR_MV_residuals <- SWAFR_MV_residuals <- raster_list_template
-GCFR_MV_residuals  %<>% map(~raster(glue(
-  "{data_dir}/GCFR_{.x}_multivariate_richness.tif"
+richness <- map(raster_list_template, ~raster(glue(
+  "{data_dir}/raster-layers/",
+  "{.x}-richness_{.x}.tif"
 )))
-SWAFR_MV_residuals %<>% map(~raster(glue(
-  "{data_dir}/SWAFR_{.x}_multivariate_richness.tif"
+PC1 <- map(raster_list_template, ~raster(glue(
+  "{data_dir}/raster-layers/",
+  "PC1_{.x}.tif"
+)))
+PC1_residual <- map(raster_list_template, ~raster(glue(
+  "{data_dir}/raster-layers/",
+  "PC1_residual_{.x}.tif"
+)))
+MV_residual <- map(raster_list_template, ~raster(glue(
+  "{data_dir}/raster-layers/",
+  "MV_residual_{.x}.tif"
 )))
 
-# NOTE: See below, where I generate PC1 model residual rasters quickly
+# Split rasters up into each regions' ------------------------------------------
 
-# .... Border shapefiles -------------------------------------------------------
+GCFR_richness  <- map(richness, crop, GCFR_border_buffered)
+SWAFR_richness <- map(richness, crop, SWAFR_border_buffered)
+
+GCFR_PC1  <- map(PC1, crop, GCFR_border_buffered)
+SWAFR_PC1 <- map(PC1, crop, SWAFR_border_buffered)
+
+GCFR_PC1_residual  <- map(PC1_residual, crop, GCFR_border_buffered)
+SWAFR_PC1_residual <- map(PC1_residual, crop, SWAFR_border_buffered)
+
+GCFR_MV_residual  <- map(MV_residual, crop, GCFR_border_buffered)
+SWAFR_MV_residual <- map(MV_residual, crop, SWAFR_border_buffered)
+
+# Import list of outlier grid-cells --------------------------------------------
+
+outliers <- read_csv(here("results/list-outlier-squares.csv"))
+
+# Set palette & some reusable gg-objects ---------------------------------------
+
+my_palette <- rev(viridis::viridis(10))
+
+no_x_axis <- theme(
+  axis.ticks.x = element_blank(),
+  axis.text.x  = element_blank(),
+  axis.title.x = element_blank()
+)
+no_y_axis <- theme(
+  axis.ticks.y = element_blank(),
+  axis.text.y  = element_blank(),
+  axis.title.y = element_blank()
+)
+
+# Make ggplot-borders for repeated use -----------------------------------------
 
 # Import WGS84-CRS shapes
 GCFR_border  <- readOGR(here("data/derived-data/borders/GCFR_border"))
@@ -36,6 +62,7 @@ SWAFR_border <- readOGR(here("data/derived-data/borders/SWBP_Mike-Cramer"))
 std_CRS <- proj4string(GCFR_border)
 # Check
 proj4string(SWAFR_border) == std_CRS
+SWAFR_border <- spTransform(SWAFR_border, std_CRS)
 
 # Reproject to planar coordinates
 # (so GEOS package can dissolve border & slightly buffer)
@@ -43,40 +70,12 @@ temp_CRS <- CRS("+init=epsg:3347")
 GCFR_border  <- spTransform(GCFR_border,  temp_CRS)
 SWAFR_border <- spTransform(SWAFR_border, temp_CRS)
 
-# Dissolve & slightly buffer borders
 GCFR_border_dissolved  <- buffer(GCFR_border,  width = 2.5e4, dissolve = TRUE)
 SWAFR_border_dissolved <- buffer(SWAFR_border, width = 2.5e4, dissolve = TRUE)
 
-# Reproject **back** to WGS84-CRS for plotting
-GCFR_border_dissolved  <- spTransform(GCFR_border_dissolved,  std_CRS)
-SWAFR_border_dissolved <- spTransform(SWAFR_border_dissolved, std_CRS)
-
-# Check
-par(mfrow = c(1, 2))
-plot(GCFR_border_dissolved)
-plot(SWAFR_border_dissolved)
-par(op)
-
-# .... Outlier squares ---------------------------------------------------------
-
-outliers <- read_csv(here("results/list-outlier-squares.csv"))
-
-# Set palette & some reusable gg-objects ---------------------------------------
-
-my_palette <- rev(viridis::viridis(10))
-
-no_x_axis <- theme(
-  axis.ticks.x    = element_blank(),
-  axis.text.x     = element_blank(),
-  axis.title.x    = element_blank()
-)
-no_y_axis <- theme(
-  axis.ticks.y    = element_blank(),
-  axis.text.y     = element_blank(),
-  axis.title.y    = element_blank()
-)
-
-# Make ggplot-borders for repeated use -----------------------------------------
+# Project back again
+GCFR_border_dissolved  %<>% spTransform(std_CRS)
+SWAFR_border_dissolved %<>% spTransform(std_CRS)
 
 GCFR_border_gg <- geom_polygon(
   data = GCFR_border_dissolved,
