@@ -309,7 +309,6 @@ writeRaster(
   overwrite = TRUE
 )
 
-
 # Correlate PC1- and MV-based model results ------------------------------------
 
 # .... Derive pred. richness of each model from obs. richness & residuals ------
