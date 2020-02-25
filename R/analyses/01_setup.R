@@ -267,6 +267,20 @@ fit_univariate_models <- function(response) {
 
 # Import data ------------------------------------------------------------------
 
+# .... Region polygons ---------------------------------------------------------
+
+GCFR_border_buffered <- readOGR(here(
+  "data/derived-data/borders",
+  "GCFR_border_buffered/"
+))
+SWAFR_border_buffered <- readOGR(here(
+  "data/derived-data/borders",
+  "SWAFR_border_buffered/"
+))
+
+# Merge regions' borders
+borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
+
 # .... My Larsen-type grid polygons and rasters --------------------------------
 
 # Shapefiles
@@ -357,20 +371,6 @@ Larsen_grid_DS_ras <- raster(glue(
   "{data_dir}/raster-layers/",
   "Larsen_grid_DS_ras.tif"
 ))
-
-# .... Region polygons ---------------------------------------------------------
-
-GCFR_border_buffered <- readOGR(here(
-  "data/derived-data/borders",
-  "GCFR_border_buffered/"
-))
-SWAFR_border_buffered <- readOGR(here(
-  "data/derived-data/borders",
-  "SWAFR_border_buffered/"
-))
-
-# Merge regions' borders
-borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
 
 # .... GBIF species occurrence datasets ----------------------------------------
 
