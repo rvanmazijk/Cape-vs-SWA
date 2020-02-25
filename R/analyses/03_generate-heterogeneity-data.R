@@ -107,7 +107,7 @@ write_rds(heterogeneity_QDS_PCA,  here("results/heterogeneity_QDS_PCA"))
 write_rds(heterogeneity_HDS_PCA,  here("results/heterogeneity_HDS_PCA"))
 write_rds(heterogeneity_DS_PCA,   here("results/heterogeneity_DS_PCA"))
 
-# Save PC1 and PC2 into dataframes ---------------------------------------------
+# Store PC1, PC2 in the dataframes ---------------------------------------------
 
 heterogeneity_0.10_df$PC1 <- heterogeneity_0.10_PCA$x[, 1]
 heterogeneity_0.10_df$PC2 <- heterogeneity_0.10_PCA$x[, 2]
