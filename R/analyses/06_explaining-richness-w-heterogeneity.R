@@ -239,6 +239,27 @@ data$QDS$multivariate_residual <- m_QDS_richness$residuals
 data$HDS$multivariate_residual <- m_HDS_richness$residuals
 data$DS$multivariate_residual  <- m_DS_richness$residuals
 
+# Identify outliers ------------------------------------------------------------
+
+data %<>% map(~ mutate(.x,
+  is_PC1_outlier = as_vector(scale(PC1_residual)          > 2),
+  is_MV_outlier  = as_vector(scale(multivariate_residual) > 2)
+))
+
+# Save outlier grid-cell codes to disc -----------------------------------------
+
+data %>%
+  bind_rows(.id = "scale") %>%
+  filter(is_PC1_outlier | is_MV_outlier) %>%
+  dplyr::select(
+    scale, region,
+    lon, lat, qdgc, hdgc, dgc,
+    is_PC1_outlier, is_MV_outlier
+  ) %>%
+  mutate_if(is.logical, ~ifelse(., "*", " ")) %>%
+  mutate_if(is.character, ~ifelse(is.na(.), " ", .)) %>%
+  write_csv(here("results/list-outlier-squares.csv"))
+
 # .... Summarise models --------------------------------------------------------
 
 models <- list(
