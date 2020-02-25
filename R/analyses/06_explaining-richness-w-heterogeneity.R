@@ -226,20 +226,38 @@ models_R2 <- models %>%
   dplyr::select(response, adj.r.squared)
 models_summary %<>% full_join(models_R2)
 
-# Save results to disc ---------------------------------------------------------
+# Look at ANOVAs of each model -------------------------------------------------
 
-# .... Save summary to disc ----------------------------------------------------
-
-write_csv(models_summary, here("results/multivariate-model-results.csv"))
-
-# TODO: Look at break down of variance explained (ANOVA) by each model
-models %>%
+model_ANOVAs <- models %>%
   map(anova) %>%
   map(tidy) %>%
   map(mutate, var_explained = sumsq / sum(sumsq)) %>%
   map(dplyr::select, term, var_explained, p.value) %>%
   map(arrange, desc(var_explained)) %>%
-  bind_rows(.id = "response")
+  bind_rows(.id = "response") %>%
+  mutate(
+    var_explained = var_explained %>%
+      round(digits = 2) %>%
+      format(nsmall = 2) %>%
+      {ifelse(. == 0.00, "< 0.01", .)},
+    p.value = case_when(
+      is.na(p.value)  ~ "-",
+      p.value < 0.001 ~ "***",
+      p.value < 0.010 ~ "**",
+      p.value < 0.050 ~ "*",
+      p.value < 0.100 ~ ".",
+      TRUE            ~ " "
+    )
+  )
+
+as.data.frame(model_ANOVAs)
+
+# Save results to disc ---------------------------------------------------------
+
+# .... Save summaries to disc --------------------------------------------------
+
+write_csv(models_summary, here("results/multivariate-model-results.csv"))
+write_csv(model_ANOVAs,   here("results/multivariate-model-ANOVAs.csv"))
 
 # .... Save new data with PC1- and multivariate-based residuals to disc --------
 
@@ -345,3 +363,12 @@ data %>%
   map_dfr(.id = "scale", cor_model_results) %>%
   dplyr::select(test, scale, estimate, p.value) %>%
   arrange(test, scale)
+## # A tibble: 6 x 4
+##   test     scale estimate   p.value
+##   <fct>    <chr>    <dbl>     <dbl>
+## 1 expected DS       0.723 1.35e-  6
+## 2 expected HDS      0.699 2.21e- 31
+## 3 expected QDS      0.680 9.79e-124
+## 4 residual DS       0.369 3.17e-  2
+## 5 residual HDS      0.834 2.61e- 54
+## 6 residual QDS      0.908 0.
