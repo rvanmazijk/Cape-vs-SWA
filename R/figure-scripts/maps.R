@@ -263,9 +263,8 @@ residuals_lims$DS[[2]]  <- residuals_lims$DS[[2]]  + 250
 
 # .... Make each region's map --------------------------------------------------
 
-GCFR_PC1_residuals_plots <- PC1_residuals %$%
-  list(QDS = QDS$GCFR, HDS = HDS$GCFR, DS = DS$GCFR) %>%
-  imap(~ gplot(.x) +
+GCFR_PC1_residuals_plots <- imap(GCFR_PC1_residual,
+  ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
     CT_point + CT_text +
@@ -281,10 +280,9 @@ GCFR_PC1_residuals_plots <- PC1_residuals %$%
     ) +
     theme(legend.position = "none") +
     no_x_axis
-  )
-SWAFR_PC1_residuals_plots <- PC1_residuals %$%
-  list(QDS = QDS$SWAFR, HDS = HDS$SWAFR, DS = DS$SWAFR) %>%
-  imap(~ gplot(.x) +
+)
+SWAFR_PC1_residuals_plots <- imap(SWAFR_PC1_residual,
+  ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
     PR_point + PR_text +
@@ -309,13 +307,13 @@ SWAFR_PC1_residuals_plots <- PC1_residuals %$%
     ) +
     no_x_axis +
     no_y_axis
-  )
+)
 
 # Multivariate residuals maps --------------------------------------------------
 
 # .... Make each region's map --------------------------------------------------
 
-GCFR_MV_residuals_plots <- imap(GCFR_MV_residuals,
+GCFR_MV_residuals_plots <- imap(GCFR_MV_residual,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     GCFR_border_gg +
@@ -335,7 +333,7 @@ GCFR_MV_residuals_plots <- imap(GCFR_MV_residuals,
     ) +
     theme(legend.position = "none")
 )
-SWAFR_MV_residuals_plots <- imap(SWAFR_MV_residuals,
+SWAFR_MV_residuals_plots <- imap(SWAFR_MV_residual,
   ~ gplot(.x) +
     geom_tile(aes(fill = value)) +
     SWAFR_border_gg +
@@ -519,7 +517,7 @@ outlier_maps <-
         function(each_scale) {
       map(list(GCFR = "GCFR", SWAFR = "SWAFR"),
           function(each_region) {
-        outliers2 %>%
+        outliers %>%
           filter(region == each_region, scale == each_scale) %>%
           ggplot() +
             aes_string(
@@ -572,7 +570,6 @@ outlier_maps <-
 
 # Tidy up
 # No outliers for SWAFR for these
-outlier_maps$PC1$DS$SWAFR <- NULL
 outlier_maps$MV$DS$SWAFR  <- NULL
 
 # Panel all together -----------------------------------------------------------
