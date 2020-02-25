@@ -228,9 +228,9 @@ models_summary %<>% full_join(models_R2)
 
 # Save results to disc ---------------------------------------------------------
 
-write_csv(models_summary, here("results/multivariate-model-results.csv"))
+# .... Save summary to disc ----------------------------------------------------
 
-#####
+write_csv(models_summary, here("results/multivariate-model-results.csv"))
 
 # TODO: Look at break down of variance explained (ANOVA) by each model
 models %>%
@@ -241,12 +241,11 @@ models %>%
   map(arrange, desc(var_explained)) %>%
   bind_rows(.id = "response")
 
-
-# Save new data with PC1- and multivariate-based residuals to disc -------------
+# .... Save new data with PC1- and multivariate-based residuals to disc --------
 
 iwalk(data, ~write_csv(.x, glue("{data_dir}/data-{.y}-w-residuals.csv")))
 
-# Rasterise model-residuals' data ----------------------------------------------
+# .... Rasterise model-residuals' data -----------------------------------------
 
 PC1_residual_QDS_ras <- data$QDS %>%
   dplyr::select(region, qdgc, lon, lat, PC1_residual) %>%
@@ -272,7 +271,7 @@ MV_residual_DS_ras <- data$DS %>%
   dplyr::select(region, dgc, lon, lat, multivariate_residual) %>%
   rasterise_data("multivariate_residual", Larsen_grid_DS_ras)
 
-# Save model resisudals' rasters to disc ---------------------------------------
+# .... Save model resisudals' rasters to disc ----------------------------------
 
 writeRaster(
   PC1_residual_QDS_ras,
@@ -309,3 +308,41 @@ writeRaster(
   glue("{data_dir}/raster-layers/MV_residual_DS.tif"),
   overwrite = TRUE
 )
+
+
+# Correlate PC1- and MV-based model results ------------------------------------
+
+# .... Derive pred. richness of each model from obs. richness & residuals ------
+
+data$QDS %<>% mutate(
+  PC1_expected          = QDS_richness - PC1_residual,
+  multivariate_expected = QDS_richness - multivariate_residual
+)
+data$HDS %<>% mutate(
+  PC1_expected          = HDS_richness - PC1_residual,
+  multivariate_expected = HDS_richness - multivariate_residual
+)
+data$DS %<>% mutate(
+  PC1_expected          = DS_richness  - PC1_residual,
+  multivariate_expected = DS_richness  - multivariate_residual
+)
+
+# .... Correlate proper pred. richness / residuals from each model -------------
+
+cor_model_results <- function(x) {
+  x %$% as_tibble(rbind(
+    cbind(
+      test = "expected",
+      tidy(cor.test(multivariate_expected, PC1_expected))
+    ),
+    cbind(
+      test = "residual",
+      tidy(cor.test(multivariate_residual, PC1_residual))
+    )
+  ))
+}
+
+data %>%
+  map_dfr(.id = "scale", cor_model_results) %>%
+  dplyr::select(test, scale, estimate, p.value) %>%
+  arrange(test, scale)
