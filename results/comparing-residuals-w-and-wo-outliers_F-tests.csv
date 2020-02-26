@@ -1,0 +1,13 @@
+scale,dataset,residual_type,P_F_region
+DS,sans_outliers,multivariate_residual,0
+DS,sans_outliers,PC1_residual,0.009
+DS,with_outliers,multivariate_residual,0
+DS,with_outliers,PC1_residual,0
+HDS,sans_outliers,multivariate_residual,0.008
+HDS,sans_outliers,PC1_residual,0.001
+HDS,with_outliers,multivariate_residual,0
+HDS,with_outliers,PC1_residual,0
+QDS,sans_outliers,multivariate_residual,0
+QDS,sans_outliers,PC1_residual,0.004
+QDS,with_outliers,multivariate_residual,0
+QDS,with_outliers,PC1_residual,0
