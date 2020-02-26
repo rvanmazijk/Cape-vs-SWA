@@ -386,11 +386,19 @@ outlier_maps <-
               colour = each_outlier_type,
               fill   = each_outlier_type
             ) +
-            geom_tile(size = 0.5, width = case_when(
-              each_scale == "QDS" ~ 0.25,
-              each_scale == "HDS" ~ 0.50,
-              each_scale == "DS"  ~ 1.00
-            )) +
+            geom_tile(
+              size = 0.5,
+              height = case_when(
+                each_scale == "QDS" ~ 0.25,
+                each_scale == "HDS" ~ 0.50,
+                each_scale == "DS"  ~ 1.00
+              ),
+              width = case_when(
+                each_scale == "QDS" ~ 0.25,
+                each_scale == "HDS" ~ 0.50,
+                each_scale == "DS"  ~ 1.00
+              )
+            ) +
             border_gg[[each_region]] +
             city1_point[[each_region]] + city1_text[[each_region]] +
             city2_point[[each_region]] + city2_text[[each_region]] +
@@ -430,8 +438,8 @@ outlier_maps <-
   })
 
 # Tidy up
-# No outliers for SWAFR for these
-outlier_maps$MV$DS$SWAFR  <- NULL
+# No outliers for these
+outlier_maps$MV$DS <- NULL
 
 # Panel all together -----------------------------------------------------------
 
@@ -488,7 +496,7 @@ MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
       ggtitle("GCFR") +
       theme(plot.title = element_text(hjust = 0.5)),
     HDS$GCFR + no_x_axis,
-    DS$GCFR
+    white_rect
   ),
   plot_grid(
     nrow = 3, rel_heights = c(0.95, 1.05, 0.85),
