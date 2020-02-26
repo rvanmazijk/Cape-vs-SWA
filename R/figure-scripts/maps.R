@@ -490,16 +490,16 @@ PC1_outlier_maps <- outlier_maps$PC1 %$% plot_grid(
 MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
   nrow = 1, rel_widths = c(0.9, 1),
   plot_grid(
-    nrow = 3,
+    nrow = 3, rel_heights = c(0.95, 1.00, 0.90),
     QDS$GCFR +
       no_x_axis +
       ggtitle("GCFR") +
       theme(plot.title = element_text(hjust = 0.5)),
-    HDS$GCFR + no_x_axis,
+    HDS$GCFR,
     white_rect
   ),
   plot_grid(
-    nrow = 3, rel_heights = c(0.95, 1.05, 0.85),
+    nrow = 3, rel_heights = c(0.95, 1.00, 0.90),
     QDS$SWAFR +
       no_x_axis +
       no_y_axis +
