@@ -455,3 +455,141 @@ data %>%
 ## 4 residual DS       0.369 3.17e-  2
 ## 5 residual HDS      0.834 2.61e- 54
 ## 6 residual QDS      0.908 0.
+
+# Refit PC1-based models w/o outliers ------------------------------------------
+
+data2 <- data %>%
+  map(filter, !is_PC1_outlier)
+
+PC1_models <- vector("list", length = 3)
+names(PC1_models) <- c("QDS_richness", "HDS_richness", "DS_richness")
+
+# QDS-richness:
+m1 <- lm(QDS_richness ~ PC1,          data2$QDS)
+m2 <- lm(QDS_richness ~ PC1 + region, data2$QDS)
+m3 <- lm(QDS_richness ~ PC1 * region, data2$QDS)
+AIC(m1, m2, m3) %>%
+  mutate(delta_AIC  = AIC - min(AIC))
+# Choose m2 (heterogeneity + region)
+summary(m2)
+PC1_models$QDS_richness <- m2
+
+# HDS-richness:
+m1 <- lm(HDS_richness ~ PC1,          data2$HDS)
+m2 <- lm(HDS_richness ~ PC1 + region, data2$HDS)
+m3 <- lm(HDS_richness ~ PC1 * region, data2$HDS)
+AIC(m1, m2, m3) %>%
+  mutate(delta_AIC  = AIC - min(AIC))
+# Choose m2 (heterogeneity + region)
+summary(m2)
+PC1_models$HDS_richness <- m2
+
+# DS-richness:
+m1 <- lm(DS_richness ~ PC1,          data2$DS)
+m2 <- lm(DS_richness ~ PC1 + region, data2$DS)
+m3 <- lm(DS_richness ~ PC1 * region, data2$DS)
+AIC(m1, m2, m3) %>%
+  mutate(delta_AIC  = AIC - min(AIC))
+# Choose m1 (heterogeneity main effect only)
+summary(m1)
+PC1_models$DS_richness <- m1
+
+# Refit MV-based models w/ outliers --------------------------------------------
+
+data3 <- data %>%
+  map(filter, !is_MV_outlier)
+
+# Fit multivariate models
+full_formula <- var_names_tidy %>%
+  {c(., paste(., "* region"))} %>%
+  paste(collapse = " + ")
+
+m_QDS_richness <- lm(glue("QDS_richness ~ {full_formula}"), data3$QDS)
+m_HDS_richness <- lm(glue("HDS_richness ~ {full_formula}"), data3$HDS)
+m_DS_richness  <- lm(glue("DS_richness  ~ {full_formula}"), data3$DS)
+
+m_QDS_richness %<>% step(direction = "backward", trace = 0)
+m_HDS_richness %<>% step(direction = "backward", trace = 0)
+m_DS_richness  %<>% step(direction = "backward", trace = 0)
+
+# Check
+if (FALSE) {
+  par(mfrow = c(2, 2))
+  plot(m_QDS_richness)
+  plot(m_HDS_richness)
+  plot(m_DS_richness)
+  par(op)
+}
+
+# Summarise models
+MV_models <- list(
+  QDS_richness = m_QDS_richness,
+  HDS_richness = m_HDS_richness,
+  DS_richness  = m_DS_richness
+)
+models_summary <- MV_models %>%
+  map_df(.id = "response", tidy, conf.int = TRUE) %>%
+  dplyr::select(-std.error, -statistic) %>%
+  filter(term != "(Intercept)")
+models_R2 <- MV_models %>%
+  map_df(.id = "response", glance) %>%
+  dplyr::select(response, adj.r.squared)
+models_summary %<>% full_join(models_R2)
+
+# Save results to disc
+write_csv(models_summary, here("results/multivariate-model-results_refit.csv"))
+
+# Compare variation of residuals before & after outlier removal ----------------
+
+# Get PC1-based models' residuals
+data$QDS$PC1_residual2 <- NA
+data$HDS$PC1_residual2 <- NA
+data$DS$PC1_residual2  <- NA
+data$QDS$PC1_residual2[!data$QDS$is_PC1_outlier] <-
+  residuals(PC1_models$QDS_richness)
+data$HDS$PC1_residual2[!data$HDS$is_PC1_outlier] <-
+  residuals(PC1_models$HDS_richness)
+data$DS$PC1_residual2[!data$DS$is_PC1_outlier] <-
+  residuals(PC1_models$DS_richness)
+
+# Get MV-based models' residuals
+data$QDS$multivariate_residual2 <- NA
+data$HDS$multivariate_residual2 <- NA
+data$DS$multivariate_residual2  <- NA
+data$QDS$multivariate_residual2[!data$QDS$is_MV_outlier] <-
+  residuals(MV_models$QDS_richness)
+data$HDS$multivariate_residual2[!data$HDS$is_MV_outlier] <-
+  residuals(MV_models$HDS_richness)
+data$DS$multivariate_residual2[!data$DS$is_MV_outlier] <-
+  residuals(MV_models$DS_richness)
+
+data_residuals <- map_dfr(data, .id = "scale", dplyr::select,
+  region,
+  PC1_residual,  multivariate_residual,
+  PC1_residual2, multivariate_residual2
+)
+
+data_residuals_SDs <- data_residuals %>%
+  group_by(scale, region) %>%
+  summarise_if(is.numeric, sd, na.rm = TRUE)
+
+write_csv(
+  data_residuals_SDs,
+  here("results/comparing-residuals-w-and-wo-outliers.csv")
+)
+
+data_residuals_F_tests <- data_residuals %>%
+  gather(residual_type, residual_value, -scale, -region) %>%
+  mutate(dataset = ifelse(str_detect(residual_type, "2"),
+    "sans_outliers",
+    "with_outliers"
+  )) %>%
+  mutate(residual_type = str_remove(residual_type, "2")) %>%
+  group_by(scale, dataset, residual_type) %>%
+  summarise(P_F_region = var.test(residual_value ~ region)$p.value) %>%
+  mutate(P_F_region = round(P_F_region, digits = 3))
+
+write_csv(
+  data_residuals_F_tests,
+  here("results/comparing-residuals-w-and-wo-outliers_F-tests.csv")
+)
