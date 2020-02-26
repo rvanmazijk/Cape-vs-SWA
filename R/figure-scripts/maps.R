@@ -488,7 +488,7 @@ PC1_outlier_maps <- outlier_maps$PC1 %$% plot_grid(
   )
 )
 MV_outlier_maps <- outlier_maps$MV %$% plot_grid(
-    nrow = 1, rel_widths = c(0.9, 1),
+  nrow = 1, rel_widths = c(0.9, 1),
   plot_grid(
     nrow = 3,
     QDS$GCFR +
