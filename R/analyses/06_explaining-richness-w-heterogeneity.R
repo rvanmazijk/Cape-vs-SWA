@@ -95,8 +95,8 @@ hist(residuals(m2))
 hist(residuals(m3))
 AIC(m1, m2, m3) %>%
   mutate(delta_AIC  = AIC - min(AIC))
-# Choose m3 (heterogeneity * region interaction)
-summary(m3)
+# Choose m2 (heterogeneity + region)
+summary(m2)
 # Store residuals in master dataset for use in maps below
 data$QDS$PC1_residual <- m3$residuals
 
