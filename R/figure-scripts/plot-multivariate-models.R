@@ -1,4 +1,6 @@
-# Plot multivariate models
+# Plot MV-based models ---------------------------------------------------------
+
+models_summary <- read_csv(here("results/multivariate-model-results.csv"))
 
 models_R2adjs <- models_summary %>%
   group_by(response) %>%
@@ -100,12 +102,23 @@ ggsave(
 
 # Plot MV-based models (refit) ------------------------------------------------
 
+models_summary <- read_csv(here("results/multivariate-model-results_refit.csv"))
+
+models_R2adjs <- models_summary %>%
+  group_by(response) %>%
+  summarise(adj.r.squared = adj.r.squared %>%
+    unique() %>%
+    round(digits = 2)
+  )
+models_R2adjs
+# Note, DS-scale has no outliers (MV) so it is the same as the main figure
+
 models_summary_for_plot <- models_summary %>%
   mutate(
     response = case_when(
-      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.30')",
-      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.36')",
-      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.74')"
+      response == "QDS_richness" ~ "(a)~~QDS~(italic(R)[adj]^2=='0.33')",
+      response == "HDS_richness" ~ "(b)~~HDS~(italic(R)[adj]^2=='0.47')",
+      response == "DS_richness"  ~ "(c)~~DS~(italic(R)[adj]^2=='0.85')"
     ),
     region =
       case_when(
@@ -126,7 +139,7 @@ models_summary_for_plot <- models_summary %>%
     #(n() == 2) & (region == "SWAFR")                     ~ "SWAFR vs GCFR",
     #(n() == 2) & (region == "Main effect")               ~ "GCFR",
     #(n() == 1) & (region %in% c("Main effect", "SWAFR")) ~ "Main effect only"
-    (region == "SWAFR")       ~ "SWAFR vs GCFR",
+                 (region == "SWAFR")       ~ "SWAFR vs GCFR",
     (n() == 2) & (region == "Main effect") ~ "GCFR",
     (n() == 1) & (region == "Main effect") ~ "Main effect only"
   ))
@@ -182,12 +195,12 @@ model_summary_plot
 
 # Save to disc
 ggsave(
-  here("figures/plot-refit-multivariate-models.pdf"),
+  here("figures/plot-multivariate-models_refit.pdf"),
   model_summary_plot,
   width = 7, height = 4
 )
 ggsave(
-  here("figures/plot-refit-multivariate-models.png"),
+  here("figures/plot-multivariate-models_refit.png"),
   model_summary_plot, dpi = 600,
   width = 7, height = 4
 )
