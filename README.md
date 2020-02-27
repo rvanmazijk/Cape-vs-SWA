@@ -72,12 +72,13 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
       | Res. S [MV]        | -    | x    | x    | x    |
 - [ ] R-scripts
     - [ ] Analyses
+    - [x] Analyses
         - [x] 01_setup.R
         - [x] 02_generate-richness-data.R
         - [x] 03_generate-heterogeneity-data.R
         - [x] 04_compare-species-richness.R
         - [x] 05_compare-environmental-heterogeneity.R
-        - [ ] 06_explaining-richness-w-heterogeneity.R
+        - [x] 06_explaining-richness-w-heterogeneity.R
     - [ ] Data processing
         - [x] *_create-Larsen-type-grid-rasters.R
         - [ ] Other scripts as "example"-scripts, not fully functional ones
