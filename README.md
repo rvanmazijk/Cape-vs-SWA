@@ -21,7 +21,7 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 
 ## Reproducibility checklist
 
-- [ ] Data
+- [ ] Derived-data
     - [x] Cleaned species lists
         - [x] GCFR
         - [x] SWAFR
@@ -71,7 +71,9 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
       | Res. S [PC1]       | -    | x    | x    | x    |
       | Res. S [MV]        | -    | x    | x    | x    |
 - [ ] R-scripts
-    - [ ] Analyses
+    - [ ] Data processing
+        - [x] *_create-Larsen-type-grid-rasters.R
+        - [ ] Other scripts as "example"-scripts, not fully functional ones
     - [x] Analyses
         - [x] 01_setup.R
         - [x] 02_generate-richness-data.R
@@ -79,9 +81,6 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
         - [x] 04_compare-species-richness.R
         - [x] 05_compare-environmental-heterogeneity.R
         - [x] 06_explaining-richness-w-heterogeneity.R
-    - [ ] Data processing
-        - [x] *_create-Larsen-type-grid-rasters.R
-        - [ ] Other scripts as "example"-scripts, not fully functional ones
 - [ ] Larsen shapefile URL
 - [ ] data/raw/docs/SoilGrids250m.txt in this README
 - [ ] Other data/raw/docs/*.txt in this README
