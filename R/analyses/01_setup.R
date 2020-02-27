@@ -378,7 +378,7 @@ plot_PC1_models <- function(dataset,
   if (keep_outliers) {
     plot_outliers("QDS")
   }
-  R2("(a) QDS", glance(m_QDS)$r.squared)
+  R2("(a) QDS", round(glance(m_QDS)$r.squared, digits = 2))
 
   # Plot model fits
   fit_GCFR <- predict(
@@ -420,7 +420,7 @@ plot_PC1_models <- function(dataset,
   if (keep_outliers) {
     plot_outliers("HDS")
   }
-  R2("(b) HDS", glance(m_HDS)$r.squared)
+  R2("(b) HDS", round(glance(m_HDS)$r.squared, digits = 2))
 
   # Plot model fits
   if (keep_outliers) {
@@ -452,7 +452,7 @@ plot_PC1_models <- function(dataset,
   if (keep_outliers) {
     plot_outliers("DS")
   }
-  R2("(c) DS", "0.XX")
+  R2("(c) DS", round(glance(m_DS)$r.squared, digits = 2))
 
   # Plot model fits
   fit <- predict.lm(m_DS, newdata = data.frame(PC1 = PC1_seq))
