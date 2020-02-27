@@ -77,7 +77,7 @@ hist_plots <- map(unique(data_for_plot$metric_scale),
       coord_cartesian(
         xlim = case_when(
           str_detect(.x, "richness") ~ c(0, 5000),
-          str_detect(.x, "turnover") ~ c(0,    1)
+          str_detect(.x, "turnover") ~ c(0.4, 0.8)
         ),
         ylim = c(0, 0.6)
       ) +
