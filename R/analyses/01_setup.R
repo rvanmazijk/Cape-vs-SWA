@@ -373,7 +373,7 @@ plot_PC1_models <- function(dataset,
   plot_panel(
     scale        = "QDS",
     my_ylab      = expression(paste(italic("S"))),
-    PC1_explains = "XX.XX"
+    PC1_explains = "40.14"
   )
   if (keep_outliers) {
     plot_outliers("QDS")
@@ -415,7 +415,7 @@ plot_PC1_models <- function(dataset,
   plot_panel(
     scale        = "HDS",
     my_ylab      = "",
-    PC1_explains = "XX.XX"
+    PC1_explains = "44.82"
   )
   if (keep_outliers) {
     plot_outliers("HDS")
@@ -447,7 +447,7 @@ plot_PC1_models <- function(dataset,
   plot_panel(
     scale        = "DS",
     my_ylab      = "",
-    PC1_explains = "XX.XX"
+    PC1_explains = "49.94"
   )
   if (keep_outliers) {
     plot_outliers("DS")
