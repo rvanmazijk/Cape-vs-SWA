@@ -64,7 +64,7 @@ range_sizes <- full_join(GCFR_range_sizes, SWAFR_range_sizes)
 
 # Plot -------------------------------------------------------------------------
 
-range_size_plot <- ggplot(range_sizes) +
+range_size_plot <- ggplot(range_sizes[range_sizes$n_QDS > 0, ]) +
   aes(n_QDS, fill = region, group = region) +
   geom_histogram(
     # Scale to frequencies/proportions of cells for each region separately
@@ -93,11 +93,16 @@ ggsave(
 # Test -------------------------------------------------------------------------
 
 range_sizes %$% {
+  print(t.test(
+    log10(n_QDS[(region == "SWAFR") & (n_QDS > 0)]),
+    log10(n_QDS[(region == "GCFR")  & (n_QDS > 0)])
+  ))
   print(wilcox.test(
-    n_QDS[region == "SWAFR"], n_QDS[region == "GCFR"]
+    n_QDS[(region == "SWAFR") & (n_QDS > 0)],
+    n_QDS[(region == "GCFR")  & (n_QDS > 0)]
   ))
   message("CLES = ", CLES(
-    n_QDS[region == "SWAFR"], n_QDS[region == "GCFR"]
+    n_QDS[(region == "SWAFR") & (n_QDS > 0)],
+    n_QDS[(region == "GCFR")  & (n_QDS > 0)]
   ))
 }
-
