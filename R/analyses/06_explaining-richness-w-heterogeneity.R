@@ -138,15 +138,16 @@ HDS_UVMs <- fit_univariate_models("HDS_richness")
 DS_UVMs  <- fit_univariate_models("DS_richness")
 # NOTE: fit_univariate_models() also saves the results to disc
 
-#####
-
+# Plot models using visreg::
 if (FALSE) {
   QDS_UVMs$plot <- NA
   HDS_UVMs$plot <- NA
   DS_UVMs$plot  <- NA
+
   QDS_UVMs$plot %<>% as.list()
   HDS_UVMs$plot %<>% as.list()
   DS_UVMs$plot  %<>% as.list()
+
   my_visreg <- function(m) {
     terms <- names(m$coefficients)
     m_plot <-
@@ -166,6 +167,7 @@ if (FALSE) {
       legend.position = "none"
     )
   }
+
   for (i in 1:10) {
     QDS_UVMs$model[[i]]$data <- data$QDS
     HDS_UVMs$model[[i]]$data <- data$HDS
@@ -174,26 +176,28 @@ if (FALSE) {
     HDS_UVMs$plot[[i]] <- my_visreg(HDS_UVMs$model[[i]])
     DS_UVMs$plot[[i]]  <- my_visreg(DS_UVMs$model[[i]])
   }
+
   QDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
   HDS_UVMs$plot %<>% map(~ . + theme(axis.title.x = element_blank()))
+
   QDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
   HDS_UVMs$plot[2:10] %<>% map(~ . + theme(axis.title.y = element_blank()))
   DS_UVMs$plot[2:10]  %<>% map(~ . + theme(axis.title.y = element_blank()))
+
   QDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["QDS"]))}
   HDS_UVMs$plot[[1]] %<>% {. + ylab(bquote(italic("S")["HDS"]))}
   DS_UVMs$plot[[1]]  %<>% {. + ylab(bquote(italic("S")["DS"]))}
 
-  UVM_plots <- plot_grid(
+  UVM_plots <- plot_grid(       nrow = 3, rel_heights = c(0.9, 0.9, 1),
     plot_grid(
-      plotlist = QDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))
+      plotlist = QDS_UVMs$plot, nrow = 1, rel_widths  = c(1, rep(0.9, 9))
     ),
     plot_grid(
-      plotlist = HDS_UVMs$plot, nrow = 1, rel_widths = c(1, rep(0.9, 9))
+      plotlist = HDS_UVMs$plot, nrow = 1, rel_widths  = c(1, rep(0.9, 9))
     ),
     plot_grid(
-      plotlist = DS_UVMs$plot,  nrow = 1, rel_widths = c(1, rep(0.9, 9))
-    ),
-    nrow = 3, rel_heights = c(0.9, 0.9, 1)
+      plotlist = DS_UVMs$plot,  nrow = 1, rel_widths  = c(1, rep(0.9, 9))
+    )
   )
 
   # Save to disc
