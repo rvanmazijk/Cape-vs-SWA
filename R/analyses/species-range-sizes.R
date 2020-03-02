@@ -131,8 +131,13 @@ species_in_Perth <- SWAFR_matrix[rownames(SWAFR_matrix) %in% Perth, ] %>%
   filter(n_QDS > 0) %>%
   pull(species)
 
+# How many species have occurrences in Perth?
+length(species_in_Perth)
+## [1] 2944
+
 # What proportion of species in the SWAFR have an occurrence in Perth?
 length(species_in_Perth) / ncol(SWAFR_matrix)
+## [1] 0.1838966
 
 # .... Plot distribution of SWAFR Perth vs non-Perth species' range sizes ------
 
@@ -178,30 +183,40 @@ for (i in 1:length(random_Perth_species)) {
     ],
     cex = 3, pch = 20,
   )
+  # Plot Perth
+  points(115.8605, -31.9505, cex = 4, pch = 23, bg = rgb(1, 1, 1, 0.5))
   title(random_Perth_species[[i]], cex.main = 5)
 }
 par(op)
 dev.off()
 
+# Plot only species' ranges that I think look like have Perth as an outlier
 pdf(
   here("figures/plot-flagged-Perth-species-ranges.pdf"),
-  width = 60, height = 50
+  width = 50, height = 40
 )
 par(mfrow = c(5, 6))
-for (i in 1:length(random_Perth_species)) {
-  # Plot only species' ranges that I think look like have Perth as an outlier
-  if (i %in% c(  9,  18,  35,  67,  72,  73,  74,  84,
-               103, 104, 122, 127, 129, 137, 162, 167, 186, 194,
-               215, 224, 231, 241, 257, 271, 276, 286, 294, 298)) {
-    plot(SWAFR_border_buffered)
-    points(
-      SWAFR_Perth_species_occ[
-        SWAFR_Perth_species_occ$species == random_Perth_species[[i]],
-      ],
-      cex = 3, pch = 20,
-    )
-    title(random_Perth_species[[i]], cex.main = 5)
-  }
+flagged_species <- random_Perth_species[c(
+  # Numbers of panels (in 3x 10x10 plots above):
+    9,  18,  35,  67,  72,  73,  74,  84,
+  103, 104, 122, 127, 129, 137, 162, 167, 186, 194,
+  215, 224, 231, 241, 257, 271, 276, 286, 294, 298
+)]
+flagged_species %<>% sort()
+flagged_species %>%
+  {tibble(species = .)} %>%
+  write_csv(here("results/Perth-flagged-SWAFR-species.csv"))
+for (i in 1:length(flagged_species)) {
+  plot(SWAFR_border_buffered)
+  points(
+    SWAFR_Perth_species_occ[
+      SWAFR_Perth_species_occ$species == flagged_species[[i]],
+    ],
+    cex = 5, pch = 20,
+  )
+  # Plot Perth
+  points(115.8605, -31.9505, cex = 7, pch = 23, bg = NA)
+  title(flagged_species[[i]], cex.main = 5)
 }
 par(op)
 dev.off()
