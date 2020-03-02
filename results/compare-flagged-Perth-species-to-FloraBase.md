@@ -1,0 +1,30 @@
+Which of the following "flagged" species have occurrence records in our dataset that outly the "known" distributions in the IBRA maps on <https://florabase.dpaw.wa.gov.au/>?
+
+- [x] Acacia exocarpoides
+- [x] Acacia tetragonophylla
+- [x] Anigozanthos rufus
+- [x] Banksia elegans
+- [x] Beaufortia decussata
+- [x] Calothamnus blepharospermus
+- [ ] Chaetanthus tenellus
+- [x] Goodenia corynocarpa
+- [x] Grevillea brachystylis
+- [x] Grevillea rudis
+- [x] Hemigenia diplanthera
+- [x] Lechenaultia longiloba
+- [x] Leucopogon gibbosus
+- [x] Maireana georgei
+- [x] Melaleuca calycina
+- [ ] Myriophyllum salsugineum
+- [x] Olearia adenolasia
+- [x] Philotheca sericea
+- [x] Phyllanthus erwinii
+- [x] Pultenaea aspalathoides
+- [x] Pultenaea brachytropis
+- [ ] Reseda alba
+- [x] Rinzia carnosa
+- [x] Rinzia communis
+- [x] Roepera aurantiaca
+- [ ] Schoenus obtusifolius
+- [ ] Solanum laciniatum
+- [x] Swainsona beasleyana
