@@ -207,6 +207,7 @@ par(op)
 dev.off()
 
 # .... Try an ordination? ------------------------------------------------------
+# (Fiddling)
 
 SWAFR_jaccard <- vegan::vegdist(SWAFR_matrix, method = "jaccard")
 SWAFR_pcoa <- ape::pcoa(SWAFR_jaccard)
@@ -241,6 +242,11 @@ ggplot(SWAFR_pcoa_axes) +
   scale_colour_viridis_c()
 
 ggplot(SWAFR_pcoa_axes) +
+  aes(vegtype, vegunique) +
+  geom_boxplot() +
+  scale_colour_viridis_c()
+
+ggplot(SWAFR_pcoa_axes) +
   aes(lon, lat, fill = vegtype) +
   geom_tile() +
   scale_fill_viridis_d()
@@ -249,3 +255,25 @@ ggplot(SWAFR_pcoa_axes) +
   aes(lon, lat, fill = vegunique) +
   geom_tile() +
   scale_fill_viridis_c()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(Axis.1, Axis.2, colour = vegunique) +
+  geom_point() +
+  scale_colour_viridis_c()
+
+richness_data_QDS <- read_csv(glue("{data_dir}/richness-data-QDS.csv"))
+SWAFR_pcoa_richness <- richness_data_QDS %>%
+  rename(QDS = qdgc) %>%
+  dplyr::select(QDS, QDS_richness) %>%
+  right_join(SWAFR_pcoa_axes)
+
+ggplot(SWAFR_pcoa_richness) +
+  aes(Axis.1, Axis.2, colour = log10(QDS_richness)) +
+  geom_point() +
+  scale_colour_viridis_c(na.value = NA)
+
+ggplot(SWAFR_pcoa_richness) +
+  aes(QDS_richness, vegunique, colour = QDS %in% Perth) +
+  geom_point() +
+  scale_colour_viridis_d()
+
