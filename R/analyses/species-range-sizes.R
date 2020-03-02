@@ -131,7 +131,10 @@ species_in_Perth <- SWAFR_matrix[rownames(SWAFR_matrix) %in% Perth, ] %>%
   filter(n_QDS > 0) %>%
   pull(species)
 
+# What proportion of species in the SWAFR have an occurrence in Perth?
 length(species_in_Perth) / ncol(SWAFR_matrix)
+
+# .... Plot distribution of SWAFR Perth vs non-Perth species' range sizes ------
 
 SWAFR_range_sizes %>%
   mutate(in_Perth = species %in% species_in_Perth) %>%
@@ -140,51 +143,8 @@ SWAFR_range_sizes %>%
     geom_histogram(position = "dodge") +
     scale_x_log10()
 
-# ...
-
-SWAFR_jaccard <- vegan::vegdist(SWAFR_matrix, method = "jaccard")
-SWAFR_pcoa <- ape::pcoa(SWAFR_jaccard)
-SWAFR_pcoa_axes <-
-  cbind(
-    region = "SWAFR",
-    QDS = rownames(SWAFR_pcoa$vectors),
-    SWAFR_pcoa$vectors[, 1:2]
-  ) %>%
-  as_tibble() %>%
-  mutate(
-    Axis.1 = as.numeric(Axis.1),
-    Axis.2 = as.numeric(Axis.2),
-    lon    = map_dbl(QDS, ~Larsen_grid_QDS$lon[Larsen_grid_QDS$qdgc == .]),
-    lat    = map_dbl(QDS, ~Larsen_grid_QDS$lat[Larsen_grid_QDS$qdgc == .]),
-    vegtype = as.factor(case_when(
-      (Axis.1 > 0) & (Axis.2 > 0) ~ 1,
-      (Axis.1 > 0) & (Axis.2 < 0) ~ 2,
-      (Axis.1 < 0) & (Axis.2 > 0) ~ 3,
-      (Axis.1 < 0) & (Axis.2 < 0) ~ 4,
-    )),
-    vegunique = sqrt((0 - Axis.1)^2 + (0 - Axis.2)^2)  # Euclidean dist from 0,0
-  )
-
-ggplot(SWAFR_pcoa_axes) +
-  aes(Axis.1, Axis.2, colour = QDS %in% Perth) +
-  geom_point()
-
-ggplot(SWAFR_pcoa_axes) +
-  aes(Axis.1, Axis.2, colour = lat) +
-  geom_point() +
-  scale_colour_viridis_c()
-
-ggplot(SWAFR_pcoa_axes) +
-  aes(lon, lat, fill = vegtype) +
-  geom_tile() +
-  scale_fill_viridis_d()
-
-ggplot(SWAFR_pcoa_axes) +
-  aes(lon, lat, fill = vegunique) +
-  geom_tile() +
-  scale_fill_viridis_c()
-
-# ...
+# .... Plot some maps of Perth-occurring species -------------------------------
+# To see if Perth is within those species' "main range" or not
 
 SWAFR_species_occ$EDS <- SWAFR_species_occ %over%
   Larsen_grid_EDS %>%
@@ -220,10 +180,12 @@ for (i in 1:length(random_Perth_species)) {
 par(op)
 dev.off()
 
-pdf("foo.pdf", width = 60, height = 50)
+pdf("foo2.pdf", width = 60, height = 50)
 par(mfrow = c(5, 6))
 for (i in 1:length(random_Perth_species)) {
-  if (i in flagged_species) {
+  if (i %in% c(  9,  18,  35,  67,  72,  73,  74,  84,
+               103, 104, 122, 127, 129, 137, 162, 167, 186, 194,
+               215, 224, 231, 241, 257, 271, 276, 286, 294, 298)) {
     plot(SWAFR_border_buffered)
     points(
       SWAFR_Perth_species_occ[
@@ -236,3 +198,47 @@ for (i in 1:length(random_Perth_species)) {
 }
 par(op)
 dev.off()
+
+# .... Try an ordination? ------------------------------------------------------
+
+SWAFR_jaccard <- vegan::vegdist(SWAFR_matrix, method = "jaccard")
+SWAFR_pcoa <- ape::pcoa(SWAFR_jaccard)
+SWAFR_pcoa_axes <-
+  cbind(
+    region = "SWAFR",
+    QDS = rownames(SWAFR_pcoa$vectors),
+    SWAFR_pcoa$vectors[, 1:2]
+  ) %>%
+  as_tibble() %>%
+  mutate(
+    Axis.1 = as.numeric(Axis.1),
+    Axis.2 = as.numeric(Axis.2),
+    lon = map_dbl(QDS, ~Larsen_grid_QDS$lon[Larsen_grid_QDS$qdgc == .]),
+    lat = map_dbl(QDS, ~Larsen_grid_QDS$lat[Larsen_grid_QDS$qdgc == .]),
+    vegtype = as.factor(case_when(
+      (Axis.1 > 0) & (Axis.2 > 0) ~ 1,
+      (Axis.1 > 0) & (Axis.2 < 0) ~ 2,
+      (Axis.1 < 0) & (Axis.2 > 0) ~ 3,
+      (Axis.1 < 0) & (Axis.2 < 0) ~ 4,
+    )),
+    vegunique = sqrt((0 - Axis.1)^2 + (0 - Axis.2)^2)  # Euclidean dist from 0,0
+  )
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(Axis.1, Axis.2, colour = QDS %in% Perth) +
+  geom_point()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(Axis.1, Axis.2, colour = lat) +
+  geom_point() +
+  scale_colour_viridis_c()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(lon, lat, fill = vegtype) +
+  geom_tile() +
+  scale_fill_viridis_d()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(lon, lat, fill = vegunique) +
+  geom_tile() +
+  scale_fill_viridis_c()
