@@ -106,3 +106,133 @@ range_sizes %$% {
     n_QDS[(region == "GCFR")  & (n_QDS > 0)]
   ))
 }
+
+# Assess whether SWAFR species are being planted in Perth ----------------------
+
+# List Perth's QDS-cells manually
+Perth <- tribble(
+  ~lon,    ~lat,    ~qdgc,
+  115.875, -31.875, "E115S31DD",
+  115.875, -32.125, "E115S32BB",
+  116.125, -31.875, "E116S31CC",
+  116.125, -32.125, "E116S32AA"
+)
+# Check
+plot(SWAFR_border_buffered)
+points(Perth[, 1:2])
+
+# Simplify
+Perth <- Perth$qdgc
+
+species_in_Perth <- SWAFR_matrix[rownames(SWAFR_matrix) %in% Perth, ] %>%
+  apply(2, sum) %>%
+  sort(decreasing = TRUE) %>%
+  {tibble(species = names(.), n_QDS = .)} %>%
+  filter(n_QDS > 0) %>%
+  pull(species)
+
+length(species_in_Perth) / ncol(SWAFR_matrix)
+
+SWAFR_range_sizes %>%
+  mutate(in_Perth = species %in% species_in_Perth) %>%
+  ggplot() +
+    aes(n_QDS, fill = in_Perth) +
+    geom_histogram(position = "dodge") +
+    scale_x_log10()
+
+# ...
+
+SWAFR_jaccard <- vegan::vegdist(SWAFR_matrix, method = "jaccard")
+SWAFR_pcoa <- ape::pcoa(SWAFR_jaccard)
+SWAFR_pcoa_axes <-
+  cbind(
+    region = "SWAFR",
+    QDS = rownames(SWAFR_pcoa$vectors),
+    SWAFR_pcoa$vectors[, 1:2]
+  ) %>%
+  as_tibble() %>%
+  mutate(
+    Axis.1 = as.numeric(Axis.1),
+    Axis.2 = as.numeric(Axis.2),
+    lon    = map_dbl(QDS, ~Larsen_grid_QDS$lon[Larsen_grid_QDS$qdgc == .]),
+    lat    = map_dbl(QDS, ~Larsen_grid_QDS$lat[Larsen_grid_QDS$qdgc == .]),
+    vegtype = as.factor(case_when(
+      (Axis.1 > 0) & (Axis.2 > 0) ~ 1,
+      (Axis.1 > 0) & (Axis.2 < 0) ~ 2,
+      (Axis.1 < 0) & (Axis.2 > 0) ~ 3,
+      (Axis.1 < 0) & (Axis.2 < 0) ~ 4,
+    )),
+    vegunique = sqrt((0 - Axis.1)^2 + (0 - Axis.2)^2)  # Euclidean dist from 0,0
+  )
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(Axis.1, Axis.2, colour = QDS %in% Perth) +
+  geom_point()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(Axis.1, Axis.2, colour = lat) +
+  geom_point() +
+  scale_colour_viridis_c()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(lon, lat, fill = vegtype) +
+  geom_tile() +
+  scale_fill_viridis_d()
+
+ggplot(SWAFR_pcoa_axes) +
+  aes(lon, lat, fill = vegunique) +
+  geom_tile() +
+  scale_fill_viridis_c()
+
+# ...
+
+SWAFR_species_occ$EDS <- SWAFR_species_occ %over%
+  Larsen_grid_EDS %>%
+  pull(edgc) %>%
+  as.character()
+SWAFR_species_occ$QDS <- str_remove(SWAFR_species_occ$EDS, ".$")
+
+SWAFR_Perth_species_occ <- SWAFR_species_occ[
+  SWAFR_species_occ$species %in% species_in_Perth,
+]
+SWAFR_Perth_species_occ$in_region <- SWAFR_Perth_species_occ %over%
+  SWAFR_border_buffered %>%
+  {!is.na(.)}
+SWAFR_Perth_species_occ <- SWAFR_Perth_species_occ[
+  c(SWAFR_Perth_species_occ$in_region),
+]
+
+set.seed(1234)
+random_Perth_species <- sample(unique(SWAFR_Perth_species_occ$species), 300)
+
+pdf("foo.pdf", width = 100, height = 100)
+par(mfrow = c(10, 10))
+for (i in 1:length(random_Perth_species)) {
+  plot(SWAFR_border_buffered)
+  points(
+    SWAFR_Perth_species_occ[
+      SWAFR_Perth_species_occ$species == random_Perth_species[[i]],
+    ],
+    cex = 3, pch = 20,
+  )
+  title(random_Perth_species[[i]], cex.main = 5)
+}
+par(op)
+dev.off()
+
+pdf("foo.pdf", width = 60, height = 50)
+par(mfrow = c(5, 6))
+for (i in 1:length(random_Perth_species)) {
+  if (i in flagged_species) {
+    plot(SWAFR_border_buffered)
+    points(
+      SWAFR_Perth_species_occ[
+        SWAFR_Perth_species_occ$species == random_Perth_species[[i]],
+      ],
+      cex = 3, pch = 20,
+    )
+    title(random_Perth_species[[i]], cex.main = 5)
+  }
+}
+par(op)
+dev.off()
