@@ -165,7 +165,10 @@ SWAFR_Perth_species_occ <- SWAFR_Perth_species_occ[
 set.seed(1234)
 random_Perth_species <- sample(unique(SWAFR_Perth_species_occ$species), 300)
 
-pdf("foo.pdf", width = 100, height = 100)
+pdf(
+  here("figures/plot-300-Perth-species-ranges.pdf"),
+  width = 100, height = 100
+)
 par(mfrow = c(10, 10))
 for (i in 1:length(random_Perth_species)) {
   plot(SWAFR_border_buffered)
@@ -180,9 +183,13 @@ for (i in 1:length(random_Perth_species)) {
 par(op)
 dev.off()
 
-pdf("foo2.pdf", width = 60, height = 50)
+pdf(
+  here("figures/plot-flagged-Perth-species-ranges.pdf"),
+  width = 60, height = 50
+)
 par(mfrow = c(5, 6))
 for (i in 1:length(random_Perth_species)) {
+  # Plot only species' ranges that I think look like have Perth as an outlier
   if (i %in% c(  9,  18,  35,  67,  72,  73,  74,  84,
                103, 104, 122, 127, 129, 137, 162, 167, 186, 194,
                215, 224, 231, 241, 257, 271, 276, 286, 294, 298)) {
