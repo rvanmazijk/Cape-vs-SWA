@@ -104,19 +104,6 @@ Moran_data <- as_tibble(rbind(
 write_csv(Moran_data[, -6], here("results/heterogeneity-Moran-tests.csv"))
 write_rds(Moran_data, here("results/heterogeneity-Moran-tests") )
 
-Moran_data %>%
-  filter(P_I > 0.05)
-as.data.frame(Moran_data[, -6])
-
-Moran_data %>%
-  gather(I_type, I, I, E_I) %>%
-  mutate(I_type = ifelse(I_type == "I", "Obs.", "Exp.")) %>%
-  ggplot() +
-    aes(scale, I, colour = I_type) +
-    geom_point() +
-    geom_line() +
-    facet_grid(region ~ variable)
-
 richness_QDS <- raster(glue("{data_dir}/raster-layers/QDS-richness_QDS.tif"))
 GCFR_richness_QDS  <- crop(richness_QDS, GCFR_border_buffered)
 SWAFR_richness_QDS <- crop(richness_QDS, SWAFR_border_buffered)
@@ -163,3 +150,25 @@ for (i in 1:nrow(Moran_data_richness)) {
   ))
 }
 par(op)
+
+Moran_data %>%
+  filter(P_I > 0.05)
+as.data.frame(Moran_data[, -6])
+
+Moran_data %>%
+  mutate(
+    null_max = map_dbl(null_I, quantile, 0.975),
+    null_min = map_dbl(null_I, quantile, 0.025)
+  ) %>%
+  ggplot() +
+    aes(scale, I, colour = region, group = region) +
+    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+    geom_errorbar(
+      aes(ymax = null_max, ymin = null_min),
+      width = 0, position = position_dodge(width = 0.05)
+    ) +
+    geom_point() +
+    geom_line() +
+    labs(x = "Spatial scale (º)", y = bquote("Moran's"~italic("I"))) +
+    facet_wrap(~variable) +
+    scale_colour_manual(name = "Region", values = c("black", "grey50"))
