@@ -100,6 +100,7 @@ Moran_data <- as_tibble(rbind(
   cbind(region = "GCFR",  scale = 1.00, bind_rows(GCFR_heterogeneity_DS_Moran)),
   cbind(region = "SWAFR", scale = 1.00, bind_rows(SWAFR_heterogeneity_DS_Moran))
 ))
+
 write_csv(Moran_data[, -6], here("results/heterogeneity-Moran-tests.csv"))
 write_rds(Moran_data, here("results/heterogeneity-Moran-tests") )
 
@@ -157,8 +158,8 @@ for (i in 1:nrow(Moran_data_richness)) {
   abline(v = Moran_data_richness$I[[i]], lty = "dashed")
   title(paste(
     "Region:", Moran_data_richness$region[[i]], "\n",
-    "Scale:", Moran_data_richness$scale[[i]],   "\n",
-    "P =", Moran_data_richness$P_I[[i]]
+    "Scale:",  Moran_data_richness$scale[[i]],  "\n",
+    "P =",     Moran_data_richness$P_I[[i]]
   ))
 }
 par(op)
