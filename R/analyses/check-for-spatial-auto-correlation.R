@@ -122,3 +122,32 @@ GCFR_richness_DS  <- crop(richness_DS, GCFR_border_buffered)
 SWAFR_richness_DS <- crop(richness_DS, SWAFR_border_buffered)
 GCFR_richness_DS_Moran <- my_Moran(GCFR_richness_DS)
 SWAFR_richness_DS_Moran <- my_Moran(SWAFR_richness_DS)
+
+Moran_data_richness <- as_tibble(rbind(
+  cbind(region = "GCFR",  scale = "QDS", bind_rows(GCFR_richness_QDS_Moran)),
+  cbind(region = "SWAFR", scale = "QDS", bind_rows(SWAFR_richness_QDS_Moran)),
+  cbind(region = "GCFR",  scale = "HDS", bind_rows(GCFR_richness_HDS_Moran)),
+  cbind(region = "SWAFR", scale = "HDS", bind_rows(SWAFR_richness_HDS_Moran)),
+  cbind(region = "GCFR",  scale = "DS",  bind_rows(GCFR_richness_DS_Moran)),
+  cbind(region = "SWAFR", scale = "DS",  bind_rows(SWAFR_richness_DS_Moran))
+))
+
+write_csv(Moran_data_richness[, -5], here("results/richness-Moran-tests.csv"))
+write_rds(Moran_data_richness, here("results/richness-Moran-tests"))
+
+par(mfrow = c(3, 2))
+for (i in 1:nrow(Moran_data_richness)) {
+  hist(
+    Moran_data_richness$null_I[[i]],
+    main = "",
+    xlim = c(-0.6, 0.6),
+    xlab = "Moran's I"
+  )
+  abline(v = Moran_data_richness$I[[i]], lty = "dashed")
+  title(paste(
+    "Region:", Moran_data_richness$region[[i]], "\n",
+    "Scale:", Moran_data_richness$scale[[i]],   "\n",
+    "P =", Moran_data_richness$P_I[[i]]
+  ))
+}
+par(op)
