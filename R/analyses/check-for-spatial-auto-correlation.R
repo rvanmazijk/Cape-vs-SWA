@@ -14,7 +14,12 @@ my_Moran <- function(r, n_sim = 999) {
     P_I
   )
   beepr::beep(8)
-  list(I = I, E_I = E_I, null_I = list(null_I), P_I = P_I)
+  list(
+    I      = I,
+    E_I    = E_I,
+    null_I = list(null_I),
+    P_I    = P_I
+  )
 }
 
 heterogeneity_0.10 <-
@@ -86,15 +91,17 @@ SWAFR_heterogeneity_DS_Moran <- SWAFR_heterogeneity_DS %>%
   bind_rows(.id = "variable")
 
 Moran_data <- as_tibble(rbind(
-  cbind(region = "GCFR",  scale = 0.10, GCFR_heterogeneity_0.10_Moran),
-  cbind(region = "SWAFR", scale = 0.10, SWAFR_heterogeneity_0.10_Moran),
-  cbind(region = "GCFR",  scale = 0.25, GCFR_heterogeneity_QDS_Moran),
-  cbind(region = "SWAFR", scale = 0.25, SWAFR_heterogeneity_QDS_Moran),
-  cbind(region = "GCFR",  scale = 0.50, GCFR_heterogeneity_HDS_Moran),
-  cbind(region = "SWAFR", scale = 0.50, SWAFR_heterogeneity_HDS_Moran),
-  cbind(region = "GCFR",  scale = 1.00, GCFR_heterogeneity_DS_Moran),
-  cbind(region = "SWAFR", scale = 1.00, SWAFR_heterogeneity_DS_Moran)
+  cbind(region = "GCFR",  scale = 0.10, bind_rows(GCFR_heterogeneity_0.10_Moran)),
+  cbind(region = "SWAFR", scale = 0.10, bind_rows(SWAFR_heterogeneity_0.10_Moran)),
+  cbind(region = "GCFR",  scale = 0.25, bind_rows(GCFR_heterogeneity_QDS_Moran)),
+  cbind(region = "SWAFR", scale = 0.25, bind_rows(SWAFR_heterogeneity_QDS_Moran)),
+  cbind(region = "GCFR",  scale = 0.50, bind_rows(GCFR_heterogeneity_HDS_Moran)),
+  cbind(region = "SWAFR", scale = 0.50, bind_rows(SWAFR_heterogeneity_HDS_Moran)),
+  cbind(region = "GCFR",  scale = 1.00, bind_rows(GCFR_heterogeneity_DS_Moran)),
+  cbind(region = "SWAFR", scale = 1.00, bind_rows(SWAFR_heterogeneity_DS_Moran))
 ))
+write_csv(Moran_data[, -6], here("results/heterogeneity-Moran-tests.csv"))
+write_rds(Moran_data, here("results/heterogeneity-Moran-tests") )
 
 Moran_data %>%
   gather(I_type, I, I, E_I) %>%
