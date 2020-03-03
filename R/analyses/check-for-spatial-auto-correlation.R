@@ -104,6 +104,10 @@ write_csv(Moran_data[, -6], here("results/heterogeneity-Moran-tests.csv"))
 write_rds(Moran_data, here("results/heterogeneity-Moran-tests") )
 
 Moran_data %>%
+  filter(P_I > 0.05)
+as.data.frame(Moran_data[, -6])
+
+Moran_data %>%
   gather(I_type, I, I, E_I) %>%
   mutate(I_type = ifelse(I_type == "I", "Obs.", "Exp.")) %>%
   ggplot() +
