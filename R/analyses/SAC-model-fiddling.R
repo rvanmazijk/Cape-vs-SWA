@@ -10,8 +10,8 @@ richness_QDS <- raster(glue("{data_dir}/raster-layers/QDS-richness_QDS.tif"))
 GCFR_richness <- crop(richness_QDS, GCFR_border_buffered)
 
 data <-
-  stack(heterogeneity_QDS, richness_QDS) %>%
-  #stack(GCFR_heterogeneity, GCFR_richness) %>%
+  #stack(heterogeneity_QDS, richness_QDS) %>%
+  stack(GCFR_heterogeneity, GCFR_richness) %>%
   {cbind(
     xyFromCell(., 1:ncell(.)),
     as.data.frame(.)
@@ -27,6 +27,7 @@ formula <- var_names_tidy %>%
   {paste(., "+ region")} %>%
   {paste("richness ~", .)} %>%
   as.formula()
+m <- gls(log10(richness) ~ Elevation, data, corGaus(form = ~ x + y))
 m <- gls(formula, data, corGaus(form = ~ x + y))
 
 summary(m)
@@ -42,6 +43,16 @@ plot(crop(residuals_QDS, SWAFR_border_buffered))
 
 plot(GCFR_residuals)
 plot(residuals(m) ~ m$fitted)
+
+plot(richness ~ Elevation, data)
+fit <- predict(m, newdata = data.frame(Elevation = seq(from = -3, to = 3, by = 0.1)), interval = "confidence")
+mini_m <- lm(log10(richness) ~ Elevation, data)
+mini_fit <- predict(mini_m, newdata = data.frame(Elevation = seq(from = -3, to = 3, by = 0.1)), interval = "confidence")
+lines(10^fit ~ seq(from = -3, to = 3, by = 0.1), col = "red")
+lines(10^mini_fit[, "fit"] ~ seq(from = -3, to = 3, by = 0.1))
+lines(10^mini_fit[, "lwr"] ~ seq(from = -3, to = 3, by = 0.1), col = "grey")
+lines(10^mini_fit[, "upr"] ~ seq(from = -3, to = 3, by = 0.1), col = "grey")
+
 
 summary(lm(data$richness ~ m$fitted))
 
