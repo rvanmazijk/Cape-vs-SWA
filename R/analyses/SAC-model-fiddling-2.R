@@ -85,7 +85,7 @@ formula <- var_names_tidy %>%
   {paste("richness ~", .)} %>%
   as.formula()
 
-GCFR_lm_QDS  <- lm(formula, GCFR_data_QDS)
+GCFR_lm_QDS <- lm(formula, GCFR_data_QDS)
 GCFR_m_QDS  <- gls(formula, GCFR_data_QDS,  corGaus(form = ~ x + y))
 SWAFR_m_QDS <- gls(formula, SWAFR_data_QDS, corGaus(form = ~ x + y))
 GCFR_m_HDS  <- gls(formula, GCFR_data_HDS,  corGaus(form = ~ x + y))
@@ -154,14 +154,14 @@ data_foo <- stack(PC1_QDS, richness_QDS) %>%
     as.data.frame(.)
   )} %>%
   na.exclude() %>%
-  set_colnames(c("x", "y", "PC1", "richness"))
-sm <- gls(richness ~ PC1, data_foo, corGaus(form = ~ x + y))
+  set_colnames(c("x", "y", "PC1", "richness")) %>%
+  mutate(region = ifelse(x > 60, "SWAFR", "GCFR"))
+sm <- gls(richness ~ PC1, data_foo, corGaus(form = ~ x + y, nugget = TRUE))
 m  <-  lm(richness ~ PC1, data_foo)
 
-plot(richness ~ PC1, data_foo)
+plot(richness ~ PC1, data_foo, col = as.factor(data_foo$region))
 abline(m)
 abline(sm, col = "red")
-
 
 GCFR_data_foo <- stack(GCFR_PC1_QDS, GCFR_richness_QDS) %>%
   {cbind(
