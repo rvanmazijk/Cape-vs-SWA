@@ -136,7 +136,11 @@ ggplot(data_QDS) +
   aes(PC1_abs_het, QDS_richness, colour = region) +
   geom_point()
 library(nlme)
-m <- gls(QDS_richness ~ PC1_abs_het, data_QDS, corGaus(form = ~ lon + lat | region))
+m <- gls(
+  QDS_richness ~ PC1_abs_het,
+  data_QDS,
+  corGaus(form = ~ lon + lat | region)
+)
 summary(m)
 visreg::visreg(m)
 plot(residuals(m) ~ data_QDS$QDS_richness)
