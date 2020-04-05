@@ -35,6 +35,16 @@ SWAFR_bad_species <-
 species_occ_data <- species_occ@data %>%
   filter(!(species %in% c(GCFR_bad_species, SWAFR_bad_species))) %>%
   na.exclude()
+# Save shapefile of this too
+species_occ2 <- species_occ[
+  !(species_occ$species %in% c(GCFR_bad_species, SWAFR_bad_species)),
+]
+writeOGR(
+  species_occ2,
+  here("data/derived-data/Feb-2020/species_occ"),
+  layer = "species",
+  driver = "ESRI Shapefile"
+)
 
 # Check species counts now:
 species_occ_data %>%
