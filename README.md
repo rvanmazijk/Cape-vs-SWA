@@ -19,7 +19,15 @@ We aim to quantify the explanatory power of heterogeneity in predicting plant sp
 
 We expect the Cape to be more heterogeneous in most environmental axes, and at a finer grain, such that the consequent high levels of species turnover explain the Cape's greater species richness per unit area. We also conjecture that edaphic heterogeneity will be an important factor in predicting richness in SW Australia.
 
-## Reproducibility checklist
+## Acknowledgments
+
+This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RvM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RvM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage.
+
+For results used in earlier drafts of this work and then [conference presentation](SAAB-AMA-SASSB-2019-talk), any computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
+
+## TODO
+
+### Reproducibility checklist
 
 - [ ] Derived-data
     - [x] Cleaned species lists
@@ -71,9 +79,13 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
       | Res. S [PC1]       | -    | x    | x    | x    |
       | Res. S [MV]        | -    | x    | x    | x    |
 - [ ] R-scripts
+    - [ ] Smooth over scripts' general neatness, comments
+    - [ ] Incl. univariate linearity checks in modelling script
     - [ ] Data processing
         - [x] *_create-Larsen-type-grid-rasters.R
         - [ ] Other scripts as "example"-scripts, not fully functional ones
+        - [ ] Move data-processing/-used helper functions back -> data-processing/*.R
+        - [ ] Update paths in *_create-Larsen-type-grid-rasters.R
     - [x] Analyses
         - [x] 01_setup.R
         - [x] 02_generate-richness-data.R
@@ -85,8 +97,20 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 - [ ] data/raw/docs/SoilGrids250m.txt in this README
 - [ ] Other data/raw/docs/*.txt in this README
 
-## Acknowledgments
+### Manuscript
 
-This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RvM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RvM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage.
+- [x] Address SAC carefully
+    - [ ] Incorporate paragraph into manuscript
+- [ ] Address negative heterogeneity-effects
+- [ ] Other results + discussion smoothing over
+    - [ ] ...
+- [ ] Comment more on figures
+- [ ] Double check references
+- [ ] Double check figures
 
-For results used in earlier drafts of this work and then [conference presentation](SAAB-AMA-SASSB-2019-talk), any computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
+### Submission to _J. Biogeog._
+
+- [ ] Recirculate manuscript to Mike + Tony
+- [ ] Finish cover-letter to ed.
+- [ ] Ask Mike + Tony for advice on reviewers
+- [ ] Submit!
