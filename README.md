@@ -27,57 +27,9 @@ For results used in earlier drafts of this work and then [conference presentatio
 
 ## TODO
 
-### Reproducibility checklist
+### Reproducibility
 
-- [ ] Derived-data
-    - [x] Cleaned species lists
-        - [x] GCFR
-        - [x] SWAFR
-    - [ ] Species occurence matrix (QDS-scale, both regions together)
-    - [x] CSVs (at 3x scales):
-      | Column             | QDS | HDS | DS  |
-      |--------------------|-----|-----|-----|
-      | Region             | x   | x   | x   |
-      | Grid-cell          | x   | x   | x   |
-      | Lat.               | x   | x   | x   |
-      | Lon.               | x   | x   | x   |
-      |                    |     |     |     |
-      | S                  | x   | x   | x   |
-      | Mean S partition   | -   | x   | x   |
-      | Turnover partition | -   | x   | x   |
-      |                    |     |     |     |
-      | Elev.              | x   | x   | x   |
-      | MAP                | x   | x   | x   |
-      | PDQ                | x   | x   | x   |
-      | Surf. T            | x   | x   | x   |
-      | NDVI               | x   | x   | x   |
-      | CEC                | x   | x   | x   |
-      | Clay               | x   | x   | x   |
-      | pH                 | x   | x   | x   |
-      | Soil C             | x   | x   | x   |
-      | PC1                | x   | x   | x   |
-      |                    |     |     |     |
-      | Res. S [PC1]       | x   | x   | x   |
-      | Res. S [MV]        | x   | x   | x   |
-    - [x] Raster layers (at 4x scales):
-      | Variable           | 0.01 | QDS  | HDS  | DS   |
-      |--------------------|------|------|------|------|
-      | S                  | -    | x    | x    | x    |
-      | Mean S partition   | -    | -    | x    | x    |
-      |                    |      |      |      |      |
-      | Elev.              | x    | x    | x    | x    |
-      | MAP                | x    | x    | x    | x    |
-      | PDQ                | x    | x    | x    | x    |
-      | Surf. T            | x    | x    | x    | x    |
-      | NDVI               | x    | x    | x    | x    |
-      | CEC                | x    | x    | x    | x    |
-      | Clay               | x    | x    | x    | x    |
-      | pH                 | x    | x    | x    | x    |
-      | Soil C             | x    | x    | x    | x    |
-      | PC1                | x    | x    | x    | x    |
-      |                    |      |      |      |      |
-      | Res. S [PC1]       | -    | x    | x    | x    |
-      | Res. S [MV]        | -    | x    | x    | x    |
+- [ ] Species occurence matrix (QDS-scale, both regions together)?
 - [ ] R-scripts
     - [ ] Smooth over scripts' general neatness, comments
     - [ ] Incl. univariate linearity checks in modelling script
@@ -86,24 +38,14 @@ For results used in earlier drafts of this work and then [conference presentatio
         - [ ] Other scripts as "example"-scripts, not fully functional ones
         - [ ] Move data-processing/-used helper functions back -> data-processing/*.R
         - [ ] Update paths in *_create-Larsen-type-grid-rasters.R
-    - [x] Analyses
-        - [x] 01_setup.R
-        - [x] 02_generate-richness-data.R
-        - [x] 03_generate-heterogeneity-data.R
-        - [x] 04_compare-species-richness.R
-        - [x] 05_compare-environmental-heterogeneity.R
-        - [x] 06_explaining-richness-w-heterogeneity.R
 - [ ] Larsen shapefile URL
 - [ ] data/raw/docs/SoilGrids250m.txt in this README
 - [ ] Other data/raw/docs/*.txt in this README
 
 ### Manuscript
 
-- [x] Address SAC carefully
-    - [ ] Incorporate paragraph into manuscript
 - [ ] Address negative heterogeneity-effects
 - [ ] Other results + discussion smoothing over
-    - [ ] ...
 - [ ] Comment more on figures
 - [ ] Double check references
 - [ ] Double check figures
