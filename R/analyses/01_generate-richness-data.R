@@ -144,6 +144,55 @@ DS_richness_data <- DS_richness %>%
       multiply_by(-1)
   )
 
+# Determine proportion of regions sampled --------------------------------------
+
+ZA_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_zaf"), layer = "qdgc_02_zaf")
+AU_QDS <- readOGR(here("data/raw-data/QDGC/qdgc_aus"), layer = "qdgc_02_aus")
+
+ZA_QDS@data <- cbind(
+  ZA_QDS@data,
+  ZA_QDS %over% GCFR_border_buffered
+)
+AU_QDS@data <- cbind(
+  AU_QDS@data,
+  AU_QDS %over% SWAFR_border_buffered
+)
+
+GCFR_QDS  <- ZA_QDS[!is.na(ZA_QDS$region), ]
+SWAFR_QDS <- AU_QDS[!is.na(AU_QDS$region), ]
+
+par(mfrow = c(1, 2))
+#plot(ZA_QDS)
+plot(GCFR_QDS)
+plot(GCFR_border_buffered, add = TRUE)
+#plot(AU_QDS)
+plot(SWAFR_QDS)
+plot(SWAFR_border_buffered, add = TRUE)
+par(op)
+
+n_QDS_GCFR <- GCFR_QDS$qdgc %>%
+  unique() %>%
+  length()
+n_QDS_SWAFR <- SWAFR_QDS$qdgc %>%
+  unique() %>%
+  length()
+
+n_QDS_sampled <- QDS_richness_data %>%
+  filter(qdgc %in% QDS_w_all_EDS) %>%   # same as na.exclude() for this, honestly
+  split(.$region) %>%
+  map(pull, qdgc) %>%
+  map(unique) %>%
+  map(length)
+
+message(
+  " GCFR: ", n_QDS_sampled$GCFR, "/", n_QDS_GCFR, " => ",
+    round(100 * n_QGCF_QDS_sampled$GCFR / n_QDS_GCFR, digits = 2), "% QDS sampled\n",
+  "SWAFR: ", n_QDS_sampled$SWAFR, "/", n_QDS_SWAFR, " => ",
+    round(100 * n_QGCF_QDS_sampled$SWAFR / n_QDS_SWAFR, digits = 2), "% QDS sampled"
+)
+##  GCFR: 362/449 => 80.62% QDS sampled
+## SWAFR: 624/737 => 84.67% QDS sampled
+
 # Save richness dataframes to disc ---------------------------------------------
 
 QDS_richness_data %>%
