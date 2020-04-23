@@ -25,9 +25,7 @@ This work was funded by the South African Department of Science and Technology (
 
 For results used in earlier drafts of this work and the [conference presentation](SAAB-AMA-SASSB-2019-talk), many computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
 
-## TODO
-
-### Reproducibility
+## Reproducibility TODOs
 
 - [ ] Trim out NA-rows from data CSVs for Dryad
 - [ ] Export species occurence matrix (QDS-scale, both regions together)?
@@ -42,18 +40,3 @@ For results used in earlier drafts of this work and the [conference presentation
 - [ ] Add Larsen shapefile URL to this README
 - [ ] Add contents of data/raw/docs/SoilGrids250m.txt to this README
 - [ ] Add contents of other data/raw/docs/*.txt to this README
-
-### Manuscript
-
-- [ ] Address negative heterogeneity-effects
-- [ ] Other results + discussion smoothing over
-- [ ] Comment more on figures
-- [ ] Double check references
-- [ ] Double check figures
-
-### Submission to _J. Biogeog._
-
-- [ ] Recirculate manuscript to Mike + Tony
-- [ ] Finish cover-letter to ed.
-- [ ] Ask Mike + Tony for advice on reviewers
-- [ ] Submit!
