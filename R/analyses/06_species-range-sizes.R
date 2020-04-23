@@ -291,4 +291,3 @@ ggplot(SWAFR_pcoa_richness) +
   aes(QDS_richness, vegunique, colour = QDS %in% Perth) +
   geom_point() +
   scale_colour_viridis_d()
-
