@@ -100,6 +100,16 @@ summary(m2)
 # Store residuals in master dataset for use in maps below
 data$QDS$PC1_residual <- m3$residuals
 
+# Double check that a quadratic version of m2 isn't better fitting?
+# (Re: Allouche et al., Carnicer et al.)
+m4 <- lm(QDS_richness ~ PC1 + I(PC1^2) + region, data$QDS)
+AIC(m2, m4) %>%
+  mutate(delta_AIC  = AIC - min(AIC))
+# It is, but **not** showing a hump-backed response
+summary(m4)
+visreg::visreg(m4, xvar = "PC1", by = "region", overlay = TRUE)
+# Sort of pseudo-exponential?
+
 # HDS-richness:
 m1 <- lm(HDS_richness ~ PC1,          data$HDS)
 m2 <- lm(HDS_richness ~ PC1 + region, data$HDS)
@@ -114,6 +124,12 @@ summary(m1)
 # Store residuals in master dataset for use in maps below
 data$HDS$PC1_residual <- m1$residuals
 
+# Double check that a quadratic version of m1 isn't better fitting?
+m4 <- lm(HDS_richness ~ PC1 + I(PC1^2), data$HDS)
+AIC(m1, m4) %>%
+  mutate(delta_AIC  = AIC - min(AIC))
+# It's not!
+
 # DS-richness:
 m1 <- lm(DS_richness ~ PC1,          data$DS)
 m2 <- lm(DS_richness ~ PC1 + region, data$DS)
@@ -127,6 +143,12 @@ AIC(m1, m2, m3) %>%
 summary(m1)
 # Store residuals in master dataset for use in maps below
 data$DS$PC1_residual <- m1$residuals
+
+# Double check that a quadratic version of m1 isn't better fitting?
+m4 <- lm(DS_richness ~ PC1 + I(PC1^2), data$DS)
+AIC(m1, m4) %>%
+  mutate(delta_AIC  = AIC - min(AIC))
+# It's not!
 
 # .... Fit other all vars univariate models ------------------------------------
 
