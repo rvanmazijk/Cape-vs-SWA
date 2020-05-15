@@ -241,7 +241,7 @@ My thoughts: as local determinism and history are both important, we should not 
   - Contrasting environments (Re: my study)
   - Differing patterns of climatic stability
 - Undertanding ecological and evolutionary process across spatial scales is very NB
-  - Analysing $\btea$-diversity aids this!
+  - Analysing $\beta$-diversity aids this!
   - The link between biodiversity and environmental heterogeneity is species turnover
 - $\beta$-diversity = species turnover (i.e. replacement) + nestedness
 - Few studies consider $\beta$!!
