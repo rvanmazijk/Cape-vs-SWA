@@ -302,6 +302,22 @@ My thoughts: as local determinism and history are both important, we should not 
 - Scale-dependence (spatial, taxonomic, temporal) of ecological and evolutionary questions
 - Phylogenetic turnover NB in this!
 
+## May 2020
+
+### $EH \sim area$
+
+Statement I want to make:
+
+> Larger areas necessarily contain a greater variety of environmental conditions, and thus potential niches. This enables species packing to be more pronounced/apparent(?) at broader scales.
+
+- My own thought:
+
+    > In the same way that the SAR involves an increase in the diversity of entities as a sampled/considered area is made larger, so does this intuitively happen with the diversity of conditions in areas: increasing in larger areas.
+
+- Taylor's $b$ (of mean-variance relationship fame, describing the rate of said relationship; $s^2 = am^b$) is greater in larger sampling areas, w/ generality. Thus, the variance of spatially structured features also tends to increase with a greater sampled area. (Lepš, 1993; Sawyer, 1989; Yamamura, 1990)
+
+- 
+
 ## Reading list
 
 - http://www.pnas.org/content/early/2018/05/17/1721464115?collection=
