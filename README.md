@@ -1,4 +1,4 @@
-# Similar axes of environmental heterogeneity associated with plant species richness in two hyper-diverse floras
+# Environmental heterogeneity explains contrasting plant species richness between the South African Cape and southwestern Australia
 
 _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
 
