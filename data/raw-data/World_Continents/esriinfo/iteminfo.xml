@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ESRI_ItemInformation Culture='en-US'>
+<name>World Continents</name>
+<guid>581415B0-F5BD-4F1F-95C3-20B0C535BA5C</guid>
+<catalogpath></catalogpath>
+<snippet>This layer represents the boundaries for the continents of the world.</snippet>
+<description>This layer represents the boundaries for the continents of the world. The layer is suitable for display to a largest scale of 1:15,000,000.</description>
+<summary>This layer represents the boundaries for the continents of the world.</summary>
+<title>World Continents</title>
+<tags>layer, polygon, continents, Africa, Asia, Australia, Europe, North America, Oceania, South America, Antarctica, coastlines, boundaries, World, 1996, 1998, 2000, 2007</tags>
+<type>Layer Package</type>
+<typekeywords>
+<typekeyword>File Geodatabase Feature Class</typekeyword>
+<typekeyword>Layer Package</typekeyword>
+<typekeyword>Data</typekeyword>
+<typekeyword>ArcMap</typekeyword>
+<typekeyword>ArcGlobe</typekeyword>
+<typekeyword>ArcGIS Explorer</typekeyword>
+<typekeyword>lpk</typekeyword>
+</typekeywords>
+<thumbnail>thumbnail/thumbnail.png</thumbnail>
+<documentation></documentation>
+<url></url>
+<datalastmodifiedtime></datalastmodifiedtime>
+<extent>
+<xmin>-180</xmin>
+<ymin>-90</ymin>
+<xmax>180.000000335276</xmax>
+<ymax>83.6236001622702</ymax>
+</extent>
+<spatialreference>GCS_WGS_1984</spatialreference>
+<accessinformation>source: Esri</accessinformation>
+<licenseinfo>The datasets included within Esri Data &amp; Maps are subject to varying redistribution rights that have been granted by Esri’s third party data suppliers. Consult the Redistribution Rights document to determine the ways in which Licensee is permitted to use and redistribute each specific dataset and the applicable disclaimers, attribution requirements, and other conditions of use.</licenseinfo>
+</ESRI_ItemInformation>
