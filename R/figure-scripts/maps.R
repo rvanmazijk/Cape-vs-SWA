@@ -130,6 +130,70 @@ ES_text <- geom_text(
   nudge_y = -0.75
 )
 
+# Make contextual world/hemisphere map -----------------------------------------
+
+# Import continental borders
+border_world<- readOGR("data/raw-data/World_Continents/v10/continent.gdb/")
+
+context_plot <- ggplot() +
+  # .... Plot continental borders ----------------------------------------------
+  geom_polygon(
+    data = border_world,
+    aes(x = long, y = lat, group = group),
+    colour = "black", fill = "grey75", size = 0.3
+  ) +
+  # .... Plot GCFR in black ----------------------------------------------------
+  geom_polygon(
+    data = GCFR_border_dissolved,
+    aes(x = long, y = lat, group = group),
+    colour = "black", fill = "black", size = 0.3
+  ) +
+  # Label GCFR
+  geom_text(
+    aes(x = 20, y = -40, label = "GCFR"),
+    size = 5
+  ) +
+  # .... Plot SWAFR in white ---------------------------------------------------
+  geom_polygon(
+    data = SWAFR_border_dissolved,
+    aes(x = long, y = lat, group = group),
+    colour = "black", fill = "white", size = 0.3
+  ) +
+  # Label SWAFR
+  geom_text(
+    aes(x = 115, y = -40, label = "SWAFR"),
+    size = 5
+  ) +
+  # .... Crop to SE hemisphere -------------------------------------------------
+  coord_equal(xlim = c(0, 180), ylim = c(-50, 0)) +
+  # Neaten lon/lat axes
+  scale_x_continuous(
+    breaks = c(0, 30, 60, 90, 120, 150, 180),
+    labels = scales::label_math(expr = .x*"º")
+  ) +
+  scale_y_continuous(
+    breaks = c(-40, -20, 0),
+    labels = scales::label_math(expr = .x*"º")
+  ) +
+  # Make oceans light grey
+  theme(
+    panel.background = element_rect(fill = "grey95"),
+    axis.title = element_blank()
+  )
+
+# .... Save to disc ------------------------------------------------------------
+
+ggsave(
+  here("figures/map-context.pdf"),
+  context_plot,
+  width = 7, height = 3
+)
+ggsave(
+  here("figures/map-context.png"),
+  context_plot, dpi = 600,
+  width = 7, height = 3
+)
+
 # Richness maps ----------------------------------------------------------------
 
 # .... Define richness limits for scales ---------------------------------------
