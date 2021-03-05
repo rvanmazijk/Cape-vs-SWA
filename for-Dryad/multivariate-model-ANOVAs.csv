@@ -1,0 +1,46 @@
+response,term,var_explained,p.value
+QDS_richness,Residuals,0.72,-
+QDS_richness,MAP,0.13,***
+QDS_richness,Elevation,0.06,***
+QDS_richness,NDVI,0.03,***
+QDS_richness,PDQ:region,0.02,***
+QDS_richness,region,0.02,***
+QDS_richness,NDVI:region,0.01,***
+QDS_richness,Clay,0.01,**
+QDS_richness,pH,0.01,**
+QDS_richness,CEC,0.01,*
+QDS_richness,pH:region,0.01,*
+QDS_richness,PDQ,< 0.01, 
+QDS_richness,MAP:region,< 0.01, 
+HDS_richness,Residuals,0.54,-
+HDS_richness,MAP,0.21,***
+HDS_richness,Elevation,0.10,***
+HDS_richness,pH:region,0.04,***
+HDS_richness,NDVI,0.02,**
+HDS_richness,MAP:region,0.02,**
+HDS_richness,pH,0.02,*
+HDS_richness,Clay,0.02,*
+HDS_richness,PDQ,0.02,*
+HDS_richness,Surface_T:region,0.01,*
+HDS_richness,Surface_T,0.01, 
+HDS_richness,Soil_C:region,< 0.01, 
+HDS_richness,region,< 0.01, 
+HDS_richness,Soil_C,< 0.01, 
+DS_richness,NDVI,0.17,***
+DS_richness,Elevation,0.15,***
+DS_richness,PDQ,0.14,***
+DS_richness,pH:region,0.11,***
+DS_richness,Clay,0.07,***
+DS_richness,Residuals,0.07,-
+DS_richness,NDVI:region,0.06,**
+DS_richness,Clay:region,0.06,**
+DS_richness,Soil_C:region,0.04,**
+DS_richness,Surface_T,0.04,**
+DS_richness,CEC,0.03,*
+DS_richness,Soil_C,0.02,.
+DS_richness,Elevation:region,0.02,.
+DS_richness,PDQ:region,0.01, 
+DS_richness,pH,0.01, 
+DS_richness,Surface_T:region,< 0.01, 
+DS_richness,region,< 0.01, 
+DS_richness,CEC:region,< 0.01, 

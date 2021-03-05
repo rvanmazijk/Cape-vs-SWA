@@ -1,0 +1,356 @@
+# Heterogeneity and species richness:
+#   Analysis setup
+# Ruan van Mazijk, <ruanvmazijk@gmail.com>
+# CC-BY-4.0 2021
+
+# Load packages ================================================================
+
+# General programming
+library(tidyverse)
+library(glue)  # better than paste()
+library(magrittr)  # for %<>% & %$%
+
+# GIS
+library(raster)
+library(rgdal)
+library(rgeos)
+
+# Analyses proper
+library(canprot)  # for CLES
+library(broom)  # to tidy model outputs
+
+# Set global variables =========================================================
+
+# Environmental variable names in sensible order
+var_names <- c(
+  "Elevation",
+  "MAP",
+  "PDQ",
+  "Surface-T",
+  "NDVI",
+  "CEC",
+  "Clay",
+  "Soil-C",
+  "pH"
+)
+# And a syntactically valid version
+var_names_tidy <- str_replace(var_names, "-", "_")
+
+# For resetting plots' parameters to defaults
+op <- par()
+
+# Helper-functions =============================================================
+
+grid_dim <- function(x) {
+  # Gets the latitudinal and longitudinal range of a SpatialPolygonsDataFrame
+  list(
+    width  = extent(x)[2] - extent(x)[1],
+    height = extent(x)[4] - extent(x)[3],
+    crs    = proj4string(x)
+  )
+}
+
+grid2raster <- function(x, resol = c(0.125, 0.25, 0.5, 1)) {
+  # Creates a raster with the same dimensions and number of grid cells ("n gc")
+  # as a Larsen-type grid SpatialPolygonsDataFrame
+  n_gc_wide <- grid_dim(x)$width  / resol
+  n_gc_high <- grid_dim(x)$height / resol
+  raster(
+    nrow = n_gc_high, ncol = n_gc_wide,
+    crs = proj4string(x),
+    xmn = extent(x)[1], xmx = extent(x)[2],
+    ymn = extent(x)[3], ymx = extent(x)[4]
+  )
+}
+
+raster2df <- function(r, Larsen_grid_data = NULL) {
+  # Creates a dataframe of raster layer/stack/brick data
+  # with columns for the lon and lat of the midpoint of each cell
+  df <- cbind(
+    xyFromCell(r, 1:ncell(r)),
+    as.data.frame(r)
+  )
+  names(df)[1:2] <- c("lon", "lat")
+  if (!is.null(Larsen_grid_data)) {
+    df <- full_join(Larsen_grid_data, df)
+  }
+  df
+}
+
+force_positive_PC1 <- function(PCA) {
+  # Ammends all variables' loadings in a PCA to be positive
+  # if they are all negative, for simplicity's sake
+  if (all(PCA$rotation[, 1] <= 0)) {
+    message("Multiplying this one by -1")
+    PCA$rotation[, 1] %<>% multiply_by(-1)
+    PCA$x[, 1]        %<>% multiply_by(-1)
+  }
+  PCA
+}
+
+make_SpatialPointsDataFrame <- function(df) {
+  # Makes a SpatialPointsDataFrame out of the (cleaned) GBIF occurrence data
+  # for GCFR and SWAFR vascular plants
+  SpatialPointsDataFrame(
+    coords      = df[, c("decimallongitude", "decimallatitude")],
+    data        = df[, "species"],
+    proj4string = crs(borders_buffered)  # depends on this object existing!
+  )
+}
+
+rasterise_data <- function(df, df_col, r) {
+  # Turns a dataframe with lon/lat data into a raster
+  r[cellFromXY(r, as.data.frame(df[, c("lon", "lat")]))] <- df[[df_col]]
+  r[r == 0] <- NA
+  r
+}
+
+test_diff <- function(response, sub_sample = FALSE) {
+  # Tests for differences between GCFR and SWAFR richness and turnover
+  # using Mann-Whitney U-tests and describes those differences using CLES
+  dataset <- data %$% {  # depends on this object existing!
+    if      (response ==     "QDS_richness")                       QDS
+    else if (response %in% c("HDS_richness", "HDS_turnover_prop")) HDS
+    else if (response %in% c("DS_richness",  "DS_turnover_prop"))  DS
+  }
+  x_GCFR  <- dataset[[response]][dataset$region == "GCFR"]
+  x_SWAFR <- dataset[[response]][dataset$region == "SWAFR"]
+  U_test <- wilcox.test(x_GCFR, x_SWAFR)
+  tibble(
+    metric     = response,
+    GCFR_mean  = mean(x_GCFR),
+    SWAR_mean  = mean(x_SWAFR),
+    P_U        = tidy(U_test)$p.value,
+    CLES_value = CLES(x_SWAFR, x_GCFR)
+  )
+}
+
+fit_univariate_models <- function(response) {
+  # Univariate-model-fitting process for analysis
+  dataset <- data %$% {  # depends on this object existing!
+    if      (response == "QDS_richness") QDS
+    else if (response == "HDS_richness") HDS
+    else if (response == "DS_richness")  DS
+  }
+
+  univar_models <- map(predictor_names, ~list(
+    non_region = lm(glue("{response} ~ {.x}"),          dataset),
+    add_region = lm(glue("{response} ~ {.x} + region"), dataset),
+    int_region = lm(glue("{response} ~ {.x} * region"), dataset)
+  ))
+  names(univar_models) <- predictor_names
+
+  univar_model_summary1 <- univar_models %>%
+    map_dfr(.id = "variable",
+      ~ tibble(
+        model_type = names(.x),
+        model_rank = 1:3,
+        model = .x
+      )
+    ) %>%
+    group_by(variable) %>%
+    mutate(
+      slope        = map_dbl(model, ~tidy(.x)$estimate[2]),
+      P_slope      = map_dbl(model, ~tidy(.x)$p.value[ 2]),
+      region_coeff = map2_dbl(model, model_type,
+                       ~ ifelse(.y != "non_region",
+                         tidy(.x)$estimate[3],
+                         NA
+                       )
+                     ),
+      P_region     = map2_dbl(model, model_type,
+                       ~ ifelse(.y != "non_region",
+                         tidy(.x)$p.value[3],
+                         NA
+                       )
+                     ),
+      int_coeff    = map2_dbl(model, model_type,
+                       ~ ifelse(.y == "int_region",
+                         tidy(.x)$estimate[4],
+                         NA
+                       )
+                     ),
+      P_int        = map2_dbl(model, model_type,
+                       ~ ifelse(.y == "int_region",
+                         tidy(.x)$p.value[4],
+                         NA
+                       )
+                     ),
+      slope_sig    = ifelse(P_slope  < 0.05, "*", ""),
+      region_sig   = ifelse(P_region < 0.05, "*", ""),
+      int_sig      = ifelse(P_int    < 0.05, "*", ""),
+      AIC          = map_dbl(model, AIC),
+      delta_AIC    = AIC - min(AIC),
+      best_model   = (model_rank == min(model_rank[delta_AIC < 2]))
+    ) %>%
+    filter(best_model) %>%
+    ungroup() %>%
+    mutate(
+      model_type =
+        case_when(
+          model_type == "non_region"                   ~ "Main effect only",
+          model_type == "add_region" & P_slope <  0.05 ~ "Main effect + region",
+          model_type == "add_region" & P_slope >= 0.05 ~ "Region only",
+          model_type == "int_region"                   ~ "Main effect * region"
+        ) %>%
+        factor(levels = c(
+          "Main effect * region",
+          "Main effect + region",
+          "Main effect only",
+          "Region only"
+        )),
+      variable    = str_replace_all(variable, "_", " "),
+      slope_sign  = ifelse(slope        > 0, "+", "-"),
+      region_sign = ifelse(region_coeff > 0, "+", "-"),
+      int_sign    = ifelse(int_coeff    > 0, "+", "-")
+    ) %>%
+    mutate_at(c("P_slope", "P_region", "P_int"),
+      ~ case_when(
+        .x < 0.001 ~ "***",
+        .x < 0.010 ~ "**",
+        .x < 0.050 ~ "*",
+        .x < 0.100 ~ ".",
+        TRUE       ~ " "
+      )
+    ) %>%
+    mutate_if(is.character, ~ ifelse(is.na(.x), " ", .x))
+
+  # Make summary table
+  univar_model_summary2 <- univar_model_summary1 %>%
+    dplyr::select(
+      model_type,  variable,
+      slope,        P_slope,
+      region_coeff, P_region,
+      int_coeff,    P_int
+    ) %>%
+    mutate_if(is.numeric, ~format(round(., digits = 3), nsmall = 3)) %>%
+    arrange(model_type)
+  # Remove variable names after first mention in table
+  univar_model_summary2$model_type %<>% as.character()
+  for (pred in unique(univar_model_summary2$model_type)) {
+    to_remove <- which(univar_model_summary2$model_type == pred)[-1]
+    univar_model_summary2$model_type[to_remove] <- " "
+  }
+
+  # Save (tidy) results to disc
+  write_csv(
+    univar_model_summary2,
+    here("results", glue("{response}_univariate_model_results.csv"))
+  )
+
+  # Return full summary with models
+  return(univar_model_summary1)
+}
+
+cor_model_results <- function(x) {
+  # Correlate MV and PC1-based model results
+  x %$% as_tibble(rbind(
+    cbind(
+      test = "expected",
+      tidy(cor.test(multivariate_expected, PC1_expected))
+    ),
+    cbind(
+      test = "residual",
+      tidy(cor.test(multivariate_residual, PC1_residual))
+    )
+  ))
+}
+
+# Import data ==================================================================
+
+# .... Region polygons ---------------------------------------------------------
+
+GCFR_border_buffered  <- readOGR("GCFR_border_buffered/")
+SWAFR_border_buffered <- readOGR("SWAFR_border_buffered/")
+
+# Merge regions' borders
+borders_buffered <- rbind(GCFR_border_buffered, SWAFR_border_buffered)
+
+# .... My Larsen-type grid polygons and rasters --------------------------------
+
+# Shapefiles
+Larsen_grid_EDS <- readOGR("Larsen_grid_EDS", layer = "Larsen_grid_EDS")
+Larsen_grid_QDS <- readOGR("Larsen_grid_QDS", layer = "Larsen_grid_QDS")
+Larsen_grid_HDS <- readOGR("Larsen_grid_HDS", layer = "Larsen_grid_HDS")
+
+# Rasters
+Larsen_grid_EDS_ras <- raster("Larsen_grid_EDS_ras.tif")
+Larsen_grid_QDS_ras <- raster("Larsen_grid_QDS_ras.tif")
+Larsen_grid_HDS_ras <- raster("Larsen_grid_HDS_ras.tif")
+Larsen_grid_DS_ras  <- raster("Larsen_grid_DS_ras.tif")
+
+# Query the border polygon and store results in Larsen grid
+Larsen_grid_EDS@data <- cbind(
+  Larsen_grid_EDS@data,
+  Larsen_grid_EDS %over% borders_buffered
+)
+# For larger cells, just use longitude for region classification,
+# because later I filter the cells based on whether their constituent cells
+# are in the regions (from EDS above)
+Larsen_grid_QDS@data$region <- ifelse(Larsen_grid_QDS@data$lon > 60, "SWAFR", "GCFR")
+Larsen_grid_HDS@data$region <- ifelse(Larsen_grid_HDS@data$lon > 60, "SWAFR", "GCFR")
+
+# Filter to EDS that are within the regions' borders
+Larsen_grid_EDS <- Larsen_grid_EDS[!is.na(Larsen_grid_EDS$region), ]
+
+# Make grids tibbles for easier wrangling
+Larsen_grid_EDS_data <- as_tibble(Larsen_grid_EDS@data)
+Larsen_grid_QDS_data <- as_tibble(Larsen_grid_QDS@data)
+Larsen_grid_HDS_data <- as_tibble(Larsen_grid_HDS@data)
+
+# Detemine which DS, HDS & QDS have all 4 of their HDS, QDS & EDS ==============
+# (within the regions' borders)
+
+# Pull out QDS-codes of QDS with all 4 EDS (within borders)
+QDS_w_all_EDS <- Larsen_grid_EDS_data %>%
+  group_by(qdgc, region) %>%
+  dplyr::select(edgc) %>%
+  distinct() %>%  # just in case
+  summarise(n_EDS = n()) %>%
+  filter(n_EDS == 4) %>%
+  pull(qdgc)
+
+# Pull out HDS-codes of HDS with all 4 HDS (within borders)
+HDS_w_all_QDS <- Larsen_grid_QDS_data %>%
+  group_by(hdgc, region) %>%
+  dplyr::select(qdgc) %>%
+  distinct() %>%
+  filter(qdgc %in% QDS_w_all_EDS) %>%
+  summarise(n_QDS = n()) %>%
+  filter(n_QDS == 4) %>%
+  pull(hdgc)
+
+# Pull out DS-codes of DS with all 4 DS (within borders)
+DS_w_all_HDS <- Larsen_grid_HDS_data %>%
+  group_by(dgc, region) %>%
+  dplyr::select(hdgc) %>%
+  distinct() %>%
+  filter(hdgc %in% HDS_w_all_QDS) %>%
+  summarise(n_HDS = n()) %>%
+  filter(n_HDS == 4) %>%
+  pull(dgc)
+
+# Raster-layers
+Larsen_grid_EDS_ras <- raster("Larsen_grid_EDS_ras.tif")
+Larsen_grid_QDS_ras <- raster("Larsen_grid_QDS_ras.tif")
+Larsen_grid_HDS_ras <- raster("Larsen_grid_HDS_ras.tif")
+Larsen_grid_DS_ras  <- raster("Larsen_grid_DS_ras.tif")
+
+# .... GBIF species occurrence datasets ----------------------------------------
+
+GCFR_species_occ  <- make_SpatialPointsDataFrame(read_csv("cleaned-species-occ_GCFR.csv"))
+SWAFR_species_occ <- make_SpatialPointsDataFrame(read_csv("cleaned-species-occ_SWAFR.csv"))
+
+# Merge regions' data
+species_occ <- rbind(GCFR_species_occ, SWAFR_species_occ)
+
+# .... Environmental data ------------------------------------------------------
+
+GCFR_file_names  <- glue("GCFR_{var_names}.tif")
+SWAFR_file_names <- glue("SWAFR_{var_names}.tif")
+
+GCFR_variables  <- stack(GCFR_file_names)
+SWAFR_variables <- stack(SWAFR_file_names)
+
+enviro_data <- raster::merge(GCFR_variables, SWAFR_variables)
+names(enviro_data) <- var_names_tidy
