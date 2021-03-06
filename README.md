@@ -13,7 +13,7 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
   <img src="logos/SAAB-logo.png" height="80" />
 </p>
 
-This is an open access repository for (some) data-sets, reproducible analyses, conference slides and manuscript drafts for a publication based on my BSc Hons project (in press with Journal of Biogeography). Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
+This is an open access repository for (some) data-sets, reproducible analyses, conference slides and manuscript drafts for a publication based on my BSc Hons project (in press in _Journal of Biogeography_). Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
 
 The folder [`for-Dryad`](for-Dryad) contains the versions of scripts and data files lodged formally on Dryad, here: <https://doi.org/10.5061/dryad.8w9ghx3m8>.
 
