@@ -13,7 +13,9 @@ _Ruan van Mazijk, Michael D. Cramer and G. Anthony Verboom_
   <img src="logos/SAAB-logo.png" height="80" />
 </p>
 
-This is an open access repository for (some) data-sets, reproducible analyses, conference slides and manuscript drafts for a publication based on my BSc Hons project (in preparation for submission to the Journal of Biogeography). Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
+This is an open access repository for (some) data-sets, reproducible analyses, conference slides and manuscript drafts for a publication based on my BSc Hons project (in press with Journal of Biogeography). Please see the [ResearchGate page](https://www.researchgate.net/project/Plant-species-richness-turnover-environmental-heterogeneity-in-the-Cape-and-SW-Australia) for more.
+
+The folder [`for-Dryad`](for-Dryad) contains the versions of scripts and data files lodged formally on Dryad, here: <https://doi.org/10.5061/dryad.8w9ghx3m8>.
 
 We aim to quantify the explanatory power of heterogeneity in predicting plant species richness and turnover in the Greater Cape Floristic Region and in the Southwest Australia Floristic Region. We compare the environmental heterogeneity in each region, how species richness and turnover interact in each region to produce the observed patterns of richness, and what different forms of environmental heterogeneity better predict richness in each region.
 
