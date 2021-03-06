@@ -24,3 +24,5 @@ We expect the Cape to be more heterogeneous in most environmental axes, and at a
 This work was funded by the South African Department of Science and Technology (DST) and the National Research Foundation (NRF) under the DST-NRF Freestanding Innovation Honours Scholarship (to RvM), and by the South African Association of Botanists (SAAB) Honours Scholarship (to RvM). Thanks go to the Department of Biological Sciences, University of Cape Town, for providing a 2TB external hard drive for local GIS data storage.
 
 For results used in earlier drafts of this work and the [conference presentation](SAAB-AMA-SASSB-2019-talk), many computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
+
+<img src="logos/eResearch-logo.png" height="50"/>
