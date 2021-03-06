@@ -25,4 +25,4 @@ This work was funded by the South African Department of Science and Technology (
 
 For results used in earlier drafts of this work and the [conference presentation](SAAB-AMA-SASSB-2019-talk), many computations were performed using facilities provided by the University of Cape Town's ICTS High Performance Computing team (<http://hpc.uct.ac.za>).
 
-<img src="logos/eResearch-logo.png" height="50"/>
+<img src="logos/eResearch-logo.png" height="100"/>
