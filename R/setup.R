@@ -62,6 +62,11 @@ theme_set(my_theme)
 # Make a blank plot object (useful as filler when arranging panels)
 white_rect <- grid.rect(gp = gpar(col = "white"))
 
+my_palette <- c(
+  "#E69F00",  # GCFR orange
+  "#307aa5"   # SWAFR blue
+)
+
 # Helper-functions -------------------------------------------------------------
 
 grid_dim <- function(x) {
@@ -291,7 +296,7 @@ plot_PC1_models <- function(dataset,
       xlim = my_xlims[[scale]],  # depends on this object existing
       ylim = my_ylim,            # ''
       pch  = 21, cex = choose_cex(scale),
-      bg   = ifelse(dataset[[scale]]$region == "GCFR", "black", "white")
+      bg   = ifelse(dataset[[scale]]$region == "GCFR", my_palette[[1]], my_palette[[2]])
     )
   }
 
@@ -300,7 +305,7 @@ plot_PC1_models <- function(dataset,
     points(
       outliers[[scale]]$PC1, outliers[[scale]][[response]],
       pch = 24, cex = choose_cex(scale),
-      bg = ifelse(outliers[[scale]]$region == "GCFR", "black", "white")
+      bg = ifelse(outliers[[scale]]$region == "GCFR", my_palette[[1]], my_palette[[2]])
     )
   }
 
@@ -389,8 +394,8 @@ plot_PC1_models <- function(dataset,
     m_QDS,
     newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
   )
-  lines(PC1_seq, fit_GCFR,  col = "black",  lwd = 3)
-  lines(PC1_seq, fit_SWAFR, col = "grey50", lwd = 3)
+  lines(PC1_seq, fit_GCFR,  col = my_palette[[1]],  lwd = 3)
+  lines(PC1_seq, fit_SWAFR, col = my_palette[[2]], lwd = 3)
 
   # Add y-axis
   axis(2,
@@ -403,7 +408,7 @@ plot_PC1_models <- function(dataset,
     x = -6, y = 3800,
     legend  = unique(dataset$QDS$region),
     pch     = 21,
-    pt.bg   = c("black", "white"),
+    pt.bg   = c(my_palette[[1]], my_palette[[2]]),
     box.col = NA
   )
 
@@ -435,8 +440,8 @@ plot_PC1_models <- function(dataset,
       m_HDS,
       newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
     )
-    lines(PC1_seq, fit_GCFR,  col = "black",  lwd = 3)
-    lines(PC1_seq, fit_SWAFR, col = "grey50", lwd = 3)
+    lines(PC1_seq, fit_GCFR,  col = my_palette[[1]],  lwd = 3)
+    lines(PC1_seq, fit_SWAFR, col = my_palette[[2]], lwd = 3)
   }
 
   # .... (c) DS ----------------------------------------------------------------

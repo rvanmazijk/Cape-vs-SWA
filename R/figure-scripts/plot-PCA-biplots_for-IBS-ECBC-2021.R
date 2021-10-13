@@ -17,11 +17,6 @@ names(heterogeneity_dfs) <- c("point1", "QDS", "HDS", "DS")
 
 # Plot PCA-biplots -------------------------------------------------------------
 
-my_palette <- c(
-  "#E69F00",  # GCFR orange
-  "#307aa5"   # SWAFR blue
-)
-
 PC_biplots <- pmap(list(heterogeneity_PCAs,
                         heterogeneity_dfs,
                         c("point1", "QDS", "HDS", "DS")),
