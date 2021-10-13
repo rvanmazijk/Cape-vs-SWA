@@ -17,6 +17,11 @@ names(heterogeneity_dfs) <- c("point1", "QDS", "HDS", "DS")
 
 # Plot PCA-biplots -------------------------------------------------------------
 
+my_palette <- c(
+  "#E69F00",  # GCFR orange
+  "#307aa5"   # SWAFR blue
+)
+
 PC_biplots <- pmap(list(heterogeneity_PCAs,
                         heterogeneity_dfs,
                         c("point1", "QDS", "HDS", "DS")),
@@ -40,7 +45,7 @@ PC_biplots <- pmap(list(heterogeneity_PCAs,
     ) +
     geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
     geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
-    scale_colour_manual(name = "Region", values = c("grey30", "grey80")) +
+    scale_colour_manual(name = "Region", values = my_palette) +
     theme(
       axis.ticks   = element_blank(),
       axis.text    = element_blank(),
@@ -66,12 +71,12 @@ PC_biplots <- plot_grid(
 # Save for SI ------------------------------------------------------------------
 
 ggsave(
-  here("figures/plot-PCA-biplots_for-MEDECOS-2020.pdf"),
+  here("figures/plot-PCA-biplots_for-IBS-ECBC-2021.pdf"),
   PC_biplots,
   width = 8, height = 6
 )
 ggsave(
-  here("figures/plot-PCA-biplots_for-MEDECOS-2020.png"),
+  here("figures/plot-PCA-biplots_for-IBS-ECBC-2021.png"),
   PC_biplots,
   width = 8, height = 6
 )
