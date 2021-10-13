@@ -63,8 +63,8 @@ theme_set(my_theme)
 white_rect <- grid.rect(gp = gpar(col = "white"))
 
 my_palette <- c(
-  "#E69F00",  # GCFR orange
-  "#307aa5"   # SWAFR blue
+  "#307aa5",  # GCFR  blue
+  "#E69F00"   # SWAFR orange
 )
 
 # Helper-functions -------------------------------------------------------------
