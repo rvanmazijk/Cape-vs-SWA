@@ -17,6 +17,8 @@ names(heterogeneity_dfs) <- c("point1", "QDS", "HDS", "DS")
 
 # Plot PCA-biplots -------------------------------------------------------------
 
+my_palette2 <- change_col_alpha(my_palette, alpha = 0.05)
+
 PC_biplots <- pmap(list(heterogeneity_PCAs,
                         heterogeneity_dfs,
                         c("point1", "QDS", "HDS", "DS")),
@@ -40,7 +42,7 @@ PC_biplots <- pmap(list(heterogeneity_PCAs,
     ) +
     geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
     geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
-    scale_colour_manual(name = "Region", values = my_palette) +
+    scale_colour_manual(name = "Region", values = my_palette2) +
     theme(
       axis.ticks   = element_blank(),
       axis.text    = element_blank(),

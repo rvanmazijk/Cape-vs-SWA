@@ -270,6 +270,15 @@ fit_univariate_models <- function(response) {
   return(univar_model_summary1)
 }
 
+change_col_alpha <- function(x, alpha = 0.5) {
+  rgb(
+    red   = col2rgb(x)[1, ]/255,
+    green = col2rgb(x)[2, ]/255,
+    blue  = col2rgb(x)[3, ]/255,
+    alpha = alpha
+  )
+}
+
 plot_PC1_models <- function(dataset,
                             keep_outliers = c(TRUE, FALSE),
                             filename      = "plot-PC1-models",
@@ -327,15 +336,6 @@ plot_PC1_models <- function(dataset,
     title(adj = 0, bquote(
       .(label)~"("*italic("R")^2 == .(x)*")"
     ))
-  }
-
-  change_col_alpha <- function(x, alpha = 0.5) {
-    rgb(
-      red   = col2rgb(x)[1, ]/255,
-      green = col2rgb(x)[2, ]/255,
-      blue  = col2rgb(x)[3, ]/255,
-      alpha = alpha
-    )
   }
 
   # Fit models quickly and dirtily ---------------------------------------------
