@@ -41,6 +41,7 @@ PC_biplots <- pmap(list(heterogeneity_PCAs,
     geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
     geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.5) +
     scale_colour_manual(name = "Region", values = my_palette) +
+    coord_equal() +
     theme(
       axis.ticks   = element_blank(),
       axis.text    = element_blank(),
@@ -48,19 +49,15 @@ PC_biplots <- pmap(list(heterogeneity_PCAs,
       panel.border = element_blank()
     )
 )
-my_legend <- get_legend(PC_biplots$point1)
+
 PC_biplots %<>% map(~ . + theme(legend.position = "none"))
 PC_biplots <- plot_grid(
-  plotlist = PC_biplots, nrow = 2,
+  plotlist = PC_biplots, nrow = 1,
   labels         = c("0.10°×0.10°", "QDS", "HDS", "DS"),
   label_fontface = "plain",
   label_x        = 0.075,
   label_y        = 0.975,
   hjust          = 0
-)
-PC_biplots <- plot_grid(
-  PC_biplots, my_legend,
-  nrow = 1, rel_widths = c(1, 0.2)
 )
 
 # Save for SI ------------------------------------------------------------------
@@ -68,10 +65,10 @@ PC_biplots <- plot_grid(
 ggsave(
   here("figures/plot-PCA-biplots_for-IBS-ECBC-2021.pdf"),
   PC_biplots,
-  width = 8, height = 6
+  width = 12, height = 3
 )
 ggsave(
   here("figures/plot-PCA-biplots_for-IBS-ECBC-2021.png"),
   PC_biplots,
-  width = 8, height = 6
+  width = 12, height = 3
 )
