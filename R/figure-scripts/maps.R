@@ -40,6 +40,7 @@ outliers <- read_csv(here("results/list-outlier-squares.csv"))
 # Set palette & some reusable gg-objects ---------------------------------------
 
 my_palette <- rev(viridis::viridis(10))
+my_palette2 <- my_palette
 
 no_x_axis <- theme(
   axis.ticks.x = element_blank(),
@@ -135,6 +136,11 @@ ES_text <- geom_text(
 # Import continental borders
 border_world<- readOGR("data/raw-data/World_Continents/v10/continent.gdb/")
 
+my_palette <- c(
+  "#307aa5",  # GCFR  blue
+  "#E69F00"   # SWAFR orange
+)
+
 context_plot <- ggplot() +
   # .... Plot continental borders ----------------------------------------------
   geom_polygon(
@@ -146,7 +152,7 @@ context_plot <- ggplot() +
   geom_polygon(
     data = GCFR_border_dissolved,
     aes(x = long, y = lat, group = group),
-    colour = "black", fill = "black", size = 0.3
+    colour = "black", fill = my_palette[[1]], size = 0.3
   ) +
   # Label GCFR
   geom_text(
@@ -157,7 +163,7 @@ context_plot <- ggplot() +
   geom_polygon(
     data = SWAFR_border_dissolved,
     aes(x = long, y = lat, group = group),
-    colour = "black", fill = "white", size = 0.3
+    colour = "black", fill = my_palette[[2]], size = 0.3
   ) +
   # Label SWAFR
   geom_text(
@@ -193,6 +199,8 @@ ggsave(
   context_plot, dpi = 600,
   width = 7, height = 3
 )
+
+my_palette <- my_palette2
 
 # Richness maps ----------------------------------------------------------------
 
