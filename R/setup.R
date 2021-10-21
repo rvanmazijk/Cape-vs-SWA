@@ -295,8 +295,8 @@ plot_PC1_models <- function(dataset,
       ylab = my_ylab,
       xlim = my_xlims[[scale]],  # depends on this object existing
       ylim = my_ylim,            # ''
-      pch  = 21, cex = choose_cex(scale),
-      bg   = ifelse(dataset[[scale]]$region == "GCFR", my_palette[[1]], my_palette[[2]])
+      pch  = 16, cex = choose_cex(scale),
+      col  = ifelse(dataset[[scale]]$region == "GCFR", my_palette2[[1]], my_palette2[[2]])
     )
   }
 
@@ -304,8 +304,8 @@ plot_PC1_models <- function(dataset,
     response <- glue("{scale}_richness")
     points(
       outliers[[scale]]$PC1, outliers[[scale]][[response]],
-      pch = 24, cex = choose_cex(scale),
-      bg = ifelse(outliers[[scale]]$region == "GCFR", my_palette[[1]], my_palette[[2]])
+      pch = 17, cex = choose_cex(scale),
+      col = ifelse(outliers[[scale]]$region == "GCFR", my_palette2[[1]], my_palette2[[2]])
     )
   }
 
@@ -329,6 +329,15 @@ plot_PC1_models <- function(dataset,
     ))
   }
 
+  change_col_alpha <- function(x, alpha = 0.5) {
+    rgb(
+      red   = col2rgb(x)[1, ]/255,
+      green = col2rgb(x)[2, ]/255,
+      blue  = col2rgb(x)[3, ]/255,
+      alpha = alpha
+    )
+  }
+
   # Fit models quickly and dirtily ---------------------------------------------
   # (Before data modifications below)
 
@@ -338,6 +347,7 @@ plot_PC1_models <- function(dataset,
 
   # For plotting model fits:
   PC1_seq <- seq(from = -7, to = 7, by = 0.1)
+  my_palette2 <- change_col_alpha(my_palette)
 
   # Make changes to filename and data if needed --------------------------------
 
@@ -364,6 +374,7 @@ plot_PC1_models <- function(dataset,
   my_xlims <- map(dataset, ~range(.$PC1))
 
   # Remove outliers from data used to plot dots (not triangles) ----------------
+
   dataset %<>% map(filter, !is_PC1_outlier)
 
   # Plot panels ----------------------------------------------------------------
@@ -394,8 +405,8 @@ plot_PC1_models <- function(dataset,
     m_QDS,
     newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
   )
-  lines(PC1_seq, fit_GCFR,  col = my_palette[[1]],  lwd = 3)
-  lines(PC1_seq, fit_SWAFR, col = my_palette[[2]], lwd = 3)
+  lines(PC1_seq, fit_GCFR,  col = my_palette2[[1]],  lwd = 3)
+  lines(PC1_seq, fit_SWAFR, col = my_palette2[[2]], lwd = 3)
 
   # Add y-axis
   axis(2,
@@ -408,7 +419,7 @@ plot_PC1_models <- function(dataset,
     x = -6, y = 3800,
     legend  = unique(dataset$QDS$region),
     pch     = 21,
-    pt.bg   = c(my_palette[[1]], my_palette[[2]]),
+    pt.bg   = c(my_palette2[[1]], my_palette2[[2]]),
     box.col = NA
   )
 
@@ -440,8 +451,8 @@ plot_PC1_models <- function(dataset,
       m_HDS,
       newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
     )
-    lines(PC1_seq, fit_GCFR,  col = my_palette[[1]],  lwd = 3)
-    lines(PC1_seq, fit_SWAFR, col = my_palette[[2]], lwd = 3)
+    lines(PC1_seq, fit_GCFR,  col = my_palette2[[1]], lwd = 3, )
+    lines(PC1_seq, fit_SWAFR, col = my_palette2[[2]], lwd = 3)
   }
 
   # .... (c) DS ----------------------------------------------------------------
@@ -476,7 +487,6 @@ plot_PC1_models <- function(dataset,
     m_DS  = m_DS
   ))
 }
-
 
 # Import data ------------------------------------------------------------------
 
