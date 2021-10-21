@@ -404,7 +404,7 @@ plot_PC1_models <- function(dataset,
     m_QDS,
     newdata = data.frame(region = "SWAFR", PC1 = PC1_seq)
   )
-  lines(PC1_seq, fit_GCFR,  col = my_palette[[1]],  lwd = 3)
+  lines(PC1_seq, fit_GCFR,  col = my_palette[[1]], lwd = 3)
   lines(PC1_seq, fit_SWAFR, col = my_palette[[2]], lwd = 3)
 
   # Add y-axis
