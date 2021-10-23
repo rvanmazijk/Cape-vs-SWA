@@ -257,7 +257,7 @@ SWAFR_richness_plots <- imap(SWAFR_richness,
     ) +
     theme(
       plot.title           = element_text(hjust = 0.5),
-      legend.direction     = "horizontal",
+      legend.direction     = "vertical",
       legend.position      = c(1, 0.8),
       legend.justification = "right",
       legend.background    = element_rect(fill = NA)
@@ -313,7 +313,7 @@ SWAFR_PC1_plots <- imap(SWAFR_PC1,
       na.value = NA
     ) +
     theme(
-      legend.direction     = "horizontal",
+      legend.direction     = "vertical",
       legend.position      = c(1, 0.8),
       legend.justification = "right",
       legend.background    = element_rect(fill = NA)
@@ -528,10 +528,10 @@ all_plots <- pmap(list(GCFR_richness_plots,      SWAFR_richness_plots,
                        GCFR_PC1_residuals_plots, SWAFR_PC1_residuals_plots,
                        GCFR_MV_residuals_plots,  SWAFR_MV_residuals_plots),
   ~ plot_grid(
-    ..1, ..2 + rotate_legend_text,
-    ..3, ..4 + rotate_legend_text,
-    ..5, ..6 + rotate_legend_text,
-    ..7, ..8 + rotate_legend_text,
+    ..1, ..2,
+    ..3, ..4,
+    ..5, ..6,
+    ..7, ..8,
     nrow = 4, rel_heights = c(1, 0.9, 0.9, 1)
   )
 )
